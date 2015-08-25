@@ -1,4 +1,6 @@
 #include <string>
+#include <map>
+#include <list>
 
 using namespace std;
 
@@ -9,9 +11,13 @@ class Modifies
 {
 public:
 	Modifies();
+    
+	list<int> get_modifies_line( int );
+
+	void set_modifies_stm( int, int );
 
 private:
-	
+	map<int,std::list<int>> modifiesMap;
 };
 
 #endif

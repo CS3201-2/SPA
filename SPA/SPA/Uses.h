@@ -1,4 +1,6 @@
 #include <string>
+#include <map>
+#include <list>
 
 using namespace std;
 
@@ -10,8 +12,12 @@ class Uses
 public:
 	Uses();
 
+	list<int> get_uses_stm( int );
+
+	void set_uses_stm( int, int );
+
 private:
-	
+	map<int,std::list<int>> usesMap;
 };
 
 #endif

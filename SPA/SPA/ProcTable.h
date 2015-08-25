@@ -1,4 +1,5 @@
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -10,7 +11,14 @@ class ProcTable
 public:
 	ProcTable();
 
+	int get_ID(string);
+
+	int insert_Proc(string);
+
+	int get_size();
+
 private:
+	map<string,int> procTable;
 	
 };
 
