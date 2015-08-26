@@ -16,14 +16,14 @@ int VarTable::get_ID(string varName)
 
 int VarTable::insert_Var(string varName)
 {
-	int id = varTable.size + 1;
+	int id = varTable.size() + 1;
 	varTable.insert( std::pair<string,int>( varName, id ) );
 	return id;
 }
 
 int VarTable::get_size()
 {
-	return varTable.size;
+	return varTable.size();
 }
 
 
