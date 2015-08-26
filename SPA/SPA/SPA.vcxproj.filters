@@ -22,25 +22,34 @@
     <Filter Include="Source Files\PKB">
       <UniqueIdentifier>{f800d2fc-9fab-4bbd-b73a-a43472426a25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\front_end">
+      <UniqueIdentifier>{b4f2abaa-6499-40fe-870f-0f12d4c4c485}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PKB">
+      <UniqueIdentifier>{67035d40-2bfa-4107-8782-21ab39f284a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Controller.h">
+      <Filter>Header Files\front_end</Filter>
+    </ClInclude>
     <ClInclude Include="Parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Uses.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Modifies.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\front_end</Filter>
     </ClInclude>
     <ClInclude Include="AST.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="VarTable.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Modifies.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="ProcTable.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="Uses.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="VarTable.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -62,5 +71,16 @@
     <ClCompile Include="ProcTable.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>Source Files\front_end</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>Source Files\front_end</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="prototype_test.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

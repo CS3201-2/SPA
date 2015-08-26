@@ -63,6 +63,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AST.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="Modifies.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="ProcTable.h" />
@@ -71,11 +72,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AST.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Modifies.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="ProcTable.cpp" />
+    <ClCompile Include="UI.cpp" />
     <ClCompile Include="Uses.cpp" />
     <ClCompile Include="VarTable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="prototype_test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
