@@ -7,34 +7,66 @@
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\front_end">
-      <UniqueIdentifier>{fe4a5f2f-df00-4df0-9d39-53950ff6b3d3}</UniqueIdentifier>
+    <Filter Include="Source Files\Front-end Parser">
+      <UniqueIdentifier>{53164459-8d7a-48b0-be49-83268fcc5af0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\query_processor">
-      <UniqueIdentifier>{4424e366-7b8c-4875-b6dc-bf21caf81f3c}</UniqueIdentifier>
+    <Filter Include="Source Files\Query Processor">
+      <UniqueIdentifier>{55a461cf-0779-48cb-88be-ce207f841cb7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\PKB">
-      <UniqueIdentifier>{f800d2fc-9fab-4bbd-b73a-a43472426a25}</UniqueIdentifier>
+      <UniqueIdentifier>{ddb5fbf6-ab0d-40b7-aea3-c1199ffef377}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\front_end">
-      <UniqueIdentifier>{b4f2abaa-6499-40fe-870f-0f12d4c4c485}</UniqueIdentifier>
+    <Filter Include="Header Files\Front-end Parser">
+      <UniqueIdentifier>{74067763-be4d-4a19-ab5a-e45a1bd4f685}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\PKB">
-      <UniqueIdentifier>{67035d40-2bfa-4107-8782-21ab39f284a2}</UniqueIdentifier>
+      <UniqueIdentifier>{d6e5a1cd-99e1-43c8-8e5e-58d1d354d13b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Query Processor">
+      <UniqueIdentifier>{b2218870-eff2-4c31-9e93-d96f9333b386}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Controller.cpp">
+      <Filter>Source Files\Front-end Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser.cpp">
+      <Filter>Source Files\Front-end Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>Source Files\Front-end Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="AST.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="Modifies.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcTable.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="Uses.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="VarTable.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="Controller.h">
-      <Filter>Header Files\front_end</Filter>
+      <Filter>Header Files\Front-end Parser</Filter>
     </ClInclude>
     <ClInclude Include="Parser.h">
-      <Filter>Header Files\front_end</Filter>
+      <Filter>Header Files\Front-end Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Uses.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="AST.h">
       <Filter>Header Files\PKB</Filter>
@@ -45,38 +77,9 @@
     <ClInclude Include="ProcTable.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="Uses.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
     <ClInclude Include="VarTable.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Parser.cpp">
-      <Filter>Source Files\front_end</Filter>
-    </ClCompile>
-    <ClCompile Include="Modifies.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="Uses.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="AST.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="VarTable.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="ProcTable.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="UI.cpp">
-      <Filter>Source Files\front_end</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller.cpp">
-      <Filter>Source Files\front_end</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="prototype_test.txt">
