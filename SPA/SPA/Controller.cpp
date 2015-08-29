@@ -1,4 +1,7 @@
 #include "Controller.h"
+#include "Checker.h"
+#include "Parser.h"
+#include "PKB.h";
 #include <iostream>
 #include <string>
 #include <list>
@@ -15,3 +18,22 @@ void Controller::display() {
          cout << *itr << endl;
 }
 
+void Controller::processSource() {
+	if (!syntaxCheck()) {
+		cerr << "The SOURCE file got sytax error!" << endl;
+		exit(1);
+	} else {
+		ctrPKB = parse();
+	}
+
+}
+
+int Controller::syntaxCheck() {
+	Checker checker;
+	return checker.checkSyntax(source);
+}
+
+PKB Controller::parse() {
+	Parser parser(ctrPKB);
+	return parser.parseSource(source);
+}

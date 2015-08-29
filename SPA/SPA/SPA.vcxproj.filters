@@ -57,6 +57,12 @@
     <ClCompile Include="VarTable.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="Checker.cpp">
+      <Filter>Source Files\Front-end Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="PKB.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Controller.h">
@@ -78,6 +84,12 @@
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="VarTable.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="Checker.h">
+      <Filter>Header Files\Front-end Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="PKB.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,3 +1,4 @@
+#include "PKB.h"
 #include <string>
 #include <list>
 
@@ -13,8 +14,16 @@ public:
 
 	void display( void );
 
+	void processSource();
+ 
 private:
 	list<string> source;
+
+	PKB ctrPKB;
+	
+	int syntaxCheck();
+
+	PKB parse();
 };
 
 #endif

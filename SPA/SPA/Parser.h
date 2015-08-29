@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <list>
 
 using namespace std;
 
@@ -9,10 +10,12 @@ using namespace std;
 class Parser
 {
 public:
-	Parser();
+	Parser( PKB );
+
+	PKB parseSource( list<string> );
 
 private:
-	
+	PKB pkb;
 };
 
 #endif

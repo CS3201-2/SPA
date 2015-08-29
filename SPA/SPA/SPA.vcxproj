@@ -119,9 +119,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AST.cpp" />
+    <ClCompile Include="Checker.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Modifies.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="PKB.cpp" />
     <ClCompile Include="ProcTable.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Uses.cpp" />
@@ -129,9 +131,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AST.h" />
+    <ClInclude Include="Checker.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Modifies.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="PKB.h" />
     <ClInclude Include="ProcTable.h" />
     <ClInclude Include="Uses.h" />
     <ClInclude Include="VarTable.h" />
