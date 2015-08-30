@@ -34,6 +34,6 @@ int Controller::syntaxCheck() {
 }
 
 PKB Controller::parse() {
-	Parser parser(ctrPKB);
+	Parser parser;
 	return parser.parseSource(source);
 }

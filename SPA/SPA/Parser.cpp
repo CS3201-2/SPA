@@ -2,9 +2,9 @@
 #include "PKB.h"
 
 // constructor
-Parser::Parser(PKB PKB)
+Parser::Parser()
 {
-	pkb = PKB;
+	
 }
 
 PKB Parser::parseSource( list<string> source ) {

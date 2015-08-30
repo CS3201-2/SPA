@@ -10,7 +10,7 @@ using namespace std;
 class Parser
 {
 public:
-	Parser( PKB );
+	Parser();
 
 	PKB parseSource( list<string> );
 
