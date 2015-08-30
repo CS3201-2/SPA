@@ -125,6 +125,8 @@
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PKB.cpp" />
     <ClCompile Include="ProcTable.cpp" />
+    <ClCompile Include="QueryController.cpp" />
+    <ClCompile Include="QueryValidator.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Uses.cpp" />
     <ClCompile Include="VarTable.cpp" />
@@ -133,10 +135,15 @@
     <ClInclude Include="AST.h" />
     <ClInclude Include="Checker.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="QueryController.h" />
     <ClInclude Include="Modifies.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PKB.h" />
     <ClInclude Include="ProcTable.h" />
+    <ClInclude Include="QueryEvaluator.h" />
+    <ClInclude Include="QueryProjector.h" />
+    <ClInclude Include="QueryTreeCreator.h" />
+    <ClInclude Include="QueryValidator.h" />
     <ClInclude Include="Uses.h" />
     <ClInclude Include="VarTable.h" />
   </ItemGroup>
