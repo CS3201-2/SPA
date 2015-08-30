@@ -14,12 +14,12 @@ public:
 
 	PKB parseSource(list<string>);
 
-private:
-	PKB pkb;
-
 	list<string> trim(list<string>);
 
 	list<string> removeBlankLines(list<string>);
+
+private:
+	PKB pkb;
 
 };
 
