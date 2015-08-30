@@ -16,6 +16,11 @@ public:
 
 private:
 	PKB pkb;
+
+	list<string> trim( list<string> );
+
+	list<string> removeBlankLines( list<string> );
+
 };
 
 #endif
