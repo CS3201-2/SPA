@@ -1,7 +1,7 @@
 #include "Controller.h"
 #include "Checker.h"
 #include "Parser.h"
-#include "PKB.h";
+#include "PKB.h"
 #include <iostream>
 #include <string>
 #include <list>
