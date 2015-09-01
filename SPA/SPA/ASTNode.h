@@ -12,16 +12,17 @@ class ASTNode
 	NodeType _nodeType;
 	string _nodeContent;
 	ASTNode* _parent;
-	list<ASTNode> _children;
+	list<ASTNode*> _children;
 	
 public:
 	ASTNode(NodeType, string);
 	NodeType getNodeType();
 	string getContent();
-	void addChildren(ASTNode);
-	void setParent(ASTNode);
-	list<ASTNode> getChildren();
-	ASTNode getParent();
-};
+	void addChildren(ASTNode*);
+	list<ASTNode*> getChildren();
+	ASTNode* getParent();
 
+private:
+	void setParent(ASTNode*);
+};
 #endif

@@ -7,7 +7,8 @@ ASTNode::ASTNode(NodeType type, string content)
 {
 	_nodeType = type;
 	_nodeContent = content;
-	_children = 
+	_children.clear();
+	_parent = NULL;
 }
 
 NodeType ASTNode::getNodeType()
@@ -20,23 +21,23 @@ string ASTNode::getContent()
 	return _nodeContent;
 }
 
-void ASTNode::addChildren(ASTNode node)
+void ASTNode::addChildren(ASTNode* node)
 {
-
+	_children.push_back(node);
+	(*node).setParent(this);
 }
 
-void ASTNode::setParent(ASTNode)
+list<ASTNode*> ASTNode::getChildren()
 {
-
+	return _children;
 }
 
-list<ASTNode> ASTNode::getChildren()
+ASTNode* ASTNode::getParent()
 {
-
+	return _parent;
 }
 
-ASTNode ASTNode::getParent()
+void ASTNode::setParent(ASTNode* node)
 {
-
+	_parent = node;
 }
-
