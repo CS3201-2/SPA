@@ -1,5 +1,4 @@
 #include <string>
-#include <list>
 #include "AST.h"
 #include "ASTNode.h"
 
@@ -15,10 +14,6 @@ class ASTController
 public:
 	ASTController();
 	void updateAST(string);
-	list<ASTNode> getChildren(ASTNode);
-	ASTNode getParent(ASTNode);
-	list<ASTNode> getSiblings(ASTNode);
-
 
 
 };

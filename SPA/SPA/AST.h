@@ -1,4 +1,5 @@
 #include <string>
+#include <list>
 #include "ASTNode.h"
 using namespace std;
 
@@ -11,6 +12,9 @@ class AST
 
 public:
 	AST();
+	list<ASTNode> getChildren(ASTNode);
+	ASTNode getParent(ASTNode);
+	list<ASTNode> getSiblings(ASTNode);
 	
 };
 
