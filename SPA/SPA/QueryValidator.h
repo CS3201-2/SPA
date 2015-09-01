@@ -6,9 +6,6 @@
 using namespace std;
 
 class QueryValidator {
-private:
-	bool parseQuery(string query);
-	bool parseDeclaration(string declaration);
 public:
-	list<bool> isValidQuery(list<string> query);
+	bool validateQuery(list<string> query);
 };
