@@ -2,7 +2,7 @@
 #define NodeTypeEnum_H
 
 enum NodeType {
-	procedure, statementLst, assign, call, whilestmt, ifstmt,
+	program, procedure, statementLst, assign, call, whilestmt, ifstmt,
 	variable, constant, plus
 };
 
