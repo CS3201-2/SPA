@@ -1,3 +1,8 @@
 *.opensdf
 *.sdf
 SPA/SPA/Debug/
+<<<<<<< HEAD
+*.sdf
+=======
+SPA/SPA_UnitTest/Debug/
+>>>>>>> 99956dc954b06a7fc061aefa1033926e4834468f

@@ -38,4 +38,10 @@ e.g. Select p such that Calls (p, q) with q.procName = “Third”
 
    -*Query Preprocessor*
    
-   -*Query Evaluator*
+         -*Query Validator*: Checks if passed query is syntactically and semantically correct.
+         
+         -*Query Tree Creator*: Creates a query tree for the query.
+   
+   -*Query Evaluator*: Evaluates the query using the query tree and fetches the relevant data from the PKB.
+   
+   -*Query Projector*: Formats the results of the Query Evaluator into a user-friendly form.
