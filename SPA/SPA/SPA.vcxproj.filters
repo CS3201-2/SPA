@@ -63,11 +63,19 @@
     <ClCompile Include="PKB.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="QueryController.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
     <ClCompile Include="QueryValidator.cpp">
       <Filter>Source Files</Filter>
+=======
+    <ClCompile Include="QueryEvaluator.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryTree.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+>>>>>>> origin/master
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
