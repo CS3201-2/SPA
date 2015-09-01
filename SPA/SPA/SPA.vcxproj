@@ -63,8 +63,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AST.h" />
-    <ClInclude Include="ASTConstructor.h" />
     <ClInclude Include="ASTNode.h" />
+    <ClInclude Include="NodeTypeEnum.h" />
     <ClInclude Include="Modifies.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="ProcTable.h" />
@@ -72,7 +72,6 @@
     <ClInclude Include="VarTable.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ASTConstructor.cpp" />
     <ClCompile Include="ASTNode.cpp" />
     <ClCompile Include="Modifies.cpp" />
     <ClCompile Include="Parser.cpp" />

@@ -45,10 +45,10 @@
     <ClInclude Include="ProcTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ASTConstructor.h">
+    <ClInclude Include="ASTNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ASTNode.h">
+    <ClInclude Include="NodeTypeEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -69,9 +69,6 @@
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
     <ClCompile Include="AST.cpp">
-      <Filter>Source Files\AST</Filter>
-    </ClCompile>
-    <ClCompile Include="ASTConstructor.cpp">
       <Filter>Source Files\AST</Filter>
     </ClCompile>
     <ClCompile Include="ASTNode.cpp">
