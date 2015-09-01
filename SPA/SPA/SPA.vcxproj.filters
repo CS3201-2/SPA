@@ -63,6 +63,12 @@
     <ClCompile Include="PKB.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="QueryEvaluator.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryTree.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Controller.h">
