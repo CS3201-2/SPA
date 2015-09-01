@@ -1,14 +1,11 @@
 #pragma once
 #include <string>
 #include <list>
+#include <cstdbool>
 
 using namespace std;
 
-typedef int boolean;
-#define true 1
-#define false 0
-
 class QueryValidator {
 public:
-	boolean validateQuery(list<string> query);
+	bool validateQuery(list<string> query);
 };

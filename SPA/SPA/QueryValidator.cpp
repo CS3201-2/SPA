@@ -1,6 +1,9 @@
 #include "QueryValidator.h"
+#include <cstdbool>
 
-boolean QueryValidator::validateQuery(list<string>)
+using namespace std;
+
+bool QueryValidator::validateQuery(list<string>)
 {
-	return boolean();
+	return false;
 }

@@ -1,4 +1,4 @@
-#pragma once
+#include "PKB.h"
 #include <string>
 #include <list>
 
@@ -10,12 +10,17 @@ using namespace std;
 class Parser
 {
 public:
-	Parser( PKB );
+	Parser();
 
-	PKB parseSource( list<string> );
+	PKB parseSource(list<string>);
+
+	list<string> trim(list<string>);
+
+	list<string> removeBlankLines(list<string>);
 
 private:
 	PKB pkb;
+
 };
 
 #endif
