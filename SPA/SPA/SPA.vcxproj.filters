@@ -69,6 +69,12 @@
     <ClCompile Include="QueryTree.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
+    <ClCompile Include="QueryController.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryResultProjector.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Controller.h">
@@ -97,6 +103,15 @@
     </ClInclude>
     <ClInclude Include="PKB.h">
       <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryEvaluator.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryController.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryResultProjector.h">
+      <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
