@@ -9,28 +9,29 @@ AST::AST(string initialLine)
 {
 	_root = NULL;
 	_nodeInProcess.push(startOfProgram);
-	_nodeInProcess.push(startOfFirstProcedure);
 }
 
 void AST::updateAST(string line)
 {
 	NodeType type = getLineType(line);
+	ASTNode node;
+	ASTNode* nodePointer = &node;
 	switch (type)
 	{
 	case procedure:
-		updateProcedure(line);
+		createProcNode(nodePointer);
 		break;
 	case assign:
-		updateAssign(line);
+		createAssignNode(nodePointer, line);
 		break;
 	case call:
-		updateCall(line);
+		createCallNode(nodePointer);
 		break;
 	case whilestmt:
-		updateWhile(line);
+		createWhileNode(nodePointer);
 		break;
 	case ifstmt:
-		updateIf(line);
+		createIfNode(nodePointer);
 		break;
 	default:
 		throw kErrorType;
@@ -43,15 +44,14 @@ NodeType AST::getLineType(string line)
 	return ;
 }
 
-void AST::updateProcedure(string line)
+void AST::createProcNode(ASTNode* ptr)
 {
-	ASTNode newNode(procedure, GetLineName!!!);
-
+	*ptr = ASTNode(procedure, GetLineName!!!);
 }
 
-void AST::updateAssign(string line)
+void AST::createAssignNode(ASTNode* ptr, string line)
 {
-
+	*ptr = 
 }
 
 void AST::updateCall(string line)

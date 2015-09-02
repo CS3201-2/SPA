@@ -3,6 +3,10 @@
 using namespace std;
 
 //Constructor
+ASTNode::ASTNode()
+{
+}
+
 ASTNode::ASTNode(NodeType type, string content)
 {
 	_nodeType = type;

@@ -15,6 +15,7 @@ class ASTNode
 	list<ASTNode*> _children;
 	
 public:
+	ASTNode();
 	ASTNode(NodeType, string);
 	NodeType getNodeType();
 	string getContent();
