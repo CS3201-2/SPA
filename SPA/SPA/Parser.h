@@ -18,6 +18,9 @@ public:
 
 	list<string> removeBlankLines(list<string>);
 
+	void processSource(list<string>);
+
+
 private:
 	PKB pkb;
 

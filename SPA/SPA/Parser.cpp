@@ -59,3 +59,19 @@ list<string> Parser::removeBlankLines(list<string> content) {
 	return content;
 }
 
+void Parser::processSource(list<string> content) {
+	for (list<string>::iterator itr = content.begin(); itr != content.end(); ++itr) {
+		string line = *itr;
+		if (line.find("Procedure") != string::npos) {
+			//this means Procedure is found in this string
+
+		}
+		else if (line.find("while") != string::npos) {
+			
+		}
+		else if (line.find("=") != string::npos) {
+			
+		}
+	}
+}
+
