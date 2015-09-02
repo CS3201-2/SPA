@@ -81,3 +81,8 @@ void AST::createIfNode(ASTNode* ptr, string line)
 	(*ptr).addChildren(thenNode);
 	(*ptr).addChildren(thenNode);
 }
+
+void AST::addExpression(ASTNode* ptr, Expression exp)
+{
+	(*ptr).addChildren(exp.getRoot());
+}
