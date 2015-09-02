@@ -13,7 +13,7 @@ void QueryValidator::areValidQueries(list<string> queries)
 		//isValid.push_back(parseQuery(*iterQueries));
 		if (!(*iterQueries).empty()) {
 			//qt.start();
-			parseQuery(*iterQueries);
+			parseString(*iterQueries);
 			//qt.end();
 		}
 		
@@ -21,7 +21,7 @@ void QueryValidator::areValidQueries(list<string> queries)
 
 }
 
-bool QueryValidator::parseQuery(string query)
+bool QueryValidator::parseString(string query)
 {
 	//char* queryChar = &query[0];
 	vector<string> splitStr = split(query, ';');
@@ -33,15 +33,19 @@ bool QueryValidator::parseQuery(string query)
 
 	int size = splitStr.size();
 	//cout << size;
-	
+	int i = 0;
 	//declaration clauses
-	for (int i = 0; i < size - 1; i++) {
+	for (i; i < size - 1; i++) {
 		//cout << "called";
 		if (!parseDeclaration(splitStr.at(i))) {
 			//cout << "\n exiting";
 			cout << "Invalid Query" << endl;
 			return false;
 		} 
+	}
+
+	if (!parseQuery(splitStr.at(i))) {
+		return false;
 	}
 	//cout << i;
 	return true;
@@ -66,11 +70,34 @@ bool QueryValidator::parseDeclaration(string declaration) {
 				return false;
 			} else {
 				varMap[synonyms.at(i)] = arrDec.at(0);
-				cout << varMap.find(synonyms.at(i))->second;
+				//qt.addVariable(synonyms.at(i), arrDec.at(0));
+				//cout << varMap.find(synonyms.at(i))->second;
 			}
 		}
 	}
 	
+	return true;
+}
+
+bool QueryValidator::parseQuery(string query) {
+	vector<string> arrClauses = split(query, ' ', 2); //don't split into 3 as will have tuples(multiple var) later.
+	
+	transform(arrClauses.at(0).begin(), arrClauses.at(0).end(), 
+		arrClauses.at(0).begin(), tolower);
+
+	if (arrClauses.at(0).compare("select") != 0) {
+		return false;
+	}
+
+	arrClauses = split(arrClauses.at(1), ' ', 2);
+
+	auto it = varMap.find(arrClauses.at(1));
+	if (it == varMap.end()) { //key not found
+		return false;
+	}
+
+	//cout << varMap.find("a")->second << endl;
+	//cout << arrClauses.at(1) << endl;
 	return true;
 }
 

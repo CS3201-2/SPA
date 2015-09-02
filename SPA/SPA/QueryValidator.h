@@ -12,13 +12,14 @@ class QueryValidator {
 private:
 	//QueryTree qt;
 	map<string, string> varMap;
-	bool parseQuery(string query);
+	bool parseString(string query);
 	bool parseDeclaration(string declaration);
 	vector<string> split(string str, char c);
 	vector<string> QueryValidator::split(string str, char c, int num);
 	bool isValidVariableName(string varName);
 	string QueryValidator::trim(string content);
 	string QueryValidator::removeSpaces(string line);
+	bool parseQuery(string query);
 public:
 	void areValidQueries(list<string> queries);
 };
