@@ -71,6 +71,7 @@
     </ClCompile>
     <ClCompile Include="ASTNode.cpp">
       <Filter>Source Files\PKB</Filter>
+    </ClCompile>
     <ClCompile Include="QueryController.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
@@ -108,10 +109,11 @@
     </ClInclude>
     <ClInclude Include="ASTNode.h">
       <Filter>Header Files\PKB</Filter>
-    <ClInclude Include="QueryEvaluator.h">
-      <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
     <ClInclude Include="QueryController.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryEvaluator.h">
       <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
     <ClInclude Include="QueryResultProjector.h">
