@@ -136,8 +136,6 @@
     <ClInclude Include="AST.h" />
     <ClInclude Include="Checker.h" />
     <ClInclude Include="Controller.h" />
-    <ClInclude Include="ASTNode.h" />
-    <ClInclude Include="NodeTypeEnum.h" />
     <ClInclude Include="Modifies.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PKB.h" />
@@ -147,14 +145,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="prototype_test.txt" />
-    <ClCompile Include="ASTNode.cpp" />
-    <ClCompile Include="Modifies.cpp" />
-    <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="ProcTable.cpp" />
-    <ClCompile Include="AST.cpp" />
-    <ClCompile Include="Uses.cpp" />
-    <ClCompile Include="VarTable.cpp" />
->>>>>>> AST_ICKangwei
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
