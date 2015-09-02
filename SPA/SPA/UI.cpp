@@ -20,18 +20,12 @@ int main(void) {
 	    exit(1);
 	}
 
-	string line;
-	list<string> sourceCode;
-
-	while ( getline( inputFile, line ) ) {
-        sourceCode.push_back( line );
-	}
+	std::string sourceCode((std::istreambuf_iterator<char>(inputFile)),
+		(std::istreambuf_iterator<char>()));
 
 	Controller ctr( sourceCode );
 
 	cout << "Loaded!" << endl;
-
-	ctr.display();
 
 	cin.ignore();
 	cin.get();

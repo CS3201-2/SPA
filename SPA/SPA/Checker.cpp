@@ -10,7 +10,7 @@ Checker::Checker() {
 
 }
 
-int Checker::checkSyntax( list<string> ) {
+int Checker::checkSyntax( string ) {
 	//TODO:
 	return 1;
 }

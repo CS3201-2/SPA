@@ -11,7 +11,7 @@ class Checker
 public:
 	Checker();
 
-	int checkSyntax( list<string>);
+	int checkSyntax( string );
 
 private:
 };
