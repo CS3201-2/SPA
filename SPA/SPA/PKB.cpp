@@ -14,3 +14,7 @@ PKB::PKB()
 
 }
 
+ProcTable PKB::getProcTable(void) {
+	return procTable;
+}
+
