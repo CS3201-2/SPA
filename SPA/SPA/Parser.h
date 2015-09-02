@@ -14,9 +14,9 @@ public:
 
 	PKB parseSource(list<string>);
 
-	string trim(string line);
+	void trim(string&);
 
-	list<string> removeBlankLines(list<string>);
+	void removeBlankLines(list<string>&);
 
 private:
 	PKB pkb;

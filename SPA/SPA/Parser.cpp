@@ -22,7 +22,7 @@ PKB Parser::parseSource( list<string> source ) {
 	return pkb;
 }
 
-string Parser::trim(string line) {
+void Parser::trim(string& line) {
 	
 	// remove outer spaces
 	const auto indexBegin = line.find_first_not_of(" \t");
@@ -44,11 +44,9 @@ string Parser::trim(string line) {
 		
 		spaceStart = line.find_first_of(" \t", index );
 	}
-		
-	return line;
 }
 
-list<string> Parser::removeBlankLines(list<string> content) {
+void Parser::removeBlankLines(list<string>& content) {
 	for (list<string>::iterator itr = content.begin(); itr != content.end(); ++itr) {
 		string line = *itr;
 		const auto index = line.find_first_not_of(" \t");
@@ -56,6 +54,5 @@ list<string> Parser::removeBlankLines(list<string> content) {
 			content.remove(*itr);
 		}
 	}
-	return content;
 }
 
