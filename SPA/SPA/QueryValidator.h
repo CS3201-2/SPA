@@ -16,6 +16,6 @@ private:
 	bool isValidVariableName(string varName);
 	string QueryValidator::trim(string content);
 public:
-	list<bool> isValidQuery(list<string> query);
+	void areValidQueries(list<string> queries);
 };
 #pragma once
