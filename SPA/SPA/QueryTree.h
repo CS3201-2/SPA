@@ -18,5 +18,5 @@ public:
 	void insertSuchThat(string rel, string val1, string val1_type, string val2, string val2_type);
 	void insertPattern(string synonym, string synonymType, string pattern1, string pattern1Type, 
 						string pattern2, string pattern2Type);
-	
+	void insertSelect();
 };
