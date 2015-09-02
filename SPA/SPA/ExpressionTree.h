@@ -1,5 +1,6 @@
-#include <string>
-#include "ASTNode.h"
+#include<string>
+#include<regex>
+#include"ASTNode.h"
 
 using namespace std;
 
@@ -11,5 +12,7 @@ public:
 	ASTNode getRoot();
 private:
 	void constructTree(string);
+	string getSuffix(string);
+	void buildTree(string);
 };
 
