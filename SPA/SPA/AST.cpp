@@ -19,7 +19,7 @@ void AST::updateAST(string line)
 	switch (type)
 	{
 	case procedure:
-		createProcNode(nodePointer);
+		createProcNode(nodePointer, line);
 		break;
 	case assign:
 		createAssignNode(nodePointer, line);
@@ -51,20 +51,33 @@ void AST::createProcNode(ASTNode* ptr)
 
 void AST::createAssignNode(ASTNode* ptr, string line)
 {
-	*ptr = 
+	*ptr = ASTNode(assign, NULL);
+	ASTNode* variableNode = &ASTNode(variable, getVariable(line));
+	(*ptr).addChildren(variableNode);
+	addExpression(ptr, getExpression(line));
 }
 
-void AST::updateCall(string line)
+void AST::createCallNode(ASTNode* ptr, string line)
 {
-
+	*ptr = ASTNode(call, GetLineName!!!);
 }
 
-void AST::updateWhile(string line)
+void AST::createWhileNode(ASTNode* ptr, string line)
 {
-
+	*ptr = ASTNode(whilestmt, NULL);
+	ASTNode* conditionNode = &ASTNode(variable, getVariable(line));
+	ASTNode* stmtLstNode = &ASTNode(statementLst, NULL);
+	(*ptr).addChildren(conditionNode);
+	(*ptr).addChildren(stmtLstNode);
 }
 
-void AST::updateIf(string line)
+void AST::createIfNode(ASTNode* ptr, string line)
 {
-
+	*ptr = ASTNode(ifstmt, NULL);
+	ASTNode* conditionNode = &ASTNode(variable, getVariable(line));
+	ASTNode* thenNode = &ASTNode(statementLst, "then");
+	ASTNode* elseNode = &ASTNode(statementLst, "else");
+	(*ptr).addChildren(conditionNode);
+	(*ptr).addChildren(thenNode);
+	(*ptr).addChildren(thenNode);
 }

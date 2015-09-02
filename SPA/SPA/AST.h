@@ -19,12 +19,12 @@ public:
 
 private:
 	NodeType getLineType(string line);
-	void createProcNode(ASTNode*);
+	void createProcNode(ASTNode*, string);
 	void createAssignNode(ASTNode*, string);
 	void createCallNode(ASTNode*);
 	void createWhileNode(ASTNode*);
 	void createIfNode(ASTNode*);
-	ASTNode createAssignTree(string);
+	void addExpression(ASTNode*, string);
 };
 
 #endif
