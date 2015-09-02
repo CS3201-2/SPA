@@ -12,11 +12,13 @@ class Parser
 public:
 	Parser();
 
-	PKB parseSource(list<string>);
+	PKB parseSource(string);
 
-	void trim(string&);
+	void trim(string& line);
 
-	void removeBlankLines(list<string>&);
+	void addNewLineString(string& content);
+
+	void buildSourceCodeList(string content, list<string>& list);
 
 private:
 	PKB pkb;
