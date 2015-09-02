@@ -69,6 +69,9 @@
     <ClCompile Include="QueryTree.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
+    <ClCompile Include="ASTNode.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Controller.h">
@@ -96,6 +99,9 @@
       <Filter>Header Files\Front-end Parser</Filter>
     </ClInclude>
     <ClInclude Include="PKB.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="ASTNode.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>

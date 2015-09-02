@@ -120,6 +120,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AST.cpp" />
+    <ClCompile Include="ASTNode.cpp" />
     <ClCompile Include="Checker.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Modifies.cpp" />
@@ -134,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AST.h" />
+    <ClInclude Include="ASTNode.h" />
     <ClInclude Include="Checker.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Modifies.h" />
