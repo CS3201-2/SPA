@@ -129,6 +129,7 @@
     <ClCompile Include="QueryValidator.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Uses.cpp" />
+    <ClCompile Include="ValidatorMain.cpp" />
     <ClCompile Include="VarTable.cpp" />
   </ItemGroup>
   <ItemGroup>

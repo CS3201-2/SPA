@@ -66,8 +66,11 @@
     <ClCompile Include="QueryController.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
+    <ClCompile Include="ValidatorMain.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
     <ClCompile Include="QueryValidator.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

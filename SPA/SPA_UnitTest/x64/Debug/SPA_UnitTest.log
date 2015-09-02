@@ -1,0 +1,23 @@
+﻿Build started 2/9/2015 10:17:43 AM.
+     1>Project "C:\Users\Manika\Documents\GitHub\SPA\SPA\SPA_UnitTest\SPA_UnitTest.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /IC:\Users\Manika\Documents\GitHub\SPA\SPA\SPA /I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\UnitTest\include" /ZI /nologo /W3 /WX- /Od /D _DEBUG /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yc"stdafx.h" /Fp"x64\Debug\SPA_UnitTest.pch" /Fo"x64\Debug\\" /Fd"x64\Debug\vc140.pdb" /Gd /TP /FC /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /IC:\Users\Manika\Documents\GitHub\SPA\SPA\SPA /I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\UnitTest\include" /ZI /nologo /W3 /WX- /Od /D _DEBUG /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"stdafx.h" /Fp"x64\Debug\SPA_UnitTest.pch" /Fo"x64\Debug\\" /Fd"x64\Debug\vc140.pdb" /Gd /TP /FC /errorReport:prompt unittest1.cpp ValidatorTest.cpp
+         ValidatorTest.cpp
+         unittest1.cpp
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Manika\Documents\GitHub\SPA\SPA\x64\Debug\SPA_UnitTest.dll" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\UnitTest\lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\Manika\Documents\GitHub\SPA\SPA\x64\Debug\SPA_UnitTest.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Manika\Documents\GitHub\SPA\SPA\x64\Debug\SPA_UnitTest.lib" /MACHINE:X64 /DLL x64\Debug\stdafx.obj
+         x64\Debug\unittest1.obj
+         x64\Debug\ValidatorTest.obj
+            Creating library C:\Users\Manika\Documents\GitHub\SPA\SPA\x64\Debug\SPA_UnitTest.lib and object C:\Users\Manika\Documents\GitHub\SPA\SPA\x64\Debug\SPA_UnitTest.exp
+     1>unittest1.obj : error LNK2019: unresolved external symbol "public: __cdecl Parser::Parser(void)" (??0Parser@@QEAA@XZ) referenced in function "public: void __cdecl SPA_UnitTest::testParser::removeBlankLines(void)" (?removeBlankLines@testParser@SPA_UnitTest@@QEAAXXZ)
+     1>unittest1.obj : error LNK2019: unresolved external symbol "public: class std::list<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > __cdecl Parser::removeBlankLines(class std::list<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > >)" (?removeBlankLines@Parser@@QEAA?AV?$list@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@V23@@Z) referenced in function "public: void __cdecl SPA_UnitTest::testParser::removeBlankLines(void)" (?removeBlankLines@testParser@SPA_UnitTest@@QEAAXXZ)
+     1>ValidatorTest.obj : error LNK2019: unresolved external symbol "public: class std::list<bool,class std::allocator<bool> > __cdecl QueryValidator::isValidQuery(class std::list<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > >)" (?isValidQuery@QueryValidator@@QEAA?AV?$list@_NV?$allocator@_N@std@@@std@@V?$list@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@3@@Z) referenced in function "public: void __cdecl SPA_UnitTest::testQueryValidator::isValidQuery(void)" (?isValidQuery@testQueryValidator@SPA_UnitTest@@QEAAXXZ)
+     1>C:\Users\Manika\Documents\GitHub\SPA\SPA\x64\Debug\SPA_UnitTest.dll : fatal error LNK1120: 3 unresolved externals
+     1>Done Building Project "C:\Users\Manika\Documents\GitHub\SPA\SPA\SPA_UnitTest\SPA_UnitTest.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:02.47
