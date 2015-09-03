@@ -75,8 +75,14 @@
     <ClCompile Include="ExpressionTree.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="Suffix.cpp">
+    <ClCompile Include="QueryController.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryResultProjector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Suffix.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,8 +122,17 @@
     <ClInclude Include="ExpressionTree.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="Suffix.h">
+    <ClInclude Include="QueryController.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryEvaluator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryResultProjector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Suffix.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

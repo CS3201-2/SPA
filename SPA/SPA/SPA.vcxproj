@@ -132,6 +132,7 @@
     <ClCompile Include="QueryEvaluator.cpp" />
     <ClCompile Include="QueryResultProjector.cpp" />
     <ClCompile Include="QueryTree.cpp" />
+    <ClCompile Include="Suffix.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Uses.cpp" />
     <ClCompile Include="VarTable.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="QueryController.h" />
     <ClInclude Include="QueryEvaluator.h" />
     <ClInclude Include="QueryResultProjector.h" />
+    <ClInclude Include="Suffix.h" />
     <ClInclude Include="Uses.h" />
     <ClInclude Include="VarTable.h" />
   </ItemGroup>
