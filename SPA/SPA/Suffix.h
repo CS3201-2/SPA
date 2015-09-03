@@ -13,10 +13,11 @@ class Suffix
 	string _operandBuffer;
 	string _suffix;
 public:
-	Suffix(string); 
+	Suffix();
+	void acceptExpression(string);
 	string getSuffix();
 private:
-	string computeSuffix(string);
+	void computeSuffix(string);
 	void initializeStack();
 	bool isOperand(char);
 	void updateOperandBuffer(char);

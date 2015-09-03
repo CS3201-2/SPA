@@ -3,11 +3,15 @@
 const regex _operand("[0-9]|[a-z]|[A-Z]");
 const string kErrorExpressionType = "Error: the type of this charactor is ambiguous!";
 
-Suffix::Suffix(string s)
+Suffix::Suffix()
 {
 	_operandBuffer = "";
 	_suffix = "";
 	initializeStack();
+}
+
+void Suffix::acceptExpression(string s)
+{
 	computeSuffix(s);
 }
 
@@ -16,7 +20,7 @@ string Suffix::getSuffix()
 	return _suffix;
 }
 
-string Suffix::computeSuffix(string str)
+void Suffix::computeSuffix(string str)
 //assert(str is without space)
 {
 	string operandBuffer = "";
@@ -37,7 +41,6 @@ string Suffix::computeSuffix(string str)
 
 	}
 	_suffix += _operatorStack.top();
-	return _suffix;
 }
 
 void Suffix::initializeStack()
