@@ -123,6 +123,7 @@
     <ClCompile Include="ASTNode.cpp" />
     <ClCompile Include="Checker.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="ExpressionTree.cpp" />
     <ClCompile Include="Modifies.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PKB.cpp" />
@@ -138,7 +139,9 @@
     <ClInclude Include="ASTNode.h" />
     <ClInclude Include="Checker.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="ExpressionTree.h" />
     <ClInclude Include="Modifies.h" />
+    <ClInclude Include="NodeTypeEnum.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PKB.h" />
     <ClInclude Include="ProcTable.h" />
