@@ -24,10 +24,11 @@ void QueryValidator::areValidQueries(list<string> queries)
 bool QueryValidator::parseString(string query)
 {
 	//char* queryChar = &query[0];
-	vector<string> splitStr = split(query, ';');
-
+	vector<string> splitStr = split(trim(query), ';');
+	//cout << trim(query);
 	if (splitStr.at(0).empty()) {
 		cout << "Invalid Query" << endl;
+		//qt.invalid();
 		return false;
 	}
 
@@ -36,15 +37,15 @@ bool QueryValidator::parseString(string query)
 	int i = 0;
 	//declaration clauses
 	for (i; i < size - 1; i++) {
-		//cout << "called";
 		if (!parseDeclaration(splitStr.at(i))) {
-			//cout << "\n exiting";
 			cout << "Invalid Query" << endl;
+			//qt.invalid();
 			return false;
 		} 
 	}
 
 	if (!parseQuery(splitStr.at(i))) {
+		//qt.invalid();
 		return false;
 	}
 	//cout << i;
@@ -56,48 +57,68 @@ bool QueryValidator::parseDeclaration(string declaration) {
 	vector<string> arrDec = split(declaration, ' ', 2);
 	//cout << arrDec.at(1) << endl;
 
-	if (arrDec.at(0).compare("stmt") == 0 || arrDec.at(0).compare("assign") == 0 ||
+	if (!(arrDec.at(0).compare("stmt") == 0 || arrDec.at(0).compare("assign") == 0 ||
 		arrDec.at(0).compare("while") == 0 || arrDec.at(0).compare("variable") == 0 ||
-		arrDec.at(0).compare("constant") == 0 || arrDec.at(0).compare("prog_line") == 0) {
+		arrDec.at(0).compare("constant") == 0 || arrDec.at(0).compare("prog_line") == 0)) {
+		return false;
+	}
 		
 		vector<string> synonyms = split(removeSpaces(arrDec.at(1)), ',');
 
 		//cout << synonyms.at(0) << endl;
 
 		for (int i = 0; i < synonyms.size(); i++) {
+			
 			//if (synonyms.at(i)) - check if empty (no variable after type)
 			if (!isValidVariableName(synonyms.at(i))) {	
 				return false;
 			} else {
 				varMap[synonyms.at(i)] = arrDec.at(0);
 				//qt.addVariable(synonyms.at(i), arrDec.at(0));
-				//cout << varMap.find(synonyms.at(i))->second;
+				//cout << varMap.find("a")->second;
 			}
 		}
-	}
+	
 	
 	return true;
 }
 
 bool QueryValidator::parseQuery(string query) {
-	vector<string> arrClauses = split(query, ' ', 2); //don't split into 3 as will have tuples(multiple var) later.
+	vector<string> arrClauses = split(query, ' ', 2); //don't split into 3 as will have tuples(multiple var) later
 	
-	transform(arrClauses.at(0).begin(), arrClauses.at(0).end(), 
-		arrClauses.at(0).begin(), tolower);
-
-	if (arrClauses.at(0).compare("select") != 0) {
+	if (stringToLower(arrClauses.at(0)).compare("select") != 0) {
 		return false;
 	}
 
 	arrClauses = split(arrClauses.at(1), ' ', 2);
 
-	auto it = varMap.find(arrClauses.at(1));
-	if (it == varMap.end()) { //key not found
+	auto it = varMap.find(arrClauses.at(0));
+	if (it == varMap.end()) { //variable not found
+		return false;
+	}
+	
+	if (!findSuchThat(arrClauses.at(1))) {
 		return false;
 	}
 
 	//cout << varMap.find("a")->second << endl;
 	//cout << arrClauses.at(1) << endl;
+	return true;
+}
+
+bool QueryValidator::findSuchThat(string &subquery) {
+	vector<string> arrWords = split(subquery, ' ', 2);
+
+	if (stringToLower(arrWords.at(0)).compare("such") == 0) {
+		arrWords = split(arrWords.at(1), ' ', 2);
+
+		if (!(stringToLower(arrWords.at(0)).compare("that") == 0)) {
+			return false;
+		} else {
+			subquery = arrWords.at(1);
+		}
+	}
+
 	return true;
 }
 
@@ -109,10 +130,8 @@ bool QueryValidator::isValidVariableName(string varName)
 	}
 	
 	for (int i = 0; i < varName.length(); i++) {
-		//cout << "\n isValidVariableName";
 		if (i == 0) {
 			if (!isalpha(varName.at(i))) {
-				//cout << "yes";
 				return false;
 			}
 		} else if (!(isalnum(varName.at(i)) || varName.at(i) == '#')) {
@@ -130,13 +149,12 @@ vector<string> QueryValidator::split(string str, char c) {
 	const char *strChar = str.c_str();
 
 	do {
-		//cout << "\n split";
 		const char *begin = strChar;
 
 		while (*strChar != c && *strChar) {
 			strChar++;
 		}
-
+		
 		result.push_back(trim(string(begin, strChar)));
 	} while (0 != *strChar++);
 
@@ -173,12 +191,18 @@ vector<string> QueryValidator::split(string str, char c, int num) {
 }
 
 string QueryValidator::trim(string line) {
-	//cout << "\n trim";
 	line.erase(0, line.find_first_not_of(' '));       
 	line.erase(line.find_last_not_of(' ') + 1);
+	line.erase(remove(line.begin(), line.end(), '\n'), line.end());
+	line.erase(remove(line.begin(), line.end(), '\t'), line.end());
 	return regex_replace(line, regex("[' ']{2,}"), " ");
 }
 
 string QueryValidator::removeSpaces(string line) {
 	return regex_replace(line, regex("[' ']{1,}"), "");
+}
+
+string QueryValidator::stringToLower(string str) {
+	transform(str.begin(), str.end(), str.begin(), tolower);
+	return str;
 }

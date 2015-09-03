@@ -4,7 +4,7 @@
 int main() {
 	QueryValidator q;
 	list<string> queries;
-	string str = "assign a, c;variable b; Select a     such that Uses(a, \"x\")", //for trim
+	string str = "assign a, c;variable b; Select a     \nsuch that Uses(a, \"x\")", //for trim
 		str2 = "assign a#1;variable #b; Select a     such that Uses(a, \"x\")",  //for isValidVariableName
 		str3 = "Select a     such that Uses(a, \"x\")",  //for no declarations
 		str4 = "assign a,    c; variable b;Select a     such that Uses(a, \"x\")", // for multiple variables 
