@@ -73,6 +73,9 @@
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
     <ClCompile Include="ExpressionTree.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="Suffix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -111,6 +114,9 @@
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="ExpressionTree.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="Suffix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
