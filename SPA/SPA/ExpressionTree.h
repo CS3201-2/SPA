@@ -3,29 +3,22 @@
 #include<unordered_map>
 #include<stack>
 #include"ASTNode.h"
+#include"Suffix.h"
 
 using namespace std;
 
 class ExpressionTree
 {
 	ASTNode _root;
-	unordered_map<char, int> _inStack;
-	unordered_map<char, int> _outStack;
-	stack<char> operatorStack;
-	string _operandBuffer;
-	string _output;
+	Suffix _suffixConvertor;
+	string _suffix;
 
 public:
 	ExpressionTree(string);
 	ASTNode getRoot();
 private:
-	void constructTree(string);
-	string getSuffix(string);
-	void buildTree(string);
-	void initializeStack();
-	bool isOperand(char);
-	void updateOperandBuffer(char);
-	void extractOperandBuffer();
-	void solveOperator(char);
+	void constructTree();
+	void buildTree();
+	
 };
 
