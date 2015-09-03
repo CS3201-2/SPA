@@ -2,8 +2,6 @@
 #include <iostream>
 #include <regex>
 
-using namespace std;
-
 void QueryValidator::areValidQueries(list<string> queries)
 {
 	//list<bool> isValid;

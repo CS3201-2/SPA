@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <list>
-#include <cstdbool>
+//#include <cstdbool>
 #include <vector>
 #include <unordered_map>
 //#include <QueryTree>

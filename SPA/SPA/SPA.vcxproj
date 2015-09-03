@@ -127,6 +127,7 @@
     <ClCompile Include="ProcTable.cpp" />
     <ClCompile Include="QueryController.cpp" />
     <ClCompile Include="QueryValidator.cpp" />
+    <ClCompile Include="Relationship.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Uses.cpp" />
     <ClCompile Include="ValidatorMain.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="QueryProjector.h" />
     <ClInclude Include="QueryTreeCreator.h" />
     <ClInclude Include="QueryValidator.h" />
+    <ClInclude Include="Relationship.h" />
     <ClInclude Include="Uses.h" />
     <ClInclude Include="VarTable.h" />
   </ItemGroup>
