@@ -24,3 +24,10 @@ void QueryTree::insertPattern(string syn, string synType, string ptrn1, string p
 	tempVector.push_back(ptrn2Type);
 	patternTree.push_back(tempVector);
 }
+
+void QueryTree::insertVariable(string variable, string variableType) {
+	vector<string> tempVector;
+	tempVector.push_back(variable);
+	tempVector.push_back(variableType);
+	variableTree.push_back(tempVector);
+}
