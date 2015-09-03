@@ -2,6 +2,7 @@
 #include "PKB.h"
 #include <string>
 #include <list>
+#include <algorithm>
 
 // constructor
 Parser::Parser()
@@ -9,53 +10,57 @@ Parser::Parser()
 
 }
 
-PKB Parser::parseSource( list<string> source ) {
-	//TODO:
-	// first remove blank lines
-	// secondly remove extra blank spaces(trim) and numbered the stmt#
-
-	for (list<string>::iterator itr = source.begin(); itr != source.end(); ++itr) {
-		string line = *itr;
-	}
+PKB Parser::parseSource( string source ) {
 	
+	trim(source);
+
+	addNewLineString(source);
+	
+	list<string> sourceCodeList;
+
+	buildSourceCodeList(source, sourceCodeList);
+
+	// comments for Macong: sourceCodeList is the list filled with SOURCE line strings
 
 	return pkb;
 }
 
-string Parser::trim(string line) {
-	
-	// remove outer spaces
-	const auto indexBegin = line.find_first_not_of(" \t");
-	
-	const auto indexEnd = line.find_last_not_of(" \t");
-	const auto length = indexEnd - indexBegin + 1;
-	line.substr(indexBegin, length);
-		
-	// remove inner spaces
-	auto spaceStart = line.find_first_of(" \t");
-	while ( spaceStart != std::string::npos)
-	{
-		const auto spaceEnd = line.find_first_not_of(" \t", spaceStart);
-		const auto spaceLength = spaceEnd - spaceEnd;
+void Parser::trim(string& line) {
 
-		line.replace(spaceStart, spaceLength, " ");
-		
-		const auto index = spaceStart + 1;
-		
-		spaceStart = line.find_first_of(" \t", index );
-	}
-		
-	return line;
+	line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
 }
 
-list<string> Parser::removeBlankLines(list<string> content) {
-	for (list<string>::iterator itr = content.begin(); itr != content.end(); ++itr) {
-		string line = *itr;
-		const auto index = line.find_first_not_of(" \t");
-		if (index == std::string::npos) {
-			content.remove(*itr);
-		}
+void Parser::addNewLineString(string &content) {
+
+	string::iterator itr;
+
+	size_t index = content.find(';');
+
+	while (index != std::string::npos) {
+		index++;
+		if (content.at(index) == '}') index++;
+		content.insert(index, (size_t)1, '@');
+		index = content.find(';', index);
 	}
-	return content;
+
+	index = content.find('{');
+	while (index != std::string::npos) {
+		index++;
+		content.insert(index, (size_t)1, '@');
+		index = content.find('{', index);
+	}
+
 }
 
+void Parser::buildSourceCodeList(string content, list<string>& list) {
+
+	size_t tail = content.find('@');
+	size_t head = 0;
+	size_t length;
+	while (tail != std::string::npos) {
+		length = tail - head;
+		list.push_back(content.substr(head, length));
+		head = tail + 1;
+		tail = content.find('@', head);
+	}
+}
