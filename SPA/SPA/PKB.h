@@ -16,6 +16,7 @@ class PKB
 public:
 	PKB();
 	ProcTable getProcTable(void);
+	VarTable getVarTable(void);
 
 private:
 	AST AST;

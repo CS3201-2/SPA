@@ -156,8 +156,9 @@ void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& u
 		if (isMathSymbol(*it) || isSemicolon(*it)) {
 			//check variable is really a variable
 			if (isVariable(variable)) {
+				// change later, need to associate with varTable
+				
 				if (modifiesList.empty()) {
-					// change later, need to associate with varTable
 					modifiesList.push_back(variable);
 				}
 				else {

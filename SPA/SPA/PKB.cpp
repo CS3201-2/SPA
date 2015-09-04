@@ -18,3 +18,7 @@ ProcTable PKB::getProcTable(void) {
 	return procTable;
 }
 
+VarTable PKB::getVarTable(void) {
+	return varTable;
+}
+
