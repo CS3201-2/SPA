@@ -24,7 +24,7 @@ public:
 
 private:
 	PKB pkb;
-
+	void processWhile(list<string>::iterator it, list<string>& stmtList, list<string>& modifiesList, list<string>& usesList);
 };
 
 #endif

@@ -101,3 +101,38 @@ void Parser::processSourceCodeList(list<string>& stmtList) {
 		cout << endl;*/
 	}
 }
+
+void Parser::processWhile(list<string>::iterator it, list<string>& stmtList, list<string>& modifiesList, list<string>& usesList) {
+	stack <string> braces;
+	braces.push("{");
+
+	modifiesList.clear();
+	usesList.clear();
+
+	list<string> tempModifiesList;
+	list<string> tempUsesList;
+
+	++it;//to skip the starting of this while statement
+	while (!braces.empty()) {
+		for (int i = 0; i < countNumOfLeftBraces(*it); ++i) {
+			braces.push("{");
+		}
+		for (int i = 0; i < countNumOfRightBraces(*it); ++i) {
+			braces.pop();
+		}
+		switch (getTypeOfStatement(*it)) {
+		case 0: processAssignment(*it, tempModifiesList, tempUsesList); break;
+		case 1: break;
+		case 2: break;
+		case 3: processWhile(it, stmtList, tempModifiesList, tempUsesList); break;
+		case 4: break;//for if
+		case 5: break;//for else
+		case 6: break;//for invalid statement
+		}
+
+		modifiesList.splice(modifiesList.end(), tempModifiesList);
+		usesList.splice(usesList.end(), tempUsesList);
+
+		++it;
+	}
+}
