@@ -138,6 +138,63 @@ void Parser::processWhile(list<string>::iterator it, list<string>& stmtList, lis
 	}
 }
 
+void processAssignment(string str, list<string>& modifiesList, list<string>& usesList) {
+	string::iterator it;
+	string variable = "";
+	modifiesList.clear();
+	usesList.clear();
+
+	for (it = str.begin(); it != str.end(); ++it) {
+		if (isMathSymbol(*it) || isSemicolon(*it)) {
+			//check variable is really a variable
+			if (isVariable(variable)) {
+				if (modifiesList.empty()) {
+					modifiesList.push_back(variable);
+				}
+				else {
+					usesList.push_back(variable);
+				}
+			}
+			variable = "";
+		}
+		else {
+			variable += *it;
+		}
+	}
+
+	/*cout << "Assignment:";
+
+	for (list<string>::iterator listIter = varList.begin(); listIter != varList.end(); ++listIter) {
+	cout << *listIter;
+	cout << " ,";
+	}
+	cout << endl;*/
+}
+
+bool isVariable(string str) {
+	regex variable("(^[[:alpha:]])([[:alnum:]]+)*$");
+	return regex_match(str, variable);
+}
+
+bool isSemicolon(char ch) {
+	if (ch == ';') {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+//test whether a char is + - * /
+bool isMathSymbol(char ch) {
+	switch (ch) {
+	case '+': case'-': case'*': case'/': case'=':
+		return true;
+	default:
+		return false;
+	}
+}
+
 int getTypeOfStatement(string str) {
 	regex assignment("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
 	regex procDeclaration("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
