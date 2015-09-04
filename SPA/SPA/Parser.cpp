@@ -3,6 +3,7 @@
 #include <string>
 #include <list>
 #include <algorithm>
+#include <regex>
 
 // constructor
 Parser::Parser()
@@ -134,5 +135,36 @@ void Parser::processWhile(list<string>::iterator it, list<string>& stmtList, lis
 		usesList.splice(usesList.end(), tempUsesList);
 
 		++it;
+	}
+}
+
+int getTypeOfStatement(string str) {
+	regex assignment("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
+	regex procDeclaration("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
+	regex procCall("call(([[:alpha:]])([[:alnum:]]+)*);\\}*");
+	regex whileStmt("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
+	regex ifStmt("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
+	regex elseStmt("else\\{");
+
+	if (regex_match(str, assignment)) {
+		return 0;
+	}
+	else if (regex_match(str, procDeclaration)) {
+		return 1;
+	}
+	else if (regex_match(str, procCall)) {
+		return 2;
+	}
+	else if (regex_match(str, whileStmt)) {
+		return 3;
+	}
+	else if (regex_match(str, ifStmt)) {
+		return 4;
+	}
+	else if (regex_match(str, elseStmt)) {
+		return 5;
+	}
+	else {
+		return 6;
 	}
 }
