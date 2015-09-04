@@ -18,7 +18,7 @@ public:
 
 	void addNewLineString(string& content);
 
-	void buildSourceCodeList(string content, list<string>& list);
+	void buildSourceCodeList(string content, list<std::pair<int,string>>& list);
 
 	void processSourceCodeList(list<string>& list);
 

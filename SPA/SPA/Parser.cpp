@@ -17,7 +17,7 @@ PKB Parser::parseSource( string source ) {
 
 	addNewLineString(source);
 	
-	list<string> sourceCodeList;
+	list<std::pair<int, string>> sourceCodeList;
 
 	buildSourceCodeList(source, sourceCodeList);
 
@@ -53,14 +53,29 @@ void Parser::addNewLineString(string &content) {
 
 }
 
-void Parser::buildSourceCodeList(string content, list<string>& list) {
-
+void Parser::buildSourceCodeList(string content, list<std::pair<int, string>>& list) {
 	size_t tail = content.find('@');
 	size_t head = 0;
 	size_t length;
+	int count = 1;
+	string line;
+	regex procDeclaration("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
+	regex elseStmt("else\\{");
+
 	while (tail != std::string::npos) {
 		length = tail - head;
-		list.push_back(content.substr(head, length));
+		line = content.substr(head, length);
+		std::pair<int, string> pair;
+
+		if (regex_match(line, procDeclaration) || regex_match(line, elseStmt)) {
+			pair.first = -1;
+		}
+		else {
+			pair.first = count;
+			count++;
+		}
+		pair.second = line;
+		list.push_back(pair);
 		head = tail + 1;
 		tail = content.find('@', head);
 	}
