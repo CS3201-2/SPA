@@ -10,14 +10,14 @@ using namespace std;
 class Controller
 {
 public:
-	Controller( list<string> );
+	Controller( string );
 
-	void display( void );
+	//void display( void );
 
 	void processSource();
  
 private:
-	list<string> source;
+	string source;
 
 	PKB ctrPKB;
 	
