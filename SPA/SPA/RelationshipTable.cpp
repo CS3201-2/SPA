@@ -6,8 +6,8 @@ RelationshipTable::RelationshipTable() {
 	vector<string> arg2;
 	
 	//ModifiesS (statements)
-	 arg1 = { "assign", "while" };
-	 arg2 = { "variable", "string" };
+	 arg1 = { "assign", "while", "all" };
+	 arg2 = { "variable", "string", "all" };
 	Relationship r1(2, arg1, arg2);
 	relTable["modifies"] = r1;
 	arg1.clear();
@@ -15,42 +15,50 @@ RelationshipTable::RelationshipTable() {
 	//cout << relTable.find("modifies*")->second.arg1.at(0);
 	
 	//UsesS (statements)
-	arg1 = { "assign", "while" };
-	arg2 = { "variable", "string" };
+	arg1 = { "assign", "while", "all" };
+	arg2 = { "variable", "string", "all" };
 	Relationship r2(2, arg1, arg2);
 	relTable["uses"] = r2;
 	arg1.clear();
 	arg2.clear();
 
 	//Parent
-	arg1 = { "while" };
-	arg2 = { "stmt", "assign", "prog_line", "while" };
+	arg1 = { "while", "all" };
+	arg2 = { "stmt", "assign", "prog_line", "while", "all" };
 	Relationship r3(2, arg1, arg2);
 	relTable["parent"] = r3;
 	arg1.clear();
 	arg2.clear();
 
 	//Parent*
-	arg1 = { "while" };
-	arg2 = { "stmt", "assign", "prog_line", "while" };
+	arg1 = { "while" , "all" };
+	arg2 = { "stmt", "assign", "prog_line", "while", "all" };
 	Relationship r4(2, arg1, arg2);
 	relTable["parent*"] = r4;
 	arg1.clear();
 	arg2.clear();
 
 	//Follows
-	arg1 = { "stmt", "assign", "prog_line", "while" };
-	arg2 = { "stmt", "assign", "prog_line", "while" };
+	arg1 = { "stmt", "assign", "prog_line", "while", "all" };
+	arg2 = { "stmt", "assign", "prog_line", "while", "all" };
 	Relationship r5(2, arg1, arg2);
 	relTable["follows"] = r5;
 	arg1.clear();
 	arg2.clear();
 
 	//Followst
-	arg1 = { "stmt", "assign", "prog_line", "while" };
-	arg2 = { "stmt", "assign", "prog_line", "while" };
+	arg1 = { "stmt", "assign", "prog_line", "while", "all" };
+	arg2 = { "stmt", "assign", "prog_line", "while", "all" };
 	Relationship r6(2, arg1, arg2);
 	relTable["follows*"] = r6;
+	arg1.clear();
+	arg2.clear();
+
+	//Pattern
+	arg1 = { "variable", "all" };
+	arg2 = { "variable", "constant", "all" };
+	Relationship r7(2, arg1, arg2);
+	relTable["pattern"] = r7;
 	arg1.clear();
 	arg2.clear();
 }
@@ -68,6 +76,16 @@ bool RelationshipTable::isNumOfArgsEqual(string rel, int num) {
 	//add assert hasRelationship
 	Relationship r = relTable.find(rel)->second;
 	return (r.getNumOfArgs() == num);
+}
+
+bool RelationshipTable::isArgValid(string rel, int arg, string dataType){
+	switch (arg) {
+	case 1: return isArg1Valid(rel, dataType);
+		break;
+	case 2: return isArg2Valid(rel, dataType);
+		break;
+	}
+	return false;
 }
 
 bool RelationshipTable::isArg1Valid(string rel, string dataType) {
