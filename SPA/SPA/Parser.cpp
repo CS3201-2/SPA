@@ -154,15 +154,20 @@ void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& u
 
 	for (it = str.begin(); it != str.end(); ++it) {
 		if (isMathSymbol(*it) || isSemicolon(*it)) {
-			//check variable is really a variable
 			if (isVariable(variable)) {
-				// change later, need to associate with varTable
-				
-				if (modifiesList.empty()) {
-					modifiesList.push_back(variable);
+				VarTable varTable = pkb.getVarTable();
+				int varID;
+				if (varTable.get_ID(variable) == -1) {
+					varID = varTable.insert_Var(variable);
 				}
 				else {
-					usesList.push_back(variable);
+					varID = varTable.get_ID(variable);
+				}
+				if (modifiesList.empty()) {
+					modifiesList.push_back(varID);
+				}
+				else {
+					usesList.push_back(varID);
 				}
 			}
 			variable = "";
@@ -171,14 +176,6 @@ void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& u
 			variable += *it;
 		}
 	}
-
-	/*cout << "Assignment:";
-
-	for (list<string>::iterator listIter = varList.begin(); listIter != varList.end(); ++listIter) {
-	cout << *listIter;
-	cout << " ,";
-	}
-	cout << endl;*/
 }
 
 bool Parser::isVariable(string str) {
