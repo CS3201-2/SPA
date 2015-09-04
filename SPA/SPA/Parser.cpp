@@ -67,8 +67,8 @@ void Parser::buildSourceCodeList(string content, list<string>& list) {
 }
 
 void Parser::processSourceCodeList(list<string>& stmtList) {
-	list<string> modifiesList;
-	list<string> usesList;
+	list<int> modifiesList;
+	list<int> usesList;
 
 	for (list<string>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
 		switch (getTypeOfStatement(*it)) {
@@ -103,23 +103,23 @@ void Parser::processSourceCodeList(list<string>& stmtList) {
 	}
 }
 
-int countNumOfLeftBraces(string str) {
+int Parser::countNumOfLeftBraces(string str) {
 	return std::count(str.begin(), str.end(), '{');
 }
 
-int countNumOfRightBraces(string str) {
+int Parser::countNumOfRightBraces(string str) {
 	return std::count(str.begin(), str.end(), '}');
 }
 
-void Parser::processWhile(list<string>::iterator it, list<string>& stmtList, list<string>& modifiesList, list<string>& usesList) {
+void Parser::processWhile(list<string>::iterator it, list<string>& stmtList, list<int>& modifiesList, list<int>& usesList) {
 	stack <string> braces;
 	braces.push("{");
 
 	modifiesList.clear();
 	usesList.clear();
 
-	list<string> tempModifiesList;
-	list<string> tempUsesList;
+	list<int> tempModifiesList;
+	list<int> tempUsesList;
 
 	++it;//to skip the starting of this while statement
 	while (!braces.empty()) {
@@ -146,7 +146,7 @@ void Parser::processWhile(list<string>::iterator it, list<string>& stmtList, lis
 	}
 }
 
-void processAssignment(string str, list<string>& modifiesList, list<string>& usesList) {
+void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& usesList) {
 	string::iterator it;
 	string variable = "";
 	modifiesList.clear();
@@ -157,6 +157,7 @@ void processAssignment(string str, list<string>& modifiesList, list<string>& use
 			//check variable is really a variable
 			if (isVariable(variable)) {
 				if (modifiesList.empty()) {
+					// change later, need to associate with varTable
 					modifiesList.push_back(variable);
 				}
 				else {
@@ -179,12 +180,12 @@ void processAssignment(string str, list<string>& modifiesList, list<string>& use
 	cout << endl;*/
 }
 
-bool isVariable(string str) {
+bool Parser::isVariable(string str) {
 	regex variable("(^[[:alpha:]])([[:alnum:]]+)*$");
 	return regex_match(str, variable);
 }
 
-bool isSemicolon(char ch) {
+bool Parser::isSemicolon(char ch) {
 	if (ch == ';') {
 		return true;
 	}
@@ -194,7 +195,7 @@ bool isSemicolon(char ch) {
 }
 
 //test whether a char is + - * /
-bool isMathSymbol(char ch) {
+bool Parser::isMathSymbol(char ch) {
 	switch (ch) {
 	case '+': case'-': case'*': case'/': case'=':
 		return true;
@@ -203,7 +204,7 @@ bool isMathSymbol(char ch) {
 	}
 }
 
-int getTypeOfStatement(string str) {
+int Parser::getTypeOfStatement(string str) {
 	regex assignment("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
 	regex procDeclaration("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
 	regex procCall("call(([[:alpha:]])([[:alnum:]]+)*);\\}*");

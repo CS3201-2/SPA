@@ -24,7 +24,14 @@ public:
 
 private:
 	PKB pkb;
-	void processWhile(list<string>::iterator it, list<string>& stmtList, list<string>& modifiesList, list<string>& usesList);
+	void processWhile(list<string>::iterator it, list<string>& stmtList, list<int>& modifiesList, list<int>& usesList);
+	int countNumOfLeftBraces(string str);
+	int countNumOfRightBraces(string str);
+	void processAssignment(string str, list<int>& modifiesList, list<int>& usesList);
+	bool isVariable(string str);
+	bool isSemicolon(char ch);
+	bool isMathSymbol(char ch);
+	int getTypeOfStatement(string str);
 };
 
 #endif
