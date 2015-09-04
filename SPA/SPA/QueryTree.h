@@ -22,4 +22,8 @@ public:
 	int getSuchThatSize();
 	int getPatternSize();
 	int getVariableSize();
+
+	vector<string> getSuchThatQuery(int queryPos);
+	vector<string> getPatternQuery(int queryPos);
+	vector<string> getVariableQuery(int queryPos);
 };

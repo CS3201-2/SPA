@@ -4,6 +4,7 @@ using namespace std;
 QueryTree::QueryTree() {
 }
 
+//Inserting the particular type of query into its respective tree
 void QueryTree::insertSuchThat(string rel, string arg1, string arg1Type, string arg2, string arg2Type) {
 	vector<string> tempVector;
 	tempVector.push_back(rel);
@@ -32,7 +33,7 @@ void QueryTree::insertVariable(string variable, string variableType) {
 	variableTree.push_back(tempVector);
 }
 
-
+//Obtaining the size of the tree of each of the query types
 int QueryTree::getSuchThatSize() {
 	return suchThatTree.size();
 }
@@ -43,5 +44,19 @@ int QueryTree::getPatternSize() {
 
 int QueryTree::getVariableSize() {
 	return variableTree.size();
+}
+
+
+//Obtaining the queries for the respective query types
+vector<string> QueryTree::getSuchThatQuery(int queryPos) {
+	return suchThatTree[queryPos];
+}
+
+vector<string> QueryTree::getPatternQuery(int queryPos) {
+	return patternTree[queryPos];
+}
+
+vector<string> QueryTree::getVariableQuery(int queryPos) {
+	return variableTree[queryPos];
 }
 
