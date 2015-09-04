@@ -167,10 +167,21 @@ void Parser::processWhile(list<pair<int, string>>::iterator it, list<std::pair<i
 
 void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesList, list<int>& usesList) {
 	string str = pair.second;
+	int stmtNumber = pair.first;
 	string::iterator it;
 	string variable = "";
-	modifiesList.clear();
-	usesList.clear();
+	int flag = 1;
+
+	Modifies modifies = pkb.getModifies();
+	Uses uses = pkb.getUses();
+
+	//modifiesList.clear();
+	//usesList.clear();
+
+	// clarification of uses and modification: Uses and Modifies are map{var_id, list<stmt_#>}, 
+	// so modifiesList and usesList no use here.
+
+	//and one more thing to consider here: the function pkb.getVarTable() should return a reference object.
 
 	for (it = str.begin(); it != str.end(); ++it) {
 		if (isMathSymbol(*it) || isSemicolon(*it)) {
@@ -178,11 +189,15 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 				VarTable varTable = pkb.getVarTable();
 				int varID = varTable.get_ID(variable);
 
-				if (modifiesList.empty()) {
-					modifiesList.push_back(varID);
+				if (flag) {
+					modifies.set_modifies_stmt(varID, stmtNumber);
 				}
+				//if (modifiesList.empty()) {
+					//modifiesList.push_back(varID);
+				//}
 				else {
-					usesList.push_back(varID);
+					//usesList.push_back(varID);
+					uses.set_uses_stmt(varID, stmtNumber);
 				}
 			}
 			variable = "";
