@@ -65,15 +65,39 @@ bool RelationshipTable::hasRelationship(string rel) {
 }
 
 bool RelationshipTable::isNumOfArgsEqual(string rel, int num) {
+	//add assert hasRelationship
 	Relationship r = relTable.find(rel)->second;
 	return (r.getNumOfArgs == num);
 }
 
-bool RelationshipTable::isArg1Valid(string rel, string dataType, string varName) {
+bool RelationshipTable::isArg1Valid(string rel, string dataType) {
+	//add assert hasRelationship
 	Relationship r = relTable.find(rel)->second;
+
+	vector<string> arg1 = r.getArg1();
+	vector<string>::const_iterator iterArg1 = arg1.begin();
+
+	for (iterArg1; iterArg1 != arg1.end(); iterArg1++) {
+		if (dataType.compare(*iterArg1) == 0) {
+			return true;
+		}
+	}
+
 	return false;
 }
 
-bool RelationshipTable::isArg2Valid(string rel, string dataType, string varName) {
+bool RelationshipTable::isArg2Valid(string rel, string dataType) {
+	//add assert hasRelationship
+	Relationship r = relTable.find(rel)->second;
+
+	vector<string> arg2 = r.getArg2();
+	vector<string>::const_iterator iterArg2 = arg2.begin();
+
+	for (iterArg2; iterArg2 != arg2.end(); iterArg2++) {
+		if (dataType.compare(*iterArg2) == 0) {
+			return true;
+		}
+	}
+
 	return false;
 }

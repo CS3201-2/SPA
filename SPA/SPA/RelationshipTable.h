@@ -13,6 +13,6 @@ public:
 	RelationshipTable();
 	bool hasRelationship(string rel);
 	bool isNumOfArgsEqual(string rel, int num);
-	bool isArg1Valid(string rel, string dataType, string varName);
-	bool isArg2Valid(string rel, string dataType, string varName);
+	bool isArg1Valid(string rel, string dataType);
+	bool isArg2Valid(string rel, string dataType);
 };
