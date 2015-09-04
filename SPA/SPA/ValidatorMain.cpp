@@ -1,4 +1,5 @@
 #include "QueryValidator.h"
+#include "RelationshipTable.h"
 #include <iostream>
 
 int main() {
@@ -14,15 +15,17 @@ int main() {
 	//queries.push_back(str2);
 	//queries.push_back(str3);
 	//queries.push_back(str4);
-	queries.push_back(str6);
+	//queries.push_back(str6);
 	//cout << str << "\n";
 	//cout << str2 << "\n";
 	//cout << str3 << "\n";
 	//cout << str4 << "\n";
-	cout << str6 << "\n";
-	q.areValidQueries(queries);
+	//cout << str6 << "\n";
+	//q.areValidQueries(queries);
+
+	RelationshipTable r;
+
 	cin.ignore();
 	cin.get();
-	cout << "\n out";
 	return 0;
 }

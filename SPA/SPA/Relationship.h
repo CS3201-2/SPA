@@ -1,18 +1,23 @@
 #pragma once
 #include <string>
-#include <list>
+#include <vector>
 
 using namespace std;
 
-class QueryValidator {
+class Relationship {
 private:
 	int numOfArgs;
-	list<string> arg1, arg2;
+	vector<string> arg1, arg2;
 public:
-	void setNumOfArgs(int num);
-	void setArg1(list<string> arg);
-	void setArg2(list<string> arg);
-	bool isNumOfArgsEqual(int num);
+	Relationship();
+	Relationship(int num, vector<string> arg1, vector<string> arg2);
+	/*void setNumOfArgs(int num);
+	void setArg1(vector<string> arg);
+	void setArg2(vector<string> arg);*/
+	int getNumOfArgs();
+	vector<string> getArg1();
+	vector<string> getArg2();
+	/*bool isNumOfArgsEqual(int num);
 	bool isArg1Valid();
-	bool isArg2Valid();
+	bool isArg2Valid();*/
 };

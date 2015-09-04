@@ -75,6 +75,9 @@
     <ClCompile Include="Relationship.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
+    <ClCompile Include="RelationshipTable.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Controller.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
     <ClInclude Include="Relationship.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="RelationshipTable.h">
       <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
   </ItemGroup>
