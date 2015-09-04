@@ -156,13 +156,8 @@ void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& u
 		if (isMathSymbol(*it) || isSemicolon(*it)) {
 			if (isVariable(variable)) {
 				VarTable varTable = pkb.getVarTable();
-				int varID;
-				if (varTable.get_ID(variable) == -1) {
-					varID = varTable.insert_Var(variable);
-				}
-				else {
-					varID = varTable.get_ID(variable);
-				}
+				int varID = varTable.get_ID(variable);
+
 				if (modifiesList.empty()) {
 					modifiesList.push_back(varID);
 				}
