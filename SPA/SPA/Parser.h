@@ -20,8 +20,6 @@ public:
 
 	void buildSourceCodeList(string content, list<string>& list);
 
-	void processSource(list<string>);
-
 
 private:
 	PKB pkb;
