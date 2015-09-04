@@ -21,6 +21,8 @@ PKB Parser::parseSource( string source ) {
 
 	buildSourceCodeList(source, sourceCodeList);
 
+	processSourceCodeList(sourceCodeList);
+
 	// comments for Macong: sourceCodeList is the list filled with SOURCE line strings
 
 	return pkb;
@@ -81,12 +83,12 @@ void Parser::buildSourceCodeList(string content, list<std::pair<int, string>>& l
 	}
 }
 
-void Parser::processSourceCodeList(list<string>& stmtList) {
+void Parser::processSourceCodeList(list<std::pair<int, string>>& stmtList) {
 	list<int> modifiesList;
 	list<int> usesList;
 
-	for (list<string>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
-		switch (getTypeOfStatement(*it)) {
+	for (list<std::pair<int,string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
+		switch (getTypeOfStatement(*it)){
 		case 0: processAssignment(*it, modifiesList, usesList); break;
 		case 1: break;
 		case 2: break;
@@ -118,15 +120,17 @@ void Parser::processSourceCodeList(list<string>& stmtList) {
 	}
 }
 
-int Parser::countNumOfLeftBraces(string str) {
+int Parser::countNumOfLeftBraces(std::pair<int,string> pair) {
+	string str = pair.second;
 	return std::count(str.begin(), str.end(), '{');
 }
 
-int Parser::countNumOfRightBraces(string str) {
+int Parser::countNumOfRightBraces(std::pair<int, string> pair) {
+	string str = pair.second;
 	return std::count(str.begin(), str.end(), '}');
 }
 
-void Parser::processWhile(list<string>::iterator it, list<string>& stmtList, list<int>& modifiesList, list<int>& usesList) {
+void Parser::processWhile(list<pair<int, string>>::iterator it, list<std::pair<int, string>>& stmtList, list<int>& modifiesList, list<int>& usesList) {
 	stack <string> braces;
 	braces.push("{");
 
@@ -161,7 +165,8 @@ void Parser::processWhile(list<string>::iterator it, list<string>& stmtList, lis
 	}
 }
 
-void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& usesList) {
+void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesList, list<int>& usesList) {
+	string str = pair.second;
 	string::iterator it;
 	string variable = "";
 	modifiesList.clear();
@@ -212,13 +217,15 @@ bool Parser::isMathSymbol(char ch) {
 	}
 }
 
-int Parser::getTypeOfStatement(string str) {
+int Parser::getTypeOfStatement(pair<int, string> pair) {
 	regex assignment("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
 	regex procDeclaration("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
 	regex procCall("call(([[:alpha:]])([[:alnum:]]+)*);\\}*");
 	regex whileStmt("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
 	regex ifStmt("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
 	regex elseStmt("else\\{");
+
+	string str = pair.second;
 
 	if (regex_match(str, assignment)) {
 		return 0;
