@@ -31,3 +31,17 @@ void QueryTree::insertVariable(string variable, string variableType) {
 	tempVector.push_back(variableType);
 	variableTree.push_back(tempVector);
 }
+
+
+int QueryTree::getSuchThatSize() {
+	return suchThatTree.size();
+}
+
+int QueryTree::getPatternSize() {
+	return patternTree.size();
+}
+
+int QueryTree::getVariableSize() {
+	return variableTree.size();
+}
+
