@@ -103,6 +103,14 @@ void Parser::processSourceCodeList(list<string>& stmtList) {
 	}
 }
 
+int countNumOfLeftBraces(string str) {
+	return std::count(str.begin(), str.end(), '{');
+}
+
+int countNumOfRightBraces(string str) {
+	return std::count(str.begin(), str.end(), '}');
+}
+
 void Parser::processWhile(list<string>::iterator it, list<string>& stmtList, list<string>& modifiesList, list<string>& usesList) {
 	stack <string> braces;
 	braces.push("{");
