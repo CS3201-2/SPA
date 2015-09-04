@@ -15,7 +15,7 @@ int VarTable::get_ID(string varName)
 		return varTable.at(varName); 
 	}
 	else {
-		return insert_Var(varName);
+		return -1;
 	}
 }
 

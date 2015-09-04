@@ -64,3 +64,40 @@ void Parser::buildSourceCodeList(string content, list<string>& list) {
 		tail = content.find('@', head);
 	}
 }
+
+void Parser::processSourceCodeList(list<string>& stmtList) {
+	list<string> modifiesList;
+	list<string> usesList;
+
+	for (list<string>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
+		switch (getTypeOfStatement(*it)) {
+		case 0: processAssignment(*it, modifiesList, usesList); break;
+		case 1: break;
+		case 2: break;
+		case 3: processWhile(it, stmtList, modifiesList, usesList); break;
+		case 4: break;//for if
+		case 5: break;//for else
+		case 6: break;//for invalid statement
+		default: break;
+		}
+
+		modifiesList.sort();
+		usesList.sort();
+		modifiesList.unique();
+		usesList.unique();
+
+		//for testing purposes
+		/*cout << "modifies: ";
+		for (list<string>::iterator listIter = modifiesList.begin(); listIter != modifiesList.end(); ++listIter) {
+			cout << *listIter;
+			cout << " ,";
+		}
+		cout << endl;
+		cout << "uses: ";
+		for (list<string>::iterator listIter = usesList.begin(); listIter != usesList.end(); ++listIter) {
+			cout << *listIter;
+			cout << " ,";
+		}
+		cout << endl;*/
+	}
+}
