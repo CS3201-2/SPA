@@ -101,6 +101,23 @@ bool QueryValidator::parseQuery(string query) {
 
 	//cout << varMap.find("a")->second << endl;
 	//cout << arrClauses.at(1) << endl;
+
+	arrClauses = split(arrClauses.at(1), '(', 2);
+
+	if (!r.hasRelationship(stringToLower(arrClauses.at(0)))) {
+		return false;
+	}
+
+	string relType = stringToLower(arrClauses.at(0));
+	arrClauses = split(arrClauses.at(1), ')', 2);
+	
+	vector<string> arrVar = split(arrClauses.at(0), ',');
+
+	if (!r.isNumOfArgsEqual(relType, arrVar.size())) {
+		return false;
+	}
+
+	
 	return true;
 }
 

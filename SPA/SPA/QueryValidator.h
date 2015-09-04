@@ -4,14 +4,17 @@
 //#include <cstdbool>
 #include <vector>
 #include <unordered_map>
+#include "RelationshipTable.h"
 //#include <QueryTree>
 
 using namespace std;
 
 class QueryValidator {
 private:
-	//QueryTree qt;
 	unordered_map<string, string> varMap;
+	RelationshipTable r;
+	//QueryTree qt;
+
 	bool parseString(string query);
 	bool parseDeclaration(string declaration);
 	vector<string> split(string str, char c);

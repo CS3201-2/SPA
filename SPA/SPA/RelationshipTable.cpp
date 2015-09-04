@@ -7,50 +7,50 @@ RelationshipTable::RelationshipTable() {
 	
 	//ModifiesS (statements)
 	 arg1 = { "assign", "while" };
-	 arg2 = { "variable", "varName" };
-	Relationship r(2, arg1, arg2);
-	relTable["modifiess"] = r;
+	 arg2 = { "variable", "string" };
+	Relationship r1(2, arg1, arg2);
+	relTable["modifies"] = r1;
 	arg1.clear();
 	arg2.clear();
 	//cout << relTable.find("modifies*")->second.arg1.at(0);
 	
 	//UsesS (statements)
 	arg1 = { "assign", "while" };
-	arg2 = { "variable", "varName" };
-	Relationship r(2, arg1, arg2);
-	relTable["usess"] = r;
+	arg2 = { "variable", "string" };
+	Relationship r2(2, arg1, arg2);
+	relTable["uses"] = r2;
 	arg1.clear();
 	arg2.clear();
 
 	//Parent
 	arg1 = { "while" };
 	arg2 = { "stmt", "assign", "prog_line", "while" };
-	Relationship r(2, arg1, arg2);
-	relTable["parent"] = r;
+	Relationship r3(2, arg1, arg2);
+	relTable["parent"] = r3;
 	arg1.clear();
 	arg2.clear();
 
 	//Parent*
 	arg1 = { "while" };
 	arg2 = { "stmt", "assign", "prog_line", "while" };
-	Relationship r(2, arg1, arg2);
-	relTable["parentt"] = r;
+	Relationship r4(2, arg1, arg2);
+	relTable["parent*"] = r4;
 	arg1.clear();
 	arg2.clear();
 
 	//Follows
 	arg1 = { "stmt", "assign", "prog_line", "while" };
 	arg2 = { "stmt", "assign", "prog_line", "while" };
-	Relationship r(2, arg1, arg2);
-	relTable["follows"] = r;
+	Relationship r5(2, arg1, arg2);
+	relTable["follows"] = r5;
 	arg1.clear();
 	arg2.clear();
 
 	//Followst
 	arg1 = { "stmt", "assign", "prog_line", "while" };
 	arg2 = { "stmt", "assign", "prog_line", "while" };
-	Relationship r(2, arg1, arg2);
-	relTable["followst"] = r;
+	Relationship r6(2, arg1, arg2);
+	relTable["follows*"] = r6;
 	arg1.clear();
 	arg2.clear();
 }
@@ -67,7 +67,7 @@ bool RelationshipTable::hasRelationship(string rel) {
 bool RelationshipTable::isNumOfArgsEqual(string rel, int num) {
 	//add assert hasRelationship
 	Relationship r = relTable.find(rel)->second;
-	return (r.getNumOfArgs == num);
+	return (r.getNumOfArgs() == num);
 }
 
 bool RelationshipTable::isArg1Valid(string rel, string dataType) {
