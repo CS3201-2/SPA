@@ -7,6 +7,7 @@ using namespace std;
 
 class QueryTree {
 private:
+	vector<vector<vector<string>>> qTree;
 	vector<vector<string>> suchThatTree;
 	vector<vector<string>> patternTree;
 	vector<vector<string>> withTree;
