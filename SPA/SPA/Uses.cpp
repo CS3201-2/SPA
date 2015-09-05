@@ -1,6 +1,7 @@
 #include "Uses.h"
 #include <map>
 #include <list>
+#include <algorithm>
 
 using namespace std;
 
@@ -9,16 +10,19 @@ Uses::Uses()
 {
 }
 
-list<int> Uses::get_uses_stm( int var_id )
+list<int> Uses::get_uses_stmt( int var_id )
 {
 	return usesMap.at( var_id );
 }
 
-void Uses::set_uses_stm( int var_id, int stm_number )
+void Uses::set_uses_stmt( int var_id, int stmt_number )
 {
 	std::list<int> list = usesMap.at( var_id );
 
-	list.push_back( stm_number );
+	if (std::find(list.begin, list.end, stmt_number) == list.end()) {
+		list.push_back(stmt_number);
+		list.sort();
+	}
 
 	usesMap[ var_id ] = list;
 
