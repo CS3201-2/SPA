@@ -1,6 +1,6 @@
 #include "Suffix.h"
 
-const regex _operand("[0-9]|[a-z]|[A-Z]");
+const regex kOperand("[0-9]|[a-z]|[A-Z]");
 const string kErrorExpressionType = "Error: the type of this charactor is ambiguous!";
 
 Suffix::Suffix()
@@ -62,7 +62,7 @@ bool Suffix::isOperand(char c)
 	stringstream ss;
 	ss << c;
 	ss >> temp;
-	return regex_match(temp, _operand);
+	return regex_match(temp, kOperand);
 }
 
 void Suffix::updateOperandBuffer(char c)

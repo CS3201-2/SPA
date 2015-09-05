@@ -14,9 +14,10 @@ class ASTNode
 	ASTNode* _parent;
 	ASTNode* _nextSibling;
 	list<ASTNode> _children;
-	
+
 public:
 	ASTNode();
+	ASTNode(NodeType);
 	ASTNode(NodeType, string);
 	NodeType getNodeType();
 	string getContent();

@@ -3,7 +3,7 @@
 
 enum NodeType {
 	program, procedure, statementLst, assign, call, whilestmt, ifstmt,
-	variable, constant, plus
+	variable, constant, plus, times, minus, divide, default
 };
 
 #endif

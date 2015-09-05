@@ -7,6 +7,13 @@ ASTNode::ASTNode()
 {
 }
 
+ASTNode::ASTNode(NodeType type)
+{
+	_nodeType = type;
+	_children.clear();
+	_parent = NULL;
+}
+
 ASTNode::ASTNode(NodeType type, string content)
 {
 	_nodeType = type;
@@ -28,7 +35,7 @@ string ASTNode::getContent()
 void ASTNode::addChildren(ASTNode node)
 {
 	_children.push_back(node);
-	node.setParent(this);
+	node.setParent(*this);
 }
 
 list<ASTNode> ASTNode::getChildren()
