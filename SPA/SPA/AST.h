@@ -11,11 +11,13 @@ using namespace std;
 class AST
 {
 	ASTNode* _root;
-	stack<ASTNode*> _nodeInProcess;
+	ASTNode* _nodeBefore;
+	stack<ASTNode> _nodeInProcess;
 
 public:
 	AST(string);
 	void updateAST(string);
+	ASTNode getRoot();
 
 private:
 	NodeType getLineType(string line);

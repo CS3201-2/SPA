@@ -7,36 +7,60 @@ const string kErrorType = "Error: the type of this line is ambiguous!";
 //Constructor
 AST::AST(string initialLine)
 {
-	_root = NULL;
-	_nodeInProcess.push(startOfProgram);
+	_root = &programNode;
+	_nodeBefore = NULL;
+	_nodeInProcess.push(programNode);
 }
 
 void AST::updateAST(string line)
 {
-	NodeType type = getLineType(line);
-	ASTNode node;
-	ASTNode* nodePointer = &node;
-	switch (type)
+	if (line is "}")
 	{
-	case procedure:
-		createProcNode(nodePointer, line);
-		break;
-	case assign:
-		createAssignNode(nodePointer, line);
-		break;
-	case call:
-		createCallNode(nodePointer);
-		break;
-	case whilestmt:
-		createWhileNode(nodePointer);
-		break;
-	case ifstmt:
-		createIfNode(nodePointer);
-		break;
-	default:
-		throw kErrorType;
-		break;
+		_nodeBefore = NULL;
+		_nodeInProcess.pop();
 	}
+	else
+	{
+		NodeType type = getLineType(line);
+		ASTNode node;
+		ASTNode* nodePointer = &node;
+		switch (type)
+		{
+		case procedure:
+			createProcNode(nodePointer, line);
+			break;
+		case assign:
+			createAssignNode(nodePointer, line);
+			break;
+		case call:
+			createCallNode(nodePointer);
+			break;
+		case whilestmt:
+			createWhileNode(nodePointer);
+			break;
+		case ifstmt:
+			createIfNode(nodePointer);
+			break;
+		default:
+			throw kErrorType;
+			break;
+		}
+		_nodeInProcess.top().addChildren(node);
+		if (_nodeBefore != NULL)
+		{
+			(*_nodeBefore).setSibling(node);
+			_nodeBefore = &node;
+		}
+		if (line contains "{")
+		{
+			_nodeInProcess.push(node);
+		}
+	}
+}
+
+ASTNode AST::getRoot()
+{
+	return *_root;
 }
 
 NodeType AST::getLineType(string line)
@@ -52,7 +76,7 @@ void AST::createProcNode(ASTNode* ptr)
 void AST::createAssignNode(ASTNode* ptr, string line)
 {
 	*ptr = ASTNode(assign, NULL);
-	ASTNode* variableNode = &ASTNode(variable, getVariable(line));
+	ASTNode variableNode(variable, getVariable(line));
 	(*ptr).addChildren(variableNode);
 	addExpression(ptr, getExpression(line));
 }
@@ -65,8 +89,8 @@ void AST::createCallNode(ASTNode* ptr, string line)
 void AST::createWhileNode(ASTNode* ptr, string line)
 {
 	*ptr = ASTNode(whilestmt, NULL);
-	ASTNode* conditionNode = &ASTNode(variable, getVariable(line));
-	ASTNode* stmtLstNode = &ASTNode(statementLst, NULL);
+	ASTNode conditionNode(variable, getVariable(line));
+	ASTNode stmtLstNode(statementLst, NULL);
 	(*ptr).addChildren(conditionNode);
 	(*ptr).addChildren(stmtLstNode);
 }
@@ -74,9 +98,9 @@ void AST::createWhileNode(ASTNode* ptr, string line)
 void AST::createIfNode(ASTNode* ptr, string line)
 {
 	*ptr = ASTNode(ifstmt, NULL);
-	ASTNode* conditionNode = &ASTNode(variable, getVariable(line));
-	ASTNode* thenNode = &ASTNode(statementLst, "then");
-	ASTNode* elseNode = &ASTNode(statementLst, "else");
+	ASTNode conditionNode(variable, getVariable(line));
+	ASTNode thenNode(statementLst, "then");
+	ASTNode elseNode(statementLst, "else");
 	(*ptr).addChildren(conditionNode);
 	(*ptr).addChildren(thenNode);
 	(*ptr).addChildren(thenNode);
