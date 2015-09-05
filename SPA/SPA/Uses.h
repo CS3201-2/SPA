@@ -12,9 +12,9 @@ class Uses
 public:
 	Uses();
 
-	list<int> get_uses_stm( int );
+	list<int> get_uses_stmt( int );
 
-	void set_uses_stm( int, int );
+	void set_uses_stmt( int, int );
 
 private:
 	map<int,std::list<int>> usesMap;

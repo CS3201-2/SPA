@@ -21,6 +21,8 @@ PKB Parser::parseSource( string source ) {
 
 	buildSourceCodeList(source, sourceCodeList);
 
+	processSourceCodeList(sourceCodeList);
+
 	// comments for Macong: sourceCodeList is the list filled with SOURCE line strings
 
 	return pkb;
@@ -81,12 +83,15 @@ void Parser::buildSourceCodeList(string content, list<std::pair<int, string>>& l
 	}
 }
 
-void Parser::processSourceCodeList(list<string>& stmtList) {
+void Parser::processSourceCodeList(list<std::pair<int, string>>& stmtList) {
 	list<int> modifiesList;
 	list<int> usesList;
 
-	for (list<string>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
-		switch (getTypeOfStatement(*it)) {
+	Modifies modifies = pkb.getModifies();
+	Uses uses = pkb.getUses();
+
+	for (list<std::pair<int,string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
+		switch (getTypeOfStatement(*it)){
 		case 0: processAssignment(*it, modifiesList, usesList); break;
 		case 1: break;
 		case 2: break;
@@ -97,10 +102,10 @@ void Parser::processSourceCodeList(list<string>& stmtList) {
 		default: break;
 		}
 
-		modifiesList.sort();
+		/*modifiesList.sort();
 		usesList.sort();
 		modifiesList.unique();
-		usesList.unique();
+		usesList.unique();*/
 
 		//for testing purposes
 		/*cout << "modifies: ";
@@ -115,18 +120,28 @@ void Parser::processSourceCodeList(list<string>& stmtList) {
 			cout << " ,";
 		}
 		cout << endl;*/
+		
+		int stmtNumber = (*it).first;
+		for (list<int>::iterator listIter1 = modifiesList.begin(); listIter1 != modifiesList.end(); ++listIter1) {
+			modifies.set_modifies_stmt(*listIter1, stmtNumber);
+		}
+		for (list<int>::iterator listIter2 = usesList.begin(); listIter2 != usesList.end(); ++listIter2) {
+			uses.set_uses_stmt(*listIter2, stmtNumber);
+		}
 	}
 }
 
-int Parser::countNumOfLeftBraces(string str) {
+int Parser::countNumOfLeftBraces(std::pair<int,string> pair) {
+	string str = pair.second;
 	return std::count(str.begin(), str.end(), '{');
 }
 
-int Parser::countNumOfRightBraces(string str) {
+int Parser::countNumOfRightBraces(std::pair<int, string> pair) {
+	string str = pair.second;
 	return std::count(str.begin(), str.end(), '}');
 }
 
-void Parser::processWhile(list<string>::iterator it, list<string>& stmtList, list<int>& modifiesList, list<int>& usesList) {
+void Parser::processWhile(list<pair<int, string>>::iterator it, list<std::pair<int, string>>& stmtList, list<int>& modifiesList, list<int>& usesList) {
 	stack <string> braces;
 	braces.push("{");
 
@@ -161,11 +176,19 @@ void Parser::processWhile(list<string>::iterator it, list<string>& stmtList, lis
 	}
 }
 
-void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& usesList) {
+void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesList, list<int>& usesList) {
+	string str = pair.second;
+	int stmtNumber = pair.first;
 	string::iterator it;
 	string variable = "";
+
 	modifiesList.clear();
 	usesList.clear();
+
+	// clarification of uses and modification: Uses and Modifies are map{var_id, list<stmt_#>}, 
+	// so modifiesList and usesList no use here.
+
+	//and one more thing to consider here: the function pkb.getVarTable() should return a reference object.
 
 	for (it = str.begin(); it != str.end(); ++it) {
 		if (isMathSymbol(*it) || isSemicolon(*it)) {
@@ -173,11 +196,15 @@ void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& u
 				VarTable varTable = pkb.getVarTable();
 				int varID = varTable.get_ID(variable);
 
+				//if (flag) {
+					//modifies.set_modifies_stmt(varID, stmtNumber);
+				//}
 				if (modifiesList.empty()) {
 					modifiesList.push_back(varID);
 				}
 				else {
 					usesList.push_back(varID);
+					//uses.set_uses_stmt(varID, stmtNumber);
 				}
 			}
 			variable = "";
@@ -212,13 +239,15 @@ bool Parser::isMathSymbol(char ch) {
 	}
 }
 
-int Parser::getTypeOfStatement(string str) {
+int Parser::getTypeOfStatement(pair<int, string> pair) {
 	regex assignment("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
 	regex procDeclaration("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
 	regex procCall("call(([[:alpha:]])([[:alnum:]]+)*);\\}*");
 	regex whileStmt("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
 	regex ifStmt("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
 	regex elseStmt("else\\{");
+
+	string str = pair.second;
 
 	if (regex_match(str, assignment)) {
 		return 0;
