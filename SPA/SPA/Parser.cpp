@@ -87,6 +87,9 @@ void Parser::processSourceCodeList(list<std::pair<int, string>>& stmtList) {
 	list<int> modifiesList;
 	list<int> usesList;
 
+	Modifies modifies = pkb.getModifies();
+	Uses uses = pkb.getUses();
+
 	for (list<std::pair<int,string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
 		switch (getTypeOfStatement(*it)){
 		case 0: processAssignment(*it, modifiesList, usesList); break;
@@ -99,10 +102,10 @@ void Parser::processSourceCodeList(list<std::pair<int, string>>& stmtList) {
 		default: break;
 		}
 
-		modifiesList.sort();
+		/*modifiesList.sort();
 		usesList.sort();
 		modifiesList.unique();
-		usesList.unique();
+		usesList.unique();*/
 
 		//for testing purposes
 		/*cout << "modifies: ";
@@ -117,6 +120,14 @@ void Parser::processSourceCodeList(list<std::pair<int, string>>& stmtList) {
 			cout << " ,";
 		}
 		cout << endl;*/
+		
+		int stmtNumber = (*it).first;
+		for (list<int>::iterator listIter1 = modifiesList.begin(); listIter1 != modifiesList.end(); ++listIter1) {
+			modifies.set_modifies_stmt(*listIter1, stmtNumber);
+		}
+		for (list<int>::iterator listIter2 = usesList.begin(); listIter2 != usesList.end(); ++listIter2) {
+			uses.set_uses_stmt(*listIter2, stmtNumber);
+		}
 	}
 }
 
@@ -170,13 +181,9 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 	int stmtNumber = pair.first;
 	string::iterator it;
 	string variable = "";
-	int flag = 1;
 
-	Modifies modifies = pkb.getModifies();
-	Uses uses = pkb.getUses();
-
-	//modifiesList.clear();
-	//usesList.clear();
+	modifiesList.clear();
+	usesList.clear();
 
 	// clarification of uses and modification: Uses and Modifies are map{var_id, list<stmt_#>}, 
 	// so modifiesList and usesList no use here.
@@ -189,15 +196,15 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 				VarTable varTable = pkb.getVarTable();
 				int varID = varTable.get_ID(variable);
 
-				if (flag) {
-					modifies.set_modifies_stmt(varID, stmtNumber);
-				}
-				//if (modifiesList.empty()) {
-					//modifiesList.push_back(varID);
+				//if (flag) {
+					//modifies.set_modifies_stmt(varID, stmtNumber);
 				//}
+				if (modifiesList.empty()) {
+					modifiesList.push_back(varID);
+				}
 				else {
-					//usesList.push_back(varID);
-					uses.set_uses_stmt(varID, stmtNumber);
+					usesList.push_back(varID);
+					//uses.set_uses_stmt(varID, stmtNumber);
 				}
 			}
 			variable = "";
