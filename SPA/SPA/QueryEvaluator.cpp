@@ -63,44 +63,35 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 		if (arg1Type.compare("int") == 0) {
 			int argument1 = stoi(arg1);
 			// This assumes Modifies Table is in this format: Key: var, Value: List of line numbers
-			modifiesLine = pkb.GetModifies.get_modifies_line(arg2);
+			int arg2ID = pkb.getVarTable().get_ID(arg2);
+			modifiesLine = pkb.getModifies().get_modifies_line(arg2ID);
 			
-			std::vector<int> modifiesLineVector{ std::make_move_iterator(std::begin(modifiesLine)),
-				std::make_move_iterator(std::end(modifiesLine)) };
-
-			int lenOfVector = modifiesLineVector.size;
-			int i;
-			for (i = 0; i < lenOfVector; i++) {
-				if (argument1 == modifiesLineVector.at(i)) {
-					result = true;
-					return result;
+			for (list<int>::iterator it = modifiesLine.begin(); it != modifiesLine.end(); ++it) {
+				if (*it == argument1) {
+					return true;
 				}
 			}
+			return false;
 		}
 		// Case 2: 1st Argument is a procedure name
 		/*
 		else if (arg1Type.compare("Procedure") == 0) {
 		}
 		*/
-		return result;
 	}
 	else if (relationship.compare("Uses") == 0) {
 		//Similar to Modifies, this function will check the Uses table with respect to data in the clause
 		if (arg1Type.compare("int") == 0) {
 			int argument1 = stoi(arg1);
-			usesLine = pkb.GetUses.get_modifies_line(arg2);
+			int arg2ID = pkb.getVarTable().get_ID(arg2);
+			usesLine = pkb.getUses().get_uses_stmt(arg2ID);
 
-			std::vector<int> usesLineVector{ std::make_move_iterator(std::begin(usesLine)),
-				std::make_move_iterator(std::end(usesLine)) };
-
-			int lenOfVector = usesLineVector.size;
-			int i;
-			for (i = 0; i < lenOfVector; i++) {
-				if (argument1 == usesLineVector.at(i)) {
-					result = true;
-					return result;
+			for (list<int>::iterator it = usesLine.begin(); it != usesLine.end(); ++it) {
+				if (*it == argument1) {
+					return true;
 				}
 			}
+			return false;
 		}
 
 		// Case 2: 1st Argument is a procedure name
