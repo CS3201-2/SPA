@@ -1,5 +1,6 @@
 #include "Parser.h"
 #include "PKB.h"
+#include "AST.h"
 #include <string>
 #include <list>
 #include <algorithm>
@@ -37,6 +38,10 @@ PKB Parser::parseSource( string source ) {
 
 	processSourceCodeList(sourceCodeList);
 
+	AST ast = AST(sourceCodeList);
+	ast.constructTree();
+
+	pkb.setAST(ast);
 	// comments for Macong: sourceCodeList is the list filled with SOURCE line strings
 
 	return pkb;
