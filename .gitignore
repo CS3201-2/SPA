@@ -2,9 +2,8 @@
 *.sdf
 *.tlog
 SPA/.vs/
-SPA/ipch
+SPA/ipch/
 SPA/SPA/Debug/
 SPA/SPA/x64/
 SPA/SPA_UnitTest/Debug/
 SPA/SPA_UnitTest/x64/
-
