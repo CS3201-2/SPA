@@ -74,6 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -119,8 +120,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AST.cpp" />
+    <ClCompile Include="ASTNode.cpp" />
     <ClCompile Include="Checker.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="ExpressionTree.cpp" />
     <ClCompile Include="Modifies.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PKB.cpp" />
@@ -129,6 +132,10 @@
     <ClCompile Include="QueryValidator.cpp" />
     <ClCompile Include="Relationship.cpp" />
     <ClCompile Include="RelationshipTable.cpp" />
+    <ClCompile Include="QueryEvaluator.cpp" />
+    <ClCompile Include="QueryResultProjector.cpp" />
+    <ClCompile Include="QueryTree.cpp" />
+    <ClCompile Include="Suffix.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Uses.cpp" />
     <ClCompile Include="ValidatorMain.cpp" />
@@ -136,10 +143,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AST.h" />
+    <ClInclude Include="ASTNode.h" />
     <ClInclude Include="Checker.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="QueryController.h" />
+    <ClInclude Include="ExpressionTree.h" />
     <ClInclude Include="Modifies.h" />
+    <ClInclude Include="NodeTypeEnum.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PKB.h" />
     <ClInclude Include="ProcTable.h" />
@@ -149,6 +159,11 @@
     <ClInclude Include="QueryValidator.h" />
     <ClInclude Include="Relationship.h" />
     <ClInclude Include="RelationshipTable.h" />
+    <ClInclude Include="QueryController.h" />
+    <ClInclude Include="QueryEvaluator.h" />
+    <ClInclude Include="QueryResultProjector.h" />
+    <ClInclude Include="QueryTree.h" />
+    <ClInclude Include="Suffix.h" />
     <ClInclude Include="Uses.h" />
     <ClInclude Include="VarTable.h" />
   </ItemGroup>

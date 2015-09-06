@@ -1,10 +1,6 @@
-#include <iostream>
 #include "QueryController.h"
+#include <iostream>
+#include <string>
+#include <list>
 
 using namespace std;
-
-list<string> QueryController::processQueries(list<string> queries)
-{
-
-	return list<string>();
-}

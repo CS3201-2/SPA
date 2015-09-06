@@ -1,10 +1,20 @@
 #pragma once
+
 #include <string>
 #include <list>
 
 using namespace std;
 
-class QueryController {
+#ifndef QueryController_H
+#define QueryController_H
+
+class QueryController
+{
 public:
-	list<string> processQueries(list<string> queries);
+	QueryController(list<string>);
+
+private:
 };
+
+#endif
+
