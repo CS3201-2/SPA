@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void QueryController::validateQueries(list<string> queries) {
+void QueryController::validateQueries(list<string> queries, PKB my_pkb) {
 	//list<bool> isValid;
 	list<string>::const_iterator iterQueries = queries.begin();
 
@@ -18,7 +18,7 @@ void QueryController::validateQueries(list<string> queries) {
 			if (qv.parseString(*iterQueries)) {
 				//QueryTree qt = qv.getQueryTree();
 				//initialize query evaluator object
-				//qv.evaluate(query tree);
+				//qv.evaluate(query tree, my_pkb);
 			}
 		}
 	}

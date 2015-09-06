@@ -2,6 +2,7 @@
 
 #include <string>
 #include <list>
+#include "PKB.h"
 
 using namespace std;
 
@@ -12,7 +13,7 @@ class QueryController
 {
 private:
 public:
-	void validateQueries(list<string> queries);
+	void validateQueries(list<string> queries, PKB my_pkb);
 
 };
 
