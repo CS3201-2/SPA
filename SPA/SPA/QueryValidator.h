@@ -35,6 +35,7 @@ private:
 	string getVarType(string varName);
 	bool isStringVar(string str);
 	bool isInteger(string str);
+	bool isPositiveInteger(string str);
 public:
 	void areValidQueries(list<string> queries);
 };
