@@ -20,7 +20,6 @@ public:
 	Modifies& getModifies(void);
 	Uses& getUses(void);
 private:
-	AST AST;
 	Modifies modifies;
 	Uses uses;
 	ProcTable procTable;

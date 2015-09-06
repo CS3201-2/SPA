@@ -8,6 +8,9 @@
 
 using namespace std;
 
+#ifndef ExpressionTree_H
+#define ExpressionTree_H
+
 class ExpressionTree
 {
 	ASTNode _root;
@@ -28,3 +31,5 @@ private:
 	ASTNode createOperatorNode(string);
 	ASTNode createOperandNode(string);
 };
+
+#endif
