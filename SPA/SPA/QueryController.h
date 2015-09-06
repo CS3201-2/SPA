@@ -10,10 +10,10 @@ using namespace std;
 
 class QueryController
 {
-public:
-	QueryController(list<string>);
-
 private:
+public:
+	void validateQueries(list<string> queries);
+
 };
 
 #endif

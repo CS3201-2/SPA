@@ -16,7 +16,7 @@ private:
 	enum RETURN_TYPE { NONE, INVALID, VALID };
 	//QueryTree qt;
 
-	bool parseString(string query);
+	//bool parseString(string query);
 	bool parseDeclaration(string declaration);
 	bool parseQuery(string query);
 	//bool parseRel()
@@ -37,6 +37,8 @@ private:
 	bool isInteger(string str);
 	bool isPositiveInteger(string str);
 public:
-	void areValidQueries(list<string> queries);
+	//void areValidQueries(list<string> queries);
+	bool parseString(string query);
+	//getQueryTree(); - returns qt
 };
 #pragma once
