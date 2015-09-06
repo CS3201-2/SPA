@@ -1,10 +1,11 @@
 *.opensdf
 *.sdf
-*.tlog
 *.ipch
+*.tlog
+SPA/SPA/Debug/
+SPA/SPA_UnitTest/Debug/
 SPA/.vs/
 SPA/ipch/
-SPA/SPA/Debug/
 SPA/SPA/x64/
 SPA/SPA_UnitTest/Debug/
 SPA/SPA_UnitTest/x64/
