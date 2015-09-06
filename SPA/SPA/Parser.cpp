@@ -5,6 +5,20 @@
 #include <algorithm>
 #include <regex>
 
+const regex assignmentRegex("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
+const regex procDeclarationRegex("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
+const regex procCallRegex("call(([[:alpha:]])([[:alnum:]]+)*);\\}*");
+const regex whileRegex("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
+const regex ifRegex("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
+const regex elseRegex("else\\{");
+const int assignmentStmt = 0;
+const int procDeclarationStmt = 1;
+const int procCallStmt = 2;
+const int whileStmt = 3;
+const int ifStmt = 4;
+const int elseStmt = 5;
+const int invalidStmt = 6;
+
 // constructor
 Parser::Parser()
 {
@@ -92,13 +106,13 @@ void Parser::processSourceCodeList(list<std::pair<int, string>>& stmtList) {
 
 	for (list<std::pair<int,string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
 		switch (getTypeOfStatement(*it)){
-		case 0: processAssignment(*it, modifiesList, usesList); break;
-		case 1: break;
-		case 2: break;
-		case 3: processWhile(it, stmtList, modifiesList, usesList); break;
-		case 4: break;//for if
-		case 5: break;//for else
-		case 6: break;//for invalid statement
+		case assignmentStmt: processAssignment(*it, modifiesList, usesList); break;
+		case procDeclarationStmt: break;
+		case procCallStmt: break;
+		case whileStmt: processWhile(it, stmtList, modifiesList, usesList); break;
+		case ifStmt: break;//for if
+		case elseStmt: break;//for else
+		case invalidStmt: break;//for invalid statement
 		default: break;
 		}
 
@@ -160,13 +174,13 @@ void Parser::processWhile(list<pair<int, string>>::iterator it, list<std::pair<i
 			braces.pop();
 		}
 		switch (getTypeOfStatement(*it)) {
-		case 0: processAssignment(*it, tempModifiesList, tempUsesList); break;
-		case 1: break;
-		case 2: break;
-		case 3: processWhile(it, stmtList, tempModifiesList, tempUsesList); break;
-		case 4: break;//for if
-		case 5: break;//for else
-		case 6: break;//for invalid statement
+		case assignmentStmt: processAssignment(*it, tempModifiesList, tempUsesList); break;
+		case procDeclarationStmt: break;
+		case procCallStmt: break;
+		case whileStmt: processWhile(it, stmtList, tempModifiesList, tempUsesList); break;
+		case ifStmt: break;//for if
+		case elseStmt: break;//for else
+		case invalidStmt: break;//for invalid statement
 		}
 
 		modifiesList.splice(modifiesList.end(), tempModifiesList);
@@ -240,34 +254,29 @@ bool Parser::isMathSymbol(char ch) {
 }
 
 int Parser::getTypeOfStatement(pair<int, string> pair) {
-	regex assignment("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
-	regex procDeclaration("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
-	regex procCall("call(([[:alpha:]])([[:alnum:]]+)*);\\}*");
-	regex whileStmt("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
-	regex ifStmt("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
-	regex elseStmt("else\\{");
+
 
 	string str = pair.second;
 
-	if (regex_match(str, assignment)) {
-		return 0;
+	if (regex_match(str, assignmentRegex)) {
+		return assignmentStmt;
 	}
-	else if (regex_match(str, procDeclaration)) {
-		return 1;
+	else if (regex_match(str, procDeclarationRegex)) {
+		return procDeclarationStmt;
 	}
-	else if (regex_match(str, procCall)) {
-		return 2;
+	else if (regex_match(str, procCallRegex)) {
+		return procCallStmt;
 	}
-	else if (regex_match(str, whileStmt)) {
-		return 3;
+	else if (regex_match(str, whileRegex)) {
+		return whileStmt;
 	}
-	else if (regex_match(str, ifStmt)) {
-		return 4;
+	else if (regex_match(str, ifRegex)) {
+		return ifStmt;
 	}
-	else if (regex_match(str, elseStmt)) {
-		return 5;
+	else if (regex_match(str, elseRegex)) {
+		return elseStmt;
 	}
 	else {
-		return 6;
+		return invalidStmt;
 	}
 }
