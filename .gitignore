@@ -1,8 +1,12 @@
 *.opensdf
 *.sdf
+*.ipch
+*.tlog
 SPA/SPA/Debug/
-<<<<<<< HEAD
-*.sdf
-=======
 SPA/SPA_UnitTest/Debug/
->>>>>>> 99956dc954b06a7fc061aefa1033926e4834468f
+SPA/.vs/
+SPA/ipch/
+SPA/SPA/x64/
+SPA/SPA_UnitTest/Debug/
+SPA/SPA_UnitTest/x64/
+
