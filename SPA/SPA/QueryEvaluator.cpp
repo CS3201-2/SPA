@@ -61,7 +61,7 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 
 		// Case 1: 1st argument is assignment or container statements "if", "while" where 1st arg datatype is int
 		if (arg1Type.compare("int") == 0) {
-			int argument1 = atoi(arg1.c_str());
+			int argument1 = stoi(arg1);
 			// This assumes Modifies Table is in this format: Key: var, Value: List of line numbers
 			modifiesLine = pkb.GetModifies.get_modifies_line(arg2);
 			
@@ -87,7 +87,7 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	else if (relationship.compare("Uses") == 0) {
 		//Similar to Modifies, this function will check the Uses table with respect to data in the clause
 		if (arg1Type.compare("int") == 0) {
-			int argument1 = atoi(arg1.c_str());
+			int argument1 = stoi(arg1);
 			usesLine = pkb.GetUses.get_modifies_line(arg2);
 
 			std::vector<int> usesLineVector{ std::make_move_iterator(std::begin(usesLine)),
@@ -110,7 +110,7 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 		*/
 		return result;
 	}
-	else if (relationship.compare("Follows") == 0) {
+	else if (relationship.compare("Follows") == 0 || relationship.compare("Follows*") == 0) {
 		//This function assumes that there is a follows table containing all the permutations of follows:
 		//Follows.cpp should create a table of all the possible follows relationship which is true.
 		//Algorithm of Follows should be to find all children of nodes with :stmtLst and create a table containing
