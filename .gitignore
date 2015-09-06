@@ -1,6 +1,7 @@
 *.opensdf
 *.sdf
 *.tlog
+*.ipch
 SPA/.vs/
 SPA/ipch/
 SPA/SPA/Debug/
