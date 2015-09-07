@@ -11,7 +11,7 @@ ASTNode::ASTNode(string content, string type)
 	_rightChild = NULL;
 	_leftChild = NULL;
 	_leftSibling = NULL;
-	_leftSibling = NULL;
+	_rightSibling = NULL;
 }
 
 string ASTNode::getNodeType()
