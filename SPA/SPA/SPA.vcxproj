@@ -124,7 +124,9 @@
     <ClCompile Include="Checker.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="ExpressionTree.cpp" />
+    <ClCompile Include="Follows.cpp" />
     <ClCompile Include="Modifies.cpp" />
+    <ClCompile Include="Parent.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PKB.cpp" />
     <ClCompile Include="ProcTable.cpp" />
@@ -146,6 +148,8 @@
     <ClInclude Include="ASTNode.h" />
     <ClInclude Include="Checker.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="Follows.h" />
+    <ClInclude Include="Parent.h" />
     <ClInclude Include="QueryController.h" />
     <ClInclude Include="ExpressionTree.h" />
     <ClInclude Include="Modifies.h" />
