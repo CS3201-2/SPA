@@ -13,8 +13,6 @@ public:
 	StackNode *next;
 
 	/** constructor **/
-
 	StackNode(ASTNode*);
-
 };
 #endif
