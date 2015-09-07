@@ -2,7 +2,7 @@
 #include <iostream>
 #include <regex>
 
-void QueryValidator::areValidQueries(list<string> queries)
+/*void QueryValidator::areValidQueries(list<string> queries)
 {
 	//list<bool> isValid;
 	list<string>::const_iterator iterQueries = queries.begin();
@@ -17,7 +17,7 @@ void QueryValidator::areValidQueries(list<string> queries)
 		}	
 	}
 
-}
+}*/
 
 bool QueryValidator::parseString(string query)
 {
@@ -91,7 +91,7 @@ bool QueryValidator::parseQuery(string query) {
 
 	arrClauses = split(arrClauses.at(1), ' ', 2);
 
-	if (!varNameExists(arrClauses.at(0))) {
+	if ( !(varNameExists(arrClauses.at(0)) || arrClauses.at(0).compare("_") == 0) ) {
 		return false;
 	}
 	

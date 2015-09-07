@@ -14,3 +14,18 @@ PKB::PKB()
 
 }
 
+ProcTable& PKB::getProcTable(void) {
+	return procTable;
+}
+
+VarTable& PKB::getVarTable(void) {
+	return varTable;
+}
+
+Modifies& PKB::getModifies(void) {
+	return modifies;
+}
+
+Uses& PKB::getUses(void) {
+	return uses;
+}

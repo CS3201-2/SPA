@@ -1,10 +1,21 @@
 #pragma once
+
 #include <string>
 #include <list>
+#include "PKB.h"
 
 using namespace std;
 
-class QueryController {
+#ifndef QueryController_H
+#define QueryController_H
+
+class QueryController
+{
+private:
 public:
-	list<string> processQueries(list<string> queries);
+	void validateQueries(list<string> queries, PKB my_pkb);
+
 };
+
+#endif
+

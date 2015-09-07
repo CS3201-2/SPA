@@ -11,7 +11,12 @@ VarTable::VarTable(void)
 
 int VarTable::get_ID(string varName)
 {
-	return varTable.at(varName);
+	if (varTable.find(varName) != varTable.end()) { 
+		return varTable.at(varName); 
+	}
+	else {
+		return insert_Var(varName);
+	}
 }
 
 int VarTable::insert_Var(string varName)

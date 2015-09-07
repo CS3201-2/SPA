@@ -15,9 +15,11 @@ class PKB
 {
 public:
 	PKB();
-
+	ProcTable& getProcTable(void);
+	VarTable& getVarTable(void);
+	Modifies& getModifies(void);
+	Uses& getUses(void);
 private:
-	AST AST;
 	Modifies modifies;
 	Uses uses;
 	ProcTable procTable;

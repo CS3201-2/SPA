@@ -14,7 +14,7 @@ public:
     
 	list<int> get_modifies_line( int );
 
-	void set_modifies_stm( int, int );
+	void set_modifies_stmt( int, int );
 
 private:
 	map<int,std::list<int>> modifiesMap;
