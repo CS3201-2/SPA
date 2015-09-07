@@ -5,6 +5,7 @@
 #include "VarTable.h"
 #include "QueryEvaluator.h"
 #include "QueryTree.h"
+#include "PKB.h"
 #include <string>
 #include <list>
 
@@ -16,60 +17,96 @@ using namespace::std;
 //QueryEvaluator assumes 1st element in suchThat tree and 1st element in pattern tree form the first query
 
 
-QueryEvaluator::QueryEvaluator() {
+QueryEvaluator::QueryEvaluator(PKB my_pkb) {
+	pkb = my_pkb;
 }
-
 
 //Retrieve information from respective trees
-vector<string> QueryEvaluator::getSuchThatClause(int index) {
+vector<string> QueryEvaluator::getSuchThatClause(int index, QueryTree tree) {
 	vector<string> tempVector;
-	tempVector = QueryTree::getSuchThatQuery(index);
+	tempVector = tree.getSuchThatQuery(index);
 	return tempVector;
 }
 
-vector<string> QueryEvaluator::getPatternClause(int index) {
+vector<string> QueryEvaluator::getPatternClause(int index, QueryTree tree) {
 	vector<string> tempVector;
-	tempVector = QueryTree::getPatternQuery(index);
+	tempVector = tree.getPatternQuery(index);
 	return tempVector;
 }
 
-vector<string> QueryEvaluator::getVarDeclaration(int index) {
+vector<string> QueryEvaluator::getVarDeclaration(int index, QueryTree tree) {
 	vector<string> tempVector;
-	tempVector = QueryTree::getVariableQuery(index);
+	tempVector = tree.getVariableQuery(index);
 	return tempVector;
 }
 
 
 //Process Clause
-string QueryEvaluator::processSuchThatClause(vector<string> tempString) {
+bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	//Process Modifies clause
 	string relationship = tempString.at(0);
 	string arg1 = tempString.at(1);
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
+	list<int> modifiesLine;
+	vector<int> modifiesLineVector;
+	list<int> usesLine;
+	vector<int> usesLineVector;
+	bool result = false;
 	
 	if (relationship.compare("Modifies") == 0) { //Need to confirm whether Modifies is written in this format
 		//General algorithm is that this function will call the modifies table and check for the respective data,
 		//assuming Modifies table has all the permutations of what modifies what
 
-		//If true, return first or second argument of Modifies depending on which is selected, else return NULL
-		string result;
-		return result;
+		// Case 1: 1st argument is assignment or container statements "if", "while" where 1st arg datatype is int
+		if (arg1Type.compare("int") == 0) {
+			int argument1 = stoi(arg1);
+			// This assumes Modifies Table is in this format: Key: var, Value: List of line numbers
+			int arg2ID = pkb.getVarTable().get_ID(arg2);
+			modifiesLine = pkb.getModifies().get_modifies_line(arg2ID);
+			
+			for (list<int>::iterator it = modifiesLine.begin(); it != modifiesLine.end(); ++it) {
+				if (*it == argument1) {
+					return true;
+				}
+			}
+			return false;
+		}
+		// Case 2: 1st Argument is a procedure name
+		/*
+		else if (arg1Type.compare("Procedure") == 0) {
+		}
+		*/
 	}
 	else if (relationship.compare("Uses") == 0) {
 		//Similar to Modifies, this function will check the Uses table with respect to data in the clause
-		//If true, return first or second argument of Modifies depending on which is selected, else return NULL
-		string result;
+		if (arg1Type.compare("int") == 0) {
+			int argument1 = stoi(arg1);
+			int arg2ID = pkb.getVarTable().get_ID(arg2);
+			usesLine = pkb.getUses().get_uses_stmt(arg2ID);
+
+			for (list<int>::iterator it = usesLine.begin(); it != usesLine.end(); ++it) {
+				if (*it == argument1) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		// Case 2: 1st Argument is a procedure name
+		/*
+		else if (arg1Type.compare("Procedure") == 0) {
+		}
+		*/
 		return result;
 	}
-	else if (relationship.compare("Follows") == 0) {
+	else if (relationship.compare("Follows") == 0 || relationship.compare("Follows*") == 0) {
 		//This function assumes that there is a follows table containing all the permutations of follows:
 		//Follows.cpp should create a table of all the possible follows relationship which is true.
 		//Algorithm of Follows should be to find all children of nodes with :stmtLst and create a table containing
 		//all children nodes :stmtLst with the same nesting level
-		string result;
-		return result;
+		
 	}
 }
 
