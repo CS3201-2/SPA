@@ -19,7 +19,7 @@ void Modifies::set_modifies_stmt( int var_id, int stmt_number )
 {
 	std::list<int> list = modifiesMap.at( var_id );
 
-	if (std::find(list.begin, list.end, stmt_number) == list.end()) {
+	if (std::find(list.begin(), list.end(), stmt_number) == list.end()) {
 		list.push_back(stmt_number);
 		list.sort();
 	}

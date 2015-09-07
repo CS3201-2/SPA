@@ -8,7 +8,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace SPA_UnitTest
 {		
-	TEST_CLASS(Parser)
+	TEST_CLASS(testParser)
 	{
 	public:
 		
@@ -21,9 +21,9 @@ namespace SPA_UnitTest
 			strList.push_back("this is awesome!");
 			strList.push_back("   ");
 
-			parser.removeBlankLines();
+			parser.removeBlankLines(strList);
 
-			Assert::AreEqual( 1, 1 );
+			Assert::AreEqual( 1,  1);
 		}
 
 	};

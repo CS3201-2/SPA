@@ -1,6 +1,6 @@
 #include "Suffix.h"
 
-const regex _operand("[0-9]|[a-z]|[A-Z]");
+const regex kOperand("[0-9]|[a-z]|[A-Z]");
 const string kErrorExpressionType = "Error: the type of this charactor is ambiguous!";
 
 Suffix::Suffix()
@@ -27,7 +27,7 @@ void Suffix::computeSuffix(string str)
 	string output = "";
 
 	int i;
-	for (i = 0; i < str.length; i++)
+	for (i = 0; i < (int)str.length(); i++)
 	{
 		if (isOperand(str[i]))
 		{
@@ -40,6 +40,7 @@ void Suffix::computeSuffix(string str)
 		}
 
 	}
+	extractOperandBuffer();
 	_suffix += _operatorStack.top();
 }
 
@@ -57,7 +58,11 @@ void Suffix::initializeStack()
 
 bool Suffix::isOperand(char c)
 {
-	return regex_match("" + c, _operand);
+	string temp;
+	stringstream ss;
+	ss << c;
+	ss >> temp;
+	return regex_match(temp, kOperand);
 }
 
 void Suffix::updateOperandBuffer(char c)
@@ -67,14 +72,18 @@ void Suffix::updateOperandBuffer(char c)
 
 void Suffix::extractOperandBuffer()
 {
-	_suffix += _operandBuffer;
-	_suffix += ',';
-	_operandBuffer = "";
+	if (!(_operandBuffer == ""))
+	{
+		_suffix += _operandBuffer;
+		_suffix += ',';
+		_operandBuffer = "";
+	}
 }
 
 void Suffix::solveOperator(char c)
 {
 	switch (_outStack[c]) {
+
 	case 6://c is '('
 		_operatorStack.push(c);
 		break;
@@ -100,8 +109,9 @@ void Suffix::popStack(char c)
 		_suffix += temp;
 		_suffix += ',';
 		_operatorStack.pop();
-		char temp = _operatorStack.top();
+		temp = _operatorStack.top();
 	}
+	_operatorStack.pop();
 }
 
 void Suffix::compareOperator(char c)
@@ -112,6 +122,7 @@ void Suffix::compareOperator(char c)
 		_suffix += temp;
 		_suffix += ',';
 		_operatorStack.pop();
+		temp = _operatorStack.top();
 	}
 	_operatorStack.push(c);
 }
