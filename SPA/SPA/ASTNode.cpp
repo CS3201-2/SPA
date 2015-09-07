@@ -3,63 +3,73 @@
 using namespace std;
 
 //Constructor
-ASTNode::ASTNode()
+ASTNode::ASTNode(string content, string type)
 {
-}
-
-ASTNode::ASTNode(NodeType type)
-{
-	_nodeType = type;
-	_children.clear();
+	setNodeType(type);
+	setNodeContent(content);
 	_parent = NULL;
+	_rightChild = NULL;
+	_leftChild = NULL;
+	_leftSibling = NULL;
+	_leftSibling = NULL;
 }
 
-ASTNode::ASTNode(NodeType type, string content)
-{
-	_nodeType = type;
-	_nodeContent = content;
-	_children.clear();
-	_parent = NULL;
-}
-
-NodeType ASTNode::getNodeType()
+string ASTNode::getNodeType()
 {
 	return _nodeType;
 }
 
-string ASTNode::getContent()
+void ASTNode::setNodeType(string nodeType)
+{
+	_nodeType = nodeType;
+}
+
+string ASTNode::getNodeContent()
 {
 	return _nodeContent;
 }
 
-void ASTNode::addChildren(ASTNode node)
+void ASTNode::setNodeContent(string nodeContent)
 {
-	_children.push_back(node);
-	node.setParent(*this);
+	_nodeContent = nodeContent;
 }
 
-list<ASTNode> ASTNode::getChildren()
-{
-	return _children;
+void ASTNode::setLeftChild(ASTNode* node) {
+	_leftChild = node;
 }
 
-ASTNode ASTNode::getParent()
-{
-	return *_parent;
+void ASTNode::setRightChild(ASTNode* node) {
+	_rightChild = node;
 }
 
-ASTNode ASTNode::getNextSibling()
-{
-	return *_nextSibling;
+void ASTNode::setLeftSibling(ASTNode* node) {
+	_leftSibling = node;
 }
 
-void ASTNode::setSibling(ASTNode s)
-{
-	_nextSibling = &s;
+void ASTNode::setRightSibling(ASTNode* node) {
+	_rightSibling = node;
 }
 
-void ASTNode::setParent(ASTNode node)
-{
-	_parent = &node;
+void ASTNode::setParent(ASTNode* node) {
+	_parent = node;
 }
 
+ASTNode* ASTNode::getParent() {
+	return _parent;
+}
+
+ASTNode* ASTNode::getRightChild() {
+	return _rightChild;
+}
+
+ASTNode* ASTNode::getLeftChild() {
+	return _leftChild;
+}
+
+ASTNode* ASTNode::getRightSibling() {
+	return _rightSibling;
+}
+
+ASTNode* ASTNode::getLeftSibling() {
+	return _leftSibling;
+}
