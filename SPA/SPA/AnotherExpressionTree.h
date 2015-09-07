@@ -11,20 +11,19 @@ using namespace std;
 
 class AnotherExpressionTree
 {
-
-private:
-
 	StackNode *top;
 
 public:
+	ASTNode* peek();
+	void build(string);
+
+private:
 	AnotherExpressionTree();
 	void clear();
 	void push(ASTNode* ptr);
-	ASTNode* pop();
-	ASTNode* peek();
 	void insert(string x);
-	void build(string);
 	bool isOperator(string str);
 	bool isNumber(string str);
+	ASTNode* pop();
 };
 #endif

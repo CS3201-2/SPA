@@ -5,3 +5,4 @@ StackNode::StackNode(ASTNode* treeNode)
 	this->treeNode = treeNode;
 	next = NULL;
 }
+
