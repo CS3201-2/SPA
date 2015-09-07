@@ -3,6 +3,17 @@
 using namespace std;
 
 //Constructor
+ASTNode::ASTNode(string type)
+{
+	setNodeType(type);
+	setNodeContent("NULL");
+	_parent = NULL;
+	_rightChild = NULL;
+	_leftChild = NULL;
+	_leftSibling = NULL;
+	_leftSibling = NULL;
+}
+
 ASTNode::ASTNode(string content, string type)
 {
 	setNodeType(type);

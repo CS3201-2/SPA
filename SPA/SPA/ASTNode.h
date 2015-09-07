@@ -10,6 +10,7 @@ using namespace std;
 class ASTNode
 {
 public:
+	ASTNode(string);
 	ASTNode(string, string);
 	//ASTNode(NodeType);
 	string getNodeType();
