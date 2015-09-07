@@ -29,6 +29,9 @@
     <ClCompile Include="unittest1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ValidatorTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="SuffixTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

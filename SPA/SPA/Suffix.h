@@ -1,9 +1,13 @@
 #include<string>
+#include <sstream>
 #include<regex>
 #include<unordered_map>
 #include<stack>
 
 using namespace std;
+
+#ifndef Suffix_H
+#define Suffix_H
 
 class Suffix
 {
@@ -24,6 +28,7 @@ private:
 	void extractOperandBuffer();
 	void solveOperator(char);
 	void popStack(char);
-	void compareOperator(char);	
+	void compareOperator(char);
 };
 
+#endif

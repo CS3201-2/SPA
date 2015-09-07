@@ -63,6 +63,21 @@
     <ClCompile Include="PKB.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="QueryController.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="ValidatorMain.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryValidator.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="Relationship.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="RelationshipTable.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
     <ClCompile Include="QueryEvaluator.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
@@ -112,6 +127,27 @@
     </ClInclude>
     <ClInclude Include="PKB.h">
       <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryController.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryValidator.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryTreeCreator.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryEvaluator.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryProjector.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="Relationship.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="RelationshipTable.h">
+      <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
     <ClInclude Include="ASTNode.h">
       <Filter>Header Files\PKB</Filter>
