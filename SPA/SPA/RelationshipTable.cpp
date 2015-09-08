@@ -1,12 +1,12 @@
 #include "RelationshipTable.h"
-#include <iostream>
+//#include <iostream>
 
 RelationshipTable::RelationshipTable() {
 	vector<string> arg1;
 	vector<string> arg2;
 	
 	//ModifiesS (statements)
-	 arg1 = { "assign", "while", "all" };
+	 arg1 = { "assign", "while", "prog_line", "all" };
 	 arg2 = { "variable", "string", "all" };
 	Relationship r1(2, arg1, arg2);
 	relTable["modifies"] = r1;
@@ -15,7 +15,7 @@ RelationshipTable::RelationshipTable() {
 	//cout << relTable.find("modifies*")->second.arg1.at(0);
 	
 	//UsesS (statements)
-	arg1 = { "assign", "while", "all" };
+	arg1 = { "assign", "while", "prog_line", "all" };
 	arg2 = { "variable", "string", "all" };
 	Relationship r2(2, arg1, arg2);
 	relTable["uses"] = r2;
@@ -23,7 +23,7 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Parent
-	arg1 = { "while", "all" };
+	arg1 = { "prog_line", "while", "all" };
 	arg2 = { "stmt", "assign", "prog_line", "while", "all" };
 	Relationship r3(2, arg1, arg2);
 	relTable["parent"] = r3;
@@ -31,7 +31,7 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Parent*
-	arg1 = { "while" , "all" };
+	arg1 = { "prog_line", "while" , "all" };
 	arg2 = { "stmt", "assign", "prog_line", "while", "all" };
 	Relationship r4(2, arg1, arg2);
 	relTable["parent*"] = r4;
