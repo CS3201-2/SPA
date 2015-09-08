@@ -152,20 +152,8 @@
     <ClInclude Include="ExpressionTree.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="QueryController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="QueryEvaluator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Suffix.h">
       <Filter>Header Files\PKB</Filter>
-    </ClInclude>
-    <ClInclude Include="QueryController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="QueryEvaluator.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Follows.h">
       <Filter>Header Files\PKB</Filter>
@@ -177,6 +165,18 @@
       <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
     <ClInclude Include="QueryTree.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryController.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryEvaluator.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryController.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryEvaluator.h">
       <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
     <ClInclude Include="QueryController.h">
