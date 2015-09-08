@@ -1,7 +1,6 @@
 #include <string>
 #include <list>
 
-
 using namespace std;
 
 #ifndef ASTNode_H
@@ -13,17 +12,14 @@ public:
 	ASTNode(string);
 	ASTNode(string, string);
 	//ASTNode(NodeType);
-	int getStmtNumber(void);
-	string getNodeType(void);
 	void setNodeType(string);
-	string getNodeContent();
-	void setNodeContent(string);
-	//string getContent();
+	string getContent();
 	void setLeftChild(ASTNode*);
 	void setRightChild(ASTNode*);
 	void setLeftSibling(ASTNode*);
 	void setRightSibling(ASTNode*);
 	void setParent(ASTNode*);
+	string getNodeType();
 
 	//list<ASTNode> getChildren();
 	ASTNode* getLeftSibling();
@@ -33,10 +29,8 @@ public:
 	ASTNode* getParent();
 
 private:
-	string _nodeContent;
 	string _nodeType;
-	int _stmtNumber;
-	//string _nodeContent;
+	string _nodeContent;
 	ASTNode* _parent;
 	ASTNode* _rightChild;
 	ASTNode* _leftChild;

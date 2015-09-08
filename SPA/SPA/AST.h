@@ -1,41 +1,31 @@
-#include <string>
+#include <iostream>
 #include <list>
-#include <stack>
+#include <string>
 #include <regex>
+#include <stack>
 #include "ASTNode.h"
-#include "ExpressionTree.h"
-#include "NodeTypeEnum.h"
-using namespace std;
+#include "AnotherExpressionTree.h"
 
-#ifndef AST_H
-#define AST_H
+using namespace std;
 
 class AST
 {
-	ASTNode* _root;
-	ASTNode* _nodeBefore;
-	stack<ASTNode> _nodeInProcess;
-	list<pair<int, string>> _code;
-
+	ASTNode* root;
+	list<string> stmts;
 public:
-	AST(list<pair<int, string>>);
-	void constructTree();
-	ASTNode getRoot();
-
+	AST();
+	void build();
+	ASTNode* getRoot();
+	void getStatements(list<string>);
 private:
-	void updateAST(string);
-	NodeType getLineType(string line);
-	ASTNode createProgNode(string);
-	void createProcNode(ASTNode*, string);
-	void createAssignNode(ASTNode*, string);
-	void createCallNode(ASTNode*, string);
-	void createWhileNode(ASTNode*, string);
-	void createIfNode(ASTNode*, string);
-	void addExpression(ASTNode*, string);
-	bool containsRightCurlyBracket(string);
-	bool containsLeftCurlyBracket(string);
-	string getVariable(string);
-	string getExpression(string);
+	ASTNode* constructAST(list<string>& stmtList);
+	ASTNode* createNode(string str);
+	ASTNode* createAssign(string str);
+	ASTNode* createProc(string str);
+	ASTNode* createWhile(string str);
+	ASTNode* createProg(string str);
+	int countNumOfRightBraces(string);
+	int countNumOfLeftBraces(string);
+	int getTypeOfStatement(string);
 };
 
-#endif

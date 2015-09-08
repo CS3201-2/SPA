@@ -6,33 +6,25 @@ using namespace std;
 ASTNode::ASTNode(string type)
 {
 	setNodeType(type);
-	setNodeContent("NULL");
 	_parent = NULL;
 	_rightChild = NULL;
 	_leftChild = NULL;
 	_leftSibling = NULL;
 	_rightSibling = NULL;
-	_stmtNumber = -1;
 }
 
 ASTNode::ASTNode(string content, string type)
 {
+	_nodeContent = content;
 	setNodeType(type);
-	setNodeContent(content);
 	_parent = NULL;
 	_rightChild = NULL;
 	_leftChild = NULL;
 	_leftSibling = NULL;
 	_rightSibling = NULL;
-	_stmtNumber = -1;
 }
 
-int ASTNode::getStmtNumber(void) {
-	return _stmtNumber;
-}
-
-string ASTNode::getNodeType(void)
-{
+string ASTNode::getNodeType() {
 	return _nodeType;
 }
 
@@ -41,14 +33,9 @@ void ASTNode::setNodeType(string nodeType)
 	_nodeType = nodeType;
 }
 
-string ASTNode::getNodeContent()
+string ASTNode::getContent()
 {
 	return _nodeContent;
-}
-
-void ASTNode::setNodeContent(string nodeContent)
-{
-	_nodeContent = nodeContent;
 }
 
 void ASTNode::setLeftChild(ASTNode* node) {
@@ -90,3 +77,7 @@ ASTNode* ASTNode::getRightSibling() {
 ASTNode* ASTNode::getLeftSibling() {
 	return _leftSibling;
 }
+
+
+
+
