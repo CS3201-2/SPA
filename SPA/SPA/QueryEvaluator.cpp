@@ -96,14 +96,34 @@ void QueryEvaluator::processModifies(vector<string> tempString, vector<string> s
 		int arg2ID = pkb.getVarTable().get_ID(arg2);
 		list<int> modifiesLine = pkb.getModifies().get_modifies_line(arg2ID);
 		if (isFirstClause) {
+			if (arg1Type == "prog_line") {
+				if (find(modifiesLine.begin(), modifiesLine.end(), stoi(arg1)) != modifiesLine.end()) {
+					return;
+				}
+				else {
+					isFirstClause = 0;
+					return;
+				}
+			}
 			for (list<int>::iterator it = modifiesLine.begin(); it != modifiesLine.end(); ++it) {
 				ASTNode node = pkb.getAST().getNode(*it);  //this function is to be implemented in AST
 				if (node.getNodeType() == arg1Type) {
 					tempResult.push_back(node);
 				}
 			}
+			isFirstClause = 0;
 		}
 		else {
+			if (find(modifiesLine.begin(), modifiesLine.end(), arg1) != modifiesLine.end()) {
+				return;
+			}
+			else {
+				tempResult.clear();
+				return;
+			}
+			if (tempResult.empty) {
+				return;
+			}
 			for (list<ASTNode>::iterator it = tempResult.begin(); it != tempResult.end(); ++it) {
 				if (find(modifiesLine.begin(), modifiesLine.end(), it->getStmtNumber()) == modifiesLine.end()) {
 					tempResult.erase(it);
@@ -111,8 +131,59 @@ void QueryEvaluator::processModifies(vector<string> tempString, vector<string> s
 			}
 		}
 	}
-	else {
+	else if(arg2Type == "variable"){
+		//list<int> modifiesLine = pkb.getModifies();
+		if (isFirstClause) {
+			if (arg1Type == "prog_line" ) {
+				ASTNode node = pkb.getAST().getNode(stoi(arg1));
+				tempResult.push_back(node);
+			}
+			else if (arg1Type == "assign") {
+				list<ASTNode> nodeList = pkb.getAST().getAllAssignNodes();
+				for (list<ASTNode>::iterator it = nodeList.begin(); it != nodeList.end(); ++it) {
+					tempResult.push_back(*it);
+				}
+			}
+			else if (arg1Type == "while") {
+				list<ASTNode> nodeList = pkb.getAST().getAllWhileNodes();
+				for (list<ASTNode>::iterator it = nodeList.begin(); it != nodeList.end(); ++it) {
+					tempResult.push_back(*it);
+				}
+			}
+			else {
 
+			}
+			isFirstClause = 0;
+		}
+		else {
+			if (arg1Type == "prog_line") {
+				for (list<ASTNode>::iterator it = tempResult.begin(); it != tempResult.end(); ++it) {
+					if (it->getStmtNumber() == stoi(arg1)) {
+						return;
+					}
+				}
+				tempResult.clear();
+				return;
+			}
+			else if (arg1Type == "assign") {
+				for (list<ASTNode>::iterator it = tempResult.begin(); it != tempResult.end(); ++it) {
+					if (it->getNodeType() == "assign") {
+						return;
+					}
+				}
+				tempResult.clear();
+				return;
+			}
+			else if (arg1Type == "while") {
+				for (list<ASTNode>::iterator it = tempResult.begin(); it != tempResult.end(); ++it) {
+					if (it->getNodeType() == "while") {
+						return;
+					}
+				}
+				tempResult.clear();
+				return;
+			}
+		}
 	}
 }
 
