@@ -99,7 +99,7 @@ bool QueryValidator::parseQuery(string query) {
 		return false;
 	}	
 
-	qt.insertSelect(arrClauses.at(0), getVarType(arrClauses.at(0)));
+	qt.insertSelect(arrClauses.at(0), getVarType(arrClauses.at(0)));  
 
 	if (findSuchThatClause(arrClauses.at(1)) == INVALID) {
 		//cout << "invalid such that";
