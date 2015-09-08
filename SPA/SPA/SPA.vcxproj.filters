@@ -134,19 +134,7 @@
     <ClInclude Include="PKB.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="QueryController.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
     <ClInclude Include="QueryValidator.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
-    <ClInclude Include="QueryTreeCreator.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
-    <ClInclude Include="QueryEvaluator.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
-    <ClInclude Include="QueryProjector.h">
       <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
     <ClInclude Include="Relationship.h">
@@ -189,6 +177,12 @@
       <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
     <ClInclude Include="QueryTree.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryController.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryEvaluator.h">
       <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
   </ItemGroup>

@@ -156,8 +156,8 @@
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PKB.h" />
     <ClInclude Include="ProcTable.h" />
-    <ClInclude Include="QueryProjector.h" />
-    <ClInclude Include="QueryTreeCreator.h" />
+    <ClInclude Include="QueryController.h" />
+    <ClInclude Include="QueryEvaluator.h" />
     <ClInclude Include="QueryValidator.h" />
     <ClInclude Include="Relationship.h" />
     <ClInclude Include="RelationshipTable.h" />
