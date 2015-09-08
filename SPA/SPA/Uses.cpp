@@ -27,3 +27,13 @@ void Uses::set_uses_stmt( int var_id, int stmt_number )
 	usesMap[ var_id ] = list;
 
 }
+
+list<int> Uses::getUsesVar(int stmtNumber) {
+	list<int> varList;
+	for (int i = 0; i < usesMap.size(); i++) {
+		if (find(usesMap[i].begin(), usesMap[i].end(), stmtNumber) != usesMap[i].end()) {
+			varList.push_back(i);
+		}
+	}
+	return varList;
+}
