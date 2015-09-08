@@ -99,7 +99,7 @@ bool QueryValidator::parseQuery(string query) {
 		return false;
 	}
 	
-	//qt.addSelectVar(arrClauses.at(0));
+	//qt.addSelect(arrClauses.at(0), getVarType(arrClauses.at(0));
 	if (findSuchThatClause(arrClauses.at(1)) == INVALID) {
 		//cout << "invalid such that";
 		return false;
@@ -188,7 +188,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 		}
 	}
 	//cout << "yes";
-	//qt.insertSuchThat(relType, arrVar, varTypes);
+	qt.insertSuchThat(relType, arrVar, varTypes);
 	//cout << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return VALID;
@@ -284,7 +284,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 		return INVALID;
 	}
 
-	//qt.insertPattern(syn, synType, arrVar, varType);
+	qt.insertPattern(syn, synType, arrVar, varType);
 	//or qt.addRel(reltype, arrVar);
 	//cout << "pattern " << arrVar.at(0) << " " << value << endl;
 	subquery = trim(arrWords.at(1));
