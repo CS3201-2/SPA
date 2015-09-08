@@ -93,9 +93,6 @@
     <ClCompile Include="QueryController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QueryResultProjector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Suffix.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
@@ -104,6 +101,9 @@
     </ClCompile>
     <ClCompile Include="Parent.cpp">
       <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryResultProjector.cpp">
+      <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -170,9 +170,6 @@
     <ClInclude Include="QueryEvaluator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="QueryResultProjector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Suffix.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
@@ -182,14 +179,17 @@
     <ClInclude Include="QueryEvaluator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="QueryTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Follows.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="Parent.h">
       <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryResultProjector.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryTree.h">
+      <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
