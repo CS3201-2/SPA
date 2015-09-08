@@ -15,7 +15,7 @@ void QueryController::validateQueries(list<string> queries, PKB my_pkb) {
 	for (iterQueries; iterQueries != queries.end(); iterQueries++) {
 		if (!(*iterQueries).empty()) {
 			QueryValidator qv;
-			if (qv.parseString(*iterQueries)) {
+			if (qv.isValidDecAndQuery(*iterQueries)) {
 				QueryTree qt = qv.getQueryTree();
 				QueryEvaluator qe(my_pkb, qt);
 				qe.evaluate();
