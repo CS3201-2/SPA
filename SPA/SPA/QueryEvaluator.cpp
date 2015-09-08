@@ -17,26 +17,37 @@ using namespace::std;
 //QueryEvaluator assumes 1st element in suchThat tree and 1st element in pattern tree form the first query
 
 
-QueryEvaluator::QueryEvaluator(PKB my_pkb) {
+QueryEvaluator::QueryEvaluator(PKB my_pkb, QueryTree qt) {
 	pkb = my_pkb;
+	queryTree = qt;
+}
+// entry function for controller;
+void QueryEvaluator::evaluate() {
+	int index;
+	for (index = 0; index < queryTree.getSuchThatSize(); index++) {
+		processSuchThatClause(getSuchThatClause(index));
+	}
+	for (index = 0; index < queryTree.getPatternSize(); index++) {
+		processPatternClause(getPatternClause(index));
+	}
 }
 
 //Retrieve information from respective trees
-vector<string> QueryEvaluator::getSuchThatClause(int index, QueryTree tree) {
+vector<string> QueryEvaluator::getSuchThatClause(int index) {
 	vector<string> tempVector;
-	tempVector = tree.getSuchThatQuery(index);
+	tempVector = queryTree.getSuchThatQuery(index);
 	return tempVector;
 }
 
-vector<string> QueryEvaluator::getPatternClause(int index, QueryTree tree) {
+vector<string> QueryEvaluator::getPatternClause(int index) {
 	vector<string> tempVector;
-	tempVector = tree.getPatternQuery(index);
+	tempVector = queryTree.getPatternQuery(index);
 	return tempVector;
 }
 
-vector<string> QueryEvaluator::getVarDeclaration(int index, QueryTree tree) {
+vector<string> QueryEvaluator::getVarDeclaration(int index) {
 	vector<string> tempVector;
-	tempVector = tree.getVariableQuery(index);
+	tempVector = queryTree.getVariableQuery(index);
 	return tempVector;
 }
 
