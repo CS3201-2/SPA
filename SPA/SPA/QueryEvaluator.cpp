@@ -53,7 +53,7 @@ vector<string> QueryEvaluator::getVarDeclaration(int index) {
 
 
 //Process Clause
-bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
+void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	//Process Modifies clause
 	string relationship = tempString.at(0);
 	string arg1 = tempString.at(1);
@@ -67,9 +67,7 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	list<int> followsList;
 	bool result = false;
 	
-	if (relationship.compare("Modifies") == 0) { //Need to confirm whether Modifies is written in this format
-		//General algorithm is that this function will call the modifies table and check for the respective data,
-		//assuming Modifies table has all the permutations of what modifies what
+	if (relationship.compare("Modifies") == 0) { 
 
 		// Case 1: 1st argument is assignment or container statements "if", "while" where 1st arg datatype is int
 		if (arg1Type.compare("int") == 0) {
@@ -80,10 +78,9 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 			
 			for (list<int>::iterator it = modifiesLine.begin(); it != modifiesLine.end(); ++it) {
 				if (*it == argument1) {
-					return true;
+				
 				}
 			}
-			return false;
 		}
 		// Case 2: 1st Argument is a procedure name
 		/*
@@ -100,10 +97,9 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 
 			for (list<int>::iterator it = usesLine.begin(); it != usesLine.end(); ++it) {
 				if (*it == argument1) {
-					return true;
+
 				}
 			}
-			return false;
 		}
 
 		// Case 2: 1st Argument is a procedure name
@@ -111,7 +107,7 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 		else if (arg1Type.compare("Procedure") == 0) {
 		}
 		*/
-		return result;
+	
 	}
 	else if (relationship.compare("Follows") == 0 || relationship.compare("Follows*") == 0) {
 		//This function assumes that there is a follows table containing all the permutations of follows:
@@ -126,12 +122,12 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 
 				list<int>::iterator it = followsList.begin();
 				if (*it == argument2) {
-					return true;
+					
 				}
 				else {
-					return false;
+					
 				}
-				return false;
+				
 			}
 		}
 		else {
@@ -142,16 +138,15 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 
 				for (list<int>::iterator it = followsList.begin(); it != followsList.begin(); ++it) {
 					if (*it == argument2) {
-						return true;
+					
 					}
 				}
-				return false;
 			}
 		}
 	}
 }
 
-string QueryEvaluator::processPatternClause(vector<string> tempString) {
+void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	string varValue = tempString.at(0);
 	string varType = tempString.at(1);
 	string ptrn1 = tempString.at(2);
