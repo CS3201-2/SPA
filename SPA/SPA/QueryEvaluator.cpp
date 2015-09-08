@@ -8,6 +8,7 @@
 #include "PKB.h"
 #include <string>
 #include <list>
+#include <algorithm>
 
 using namespace::std;
 
@@ -20,12 +21,15 @@ using namespace::std;
 QueryEvaluator::QueryEvaluator(PKB my_pkb, QueryTree qt) {
 	pkb = my_pkb;
 	queryTree = qt;
+	isFirstClause = true;
 }
 // entry function for controller;
 void QueryEvaluator::evaluate() {
+	// first get selecet query, for iteration 1, only select first clause. hard code here
+	vector<string> select = getSelectClause(0);
 	int index;
 	for (index = 0; index < queryTree.getSuchThatSize(); index++) {
-		processSuchThatClause(getSuchThatClause(index));
+		processSuchThatClause(getSuchThatClause(index),select);
 	}
 	for (index = 0; index < queryTree.getPatternSize(); index++) {
 		processPatternClause(getPatternClause(index));
@@ -33,6 +37,12 @@ void QueryEvaluator::evaluate() {
 }
 
 //Retrieve information from respective trees
+vector<string> QueryEvaluator::getSelectClause(int index) {
+	vector<string> tempVector;
+	tempVector = queryTree.getSelectQuery(index);
+	return tempVector;
+}
+
 vector<string> QueryEvaluator::getSuchThatClause(int index) {
 	vector<string> tempVector;
 	tempVector = queryTree.getSuchThatQuery(index);
@@ -53,20 +63,90 @@ vector<string> QueryEvaluator::getVarDeclaration(int index) {
 
 
 //Process Clause
-void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
-	//Process Modifies clause
+void QueryEvaluator::processSuchThatClause(vector<string> tempString, vector<string> selectClause) {
 	string relationship = tempString.at(0);
+
+	if (relationship == "modifies") {
+		processModifies(tempString, selectClause);
+	}
+	else if (relationship == "uses") {
+		processUses(tempString, selectClause);
+	}
+	else if (relationship == "parent") {
+		processParent(tempString, selectClause);
+	}
+	else if (relationship == "follows") {
+		processFollows(tempString, selectClause);
+	}
+	else {
+
+	}
+}
+
+void QueryEvaluator::processModifies(vector<string> tempString, vector<string> selectClause) {
+	string select = selectClause.at(0);
+	string selectType = selectClause.at(1);
+
 	string arg1 = tempString.at(1);
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
-	list<int> modifiesLine;
-	vector<int> modifiesLineVector;
-	list<int> usesLine;
-	vector<int> usesLineVector;
-	list<int> followsList;
-	bool result = false;
 	
+	if (arg2Type == "string") {
+		int arg2ID = pkb.getVarTable().get_ID(arg2);
+		list<int> modifiesLine = pkb.getModifies().get_modifies_line(arg2ID);
+		if (isFirstClause) {
+			for (list<int>::iterator it = modifiesLine.begin(); it != modifiesLine.end(); ++it) {
+				ASTNode node = pkb.getAST().getNode(*it);  //this function is to be implemented in AST
+				if (node.getNodeType() == arg1Type) {
+					tempResult.push_back(node);
+				}
+			}
+		}
+		else {
+			for (list<ASTNode>::iterator it = tempResult.begin(); it != tempResult.end(); ++it) {
+				if (find(modifiesLine.begin(), modifiesLine.end(), it->getStmtNumber()) == modifiesLine.end()) {
+					tempResult.erase(it);
+				}
+			}
+		}
+	}
+	else {
+
+	}
+}
+
+void QueryEvaluator::processUses(vector<string> tempString, vector<string> selectClause) {
+	string select = selectClause.at(0);
+	string selectType = selectClause.at(1);
+
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
+}
+
+void QueryEvaluator::processParent(vector<string> tempString, vector<string> selectClause) {
+	string select = selectClause.at(0);
+	string selectType = selectClause.at(1);
+	
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
+}
+
+void QueryEvaluator::processFollows(vector<string> tempString, vector<string> selectClause) {
+	string select = selectClause.at(0);
+	string selectType = selectClause.at(1);
+	
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
+}
+
+	/*
 	if (relationship.compare("Modifies") == 0) { 
 
 		// Case 1: 1st argument is assignment or container statements "if", "while" where 1st arg datatype is int
@@ -87,7 +167,7 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 		else if (arg1Type.compare("Procedure") == 0) {
 		}
 		*/
-	}
+	/*}
 	else if (relationship.compare("Uses") == 0) {
 		//Similar to Modifies, this function will check the Uses table with respect to data in the clause
 		if (arg1Type.compare("int") == 0) {
@@ -108,7 +188,7 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 		}
 		*/
 	
-	}
+/*	}
 	else if (relationship.compare("Follows") == 0 || relationship.compare("Follows*") == 0) {
 		//This function assumes that there is a follows table containing all the permutations of follows:
 		//Follows.cpp should create a table of all the possible follows relationship which is true.
@@ -145,7 +225,7 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 		}
 	}
 }
-
+*/
 void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	string varValue = tempString.at(0);
 	string varType = tempString.at(1);
