@@ -8,24 +8,24 @@ QueryTree::QueryTree() {
 }
 
 //Inserting the particular type of query into its respective tree
-void QueryTree::insertSuchThat(string rel, string arg1, string arg1Type, string arg2, string arg2Type) {
+void QueryTree::insertSuchThat(string rel, vector<string> arrVar, vector<string> arrType) {
 	vector<string> tempVector;
 	tempVector.push_back(rel);
-	tempVector.push_back(arg1);
-	tempVector.push_back(arg1Type);
-	tempVector.push_back(arg2);
-	tempVector.push_back(arg2Type);
+	tempVector.push_back(arrVar.at(0));
+	tempVector.push_back(arrType.at(0));
+	tempVector.push_back(arrVar.at(1));
+	tempVector.push_back(arrType.at(1));
 	qTree[1].push_back(tempVector);
 }
 
-void QueryTree::insertPattern(string syn, string synType, string ptrn1, string ptrn1Type, string ptrn2, string ptrn2Type) {
+void QueryTree::insertPattern(string syn, string synType, vector<string> arrPtrn, vector<string> ptrnType) {
 	vector<string> tempVector;
 	tempVector.push_back(syn);
 	tempVector.push_back(synType);
-	tempVector.push_back(ptrn1);
-	tempVector.push_back(ptrn1Type);
-	tempVector.push_back(ptrn2);
-	tempVector.push_back(ptrn2Type);
+	tempVector.push_back(arrPtrn.at(0));
+	tempVector.push_back(ptrnType.at(0));
+	tempVector.push_back(arrPtrn.at(1));
+	tempVector.push_back(ptrnType.at(1));
 	qTree[2].push_back(tempVector);
 }
 
@@ -33,33 +33,33 @@ void QueryTree::insertVariable(string variable, string variableType) {
 	vector<string> tempVector;
 	tempVector.push_back(variable);
 	tempVector.push_back(variableType);
-	qTree[0].push_back(tempVector);
+	qTree.at(0).push_back(tempVector);
 }
 
 //Obtaining the size of the tree of each of the query types
 int QueryTree::getSuchThatSize() {
-	return qTree[1].size();
+	return qTree.at(1).size();
 }
 
 int QueryTree::getPatternSize() {
-	return qTree[2].size();
+	return qTree.at(2).size();
 }
 
 int QueryTree::getVariableSize() {
-	return qTree[0].size();
+	return qTree.at(0).size();
 }
 
 
 //Obtaining the queries for the respective query types
 vector<string> QueryTree::getSuchThatQuery(int queryPos) {
-	return qTree[1][queryPos];
+	return qTree.at(1).at(queryPos);
 }
 
 vector<string> QueryTree::getPatternQuery(int queryPos) {
-	return qTree[2][queryPos];
+	return qTree.at(2).at(queryPos);
 }
 
 vector<string> QueryTree::getVariableQuery(int queryPos) {
-	return qTree[0][queryPos];
+	return qTree.at(0).at(queryPos);
 }
 
