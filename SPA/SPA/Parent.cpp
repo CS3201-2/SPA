@@ -9,12 +9,12 @@ Parent::Parent()
 {
 }
 
-int Parent::getParent(int stmtLine)
+int Parent::getParentStmt(int stmtLine)
 {
 	return parentMap.at(stmtLine);
 }
 
-void Parent::setParent(int parent, int child)
+void Parent::setParentStmt(int parent, int child)
 {
 	parentMap[child] = parent;
 }

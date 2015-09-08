@@ -1,6 +1,8 @@
 #include "AST.h"
 #include "Modifies.h"
 #include "Uses.h"
+#include "Follows.h"
+#include "Parent.h"
 #include "ProcTable.h"
 #include "VarTable.h"
 #include <string>
@@ -19,11 +21,15 @@ public:
 	VarTable& getVarTable(void);
 	Modifies& getModifies(void);
 	Uses& getUses(void);
+	Parent& getParent(void);
+	Follows& getFollows(void);
 private:
 	Modifies modifies;
 	Uses uses;
 	ProcTable procTable;
 	VarTable varTable;
+	Follows follows;
+	Parent parent;
 };
 
 #endif

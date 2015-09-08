@@ -10,12 +10,12 @@ Follows::Follows()
 {
 }
 
-list<int> Follows::getFollows(int stmt_line)
+list<int> Follows::getFollowsStmt(int stmt_line)
 {
 	return followsMap.at(stmt_line);
 }
 
-void Follows::setFollows(int stmt_Line, list<int> stmt_Lines)
+void Follows::setFollowsStmt(int stmt_Line, list<int> stmt_Lines)
 {
 	followsMap[stmt_Line] = stmt_Lines;
 

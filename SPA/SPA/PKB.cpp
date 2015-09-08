@@ -29,3 +29,11 @@ Modifies& PKB::getModifies(void) {
 Uses& PKB::getUses(void) {
 	return uses;
 }
+
+Follows& PKB::getFollows(void) {
+	return follows;
+}
+
+Parent& PKB::getParent(void) {
+	return parent;
+}

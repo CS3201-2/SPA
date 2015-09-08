@@ -12,9 +12,9 @@ class Follows
 public:
 	Follows();
 
-	list<int> getFollows(int);
+	list<int> getFollowsStmt(int);
 
-	void setFollows(int, list<int>);
+	void setFollowsStmt(int, list<int>);
 
 private:
 	// key is stmt line, value is a list of young brothers.

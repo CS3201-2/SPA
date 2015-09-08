@@ -28,5 +28,3 @@ public:
 };
 
 #endif
-
-QueryEvaluator(PKB my_pkb);

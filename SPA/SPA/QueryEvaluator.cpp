@@ -53,6 +53,7 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	vector<int> modifiesLineVector;
 	list<int> usesLine;
 	vector<int> usesLineVector;
+	list<int> followsList;
 	bool result = false;
 	
 	if (relationship.compare("Modifies") == 0) { //Need to confirm whether Modifies is written in this format
@@ -106,7 +107,36 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 		//Follows.cpp should create a table of all the possible follows relationship which is true.
 		//Algorithm of Follows should be to find all children of nodes with :stmtLst and create a table containing
 		//all children nodes :stmtLst with the same nesting level
-		
+		if (relationship.compare("Follows") == 0) {
+			if (arg1Type.compare("int") == 0 && arg2Type.compare("int") == 0) {
+				int argument1 = stoi(arg1);
+				int argument2 = stoi(arg2);
+				followsList = pkb.getFollows().getFollowsStmt(argument1);
+
+				list<int>::iterator it = followsList.begin();
+				if (*it == argument2) {
+					return true;
+				}
+				else {
+					return false;
+				}
+				return false;
+			}
+		}
+		else {
+			if (arg1Type.compare("int") == 0 && arg2Type.compare("int") == 0) {
+				int argument1 = stoi(arg1);
+				int argument2 = stoi(arg2);
+				followsList = pkb.getFollows().getFollowsStmt(argument1);
+
+				for (list<int>::iterator it = followsList.begin(); it != followsList.begin(); ++it) {
+					if (*it == argument2) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}
 	}
 }
 

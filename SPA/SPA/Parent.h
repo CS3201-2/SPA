@@ -12,9 +12,9 @@ class Parent
 public:
 	Parent();
 
-	int getParent(int);
+	int getParentStmt(int);
 
-	void setParent(int, int);
+	void setParentStmt(int, int);
 
 private:
 	//key is child id, value is parent id
