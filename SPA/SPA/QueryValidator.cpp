@@ -51,6 +51,10 @@ bool QueryValidator::parseString(string query)
 	return true;
 }
 
+QueryTree QueryValidator::getQueryTree() {
+	return qt;
+}
+
 bool QueryValidator::parseDeclaration(string declaration) {
 
 	vector<string> arrDec = split(declaration, ' ', 2);
@@ -91,10 +95,11 @@ bool QueryValidator::parseQuery(string query) {
 
 	arrClauses = split(arrClauses.at(1), ' ', 2);
 
-	if ( !(varNameExists(arrClauses.at(0)) || arrClauses.at(0).compare("_") == 0) ) {
+	if ( !(varNameExists(arrClauses.at(0)))) {// || arrClauses.at(0).compare("_") == 0) ) {
 		return false;
 	}
 	
+	//qt.addSelectVar(arrClauses.at(0));
 	if (findSuchThatClause(arrClauses.at(1)) == INVALID) {
 		//cout << "invalid such that";
 		return false;
@@ -146,18 +151,36 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 		return INVALID;
 	}
 
+	vector<string> varTypes;
+
 	for (int i = 0; i < arrVar.size(); i++) {
 		if (varNameExists(arrVar.at(i))) {
-			r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)));
+			if (!r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)))) {
+				return INVALID;
+			} else {
+				varTypes.at(i) = getVarType(arrVar.at(i));
+			}
 
 		} else if (isStringVar(arrVar.at(i))) {
-			r.isArgValid(relType, i + 1, "string");
+			if (!r.isArgValid(relType, i + 1, "string")) {
+				return INVALID;
+			} else {
+				varTypes.at(i) = "string";
+			}
 
 		} else if ( isPositiveInteger(arrVar.at(i)) ) {
-			r.isArgValid(relType, i + 1, "prog_line");
+			if (!r.isArgValid(relType, i + 1, "prog_line")) {
+				return INVALID;
+			} else {
+				varTypes.at(i) = "prog_line";
+			}
 
 		} else if (arrVar.at(i).compare("_") == 0) {
-			r.isArgValid(relType, i + 1, "all");
+			if (!r.isArgValid(relType, i + 1, "all")) {
+				return INVALID;
+			} else {
+				varTypes.at(i) = "all";
+			}
 
 		} else {
 			return INVALID;
@@ -165,7 +188,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 		}
 	}
 	//cout << "yes";
-	//qt.addRel(relType, arrVar);
+	//qt.insertSuchThat(relType, arrVar, varTypes);
 	//cout << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return VALID;
@@ -186,27 +209,42 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 		return INVALID;
 	}
 
+	string syn = arrWords.at(0), synType = "assign";
+
 	if (arrWords.at(1).find(")") == string::npos) {
 		return INVALID;
 	}
 
 	arrWords = split(arrWords.at(1), ')', 2);
 	
-	vector<string> arrVar = split(arrWords.at(0), ',');
+	vector<string> arrVar = split(arrWords.at(0), ','), varType;
 
 	if (!r.isNumOfArgsEqual(relType, arrVar.size())) {
 		return INVALID;
 	}
 
+
 	//arg1
 	if (varNameExists(arrVar.at(0)) && getVarType(arrVar.at(0)).compare("assign") == 0) {
-		r.isArgValid(relType, 1, getVarType(arrVar.at(0)));
+		if (!r.isArgValid(relType, 1, getVarType(arrVar.at(0)))) {
+			return INVALID;
+		} else {
+			varType.at(0) = "assign";
+		}
 
 	} else if (isStringVar(arrVar.at(0))) {
-		r.isArgValid(relType, 1, "string");
+		if (!r.isArgValid(relType, 1, "string")) {
+			return INVALID;
+		} else {
+			varType.at(0) = "string";
+		}
 
 	} else if (arrVar.at(0).compare("_") == 0) {
-		r.isArgValid(relType, 1, "all");
+		if (!r.isArgValid(relType, 1, "all")) {
+			return INVALID;
+		} else {
+			varType.at(0) = "all";
+		}
 
 	} else {
 		return INVALID;
@@ -223,10 +261,19 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 			value = arg2.substr(2, arg2.size() - 4);
 
 			if (isValidVariableName(value)) {
-				r.isArgValid(relType, 2, "variable");
+				if (!r.isArgValid(relType, 2, "variable")) {
+					return INVALID;
+				} else {
+					varType.at(1) = "variable";
+				}
 
 			} else if (isInteger(value)) {
-				r.isArgValid(relType, 2, "constant");
+				if (!r.isArgValid(relType, 2, "constant")) {
+					return INVALID;
+				}
+				else {
+					varType.at(1) = "constant";
+				}
 
 			}
 		}
@@ -237,7 +284,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 		return INVALID;
 	}
 
-	//qt.addPattern(arrVar.at(0), arrVar.at(1));
+	//qt.insertPattern(syn, synType, arrVar, varType);
 	//or qt.addRel(reltype, arrVar);
 	//cout << "pattern " << arrVar.at(0) << " " << value << endl;
 	subquery = trim(arrWords.at(1));

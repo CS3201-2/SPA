@@ -5,7 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include "RelationshipTable.h"
-//#include <QueryTree>
+#include "QueryTree.h"
 
 using namespace std;
 
@@ -14,13 +14,11 @@ private:
 	unordered_map<string, string> varMap;
 	RelationshipTable r;
 	enum RETURN_TYPE { NONE, INVALID, VALID };
-	//QueryTree qt;
+	QueryTree qt;
 
 	//bool parseString(string query);
 	bool parseDeclaration(string declaration);
 	bool parseQuery(string query);
-	//bool parseRel()
-	//bool parsePattern()
 	bool isValidVariableName(string varName);
 	RETURN_TYPE findSuchThatClause(string &subquery);
 	RETURN_TYPE findPatternClause(string &subquery);
@@ -39,6 +37,6 @@ private:
 public:
 	//void areValidQueries(list<string> queries);
 	bool parseString(string query);
-	//getQueryTree(); - returns qt
+	QueryTree getQueryTree(); 
 };
 #pragma once
