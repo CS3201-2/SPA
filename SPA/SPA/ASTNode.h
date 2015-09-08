@@ -13,7 +13,8 @@ public:
 	ASTNode(string);
 	ASTNode(string, string);
 	//ASTNode(NodeType);
-	string getNodeType();
+	int getStmtNumber(void);
+	string getNodeType(void);
 	void setNodeType(string);
 	string getNodeContent();
 	void setNodeContent(string);
@@ -34,6 +35,7 @@ public:
 private:
 	string _nodeContent;
 	string _nodeType;
+	int _stmtNumber;
 	//string _nodeContent;
 	ASTNode* _parent;
 	ASTNode* _rightChild;

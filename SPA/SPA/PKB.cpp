@@ -37,3 +37,7 @@ Follows& PKB::getFollows(void) {
 Parent& PKB::getParent(void) {
 	return parent;
 }
+
+AST& PKB::getAST(void) {
+	return ast;
+}

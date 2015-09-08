@@ -23,6 +23,7 @@ public:
 	Uses& getUses(void);
 	Parent& getParent(void);
 	Follows& getFollows(void);
+	AST& getAST(void);
 private:
 	Modifies modifies;
 	Uses uses;
@@ -30,6 +31,7 @@ private:
 	VarTable varTable;
 	Follows follows;
 	Parent parent;
+	AST ast;
 };
 
 #endif
