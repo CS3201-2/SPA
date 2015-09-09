@@ -17,6 +17,8 @@ AST::AST()
 
 void AST::build()
 {
+	statPosition.clear();
+	procPosition.clear();
 	root = constructAST(stmts);
 }
 
@@ -25,9 +27,19 @@ ASTNode* AST::getRoot()
 	return root;
 }
 
-void AST::getStatements(list<pair<int, string>> lst)
+void AST::acceptStatements(list<pair<int, string>> lst)
 {
 	stmts = lst;
+}
+
+ASTNode* AST::getNode(string s)
+{
+	return procPosition.at(s);
+}
+
+ASTNode* AST::getNode(int index)
+{
+	return statPosition[index];
 }
 
 ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
@@ -66,7 +78,11 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 		}
 		if (index == -1)//it is a procedure statement;
 		{
-
+			procPosition.insert(pair<string, ASTNode*>(statement, tempNode));
+		}
+		else//it is a normal statement
+		{
+			statPosition[index] = tempNode;
 		}
 		if (returnNode == NULL) {
 			returnNode = tempNode;
