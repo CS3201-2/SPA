@@ -25,23 +25,24 @@ ASTNode* AST::getRoot()
 	return root;
 }
 
-void AST::getStatements(list<string> lst)
+void AST::getStatements(list<pair<int, string>> lst)
 {
 	stmts = lst;
 }
 
-ASTNode * AST::constructAST(list<string>& stmtList)
+ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 {
-	list <string> subStmtList;
+	list<pair<int, string>> subStmtList;
 	stack <string> braces;
 	bool wasEmptyBeforePop;
 
 	ASTNode* returnNode = NULL;
 	ASTNode* currentNode = NULL;
 	ASTNode* tempNode = NULL;
-	list<string>::iterator begin;
-	for (list<string>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
-		for (int i = 0; i < countNumOfLeftBraces(*it); ++i) {
+	for (list<pair<int, string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
+		int index = it->first;
+		string statement = it->second;
+		for (int i = 0; i < countNumOfLeftBraces(statement); ++i) {
 			braces.push("{");
 		}
 		wasEmptyBeforePop = braces.empty();
@@ -49,37 +50,23 @@ ASTNode * AST::constructAST(list<string>& stmtList)
 		{
 			subStmtList.push_back(*it);
 		}
-		for (int i = 0; i < countNumOfRightBraces(*it); ++i) {
+		for (int i = 0; i < countNumOfRightBraces(statement); ++i) {
 			braces.pop();
 		}
 		//stack was empty because of poping, going to the next level with fewer stmtList element
 		if (braces.empty() && !wasEmptyBeforePop) {
-			string temp;
-			temp = subStmtList.front();
-			temp = temp.substr(0, temp.size() - 1);
-			subStmtList.pop_front();
-			subStmtList.push_front(temp);
-
-			temp = subStmtList.back();
-			temp = temp.substr(0, temp.size() - 1);
-			subStmtList.pop_back();
-			subStmtList.push_back(temp);
-			cout << "sublist is: " << endl;
-			for (list<string>::iterator ii = subStmtList.begin();
-			ii != subStmtList.end(); ii++)
-			{
-				cout << *ii << " ";
-			}
-			cout << endl;
- 			ASTNode* recursiveNode = constructAST(subStmtList);
+			cutList(subStmtList);
+			ASTNode* recursiveNode = constructAST(subStmtList);
 			subStmtList.clear();
 			tempNode = recursiveNode;
 		}
 		//stack was empty initially, stay at this level and append new node to the right sibling
 		else if (braces.empty() && wasEmptyBeforePop) {
-			tempNode = createNode(*it);
-			cout << *it << endl;
-			//tempNode = new ASTNode(*it);
+			tempNode = createNode(statement);
+		}
+		if (index == -1)//it is a procedure statement;
+		{
+
 		}
 		if (returnNode == NULL) {
 			returnNode = tempNode;
@@ -124,7 +111,6 @@ ASTNode * AST::createNode(string str)
 	default:
 		throw "error";
 	}
-	//cout << "what happend?";
 	return temp;
 }
 
@@ -159,6 +145,25 @@ ASTNode * AST::createProg(string str)
 		progName = matcher[1];
 	}
 	return new ASTNode(progName, "program");
+}
+
+void AST::cutList(list<pair<int, string>>& lst)
+{
+	int tempIndex;
+	string tempStat;
+	tempIndex = lst.front().first;
+	tempStat = lst.front().second;
+	tempStat = tempStat.substr(0, tempStat.size() - 1);
+	lst.pop_front();
+	pair<int, string> newFrontPair(tempIndex, tempStat);
+	lst.push_front(newFrontPair);
+
+	tempIndex = lst.back().first;
+	tempStat = lst.back().second;
+	tempStat = tempStat.substr(0, tempStat.size() - 1);
+	lst.pop_back();
+	pair<int, string> newBackPair(tempIndex, tempStat);
+	lst.push_back(newBackPair);
 }
 
 ASTNode * AST::createProc(string str)
