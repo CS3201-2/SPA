@@ -41,3 +41,22 @@ Parent& PKB::getParent(void) {
 AST& PKB::getAST(void) {
 	return ast;
 }
+
+void PKB::addWhileList(int stmtLine) {
+	if (find(whileList.begin(), whileList.end(), stmtLine) == whileList.end()) {
+		whileList.push_back(stmtLine);
+	}
+}
+
+void PKB::addAssignList(int stmtLine) {
+	if (find(assignList.begin(), assignList.end(), stmtLine) == assignList.end()) {
+		assignList.push_back(stmtLine);
+	}
+}
+
+list<int> PKB::getWhileList(void) {
+	return whileList;
+}
+list<int> PKB::getAssignList(void) {
+	return assignList;
+}

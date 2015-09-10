@@ -24,6 +24,11 @@ public:
 	Parent& getParent(void);
 	Follows& getFollows(void);
 	AST& getAST(void);
+	void addWhileList(int);
+	void addAssignList(int);
+	list<int> getWhileList(void);
+	list<int> getAssignList(void);
+
 private:
 	Modifies modifies;
 	Uses uses;
@@ -32,6 +37,8 @@ private:
 	Follows follows;
 	Parent parent;
 	AST ast;
+	list<int> whileList;
+	list<int> assignList;
 };
 
 #endif
