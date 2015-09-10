@@ -110,10 +110,10 @@ void Parser::processSourceCodeList(list<std::pair<int, string>>& stmtList) {
 
 	for (list<std::pair<int,string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
 		switch (getTypeOfStatement(*it)){
-		case assignmentStmt: processAssignment(*it, modifiesList, usesList); break;
+		case assignmentStmt: pkb.addAssignList((*it).first);  processAssignment(*it, modifiesList, usesList); break;
 		case procDeclarationStmt: break;
 		case procCallStmt: break;
-		case whileStmt: processWhile(it, stmtList, modifiesList, usesList); break;
+		case whileStmt: pkb.addWhileList((*it).first); processWhile(it, stmtList, modifiesList, usesList); break;
 		case ifStmt: break;//for if
 		case elseStmt: break;//for else
 		case invalidStmt: break;//for invalid statement
@@ -178,10 +178,10 @@ void Parser::processWhile(list<pair<int, string>>::iterator it, list<std::pair<i
 			braces.pop();
 		}
 		switch (getTypeOfStatement(*it)) {
-		case assignmentStmt: processAssignment(*it, tempModifiesList, tempUsesList); break;
+		case assignmentStmt: pkb.addAssignList((*it).first); processAssignment(*it, tempModifiesList, tempUsesList); break;
 		case procDeclarationStmt: break;
 		case procCallStmt: break;
-		case whileStmt: processWhile(it, stmtList, tempModifiesList, tempUsesList); break;
+		case whileStmt: pkb.addWhileList((*it).first); processWhile(it, stmtList, tempModifiesList, tempUsesList); break;
 		case ifStmt: break;//for if
 		case elseStmt: break;//for else
 		case invalidStmt: break;//for invalid statement
