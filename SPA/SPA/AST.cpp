@@ -15,13 +15,6 @@ AST::AST()
 	root = NULL;
 }
 
-void AST::build()
-{
-	statPosition.clear();
-	procPosition.clear();
-	root = constructAST(stmts);
-}
-
 ASTNode* AST::getRoot()
 {
 	return root;
@@ -30,6 +23,71 @@ ASTNode* AST::getRoot()
 void AST::acceptStatements(list<pair<int, string>> lst)
 {
 	stmts = lst;
+	build();
+}
+
+int AST::getFollowAfter(int index)
+{
+	checkIndex(index);
+	ASTNode* nodeChosen = getNode(index);
+	ASTNode* rightSibling = nodeChosen->getRightSibling();
+	if (rightSibling == NULL)
+	{
+		return -1;
+	}
+	else
+	{
+		return rightSibling->getIndex();
+	}
+}
+
+int AST::getFollowBefore(int index)
+{
+	checkIndex(index);
+	ASTNode* nodeChosen = getNode(index);
+	ASTNode* leftSibling = nodeChosen->getLeftSibling();
+	if (leftSibling == NULL)
+	{
+		return -1;
+	}
+	else
+	{
+		return leftSibling->getIndex();
+	}
+}
+
+int AST::getParent(int index)
+{
+	checkIndex(index);
+	ASTNode* nodeChosed = getNode(index);
+	ASTNode* parent = nodeChosed->getParent();
+	if (parent == NULL)
+	{
+		throw "how can that be";
+	}
+	else
+	{
+		return parent->getIndex();
+	}
+}
+
+list<int> AST::getChild(int index)
+{
+	checkIndex(index);
+	list<int> tempLst;
+	tempLst.clear();
+	ASTNode* nodeChosen = getNode(index);
+	if (!isContainer(nodeChosen))
+	{
+		return tempLst;
+	}
+	ASTNode* child = nodeChosen->getRightChild();
+	while (child != NULL)
+	{
+		tempLst.push_back(child->getIndex());
+		child = child->getRightSibling();
+	}
+	return tempLst;
 }
 
 ASTNode* AST::getNode(string s)
@@ -42,6 +100,14 @@ ASTNode* AST::getNode(int index)
 	return statPosition[index];
 }
 
+void AST::build()
+{
+	statPosition.clear();
+	statPosition.resize(stmts.size() + 1, NULL);
+	procPosition.clear();
+	root = constructAST(stmts);
+}
+
 ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 {
 	list<pair<int, string>> subStmtList;
@@ -51,6 +117,7 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 	ASTNode* returnNode = NULL;
 	ASTNode* currentNode = NULL;
 	ASTNode* tempNode = NULL;
+	ASTNode* parentNode = NULL;
 	for (list<pair<int, string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
 		int index = it->first;
 		string statement = it->second;
@@ -68,21 +135,24 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 		//stack was empty because of poping, going to the next level with fewer stmtList element
 		if (braces.empty() && !wasEmptyBeforePop) {
 			cutList(subStmtList);
-			ASTNode* recursiveNode = constructAST(subStmtList);
+			tempNode = constructAST(subStmtList);
 			subStmtList.clear();
-			tempNode = recursiveNode;
 		}
 		//stack was empty initially, stay at this level and append new node to the right sibling
 		else if (braces.empty() && wasEmptyBeforePop) {
-			tempNode = createNode(statement);
+			tempNode = createNode(statement, index);
 		}
-		if (index == -1)//it is a procedure statement;
+		if (tempNode == NULL)
 		{
-			procPosition.insert(pair<string, ASTNode*>(statement, tempNode));
+		}
+		else if (tempNode->getIndex() == -1)//it is a procedure statement;
+		{
+			procPosition.insert(pair<string, ASTNode*>
+				(tempNode->getContent(), tempNode));
 		}
 		else//it is a normal statement
 		{
-			statPosition[index] = tempNode;
+			statPosition[tempNode->getIndex()] = tempNode;
 		}
 		if (returnNode == NULL) {
 			returnNode = tempNode;
@@ -94,6 +164,7 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 				currentNode->getLeftSibling() == NULL && 
 				currentNode->getRightChild() == NULL)
 			{
+				parentNode = currentNode;
 				currentNode->setRightChild(tempNode);
 				tempNode->setParent(currentNode);
 				currentNode = tempNode;
@@ -102,6 +173,7 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 			{
 				currentNode->setRightSibling(tempNode);
 				tempNode->setLeftSibling(currentNode);
+				tempNode->setParent(parentNode);
 				currentNode = tempNode;
 			}
 		}
@@ -109,7 +181,7 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 	return returnNode;
 }
 
-ASTNode * AST::createNode(string str)
+ASTNode * AST::createNode(string str, int index)
 {
 	ASTNode* temp = NULL;
 	switch (getTypeOfStatement(str)) {
@@ -127,6 +199,7 @@ ASTNode * AST::createNode(string str)
 	default:
 		throw "error";
 	}
+	temp->setIndex(index);
 	return temp;
 }
 
@@ -167,6 +240,7 @@ void AST::cutList(list<pair<int, string>>& lst)
 {
 	int tempIndex;
 	string tempStat;
+
 	tempIndex = lst.front().first;
 	tempStat = lst.front().second;
 	tempStat = tempStat.substr(0, tempStat.size() - 1);
@@ -182,16 +256,16 @@ void AST::cutList(list<pair<int, string>>& lst)
 	lst.push_back(newBackPair);
 }
 
+void AST::checkIndex(int i)
+{
+	if (i > statPosition.size())
+	{
+		throw "index out of bound";
+	}
+}
 ASTNode * AST::createProc(string str)
 {
-	smatch matcher;
-	string procName;
-	bool found = regex_search(str, matcher, procDeclarationRegex);
-	if (found)
-	{
-		procName = matcher[1];
-	}
-	return new ASTNode(procName, "procedure");
+	return new ASTNode(getProcName(str), "procedure");
 }
 
 ASTNode * AST::createWhile(string str)
@@ -207,6 +281,18 @@ ASTNode * AST::createWhile(string str)
 	ASTNode* whileNode = new ASTNode("while");
 	whileNode->setLeftChild(varNode);
 	return whileNode;
+}
+
+string AST::getProcName(string str)
+{
+	smatch matcher;
+	string procName;
+	bool found = regex_search(str, matcher, procDeclarationRegex);
+	if (found)
+	{
+		procName = matcher[1];
+	}
+	return procName;
 }
 
 int AST::countNumOfRightBraces(string str)
@@ -239,3 +325,7 @@ int AST::getTypeOfStatement(string str)
 	}
 }
 
+bool AST::isContainer(ASTNode* node)
+{
+	return node->getNodeType() == "while" || node->getNodeType() == "if";
+}
