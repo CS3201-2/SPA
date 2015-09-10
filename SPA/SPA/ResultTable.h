@@ -1,5 +1,6 @@
 #include <string>
 #include <list>
+#include <vector>
 
 using namespace std;
 
@@ -10,14 +11,11 @@ class ResultTable
 {
 public:
 	ResultTable(string attr1, string attr2);
-	ResultTable mergeTable(ResultTable table_merged);
+	void addTuple(vector<string>);   //store a line in to table
 
 private:
-	// attr1 and attr2 is table header
-	bool _isTrueTable;
-	string _attr1;
-	string _attr2;
-	list<pair<string,string>> tempResult;
+	vector<string> header;
+	vector<vector<string>> result;
 };
 
 #endif

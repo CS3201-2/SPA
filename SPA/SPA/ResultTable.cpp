@@ -1,14 +1,15 @@
 #include "ResultTable.h"
+#include <vector>
+#include <string>
 
-
+using namespace std;
 
 ResultTable::ResultTable(string attr1, string attr2)
 {
-	_attr1 = attr1;
-	_attr2 = attr2;
-	_isTrueTable = NULL;
+	header.push_back(attr1);
+	header.push_back(attr2);
 }
 
-ResultTable ResultTable::mergeTable(ResultTable tableMerged) {
-
+void ResultTable::addTuple(vector<string> tuple) {
+	result.push_back(tuple);
 }

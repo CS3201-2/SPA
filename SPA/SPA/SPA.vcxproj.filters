@@ -105,6 +105,9 @@
     <ClCompile Include="QueryResultProjector.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
+    <ClCompile Include="ResultTable.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Controller.h">
@@ -183,6 +186,9 @@
       <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
     <ClInclude Include="QueryEvaluator.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="ResultTable.h">
       <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
   </ItemGroup>
