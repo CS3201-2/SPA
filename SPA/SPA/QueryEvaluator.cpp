@@ -83,7 +83,7 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 		resultList.push_back(processParent(tempString));
 	}
 	else if (relationship == "follows") {
-		processFollows(tempString);
+		resultList.push_back(processFollows(tempString));
 	}
 	else {
 
@@ -526,13 +526,61 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 }
 
 void QueryEvaluator::processPatternClause(vector<string> tempString) {
-	string varValue = tempString.at(0);
-	string varType = tempString.at(1);
-	string ptrn1 = tempString.at(2);
-	string ptrn1Type = tempString.at(3);
-	string ptrn2 = tempString.at(4);
-	string ptrn2Type = tempString.at(5);
+	string syn = tempString.at(0);
+	string synType = tempString.at(1);
+	string arg1 = tempString.at(2);
+	string arg1Type = tempString.at(3);
+	string arg2 = tempString.at(4);
+	string arg2Type = tempString.at(5);
 
+	AST ast = pkb.getAST();
+	//syn has to be assign in prototype
+	if (arg1Type == "string") {
+		ResultTable tempResult = ResultTable();
+		int arg1ID = pkb.getVarTable().get_ID(arg1);
+		list<int> stmtList = pkb.getModifies().get_modifies_line(arg1ID);
+		for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
+			if (ast.matchExpression(*i,arg2)) {
+				tempResult.isWholeTrue = 1;
+				resultList.push_back(tempResult);
+				return;
+			}
+		}
+		tempResult.isWholeTrue = 0;
+		resultList.push_back(tempResult);
+		return;
+	}
+	else if (arg1Type == "all") {
+		ResultTable tempResult = ResultTable();
+		list<int> assignList = pkb.getAssignList();
+		for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+			if (ast.matchExpression(*i, arg2)) {
+				tempResult.isWholeTrue = 1;
+				resultList.push_back(tempResult);
+				return;
+			}
+		}
+		tempResult.isWholeTrue = 0;
+		resultList.push_back(tempResult);
+		return;
+	}
+	else if (arg1Type == "variable") {
+		ResultTable tempResult = ResultTable(arg1);
+		list<int> assignList = pkb.getAssignList();
+		vector<int> temp;
+		for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+			if (ast.matchExpression(*i, arg2)) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+		}
+		resultList.push_back(tempResult);
+		return;
+	}
+	else {
+		return;
+	}
 	//Right hand side of the pattern clause is given to patternMatchAssign() in the PKB
 	//patternMatchAssign() will return all assignment statements that matches the given string
 
