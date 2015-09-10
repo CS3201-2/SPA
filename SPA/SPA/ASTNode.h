@@ -12,14 +12,16 @@ public:
 	ASTNode(string);
 	ASTNode(string, string);
 	//ASTNode(NodeType);
-	void setNodeType(string);
+	string getNodeType();
 	string getContent();
+	int getIndex();
+	void setNodeType(string);
 	void setLeftChild(ASTNode*);
 	void setRightChild(ASTNode*);
 	void setLeftSibling(ASTNode*);
 	void setRightSibling(ASTNode*);
 	void setParent(ASTNode*);
-	string getNodeType();
+	void setIndex(int);
 
 	//list<ASTNode> getChildren();
 	ASTNode* getLeftSibling();
@@ -29,6 +31,7 @@ public:
 	ASTNode* getParent();
 
 private:
+	int _index;
 	string _nodeType;
 	string _nodeContent;
 	ASTNode* _parent;

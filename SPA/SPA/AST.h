@@ -25,11 +25,12 @@ public:
 	void acceptStatements(list<pair<int, string>>);
 private:
 	ASTNode* constructAST(list<pair<int, string>>&);
-	ASTNode* createNode(string);
+	ASTNode* createNode(string, int);
 	ASTNode* createAssign(string);
 	ASTNode* createProc(string);
 	ASTNode* createWhile(string);
 	ASTNode* createProg(string);
+	string getProcName(string);
 	void cutList(list<pair<int, string>>&);
 	int countNumOfRightBraces(string);
 	int countNumOfLeftBraces(string);
