@@ -14,11 +14,11 @@ class AnotherExpressionTree
 	StackNode *top;
 
 public:
+	AnotherExpressionTree();
 	ASTNode* peek();
 	void build(string);
 
 private:
-	AnotherExpressionTree();
 	void clear();
 	void push(ASTNode* ptr);
 	void insert(string x);

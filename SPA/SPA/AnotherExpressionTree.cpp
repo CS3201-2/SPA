@@ -65,6 +65,7 @@ void AnotherExpressionTree::insert(string val)
 		push(nptr);
 	}
 }
+
 void AnotherExpressionTree::build(string input)
 {
 	Suffix sf;

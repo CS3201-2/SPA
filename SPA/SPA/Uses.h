@@ -16,6 +16,7 @@ public:
 
 	void set_uses_stmt( int, int );
 
+	list<int> getUsesVar(int stmt_number);
 private:
 	map<int,std::list<int>> usesMap;
 };
