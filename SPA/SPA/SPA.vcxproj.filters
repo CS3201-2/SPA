@@ -102,8 +102,13 @@
     <ClCompile Include="QueryResultProjector.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="AnotherExpressionTree.cpp">
       <Filter>Source Files\PKB</Filter>
+=======
+    <ClCompile Include="ResultTable.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+>>>>>>> Parser
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +189,8 @@
     </ClInclude>
     <ClInclude Include="AnotherExpressionTree.h">
       <Filter>Header Files\PKB</Filter>
+    <ClInclude Include="ResultTable.h">
+      <Filter>Header Files\Query Processor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
