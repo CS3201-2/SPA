@@ -5,6 +5,7 @@
 #include "VarTable.h"
 #include "QueryEvaluator.h"
 #include "QueryTree.h"
+#include "ResultTable.h"
 #include "PKB.h"
 #include <string>
 #include <list>
@@ -21,7 +22,7 @@ using namespace::std;
 QueryEvaluator::QueryEvaluator(PKB my_pkb, QueryTree qt) {
 	pkb = my_pkb;
 	queryTree = qt;
-	isFirstClause = true;
+	//isFirstClause = true;
 }
 // entry function for controller;
 void QueryEvaluator::evaluate() {
@@ -67,7 +68,7 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString, vector<str
 	string relationship = tempString.at(0);
 
 	if (relationship == "modifies") {
-		processModifies(tempString, selectClause);
+		resultList.push_back(processModifies(tempString, selectClause));
 	}
 	else if (relationship == "uses") {
 		processUses(tempString, selectClause);
@@ -83,7 +84,14 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString, vector<str
 	}
 }
 
-void QueryEvaluator::processModifies(vector<string> tempString, vector<string> selectClause) {
+bool QueryEvaluator::isInList(list<int> list, int number) {
+	if (find(list.begin(), list.end(), number) != list.end()) {
+		return true;
+	}
+	return false;
+}
+
+ResultTable QueryEvaluator::processModifies(vector<string> tempString, vector<string> selectClause) {
 	string select = selectClause.at(0);
 	string selectType = selectClause.at(1);
 
@@ -91,103 +99,98 @@ void QueryEvaluator::processModifies(vector<string> tempString, vector<string> s
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
-	
+
 	if (arg2Type == "string") {
 		int arg2ID = pkb.getVarTable().get_ID(arg2);
 		list<int> modifiesLine = pkb.getModifies().get_modifies_line(arg2ID);
-		if (isFirstClause) {
-			if (arg1Type == "prog_line") {
-				if (find(modifiesLine.begin(), modifiesLine.end(), stoi(arg1)) != modifiesLine.end()) {
-					return;
-				}
-				else {
-					isFirstClause = 0;
-					return;
-				}
-			}
-			for (list<int>::iterator it = modifiesLine.begin(); it != modifiesLine.end(); ++it) {
-				ASTNode node = pkb.getAST().getNode(*it);  //this function is to be implemented in AST
-				if (node.getNodeType() == arg1Type) {
-					tempResult.push_back(node);
-				}
-			}
-			isFirstClause = 0;
-		}
-		else {
+		if (arg1Type == "prog_line") {
+			ResultTable tempResult = ResultTable();
 			if (find(modifiesLine.begin(), modifiesLine.end(), arg1) != modifiesLine.end()) {
-				return;
+				tempResult.isWholeTrue = 1;
 			}
 			else {
-				tempResult.clear();
-				return;
+				tempResult.isWholeTrue = 0;
 			}
-			if (tempResult.empty) {
-				return;
-			}
-			for (list<ASTNode>::iterator it = tempResult.begin(); it != tempResult.end(); ++it) {
-				if (find(modifiesLine.begin(), modifiesLine.end(), it->getStmtNumber()) == modifiesLine.end()) {
-					tempResult.erase(it);
+			return tempResult;
+		}
+		else if (arg1Type == "while" || arg1Type == "assign") {
+			ResultTable tempResult = ResultTable(arg1);
+			list<int> whileList = pkb.getWhileList();
+			list<int> assignList = pkb.getAssignList();
+			vector<int> temp;
+			if (arg1Type == "while") {
+				for (list<int>::iterator i = modifiesLine.begin(); i != modifiesLine.end(); i++) {
+					if (isInList(whileList, *i)) {
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
 				}
 			}
+			else {
+				for (list<int>::iterator i = modifiesLine.begin(); i != modifiesLine.end(); i++) {
+					if (isInList(assignList, *i)) {
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			return tempResult;
 		}
 	}
-	else if(arg2Type == "variable"){
-		//list<int> modifiesLine = pkb.getModifies();
-		if (isFirstClause) {
-			if (arg1Type == "prog_line" ) {
-				ASTNode node = pkb.getAST().getNode(stoi(arg1));
-				tempResult.push_back(node);
-			}
-			else if (arg1Type == "assign") {
-				list<ASTNode> nodeList = pkb.getAST().getAllAssignNodes();
-				for (list<ASTNode>::iterator it = nodeList.begin(); it != nodeList.end(); ++it) {
-					tempResult.push_back(*it);
-				}
-			}
-			else if (arg1Type == "while") {
-				list<ASTNode> nodeList = pkb.getAST().getAllWhileNodes();
-				for (list<ASTNode>::iterator it = nodeList.begin(); it != nodeList.end(); ++it) {
-					tempResult.push_back(*it);
-				}
-			}
-			else {
 
+	else if( arg2Type == "variable" ) {
+		Modifies modifies = pkb.getModifies();
+		if (arg1Type == "prog_line") {
+			list<int> varList = modifies.getModifiesVar(stoi(arg1));
+			ResultTable tempResult = ResultTable(arg2);
+			vector<int> temp;
+			for (list<int>::iterator i = varList.begin(); i != varList.end(); i++) {
+				temp.push_back(stoi(arg1));
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
 			}
-			isFirstClause = 0;
+			return tempResult;
 		}
-		else {
-			if (arg1Type == "prog_line") {
-				for (list<ASTNode>::iterator it = tempResult.begin(); it != tempResult.end(); ++it) {
-					if (it->getStmtNumber() == stoi(arg1)) {
-						return;
+		else if (arg1Type == "while" || arg1Type == "assign") {
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			list<int> whileList = pkb.getWhileList();
+			list<int> assignList = pkb.getAssignList();
+			vector<int> temp;
+			if (arg1Type == "while") {
+				for (list<int>::iterator i = whileList.begin(); i != whileList.end(); i++) {
+					list<int> varList = modifies.getModifiesVar(*i);
+					for (list<int>::iterator t = varList.begin(); t != varList.end(); t++) {
+						temp.push_back(*i);
+						temp.push_back(*t);
+						tempResult.addTuple(temp);
+						temp.clear();
 					}
 				}
-				tempResult.clear();
-				return;
 			}
-			else if (arg1Type == "assign") {
-				for (list<ASTNode>::iterator it = tempResult.begin(); it != tempResult.end(); ++it) {
-					if (it->getNodeType() == "assign") {
-						return;
+			else {
+				for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+					list<int> varList = modifies.getModifiesVar(*i);
+					for (list<int>::iterator t = varList.begin(); t != varList.end(); t++) {
+						temp.push_back(*i);
+						temp.push_back(*t);
+						tempResult.addTuple(temp);
+						temp.clear();
 					}
 				}
-				tempResult.clear();
-				return;
 			}
-			else if (arg1Type == "while") {
-				for (list<ASTNode>::iterator it = tempResult.begin(); it != tempResult.end(); ++it) {
-					if (it->getNodeType() == "while") {
-						return;
-					}
-				}
-				tempResult.clear();
-				return;
-			}
+			return tempResult;
 		}
 	}
+	else {
+		return ResultTable();
+	}
+	
 }
 
-void QueryEvaluator::processUses(vector<string> tempString, vector<string> selectClause) {
+ResultTable QueryEvaluator::processUses(vector<string> tempString, vector<string> selectClause) {
 	string select = selectClause.at(0);
 	string selectType = selectClause.at(1);
 
@@ -195,9 +198,97 @@ void QueryEvaluator::processUses(vector<string> tempString, vector<string> selec
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
+
+	if (arg2Type == "string") {
+		int arg2ID = pkb.getVarTable().get_ID(arg2);
+		list<int> usesLine = pkb.getUses().get_uses_stmt(arg2ID);
+		if (arg1Type == "prog_line") {
+			ResultTable tempResult = ResultTable();
+			if (find(usesLine.begin(), usesLine.end(), arg1) != usesLine.end()) {
+				tempResult.isWholeTrue = 1;
+			}
+			else {
+				tempResult.isWholeTrue = 0;
+			}
+			return tempResult;
+		}
+		else if (arg1Type == "while" || arg1Type == "assign") {
+			ResultTable tempResult = ResultTable(arg1);
+			list<int> whileList = pkb.getWhileList();
+			list<int> assignList = pkb.getAssignList();
+			vector<int> temp;
+			if (arg1Type == "while") {
+				for (list<int>::iterator i = usesLine.begin(); i != usesLine.end(); i++) {
+					if (isInList(whileList, *i)) {
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			else {
+				for (list<int>::iterator i = usesLine.begin(); i != usesLine.end(); i++) {
+					if (isInList(assignList, *i)) {
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			return tempResult;
+		}
+	}
+
+	else if (arg2Type == "variable") {
+		Uses uses = pkb.getUses();
+		if (arg1Type == "prog_line") {
+			list<int> varList = uses.getUsesVar(stoi(arg1));
+			ResultTable tempResult = ResultTable(arg2);
+			vector<int> temp;
+			for (list<int>::iterator i = varList.begin(); i != varList.end(); i++) {
+				temp.push_back(stoi(arg1));
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			return tempResult;
+		}
+		else if (arg1Type == "while" || arg1Type == "assign") {
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			list<int> whileList = pkb.getWhileList();
+			list<int> assignList = pkb.getAssignList();
+			vector<int> temp;
+			if (arg1Type == "while") {
+				for (list<int>::iterator i = whileList.begin(); i != whileList.end(); i++) {
+					list<int> varList = uses.getUsesVar(*i);
+					for (list<int>::iterator t = varList.begin(); t != varList.end(); t++) {
+						temp.push_back(*i);
+						temp.push_back(*t);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			else {
+				for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+					list<int> varList = uses.getUsesVar(*i);
+					for (list<int>::iterator t = varList.begin(); t != varList.end(); t++) {
+						temp.push_back(*i);
+						temp.push_back(*t);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			return tempResult;
+		}
+	}
+	else {
+		return ResultTable();
+	}
 }
 
-void QueryEvaluator::processParent(vector<string> tempString, vector<string> selectClause) {
+ResultTable QueryEvaluator::processParent(vector<string> tempString, vector<string> selectClause) {
 	string select = selectClause.at(0);
 	string selectType = selectClause.at(1);
 	
