@@ -14,17 +14,18 @@ class QueryEvaluator {
 private:
 	PKB pkb;
 	QueryTree queryTree;
-	//vector<vector<string>> result;
+	list<ResultTable> resultList;
 	//int suchThatTreeIndex = 0;
 	//int patternTreeIndex = 0;
 	list<ASTNode> tempResult;
+	bool isInList(list<int>, int);
 	bool isFirstClause;
 
 public:
-	void processModifies(vector<string> tempString, vector<string> selectClause);
-	void processUses(vector<string> tempString, vector<string> selectClause);
-	void processParent(vector<string> tempString, vector<string> selectClause);
-	void processFollows(vector<string> tempString, vector<string> selectClause);
+	ResultTable processModifies(vector<string> tempString, vector<string> selectClause);
+	ResultTable processUses(vector<string> tempString, vector<string> selectClause);
+	ResultTable processParent(vector<string> tempString, vector<string> selectClause);
+	ResultTable processFollows(vector<string> tempString, vector<string> selectClause);
 	QueryEvaluator( PKB, QueryTree );
 	void evaluate();
 	vector<vector<string>> getResult();

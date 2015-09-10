@@ -11,11 +11,13 @@ class ResultTable
 {
 public:
 	ResultTable(string attr1, string attr2);
-	void addTuple(vector<string>);   //store a line in to table
-
+	ResultTable(string attr1);
+	ResultTable();
+	void addTuple(vector<int>);   //store a line in to table
+	int isWholeTrue;// -1 doesnt matter, 0 false, 1 true
 private:
 	vector<string> header;
-	vector<vector<string>> result;
+	vector<vector<int>> result;
 };
 
 #endif
