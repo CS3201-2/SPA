@@ -24,3 +24,11 @@ ResultTable::ResultTable(string attr1)
 void ResultTable::addTuple(vector<int> tuple) {
 	result.push_back(tuple);
 }
+
+vector<string> ResultTable::getHeader() {
+	return header;
+}
+
+vector<vector<int>> ResultTable::getResult() {
+	return result;
+}

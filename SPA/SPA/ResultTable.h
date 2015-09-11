@@ -15,6 +15,8 @@ public:
 	ResultTable();
 	void addTuple(vector<int>);   //store a line in to table
 	int isWholeTrue;// -1 doesnt matter, 0 false, 1 true
+	vector<string> getHeader();
+	vector<vector<int>> getResult();
 private:
 	vector<string> header;
 	vector<vector<int>> result;
