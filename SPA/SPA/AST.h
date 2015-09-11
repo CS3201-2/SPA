@@ -9,7 +9,8 @@
 #include "AnotherExpressionTree.h"
 
 using namespace std;
-
+#ifndef AST_H
+#define AST_H
 class AST
 {
 	map<string, ASTNode*> procPosition;
@@ -47,4 +48,4 @@ private:
 	bool isFullMatch(string);
 	string cutString(string);
 };
-
+#endif
