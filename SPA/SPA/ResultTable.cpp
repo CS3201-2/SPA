@@ -21,6 +21,13 @@ ResultTable::ResultTable(string attr1)
 	header.push_back(attr1);
 }
 
+ResultTable::ResultTable(int isWholeTrueA, vector<string> headerA, vector<vector<int>> resultA) 
+{
+	isWholeTrue = isWholeTrueA;
+	header = headerA;
+	result = resultA;
+}
+
 void ResultTable::addTuple(vector<int> tuple) {
 	result.push_back(tuple);
 }
@@ -31,4 +38,8 @@ vector<string> ResultTable::getHeader() {
 
 vector<vector<int>> ResultTable::getResult() {
 	return result;
+}
+
+int ResultTable::getIsWholeTrue() {
+	return isWholeTrue;
 }
