@@ -77,7 +77,7 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 				return false;
 			} else {
 				varMap[synonyms.at(i)] = arrDec.at(0);
-				//qt.addVariable(synonyms.at(i), arrDec.at(0));
+				qt.insertVariable(synonyms.at(i), arrDec.at(0));
 				//cout << varMap.find("a")->second;
 			}
 		}
