@@ -166,6 +166,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 			if (!r.isArgValid(relType, i + 1, "string")) {
 				return INVALID;
 			} else {
+				arrVar.at(i) = arrVar.at(i).substr(1, arrVar.at(i).size() - 2);
 				varTypes.at(i) = "string";
 			}
 
@@ -188,7 +189,6 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 
 		}
 	}
-	//cout << "yes";
 
 	qt.insertSuchThat(relType, arrVar, varTypes);
 
@@ -239,6 +239,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 		if (!r.isArgValid(relType, 1, "string")) {
 			return INVALID;
 		} else {
+			arrVar.at(0) = arrVar.at(0).substr(1, arrVar.at(0).size() - 2);
 			varType.at(0) = "string";
 		}
 
@@ -322,7 +323,6 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery)
 
 bool QueryValidator::isValidVariableName(string varName)
 {
-	//cout << "no";
 	if (varName.length() == 0) {
 		return false;
 	}
