@@ -25,9 +25,6 @@
     <ClCompile Include="ProcTable.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="Suffix.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
     <ClCompile Include="Uses.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
@@ -73,11 +70,14 @@
     <ClCompile Include="ResultTable.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
+    <ClCompile Include="Prefix.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="Suffix.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnotherExpressionTree.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
     <ClInclude Include="ASTNode.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
@@ -97,9 +97,6 @@
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="ProcTable.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
-    <ClInclude Include="Suffix.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="Uses.h">
@@ -140,6 +137,15 @@
     </ClInclude>
     <ClInclude Include="ResultTable.h">
       <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="AnotherExpressionTree.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefix.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="Suffix.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
