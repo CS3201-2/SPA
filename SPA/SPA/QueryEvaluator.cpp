@@ -21,14 +21,12 @@ using namespace::std;
 QueryEvaluator::QueryEvaluator() {
 	pkb = PKB();
 	queryTree = QueryTree();
-	//isFirstClause = true;
 }
 
 
 QueryEvaluator::QueryEvaluator(PKB my_pkb, QueryTree qt) {
 	pkb = my_pkb;
 	queryTree = qt;
-	//isFirstClause = true;
 }
 // entry function for controller;
 void QueryEvaluator::evaluate() {
@@ -118,7 +116,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 		list<int> modifiesLine = pkb.getModifies().get_modifies_line(arg2ID);
 		if (arg1Type == "prog_line") {
 			ResultTable tempResult = ResultTable();
-			if (find(modifiesLine.begin(), modifiesLine.end(), arg1) != modifiesLine.end()) {
+			if (find(modifiesLine.begin(), modifiesLine.end(), stoi(arg1)) != modifiesLine.end()) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -160,7 +158,6 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = varList.begin(); i != varList.end(); i++) {
-				temp.push_back(stoi(arg1));
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
@@ -215,7 +212,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 		list<int> usesLine = pkb.getUses().get_uses_stmt(arg2ID);
 		if (arg1Type == "prog_line") {
 			ResultTable tempResult = ResultTable();
-			if (find(usesLine.begin(), usesLine.end(), arg1) != usesLine.end()) {
+			if (find(usesLine.begin(), usesLine.end(), stoi(arg1)) != usesLine.end()) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -938,9 +935,4 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 	else {
 		return;
 	}
-}
-
-vector<string> QueryEvaluator::combineResult(vector<string> suchThatResult, vector<string> patternResult) {
-	// This function does the intersection of results from such that and pattern
-	return vector<string>();
 }
