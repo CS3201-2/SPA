@@ -20,8 +20,9 @@ public:
 
 	string getVarName(int);
 
+	map<string, int> varTable;
 private:
-	map<string,int> varTable;
+
 };
 
 #endif

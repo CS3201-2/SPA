@@ -22,7 +22,6 @@ string Suffix::getSuffix()
 }
 
 void Suffix::computeSuffix(string str)
-//assert(str is without space)
 {
 	string operandBuffer = "";
 	string output = "";
@@ -86,7 +85,6 @@ void Suffix::extractOperandBuffer()
 	if (!(_operandBuffer == ""))
 	{
 		_suffix += _operandBuffer;
-		//_suffix += ',';
 		_operandBuffer = "";
 	}
 }
@@ -118,7 +116,6 @@ void Suffix::popStack(char c)
 	while (temp != c)
 	{
 		_suffix += temp;
-		//_suffix += ',';
 		_operatorStack.pop();
 		temp = _operatorStack.top();
 	}
@@ -131,7 +128,6 @@ void Suffix::compareOperator(char c)
 	while (_outStack[c] <= _inStack[temp])
 	{
 		_suffix += temp;
-		//_suffix += ',';
 		_operatorStack.pop();
 		temp = _operatorStack.top();
 	}

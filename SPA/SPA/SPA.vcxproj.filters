@@ -43,33 +43,6 @@
     <ClCompile Include="UI.cpp">
       <Filter>Source Files\Front-end Parser</Filter>
     </ClCompile>
-    <ClCompile Include="QueryController.cpp">
-      <Filter>Source Files\Query Processor</Filter>
-    </ClCompile>
-    <ClCompile Include="QueryEvaluator.cpp">
-      <Filter>Source Files\Query Processor</Filter>
-    </ClCompile>
-    <ClCompile Include="QueryResultProjector.cpp">
-      <Filter>Source Files\Query Processor</Filter>
-    </ClCompile>
-    <ClCompile Include="QueryTree.cpp">
-      <Filter>Source Files\Query Processor</Filter>
-    </ClCompile>
-    <ClCompile Include="QueryValidator.cpp">
-      <Filter>Source Files\Query Processor</Filter>
-    </ClCompile>
-    <ClCompile Include="Relationship.cpp">
-      <Filter>Source Files\Query Processor</Filter>
-    </ClCompile>
-    <ClCompile Include="RelationshipTable.cpp">
-      <Filter>Source Files\Query Processor</Filter>
-    </ClCompile>
-    <ClCompile Include="ValidatorMain.cpp">
-      <Filter>Source Files\Query Processor</Filter>
-    </ClCompile>
-    <ClCompile Include="ResultTable.cpp">
-      <Filter>Source Files\Query Processor</Filter>
-    </ClCompile>
     <ClCompile Include="Prefix.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
@@ -117,30 +90,6 @@
     <ClInclude Include="Parser.h">
       <Filter>Header Files\Front-end Parser</Filter>
     </ClInclude>
-    <ClInclude Include="QueryController.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
-    <ClInclude Include="QueryEvaluator.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
-    <ClInclude Include="QueryResultProjector.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
-    <ClInclude Include="QueryTree.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
-    <ClInclude Include="QueryValidator.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
-    <ClInclude Include="Relationship.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
-    <ClInclude Include="RelationshipTable.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
-    <ClInclude Include="ResultTable.h">
-      <Filter>Header Files\Query Processor</Filter>
-    </ClInclude>
     <ClInclude Include="AnotherExpressionTree.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
@@ -170,17 +119,11 @@
     <Filter Include="Header Files\PKB">
       <UniqueIdentifier>{4c7f4efa-4e89-4e3c-bebc-3fabc74277f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Query Processor">
-      <UniqueIdentifier>{74b6d7a0-b325-4019-a0cf-d70e678c24eb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Front-end Parser">
       <UniqueIdentifier>{10e243dc-a56d-45a2-894c-895171c40266}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\PKB">
       <UniqueIdentifier>{0beae119-0c19-4e75-86e4-4954a7b6901e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Query Processor">
-      <UniqueIdentifier>{b9f3750e-20eb-4d33-8116-48ab5159eae3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

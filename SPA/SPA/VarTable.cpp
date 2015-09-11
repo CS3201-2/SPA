@@ -1,6 +1,7 @@
 #include "VarTable.h"
 #include <map>
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -11,7 +12,7 @@ VarTable::VarTable(void)
 
 int VarTable::get_ID(string varName)
 {
-	if (varTable.find(varName) != varTable.end()) { 
+	if (varTable.find(varName) != varTable.end()) {
 		return varTable.at(varName); 
 	}
 	else {

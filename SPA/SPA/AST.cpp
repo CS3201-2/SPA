@@ -191,7 +191,7 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 				tempNode->setParent(currentNode);
 				currentNode = tempNode;
 			}
-			else //if (currentNode->getParent() != NULL || currentNode->getLeftSibling() != NULL)
+			else
 			{
 				currentNode->setRightSibling(tempNode);
 				tempNode->setLeftSibling(currentNode);
@@ -280,11 +280,12 @@ void AST::cutList(list<pair<int, string>>& lst)
 
 void AST::checkIndex(int i)
 {
-	if (i > statPosition.size())
+	if (i > statPosition.size() || i < 0)
 	{
 		throw "index out of bound";
 	}
 }
+
 ASTNode * AST::createProc(string str)
 {
 	return new ASTNode(getProcName(str), "procedure");

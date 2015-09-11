@@ -43,22 +43,18 @@ void Prefix::computePrefix(string str)
 	{
 		if (isOperand(str[i]))
 		{
-			//cout << "operand found" << endl;
 			updateOperandBuffer(str[i]);
 		}
 		else
 		{
 			extractOperandBuffer();
 			_prefix.push_back(toString(str[i]));
-			//solveOperator(str[i]);
 		}
 
 	}
 	extractOperandBuffer();
-	//cout << "queue size is " << _operandQ.size() << endl;
 	_operandQ.push("#");
 	popOperand();
-	//pushLeft();
 }
 
 void Prefix::initializeStack()
@@ -86,9 +82,7 @@ void Prefix::extractOperandBuffer()
 {
 	if (!(_operandBuffer == ""))
 	{
-		//cout << "I push into OperandQ " << _operandBuffer << endl;
 		_operandQ.push(_operandBuffer);
-		//_Prefix.push_back(_operandBuffer);
 		_operandBuffer = "";
 	}
 }
@@ -161,7 +155,6 @@ void Prefix::pushLeft()
 void Prefix::popOperand()
 {
 	string temp = _operandQ.front();
-	//cout << "var is " << temp << endl;
 	while (temp != "#")
 	{
 		_prefix.push_back(temp);

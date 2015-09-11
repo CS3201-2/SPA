@@ -98,9 +98,7 @@ bool AnotherExpressionTree::compareExpression(ASTNode* node, string exp)
 	Suffix sf;
 	sf.acceptExpression(exp);
 	string suffixExpression = sf.getSuffix();
-	//cout << "suffix of given pattern is " << suffixExpression <<endl;
 	string interpretedExpression = interpreteExpression(node);
-	//cout << "suffix of the tree is " << interpretedExpression << endl;
 	return interpretedExpression == suffixExpression;
 }
 
