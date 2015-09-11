@@ -40,7 +40,7 @@ PKB Parser::parseSource( string source ) {
 
 	AST ast = AST();
 	ast.acceptStatements(sourceCodeList);
-
+	pkb.setAST(ast);
 	// comments for Macong: sourceCodeList is the list filled with SOURCE line strings
 
 	return pkb;
