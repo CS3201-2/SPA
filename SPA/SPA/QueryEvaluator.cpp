@@ -41,6 +41,9 @@ void QueryEvaluator::evaluate() {
 	for (index = 0; index < queryTree.getPatternSize(); index++) {
 		processPatternClause(getPatternClause(index));
 	}
+	for (index = 0; index < queryTree.getSelectSize(); index++) {
+		processSelectClause(getSelectClause(index));
+	}
 }
 
 //Retrieve information from respective trees
@@ -608,6 +611,43 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	*/
 }
 
+void QueryEvaluator::processSelectClause(vector<string> tempString) {
+	string syn = tempString.at(0);
+	string synType = tempString.at(1);
+	list<int> whileList = pkb.getWhileList();
+	list<int> assignList = pkb.getAssignList();
+	if (synType == "while") {
+		ResultTable tempResult = ResultTable(syn);
+		vector<int> temp;
+		for (list<int>::iterator i = whileList.begin(); i != whileList.end; i++) {
+			temp.push_back(*i);
+			tempResult.addTuple(temp);
+			temp.clear();
+		}
+		resultList.push_back(tempResult);
+		return;
+	}
+	else if (synType == "assign") {
+		ResultTable tempResult = ResultTable(syn);
+		vector<int> temp;
+		for (list<int>::iterator i = assignList.begin(); i != assignList.end; i++) {
+			temp.push_back(*i);
+			tempResult.addTuple(temp);
+			temp.clear();
+		}
+		resultList.push_back(tempResult);
+		return;
+	}
+	else if (synType == "string" || "prog_line") {
+		ResultTable tempResult = ResultTable();
+		tempResult.isWholeTrue = 1;
+		resultList.push_back(tempResult);
+		return;
+	}
+	else {
+		return;
+	}
+}
 vector<string> QueryEvaluator::combineResult(vector<string> suchThatResult, vector<string> patternResult) {
 	// This function does the intersection of results from such that and pattern
 	return vector<string>();
