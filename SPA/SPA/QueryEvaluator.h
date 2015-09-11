@@ -38,6 +38,7 @@ public:
 	vector<string> combineResult(vector<string> suchThatResult, vector<string> patternResult);
 	void processSuchThatClause(vector<string> tempString);
 	void processPatternClause(vector<string> tempString);
+	void processSelectClause(vector<string> tempString);
 	//vector<string> updateResult(vector<string> tempResult);
 };
 
