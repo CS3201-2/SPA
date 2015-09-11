@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include "ResultTable.h"
+#include "PKB.h"
 
 using namespace std;
 
@@ -12,14 +13,18 @@ using namespace std;
 class QueryResultProjector
 {
 public:
-	QueryResultProjector(list<ResultTable> resultList);
-	void mergeTable();
-	ResultTable getResultTable();
+	QueryResultProjector(list<ResultTable> resultList, string select, string selectType, PKB myPkb);
+	string getResult();
 
 private:
 	list<ResultTable> _resultList;
 	ResultTable _resultTable;
+	void mergeTable();
 	int _isWholeTrue;// -1 doesnt matter, 0 false, 1 true
+	string _select;
+	string _selectType;
+	PKB _myPkb;
+
 	int getIndexOf(vector<string> header, string str);
 	void createResultHeader(vector<string>& resultHeader, vector<string> header);
 	void createResultTable(vector<vector<int>>& result, vector<vector<int>> table);

@@ -31,4 +31,12 @@ int VarTable::get_size()
 	return varTable.size();
 }
 
+string VarTable::getVarName(int varId) {
+	for (map<string, int>::iterator it = varTable.begin(); it != varTable.end(); ++it) {
+		if ((*it).second == varId) {
+			return (*it).first;
+		}
+	}
+}
+
 

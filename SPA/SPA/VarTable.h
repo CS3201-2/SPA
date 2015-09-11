@@ -18,6 +18,8 @@ public:
 
 	int get_size();
 
+	string getVarName(int);
+
 private:
 	map<string,int> varTable;
 };
