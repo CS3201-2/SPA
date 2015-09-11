@@ -112,7 +112,10 @@ void Parser::processSourceCodeList(list<std::pair<int, string>>& stmtList) {
 			pkb.addAssignList((*it).first); 
 			processAssignment(*it, modifiesList, usesList); 
 			break;
-		case procDeclarationStmt: break;
+		case procDeclarationStmt: 
+			modifiesList.clear();
+			usesList.clear();
+			break;
 		case procCallStmt: break;
 		case whileStmt: 
 			pkb.addWhileList((*it).first); 
