@@ -30,15 +30,16 @@ bool AST::matchExpression(int index, string exp)
 {
 	checkIndex(index);
 	ASTNode* node = getNode(index);
-	if (node->getNodeType == "assignment")
+	if (node->getNodeType() == "assignment")
 	{
 		if (isFullMatch(exp))
 		{
-
+			return AnotherExpressionTree::compareExpression(node->getRightChild(), exp);
 		}
 		else
 		{
-
+			string target = cutString(exp);
+			return isPartialMatch(node->getRightChild(), target);
 		}
 	}
 	else
@@ -343,6 +344,28 @@ int AST::getTypeOfStatement(string str)
 	else
 	{
 		throw "error";
+	}
+}
+
+bool AST::isPartialMatch(ASTNode * node, string exp)
+{
+	if (node != NULL)
+	{
+		bool compare = AnotherExpressionTree::compareExpression(node, exp);
+		if (compare)
+		{
+			return true;
+		}
+		else
+		{
+			ASTNode* right = node->getRightChild();
+			ASTNode* left = node->getLeftChild();
+			return isPartialMatch(right, exp) || isPartialMatch(left, exp);
+		}
+	}
+	else
+	{
+		return false;
 	}
 }
 

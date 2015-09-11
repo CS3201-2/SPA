@@ -41,27 +41,17 @@ ASTNode* AnotherExpressionTree::pop()
 }
 string AnotherExpressionTree::interpreteExpression(ASTNode * node)
 {
-	ASTNode* left = node->getLeftChild();
-	ASTNode* right = node->getRightChild();
-	string l;
-	string r;
-	if (isOperator(left))
+	if (isOperator(node))
 	{
-		l = interpreteExpression(left);
+		ASTNode* left = node->getLeftChild();
+		ASTNode* right = node->getRightChild();
+		return interpreteExpression(left) + interpreteExpression(right) + 
+			node->getNodeType();
 	}
 	else
 	{
-		l = left->getContent();
+		return node->getContent();
 	}
-	if (isOperator(right))
-	{
-		r = interpreteExpression(right);
-	}
-	else
-	{
-		r = right->getContent();
-	}
-	return l + r + node->getNodeType();
 }
 /** function to get top node **/
 ASTNode* AnotherExpressionTree::peek()
@@ -108,7 +98,9 @@ bool AnotherExpressionTree::compareExpression(ASTNode* node, string exp)
 	Suffix sf;
 	sf.acceptExpression(exp);
 	string suffixExpression = sf.getSuffix();
+	//cout << "suffix of given pattern is " << suffixExpression <<endl;
 	string interpretedExpression = interpreteExpression(node);
+	//cout << "suffix of the tree is " << interpretedExpression << endl;
 	return interpretedExpression == suffixExpression;
 }
 
