@@ -38,8 +38,9 @@ PKB Parser::parseSource( string source ) {
 
 	processSourceCodeList(sourceCodeList);
 
-	AST ast = AST(sourceCodeList);
-	ast.constructTree();
+	AST ast = AST();
+	ast.acceptStatements(sourceCodeList);
+	ast.build();
 
 	// comments for Macong: sourceCodeList is the list filled with SOURCE line strings
 
