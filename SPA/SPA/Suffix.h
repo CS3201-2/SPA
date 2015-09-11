@@ -5,7 +5,8 @@
 #include<stack>
 
 using namespace std;
-
+#ifndef Suffix_H
+#define Suffix_H
 class Suffix
 {
 	unordered_map<char, int> _inStack;
@@ -27,4 +28,4 @@ private:
 	void popStack(char);
 	void compareOperator(char);	
 };
-
+#endif

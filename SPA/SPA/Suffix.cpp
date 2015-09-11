@@ -49,7 +49,10 @@ void Suffix::computeSuffix(string str)
 
 	}
 	extractOperandBuffer();
-	_suffix += _operatorStack.top();
+	if (_operatorStack.top() != '#')
+	{
+		_suffix += _operatorStack.top();
+	}
 }
 
 void Suffix::initializeStack()
