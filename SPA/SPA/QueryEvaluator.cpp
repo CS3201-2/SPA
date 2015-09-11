@@ -88,6 +88,12 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	else if (relationship == "follows") {
 		resultList.push_back(processFollows(tempString));
 	}
+	else if (relationship == "parent*") {
+		resultList.push_back(processParentStar(tempString));
+	}
+	else if (relationship == "follows*") {
+		resultList.push_back(processFollowsStar(tempString));
+	}
 	else {
 
 	}
@@ -528,6 +534,291 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 	}
 }
 
+ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
+	AST ast = pkb.getAST();
+	if (arg2Type == "prog_line") {
+
+		if (arg1Type == "prog_line") {//means result table should reaturn 1 or 0;
+			ResultTable tempResult = ResultTable();
+			int parent = ast.getParent(stoi(arg2));
+			while (parent != -1) {
+				if (parent == stoi(arg1)) {
+					tempResult.isWholeTrue = 1;
+					return tempResult;
+				}
+				parent = ast.getParent(parent);
+			}
+			tempResult.isWholeTrue = 0;
+			return tempResult;
+		}
+		else if (arg1Type == "while") {
+			ResultTable tempResult = ResultTable(arg1);
+			int parent = ast.getParent(stoi(arg2));
+			vector<int> temp;
+			while (parent != -1) {
+				if (parent == stoi(arg1)) {
+					temp.push_back(parent);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+				parent = ast.getParent(parent);
+			}
+			return tempResult;
+		}
+		else {
+			cerr << "Parent* arg1Type undefined" << endl;
+			return ResultTable();
+		}
+	}
+	else if (arg2Type == "while" || arg2Type == "assign") {
+		list<int> whileList = pkb.getWhileList();
+		list<int> assignList = pkb.getAssignList();
+		if (arg1Type == "prog_line") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			if (find(whileList.begin(), whileList.end(), stoi(arg1)) == whileList.end()) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			
+			if (arg2Type == "while") {
+				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+					int parent = ast.getParent(*t);
+					while (parent != -1) {
+						if (parent == stoi(arg1)) {
+							temp.push_back(*t);
+							tempResult.addTuple(temp);
+							temp.clear();
+						}
+						parent = ast.getParent(parent);
+					}
+				}
+			}
+			else if (arg2Type == "assign") {
+				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
+					int parent = ast.getParent(*t);
+					while (parent != -1) {
+						if (parent == stoi(arg1)) {
+							temp.push_back(*t);
+							tempResult.addTuple(temp);
+							temp.clear();
+						}
+						parent = ast.getParent(parent);
+					}
+				}
+			}
+			return tempResult;
+		}
+		else if (arg1Type == "while") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg2Type == "while") {
+				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+					for (list<int>::iterator i = whileList.begin(); i != whileList.end(); i++) {
+						int parent = ast.getParent(*i);
+						while (parent != -1) {
+							if (parent == *t) {
+								temp.push_back(*t);
+								temp.push_back(*i);
+								tempResult.addTuple(temp);
+								temp.clear();
+							}
+							parent = ast.getParent(parent);
+						}
+					}
+				}
+			}
+			else if (arg2Type == "assign") {
+				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+					for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+						int parent = ast.getParent(*i);
+						while (parent != -1) {	
+							if (parent == *t) {
+								temp.push_back(*t);
+								temp.push_back(*i);
+								tempResult.addTuple(temp);
+								temp.clear();
+							}
+							parent = ast.getParent(parent);
+						}
+					}
+				}
+			}			
+			return tempResult;
+		}
+		else {
+			return ResultTable();
+		}
+	}
+}
+
+ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
+	AST ast = pkb.getAST();
+	if (arg2Type == "prog_line") {
+		list<int> whileList = pkb.getWhileList();
+		list<int> assignList = pkb.getAssignList();
+		if (arg1Type == "prog_line") {//means result table should reaturn 1 or 0;
+			ResultTable tempResult = ResultTable();
+			int brother = ast.getFollowBefore(stoi(arg2));
+			while (brother != -1) {
+				if (brother == stoi(arg1)) {
+					tempResult.isWholeTrue = 1;
+					return tempResult;
+				}
+				brother = ast.getFollowBefore(brother);
+			}
+			tempResult.isWholeTrue = 0;
+			return tempResult;
+		}
+		else if (arg1Type == "while" || arg1Type == "assign") {
+			ResultTable tempResult = ResultTable(arg1);
+			int brother = ast.getFollowBefore(stoi(arg2));
+			if (brother == -1) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			vector<int> temp;
+			if (arg1Type == "while") {
+				int brother = ast.getFollowBefore(stoi(arg2));
+				while (brother != -1) {
+					if (isInList(whileList, brother)) {
+						temp.push_back(brother);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+					brother = ast.getFollowBefore(brother);
+				}
+			}
+			else if (arg1Type == "assign") {
+				int brother = ast.getFollowBefore(stoi(arg2));
+				while (brother != -1) {
+					if (isInList(assignList, brother)) {
+						temp.push_back(brother);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+					brother = ast.getFollowBefore(brother);
+				}
+			}
+			return tempResult;
+		}
+	}
+	else if (arg2Type == "while" || arg2Type == "assign") {
+		list<int> whileList = pkb.getWhileList();
+		list<int> assignList = pkb.getAssignList();
+		if (arg1Type == "prog_line") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			int rightSibling = ast.getFollowAfter(stoi(arg1));
+			if (rightSibling == -1) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			if (arg2Type == "while") {
+				int rightSibling = ast.getFollowAfter(stoi(arg1));
+				while (rightSibling != -1) {
+					if (isInList(whileList, rightSibling)) {
+						temp.push_back(rightSibling);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+					rightSibling = ast.getFollowAfter(rightSibling);
+				}
+			}
+			else if (arg2Type == "assign") {
+				int rightSibling = ast.getFollowAfter(stoi(arg1));
+				while (rightSibling != -1) {
+					if (isInList(assignList, rightSibling)) {
+						temp.push_back(rightSibling);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+					rightSibling = ast.getFollowAfter(rightSibling);
+				}
+			}
+			return tempResult;
+		}
+		else if (arg1Type == "while") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg2Type == "while") {
+				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+					int rightSibling = ast.getFollowAfter(*t);
+					while (rightSibling != -1) {
+						if (isInList(whileList, rightSibling)) {
+							temp.push_back(*t);
+							temp.push_back(rightSibling);
+							tempResult.addTuple(temp);
+							temp.clear();
+						}
+						rightSibling = ast.getFollowAfter(rightSibling);
+					}
+				}
+			}
+			else if (arg2Type == "assign") {
+				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+					int rightSibling = ast.getFollowAfter(*t);
+					while (rightSibling != -1) {
+						if (isInList(assignList, rightSibling)) {
+							temp.push_back(*t);
+							temp.push_back(rightSibling);
+							tempResult.addTuple(temp);
+							temp.clear();
+						}
+						rightSibling = ast.getFollowAfter(rightSibling);
+					}
+				}
+			}
+			return tempResult;
+		}
+		else if (arg1Type == "assign") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg2Type == "while") {
+				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
+					int rightSibling = ast.getFollowAfter(*t);
+					while (rightSibling != -1) {
+						if (isInList(whileList, rightSibling)) {
+							temp.push_back(*t);
+							temp.push_back(rightSibling);
+							tempResult.addTuple(temp);
+							temp.clear();
+						}
+						rightSibling = ast.getFollowAfter(rightSibling);
+					}
+				}
+			}
+			else if (arg2Type == "assign") {
+				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
+					int rightSibling = ast.getFollowAfter(*t);
+					while (rightSibling != -1) {
+						if (isInList(assignList, rightSibling)) {
+							temp.push_back(*t);
+							temp.push_back(rightSibling);
+							tempResult.addTuple(temp);
+							temp.clear();
+						}
+						rightSibling = ast.getFollowAfter(rightSibling);
+					}
+				}
+			}
+			return tempResult;
+		}
+		else {
+			cerr << "arg1Type" << endl;
+			return ResultTable();
+		}
+	}
+}
+
 void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	string syn = tempString.at(0);
 	string synType = tempString.at(1);
@@ -648,6 +939,7 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 		return;
 	}
 }
+
 vector<string> QueryEvaluator::combineResult(vector<string> suchThatResult, vector<string> patternResult) {
 	// This function does the intersection of results from such that and pattern
 	return vector<string>();
