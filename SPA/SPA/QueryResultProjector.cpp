@@ -35,7 +35,7 @@ string QueryResultProjector::getResult() {
 			}
 		}
 
-		for (list<int>::iterator it = resultList.begin; it != resultList.end(); ) {
+		for (list<int>::iterator it = resultList.begin(); it != resultList.end(); ) {
 			if (_selectType != "variable") {
 				result += to_string(*it);
 			}
@@ -59,7 +59,7 @@ void QueryResultProjector::mergeTable() {
 	vector<vector<int>> result;
 
 	for (list<ResultTable>::iterator it = _resultList.begin(); it != _resultList.end(); ++it) {
-		if ((*it).getIsWholeTrue == notApplicable) {
+		if ((*it).getIsWholeTrue() == notApplicable) {
 			//if resultHeader and result is initialy empty,
 			if (!resultHeader.empty() && !result.empty()) {
 				if ((*it).getResult().empty()) {
@@ -79,10 +79,10 @@ void QueryResultProjector::mergeTable() {
 				result = (*it).getResult();
 			}
 		}
-		else if ((*it).getIsWholeTrue == trueTable) {
+		else if ((*it).getIsWholeTrue() == trueTable) {
 			continue;
 		}
-		else if ((*it).getIsWholeTrue == falseTable) {
+		else if ((*it).getIsWholeTrue() == falseTable) {
 			_isWholeTrue = 0;
 			resultHeader.clear();
 			result.clear();
