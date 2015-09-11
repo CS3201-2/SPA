@@ -26,6 +26,27 @@ void AST::acceptStatements(list<pair<int, string>> lst)
 	build();
 }
 
+bool AST::matchExpression(int index, string exp)
+{
+	checkIndex(index);
+	ASTNode* node = getNode(index);
+	if (node->getNodeType == "assignment")
+	{
+		if (isFullMatch(exp))
+		{
+
+		}
+		else
+		{
+
+		}
+	}
+	else
+	{
+		throw "not an assignment";
+	}
+}
+
 int AST::getFollowAfter(int index)
 {
 	checkIndex(index);
@@ -328,4 +349,15 @@ int AST::getTypeOfStatement(string str)
 bool AST::isContainer(ASTNode* node)
 {
 	return node->getNodeType() == "while" || node->getNodeType() == "if";
+}
+
+bool AST::isFullMatch(string str)
+{
+	return str[0] != '_';
+}
+
+string AST::cutString(string str)
+{
+	string subStr = str.substr(1, str.size() - 2);
+	return subStr;
 }

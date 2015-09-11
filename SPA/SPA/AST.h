@@ -43,5 +43,7 @@ private:
 	int countNumOfLeftBraces(string);
 	int getTypeOfStatement(string);
 	bool isContainer(ASTNode*);
+	bool isFullMatch(string);
+	string cutString(string);
 };
 
