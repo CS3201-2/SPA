@@ -139,6 +139,7 @@
     <ClCompile Include="QueryTree.cpp" />
     <ClCompile Include="ResultTable.cpp" />
     <ClCompile Include="Prefix.cpp" />
+    <ClCompile Include="StackNode.cpp" />
     <ClCompile Include="Suffix.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Uses.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="QueryTree.h" />
     <ClInclude Include="ResultTable.h" />
     <ClInclude Include="Prefix.h" />
+    <ClInclude Include="StackNode.h" />
     <ClInclude Include="Suffix.h" />
     <ClInclude Include="Uses.h" />
     <ClInclude Include="VarTable.h" />

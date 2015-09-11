@@ -76,6 +76,9 @@
     <ClCompile Include="Suffix.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="StackNode.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTNode.h">
@@ -145,6 +148,9 @@
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="Suffix.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="StackNode.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
