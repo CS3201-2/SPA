@@ -27,6 +27,9 @@ public:
 	ResultTable processUses(vector<string> tempString);
 	ResultTable processParent(vector<string> tempString);
 	ResultTable processFollows(vector<string> tempString);
+	ResultTable QueryEvaluator::processParentStar(vector<string> tempstring);
+	ResultTable QueryEvaluator::processFollowsStar(vector<string> tempstring);
+
 	QueryEvaluator( PKB, QueryTree );
 	QueryEvaluator();
 	void evaluate();
