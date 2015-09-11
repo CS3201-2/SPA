@@ -910,7 +910,7 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 	if (synType == "while") {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
-		for (list<int>::iterator i = whileList.begin(); i != whileList.end; i++) {
+		for (list<int>::iterator i = whileList.begin(); i != whileList.end(); i++) {
 			temp.push_back(*i);
 			tempResult.addTuple(temp);
 			temp.clear();
@@ -921,7 +921,7 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 	else if (synType == "assign") {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
-		for (list<int>::iterator i = assignList.begin(); i != assignList.end; i++) {
+		for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 			temp.push_back(*i);
 			tempResult.addTuple(temp);
 			temp.clear();
