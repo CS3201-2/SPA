@@ -149,6 +149,25 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			}
 			return tempResult;
 		}
+		else if (arg1Type == "all") {
+			ResultTable tempResult = ResultTable(arg1);
+			list<int> whileList = pkb.getWhileList();
+			list<int> assignList = pkb.getAssignList();
+			vector<int> temp;
+			list<int> stmtList = whileList;
+			stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+			for (list<int>::iterator i = modifiesLine.begin(); i != modifiesLine.end(); i++) {
+				if (isInList(stmtList, *i)) {
+					temp.push_back(*i);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;
+		}
+		else {
+			cerr << "arg1 input Err" << endl;
+		}
 	}
 
 	else if( arg2Type == "variable" ) {
@@ -192,6 +211,27 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 				}
 			}
 			return tempResult;
+		}
+		else if (arg1Type == "all") {
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			list<int> whileList = pkb.getWhileList();
+			list<int> assignList = pkb.getAssignList();
+			vector<int> temp;
+
+			list<int> stmtList = whileList;
+			stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+			for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
+				list<int> varList = modifies.getModifiesVar(*i);
+				for (list<int>::iterator t = varList.begin(); t != varList.end(); t++) {
+					temp.push_back(*i);
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+		}
+		else {
+			cerr << "arg1 inout err" << endl;
 		}
 	}
 	else {
@@ -245,6 +285,21 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			}
 			return tempResult;
 		}
+		else if (arg1Type == "all") {
+			ResultTable tempResult = ResultTable(arg1);
+			list<int> whileList = pkb.getWhileList();
+			list<int> assignList = pkb.getAssignList();
+			list<int> stmtList = whileList;
+			stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+			vector<int> temp;
+			for (list<int>::iterator i = usesLine.begin(); i != usesLine.end(); i++) {
+				if (isInList(stmtList, *i)) {
+					temp.push_back(*i);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+		}
 	}
 
 	else if (arg2Type == "variable") {
@@ -290,6 +345,27 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			}
 			return tempResult;
 		}
+		else if (arg1Type == "all") {
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			list<int> whileList = pkb.getWhileList();
+			list<int> assignList = pkb.getAssignList();
+			vector<int> temp;
+			list<int> stmtList = whileList;
+			stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+			for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
+				list<int> varList = uses.getUsesVar(*i);
+				for (list<int>::iterator t = varList.begin(); t != varList.end(); t++) {
+					temp.push_back(*i);
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+
+		}
+		else {
+			cerr << "arg1 err "<< endl;
+		}
 	}
 	else {
 		return ResultTable();
@@ -315,7 +391,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "while") {
+		else if (arg1Type == "while" || arg1Type == "all") {
 			ResultTable tempResult = ResultTable(arg1);
 			int parent = ast.getParent(stoi(arg2));
 			vector<int> temp;
@@ -331,7 +407,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			return tempResult;
 		}
 	}
-	else if (arg2Type == "while" || arg2Type == "assign") {
+	else if (arg2Type == "while" || arg2Type == "assign" || arg2Type == "all") {
 		list<int> whileList = pkb.getWhileList();
 		list<int> assignList = pkb.getAssignList();
 		if (arg1Type == "prog_line") {
@@ -354,6 +430,17 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			else if(arg2Type =="assign") {
 				for (list<int>::iterator t = childList.begin(); t != childList.end(); t++) {
 					if (isInList(assignList, *t)) {
+						temp.push_back(*t);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			else if (arg2Type == "all") {
+				list<int> stmtList = whileList;
+				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+				for (list<int>::iterator t = childList.begin(); t != childList.end(); t++) {
+					if (isInList(stmtList, *t)) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
@@ -391,11 +478,29 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 					}
 				}
 			}
+			else if (arg2Type == "all") {
+				list<int> stmtList = whileList;
+ 				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+					list<int> childList = ast.getChild(*t);
+					for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+						if (isInList(stmtList, *i)) {
+							temp.push_back(*t);
+							temp.push_back(*i);
+							tempResult.addTuple(temp);
+							temp.clear();
+						}
+					}
+				}
+			}
 			return tempResult;
 		}
 		else {
 			return ResultTable();
 		}
+	}
+	else {
+		cerr << "arg2 input err" << endl;
 	}
 }
 
@@ -419,7 +524,7 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "while" || arg1Type == "assign") {
+		else if (arg1Type == "while" || arg1Type == "assign" || arg1Type == "all") {
 			ResultTable tempResult = ResultTable(arg1);
 			int brother = ast.getFollowBefore(stoi(arg2));
 			if (brother == -1) {
@@ -441,15 +546,29 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 					temp.clear();
 				}
 			}
+			else if (arg1Type == "all") {
+				list<int> stmtList = whileList;
+				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+				if (isInList(stmtList, brother)) {
+					temp.push_back(brother);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			else {
+				cerr << "arg1 input err" << endl;
+			}
 			return tempResult;
 		}
 	}
-	else if (arg2Type == "while" || arg2Type == "assign") {
-		list<int> whileList = pkb.getWhileList();
-		list<int> assignList = pkb.getAssignList();
+	else if (arg2Type == "while" || arg2Type == "assign" || arg2Type == "all") {
+		
 		if (arg1Type == "prog_line") {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
+			list<int> whileList = pkb.getWhileList();
+			list<int> assignList = pkb.getAssignList();
+
 			int rightSibling = ast.getFollowAfter(stoi(arg1));
 			if ( rightSibling == -1) {
 				tempResult.isWholeTrue = 0;
@@ -469,11 +588,22 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 					temp.clear();
 				}
 			}
+			else if (arg2Type == "all") {
+				list<int> stmtList = whileList;
+				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+				if (isInList(stmtList, rightSibling)) {
+					temp.push_back(rightSibling);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
 			return tempResult;
 		}
 		else if (arg1Type == "while" ) {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
+			list<int> whileList = pkb.getWhileList();
+			list<int> assignList = pkb.getAssignList();
 			if (arg2Type == "while") {
 				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
 					int rightSibling = ast.getFollowAfter(*t);
@@ -489,6 +619,19 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
 					int rightSibling = ast.getFollowAfter(*t);
 					if (rightSibling != -1 && isInList(assignList, rightSibling)) {
+						temp.push_back(*t);
+						temp.push_back(rightSibling);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			else if (arg2Type == "all") {
+				list<int> stmtList = whileList;
+				stmtList.insert(stmtList.end(),assignList.begin(), assignList.end());
+				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+					int rightSibling = ast.getFollowAfter(*t);
+					if (rightSibling != -1 && isInList(stmtList, rightSibling)) {
 						temp.push_back(*t);
 						temp.push_back(rightSibling);
 						tempResult.addTuple(temp);
@@ -501,6 +644,8 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 		else if (arg1Type == "assign") {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
+			list<int> whileList = pkb.getWhileList();
+			list<int> assignList = pkb.getAssignList();
 			if (arg2Type == "while") {
 				for (list<int>::iterator t = assignList.begin(); t != whileList.end(); t++) {
 					int rightSibling = ast.getFollowAfter(*t);
@@ -516,6 +661,19 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 				for (list<int>::iterator t = assignList.begin(); t != whileList.end(); t++) {
 					int rightSibling = ast.getFollowAfter(*t);
 					if (rightSibling != -1 && isInList(assignList, rightSibling)) {
+						temp.push_back(*t);
+						temp.push_back(rightSibling);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			else if (arg2Type == "all") {
+				list<int> stmtList = whileList;
+				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+ 				for (list<int>::iterator t = assignList.begin(); t != whileList.end(); t++) {
+					int rightSibling = ast.getFollowAfter(*t);
+					if (rightSibling != -1 && isInList(stmtList, rightSibling)) {
 						temp.push_back(*t);
 						temp.push_back(rightSibling);
 						tempResult.addTuple(temp);
@@ -552,7 +710,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 			tempResult.isWholeTrue = 0;
 			return tempResult;
 		}
-		else if (arg1Type == "while") {
+		else if (arg1Type == "while" || arg1Type == "all") {
 			ResultTable tempResult = ResultTable(arg1);
 			int parent = ast.getParent(stoi(arg2));
 			vector<int> temp;
@@ -571,7 +729,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 			return ResultTable();
 		}
 	}
-	else if (arg2Type == "while" || arg2Type == "assign") {
+	else if (arg2Type == "while" || arg2Type == "assign" || arg2Type == "all") {
 		list<int> whileList = pkb.getWhileList();
 		list<int> assignList = pkb.getAssignList();
 		if (arg1Type == "prog_line") {
@@ -607,6 +765,24 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 						parent = ast.getParent(parent);
 					}
 				}
+			}
+			else if (arg2Type == "all") {
+				list<int> stmtList = whileList;
+				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+				for (list<int>::iterator t = stmtList.begin(); t != stmtList.end(); t++) {
+					int parent = ast.getParent(*t);
+					while (parent != -1) {
+						if (parent == stoi(arg1)) {
+							temp.push_back(*t);
+							tempResult.addTuple(temp);
+							temp.clear();
+						}
+						parent = ast.getParent(parent);
+					}
+				}
+			}
+			else {
+				cerr << "arg2 type err" << endl;
 			}
 			return tempResult;
 		}
@@ -644,7 +820,25 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 						}
 					}
 				}
-			}			
+			}
+			else if (arg2Type == "all") {
+				list<int> stmtList;
+ 				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+					for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
+						int parent = ast.getParent(*i);
+						while (parent != -1) {
+							if (parent == *t) {
+								temp.push_back(*t);
+								temp.push_back(*i);
+								tempResult.addTuple(temp);
+								temp.clear();
+							}
+							parent = ast.getParent(parent);
+						}
+					}
+				}
+			}
 			return tempResult;
 		}
 		else {
@@ -675,7 +869,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 			tempResult.isWholeTrue = 0;
 			return tempResult;
 		}
-		else if (arg1Type == "while" || arg1Type == "assign") {
+		else if (arg1Type == "while" || arg1Type == "assign" || arg1Type == "all") {
 			ResultTable tempResult = ResultTable(arg1);
 			int brother = ast.getFollowBefore(stoi(arg2));
 			if (brother == -1) {
@@ -705,10 +899,26 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 					brother = ast.getFollowBefore(brother);
 				}
 			}
+			else if (arg1Type == "all") {
+				list<int> stmtList;
+				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+ 				int brother = ast.getFollowBefore(stoi(arg2));
+				while (brother != -1) {
+					if (isInList(stmtList, brother)) {
+						temp.push_back(brother);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+					brother = ast.getFollowBefore(brother);
+				}
+			}
+			else {
+				cerr << "arg1 inut err" << endl;
+			}
 			return tempResult;
 		}
 	}
-	else if (arg2Type == "while" || arg2Type == "assign") {
+	else if (arg2Type == "while" || arg2Type == "assign" || arg2Type == "all") {
 		list<int> whileList = pkb.getWhileList();
 		list<int> assignList = pkb.getAssignList();
 		if (arg1Type == "prog_line") {
@@ -740,6 +950,22 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 					}
 					rightSibling = ast.getFollowAfter(rightSibling);
 				}
+			}
+			else if (arg2Type == "all") {
+				list<int> stmtList;
+				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+				int rightSibling = ast.getFollowAfter(stoi(arg1));
+				while (rightSibling != -1) {
+					if (isInList(stmtList, rightSibling)) {
+						temp.push_back(rightSibling);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+					rightSibling = ast.getFollowAfter(rightSibling);
+				}
+			}
+			else {
+				cerr << "arg2Type wrong" << endl;
 			}
 			return tempResult;
 		}
@@ -774,6 +1000,22 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 					}
 				}
 			}
+			else if (arg2Type == "all") {
+				list<int> stmtList;
+				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+					int rightSibling = ast.getFollowAfter(*t);
+					while (rightSibling != -1) {
+						if (isInList(stmtList, rightSibling)) {
+							temp.push_back(*t);
+							temp.push_back(rightSibling);
+							tempResult.addTuple(temp);
+							temp.clear();
+						}
+						rightSibling = ast.getFollowAfter(rightSibling);
+					}
+				}
+			}
 			return tempResult;
 		}
 		else if (arg1Type == "assign") {
@@ -798,6 +1040,22 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 					int rightSibling = ast.getFollowAfter(*t);
 					while (rightSibling != -1) {
 						if (isInList(assignList, rightSibling)) {
+							temp.push_back(*t);
+							temp.push_back(rightSibling);
+							tempResult.addTuple(temp);
+							temp.clear();
+						}
+						rightSibling = ast.getFollowAfter(rightSibling);
+					}
+				}
+			}
+			else if (arg2Type == "all") {
+				list<int> stmtList;
+				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
+					int rightSibling = ast.getFollowAfter(*t);
+					while (rightSibling != -1) {
+						if (isInList(stmtList, rightSibling)) {
 							temp.push_back(*t);
 							temp.push_back(rightSibling);
 							tempResult.addTuple(temp);
@@ -919,6 +1177,19 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
 		for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+			temp.push_back(*i);
+			tempResult.addTuple(temp);
+			temp.clear();
+		}
+		resultList.push_back(tempResult);
+		return;
+	}
+	else if (synType == "stmt") {
+		ResultTable tempResult = ResultTable(syn);
+		vector<int> temp;
+		list<int> stmtList;
+		stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+		for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
 			temp.push_back(*i);
 			tempResult.addTuple(temp);
 			temp.clear();
