@@ -16,7 +16,7 @@ public:
 
 	void processSource();
 
-	void processQuery(string query);
+	list<string> processQuery(string query);
  
 private:
 	string source;

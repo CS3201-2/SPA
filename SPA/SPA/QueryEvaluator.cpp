@@ -30,7 +30,7 @@ QueryEvaluator::QueryEvaluator(PKB my_pkb, QueryTree qt) {
 	queryTree = qt;
 }
 // entry function for controller;
-void QueryEvaluator::evaluate() {
+string QueryEvaluator::evaluate() {
 	// first get selecet query, for iteration 1, only select first clause. hard code here
 	vector<string> select = getSelectClause(0);
 	int index;
@@ -57,7 +57,8 @@ void QueryEvaluator::evaluate() {
 
 	cout << "result" << endl;
 	QueryResultProjector qrp = QueryResultProjector(resultList, select.at(0), select.at(1), pkb);
-	cout << qrp.getResult() << endl;
+	//cout << qrp.getResult() << endl;
+	return qrp.getResult();
 }
 
 //Retrieve information from respective trees
@@ -470,6 +471,10 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1,arg2);
 			if (arg2Type == "while") {
+				if (arg1 == arg2) {
+					tempResult.isWholeTrue = 0;
+					return tempResult;
+				}
 				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
 					list<int> childList = ast.getChild(*t);
 					for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
@@ -622,6 +627,10 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 			list<int> whileList = pkb.getWhileList();
 			list<int> assignList = pkb.getAssignList();
 			if (arg2Type == "while") {
+				if (arg1 == arg2) {
+					tempResult.isWholeTrue = 0;
+					return tempResult;
+				}
 				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
 					int rightSibling = ast.getFollowAfter(*t);
 					if (rightSibling != -1 && isInList(whileList, rightSibling)) {
@@ -675,6 +684,10 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 				}
 			}
 			else if (arg2Type == "assign") {
+				if (arg1 == arg2) {
+					tempResult.isWholeTrue = 0;
+					return tempResult;
+				}
 				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
 					int rightSibling = ast.getFollowAfter(*t);
 					if (rightSibling != -1 && isInList(assignList, rightSibling)) {
@@ -809,6 +822,10 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			if (arg2Type == "while") {
+				if (arg1 == arg2) {
+					tempResult.isWholeTrue = 0;
+					return tempResult;
+				}
 				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
 					for (list<int>::iterator i = whileList.begin(); i != whileList.end(); i++) {
 						int parent = ast.getParent(*i);
@@ -993,6 +1010,10 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			if (arg2Type == "while") {
+				if (arg1 == arg2) {
+					tempResult.isWholeTrue = 0;
+					return tempResult;
+				}
 				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
 					int rightSibling = ast.getFollowAfter(*t);
 					while (rightSibling != -1) {
@@ -1056,6 +1077,10 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 				}
 			}
 			else if (arg2Type == "assign") {
+				if (arg1 == arg2) {
+					tempResult.isWholeTrue = 0;
+					return tempResult;
+				}
 				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
 					int rightSibling = ast.getFollowAfter(*t);
 					while (rightSibling != -1) {
