@@ -48,6 +48,7 @@ int main(void) {
 		for (auto& x : result) {
 			cout << x << endl;
 		}
+		cout << "---------------------------------" <<endl;
 	}
 	a.close();
 	cin.ignore();
