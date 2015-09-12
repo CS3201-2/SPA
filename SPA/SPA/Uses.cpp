@@ -12,7 +12,12 @@ Uses::Uses()
 
 list<int> Uses::get_uses_stmt( int var_id )
 {
-	return usesMap.at( var_id );
+	if (usesMap.find(var_id) == usesMap.end()) {
+		return list<int>();
+	}
+	else {
+		return usesMap.at(var_id);
+	}
 }
 
 void Uses::set_uses_stmt( int var_id, int stmt_number )

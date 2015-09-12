@@ -29,6 +29,10 @@ void AST::acceptStatements(list<pair<int, string>> lst)
 bool AST::matchExpression(int index, string exp)
 {
 	checkIndex(index);
+	if (exp == "_")
+	{
+		return true;
+	}
 	ASTNode* node = getNode(index);
 	if (node->getNodeType() == "assignment")
 	{
@@ -157,6 +161,11 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 		//stack was empty because of poping, going to the next level with fewer stmtList element
 		if (braces.empty() && !wasEmptyBeforePop) {
 			cutList(subStmtList);
+			cout << "sublist is : "<< endl;
+			for (auto& x : subStmtList)
+			{
+				cout << x.first;
+			}cout << endl;
 			tempNode = constructAST(subStmtList);
 			subStmtList.clear();
 		}
@@ -180,11 +189,12 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 			returnNode = tempNode;
 			currentNode = returnNode;
 		}
-		else
+		else if (tempNode != NULL)
 		{
 			if (currentNode->getParent() == NULL && 
 				currentNode->getLeftSibling() == NULL && 
-				currentNode->getRightChild() == NULL)
+				currentNode->getRightChild() == NULL &&
+				parentNode == NULL)
 			{
 				parentNode = currentNode;
 				currentNode->setRightChild(tempNode);
@@ -199,6 +209,7 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 				currentNode = tempNode;
 			}
 		}
+		tempNode = NULL;
 	}
 	return returnNode;
 }

@@ -13,7 +13,12 @@ Modifies::Modifies()
 
 list<int> Modifies::get_modifies_line( int var_id )
 {
-	return modifiesMap.at( var_id );
+	if (modifiesMap.find(var_id) == modifiesMap.end()) {
+		return list<int>();
+	} else{
+		return modifiesMap.at(var_id);
+	}
+	
 }
 
 void Modifies::set_modifies_stmt( int var_id, int stmt_number )
