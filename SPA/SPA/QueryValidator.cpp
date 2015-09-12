@@ -77,7 +77,7 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 				return false;
 			} else {
 				varMap[synonyms.at(i)] = arrDec.at(0);
-				cout << "dec: " << synonyms.at(i) <<" "<< arrDec.at(0) << endl;
+				//cout << "dec: " << synonyms.at(i) <<" "<< arrDec.at(0) << endl;
 				qt.insertVariable(synonyms.at(i), arrDec.at(0));
 				//cout << varMap.find("a")->second;
 			}
@@ -257,7 +257,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 		return INVALID;
 
 	}
-	
+
 	//arg2
 	string arg2 = arrVar.at(1);
 	string value;
@@ -285,6 +285,23 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 			}
 		}
 
+	} else if (arg2.at(0) == '\"' && arg2.at(arg2.size() - 1) == '\"'){
+		value = arg2.substr(1, arg2.size() - 2);
+		
+		if (isValidVariableName(value)) {
+			if (!r.isArgValid(relType, 2, "variable")) {
+				return INVALID;
+			}
+			else {
+				varType.at(1) = "variable";
+			}
+		} else if (isInteger(value)) {
+			if (!r.isArgValid(relType, 2, "constant")) {
+				return INVALID;
+			} else {
+				varType.at(1) = "constant";
+			}
+		} 
 	} else if (arg2.compare("_") == 0) {
 		r.isArgValid(relType, 1, "all");
 	} else {
