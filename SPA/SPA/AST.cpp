@@ -189,7 +189,7 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 			returnNode = tempNode;
 			currentNode = returnNode;
 		}
-		else// if (tempNode != NULL)
+		else if (tempNode != NULL)
 		{
 			if (currentNode->getParent() == NULL && 
 				currentNode->getLeftSibling() == NULL && 
@@ -209,6 +209,7 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 				currentNode = tempNode;
 			}
 		}
+		tempNode = NULL;
 	}
 	return returnNode;
 }
