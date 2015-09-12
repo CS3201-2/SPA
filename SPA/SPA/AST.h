@@ -9,7 +9,8 @@
 #include "AnotherExpressionTree.h"
 
 using namespace std;
-
+#ifndef AST_H
+#define AST_H
 class AST
 {
 	map<string, ASTNode*> procPosition;
@@ -42,6 +43,9 @@ private:
 	int countNumOfRightBraces(string);
 	int countNumOfLeftBraces(string);
 	int getTypeOfStatement(string);
+	bool isPartialMatch(ASTNode*, string);
 	bool isContainer(ASTNode*);
+	bool isFullMatch(string);
+	string cutString(string);
 };
-
+#endif

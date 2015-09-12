@@ -3,15 +3,55 @@
 #include <string>
 #include <algorithm>
 #include <list>
+#include "PKB.h"
 
 const int notApplicable = -1;
 const int trueTable = 1;
 const int falseTable = 0;
 
 //constructor
-QueryResultProjector::QueryResultProjector(list<ResultTable> resultList) {
+QueryResultProjector::QueryResultProjector(list<ResultTable> resultList, string select, string selectType, PKB myPkb) {
 	_resultList = resultList;
 	_isWholeTrue = -1;
+	_select = select;
+	_myPkb = myPkb;
+	_selectType = selectType;
+}
+
+string QueryResultProjector::getResult() {
+	mergeTable();
+
+	int index = getIndexOf(_resultTable.getHeader(), _select);
+	string result = "";
+
+	if (_resultTable.getResult().empty()) {
+		result += "none";
+	}
+	else {
+		list<int> resultList;
+		for (vector<vector<string>>::size_type i = 0; i < _resultTable.getResult().size(); ++i) {
+			if (find(resultList.begin(), resultList.end(), _resultTable.getResult()[i][index]) == resultList.end()) {
+				resultList.push_back(_resultTable.getResult()[i][index]);
+			}
+		}
+
+		for (list<int>::iterator it = resultList.begin(); it != resultList.end(); ) {
+			if (_selectType != "variable") {
+				result += to_string(*it);
+			}
+			else {
+				string varName = _myPkb.getVarTable().getVarName(*it);
+				result += varName;
+			}
+
+			++it;
+			if (it != resultList.end()) {
+				result += ", ";
+			}
+		}
+	}
+
+	return result;
 }
 
 void QueryResultProjector::mergeTable() {
@@ -19,12 +59,11 @@ void QueryResultProjector::mergeTable() {
 	vector<vector<int>> result;
 
 	for (list<ResultTable>::iterator it = _resultList.begin(); it != _resultList.end(); ++it) {
-		if ((*it).getIsWholeTrue == notApplicable) {
+		if ((*it).getIsWholeTrue() == notApplicable) {
 			//if resultHeader and result is initialy empty,
 			if (!resultHeader.empty() && !result.empty()) {
 				if ((*it).getResult().empty()) {
 					break;
-					result.clear();
 				}
 				else {
 					createResultHeader(resultHeader, (*it).getHeader());
@@ -40,10 +79,10 @@ void QueryResultProjector::mergeTable() {
 				result = (*it).getResult();
 			}
 		}
-		else if ((*it).getIsWholeTrue == trueTable) {
+		else if ((*it).getIsWholeTrue() == trueTable) {
 			continue;
 		}
-		else if ((*it).getIsWholeTrue == falseTable) {
+		else if ((*it).getIsWholeTrue() == falseTable) {
 			_isWholeTrue = 0;
 			resultHeader.clear();
 			result.clear();

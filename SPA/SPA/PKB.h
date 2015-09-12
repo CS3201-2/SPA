@@ -28,6 +28,7 @@ public:
 	void addAssignList(int);
 	list<int> getWhileList(void);
 	list<int> getAssignList(void);
+	void setAST(AST);
 
 private:
 	Modifies modifies;

@@ -15,14 +15,6 @@ AST::AST()
 	root = NULL;
 }
 
-void AST::build()
-{
-	statPosition.clear();
-	statPosition.resize(stmts.size() + 1, NULL);
-	procPosition.clear();
-	root = constructAST(stmts);
-}
-
 ASTNode* AST::getRoot()
 {
 	return root;
@@ -31,6 +23,97 @@ ASTNode* AST::getRoot()
 void AST::acceptStatements(list<pair<int, string>> lst)
 {
 	stmts = lst;
+	build();
+}
+
+bool AST::matchExpression(int index, string exp)
+{
+	checkIndex(index);
+	if (exp == "_")
+	{
+		return true;
+	}
+	ASTNode* node = getNode(index);
+	if (node->getNodeType() == "assignment")
+	{
+		if (isFullMatch(exp))
+		{
+			return AnotherExpressionTree::compareExpression(node->getRightChild(), exp);
+		}
+		else
+		{
+			string target = cutString(exp);
+			return isPartialMatch(node->getRightChild(), target);
+		}
+	}
+	else
+	{
+		throw "not an assignment";
+	}
+}
+
+int AST::getFollowAfter(int index)
+{
+	checkIndex(index);
+	ASTNode* nodeChosen = getNode(index);
+	ASTNode* rightSibling = nodeChosen->getRightSibling();
+	if (rightSibling == NULL)
+	{
+		return -1;
+	}
+	else
+	{
+		return rightSibling->getIndex();
+	}
+}
+
+int AST::getFollowBefore(int index)
+{
+	checkIndex(index);
+	ASTNode* nodeChosen = getNode(index);
+	ASTNode* leftSibling = nodeChosen->getLeftSibling();
+	if (leftSibling == NULL)
+	{
+		return -1;
+	}
+	else
+	{
+		return leftSibling->getIndex();
+	}
+}
+
+int AST::getParent(int index)
+{
+	checkIndex(index);
+	ASTNode* nodeChosed = getNode(index);
+	ASTNode* parent = nodeChosed->getParent();
+	if (parent == NULL)
+	{
+		throw "how can that be";
+	}
+	else
+	{
+		return parent->getIndex();
+	}
+}
+
+list<int> AST::getChild(int index)
+{
+	checkIndex(index);
+	list<int> tempLst;
+	tempLst.clear();
+	ASTNode* nodeChosen = getNode(index);
+	if (!isContainer(nodeChosen))
+	{
+		return tempLst;
+	}
+	ASTNode* child = nodeChosen->getRightChild();
+	while (child != NULL)
+	{
+		tempLst.push_back(child->getIndex());
+		child = child->getRightSibling();
+	}
+	return tempLst;
 }
 
 ASTNode* AST::getNode(string s)
@@ -43,6 +126,14 @@ ASTNode* AST::getNode(int index)
 	return statPosition[index];
 }
 
+void AST::build()
+{
+	statPosition.clear();
+	statPosition.resize(stmts.size() + 1, NULL);
+	procPosition.clear();
+	root = constructAST(stmts);
+}
+
 ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 {
 	list<pair<int, string>> subStmtList;
@@ -52,6 +143,7 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 	ASTNode* returnNode = NULL;
 	ASTNode* currentNode = NULL;
 	ASTNode* tempNode = NULL;
+	ASTNode* parentNode = NULL;
 	for (list<pair<int, string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
 		int index = it->first;
 		string statement = it->second;
@@ -69,6 +161,11 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 		//stack was empty because of poping, going to the next level with fewer stmtList element
 		if (braces.empty() && !wasEmptyBeforePop) {
 			cutList(subStmtList);
+			cout << "sublist is : "<< endl;
+			for (auto& x : subStmtList)
+			{
+				cout << x.first;
+			}cout << endl;
 			tempNode = constructAST(subStmtList);
 			subStmtList.clear();
 		}
@@ -92,23 +189,27 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 			returnNode = tempNode;
 			currentNode = returnNode;
 		}
-		else
+		else if (tempNode != NULL)
 		{
 			if (currentNode->getParent() == NULL && 
 				currentNode->getLeftSibling() == NULL && 
-				currentNode->getRightChild() == NULL)
+				currentNode->getRightChild() == NULL &&
+				parentNode == NULL)
 			{
+				parentNode = currentNode;
 				currentNode->setRightChild(tempNode);
 				tempNode->setParent(currentNode);
 				currentNode = tempNode;
 			}
-			else //if (currentNode->getParent() != NULL || currentNode->getLeftSibling() != NULL)
+			else
 			{
 				currentNode->setRightSibling(tempNode);
 				tempNode->setLeftSibling(currentNode);
+				tempNode->setParent(parentNode);
 				currentNode = tempNode;
 			}
 		}
+		tempNode = NULL;
 	}
 	return returnNode;
 }
@@ -172,13 +273,12 @@ void AST::cutList(list<pair<int, string>>& lst)
 {
 	int tempIndex;
 	string tempStat;
-	pair<int, string> newFrontPair;
+
 	tempIndex = lst.front().first;
 	tempStat = lst.front().second;
 	tempStat = tempStat.substr(0, tempStat.size() - 1);
 	lst.pop_front();
-	newFrontPair = pair<int, string>(tempIndex, tempStat);
-
+	pair<int, string> newFrontPair(tempIndex, tempStat);
 	lst.push_front(newFrontPair);
 
 	tempIndex = lst.back().first;
@@ -187,6 +287,14 @@ void AST::cutList(list<pair<int, string>>& lst)
 	lst.pop_back();
 	pair<int, string> newBackPair(tempIndex, tempStat);
 	lst.push_back(newBackPair);
+}
+
+void AST::checkIndex(int i)
+{
+	if (i > statPosition.size() || i < 0)
+	{
+		throw "index out of bound";
+	}
 }
 
 ASTNode * AST::createProc(string str)
@@ -251,3 +359,40 @@ int AST::getTypeOfStatement(string str)
 	}
 }
 
+bool AST::isPartialMatch(ASTNode * node, string exp)
+{
+	if (node != NULL)
+	{
+		bool compare = AnotherExpressionTree::compareExpression(node, exp);
+		if (compare)
+		{
+			return true;
+		}
+		else
+		{
+			ASTNode* right = node->getRightChild();
+			ASTNode* left = node->getLeftChild();
+			return isPartialMatch(right, exp) || isPartialMatch(left, exp);
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool AST::isContainer(ASTNode* node)
+{
+	return node->getNodeType() == "while" || node->getNodeType() == "if";
+}
+
+bool AST::isFullMatch(string str)
+{
+	return str[0] != '_';
+}
+
+string AST::cutString(string str)
+{
+	string subStr = str.substr(1, str.size() - 2);
+	return subStr;
+}

@@ -13,11 +13,6 @@ Controller::Controller( string sourceCode) {
 	source = sourceCode;
 }
 
-/*void Controller::display() {
-	for (StringList::const_iterator itr = source.begin(); itr != source.end(); ++itr)
-         cout << *itr << endl;
-}*/
-
 void Controller::processSource() {
 	if (!syntaxCheck()) {
 		cerr << "The SOURCE file got sytax error!" << endl;

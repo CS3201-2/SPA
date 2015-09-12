@@ -1,4 +1,5 @@
 #include"StackNode.h"
+#include"Prefix.h"
 #include"Suffix.h"
 #include<iostream>
 #include<regex>
@@ -17,7 +18,8 @@ public:
 	AnotherExpressionTree();
 	ASTNode* peek();
 	void build(string);
-
+	static bool compareExpression(ASTNode*, string);
+	static bool isOperator(ASTNode*);
 private:
 	void clear();
 	void push(ASTNode* ptr);
@@ -25,5 +27,6 @@ private:
 	bool isOperator(string str);
 	bool isNumber(string str);
 	ASTNode* pop();
+	static string interpreteExpression(ASTNode*);
 };
 #endif
