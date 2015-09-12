@@ -17,8 +17,8 @@ private:
 	QueryTree qt;
 
 	//bool parseString(string query);
-	bool parseDeclaration(string declaration);
-	bool parseQuery(string query);
+	bool isValidDeclaration(string declaration);
+	bool isValidQuery(string query);
 	bool isValidVariableName(string varName);
 	RETURN_TYPE findSuchThatClause(string &subquery);
 	RETURN_TYPE findPatternClause(string &subquery);
@@ -29,14 +29,14 @@ private:
 	string QueryValidator::trim(string content);
 	//string QueryValidator::removeSpaces(string line);
 	string stringToLower(string str);
-	bool varNameExists(string varName);
+	bool isVarNameExists(string varName);
 	string getVarType(string varName);
 	bool isStringVar(string str);
 	bool isInteger(string str);
 	bool isPositiveInteger(string str);
 public:
 	//void areValidQueries(list<string> queries);
-	bool parseString(string query);
+	bool isValidDecAndQuery(string query);
 	QueryTree getQueryTree(); 
 };
 #pragma once

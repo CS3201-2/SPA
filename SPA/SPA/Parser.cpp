@@ -35,13 +35,12 @@ PKB Parser::parseSource( string source ) {
 	list<std::pair<int, string>> sourceCodeList;
 
 	buildSourceCodeList(source, sourceCodeList);
-
+	
 	processSourceCodeList(sourceCodeList);
-
-	AST ast = AST(sourceCodeList);
-	ast.constructTree();
-
-	// comments for Macong: sourceCodeList is the list filled with SOURCE line strings
+	cout << "end of everything before ast." << endl;
+	AST ast = AST();
+	ast.acceptStatements(sourceCodeList);
+	pkb.setAST(ast);
 
 	return pkb;
 }
@@ -105,39 +104,28 @@ void Parser::processSourceCodeList(list<std::pair<int, string>>& stmtList) {
 	list<int> modifiesList;
 	list<int> usesList;
 
-	Modifies modifies = pkb.getModifies();
-	Uses uses = pkb.getUses();
-
+	Modifies& modifies = pkb.getModifies();
+	Uses& uses = pkb.getUses();
 	for (list<std::pair<int,string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
 		switch (getTypeOfStatement(*it)){
-		case assignmentStmt: processAssignment(*it, modifiesList, usesList); break;
-		case procDeclarationStmt: break;
+		case assignmentStmt: 
+			pkb.addAssignList((*it).first); 
+			processAssignment(*it, modifiesList, usesList); 
+			break;
+		case procDeclarationStmt: 
+			modifiesList.clear();
+			usesList.clear();
+			break;
 		case procCallStmt: break;
-		case whileStmt: processWhile(it, stmtList, modifiesList, usesList); break;
+		case whileStmt: 
+			pkb.addWhileList((*it).first); 
+			processWhile(it, stmtList, modifiesList, usesList); 
+			break;
 		case ifStmt: break;//for if
 		case elseStmt: break;//for else
 		case invalidStmt: break;//for invalid statement
 		default: break;
 		}
-
-		/*modifiesList.sort();
-		usesList.sort();
-		modifiesList.unique();
-		usesList.unique();*/
-
-		//for testing purposes
-		/*cout << "modifies: ";
-		for (list<string>::iterator listIter = modifiesList.begin(); listIter != modifiesList.end(); ++listIter) {
-			cout << *listIter;
-			cout << " ,";
-		}
-		cout << endl;
-		cout << "uses: ";
-		for (list<string>::iterator listIter = usesList.begin(); listIter != usesList.end(); ++listIter) {
-			cout << *listIter;
-			cout << " ,";
-		}
-		cout << endl;*/
 		
 		int stmtNumber = (*it).first;
 		for (list<int>::iterator listIter1 = modifiesList.begin(); listIter1 != modifiesList.end(); ++listIter1) {
@@ -175,13 +163,15 @@ void Parser::processWhile(list<pair<int, string>>::iterator it, list<std::pair<i
 			braces.push("{");
 		}
 		for (int i = 0; i < countNumOfRightBraces(*it); ++i) {
-			braces.pop();
+			if (!braces.empty()) {
+				braces.pop();
+			}
 		}
 		switch (getTypeOfStatement(*it)) {
-		case assignmentStmt: processAssignment(*it, tempModifiesList, tempUsesList); break;
+		case assignmentStmt: pkb.addAssignList((*it).first); processAssignment(*it, tempModifiesList, tempUsesList); break;
 		case procDeclarationStmt: break;
 		case procCallStmt: break;
-		case whileStmt: processWhile(it, stmtList, tempModifiesList, tempUsesList); break;
+		case whileStmt: pkb.addWhileList((*it).first); processWhile(it, stmtList, tempModifiesList, tempUsesList); break;
 		case ifStmt: break;//for if
 		case elseStmt: break;//for else
 		case invalidStmt: break;//for invalid statement
@@ -203,26 +193,17 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 	modifiesList.clear();
 	usesList.clear();
 
-	// clarification of uses and modification: Uses and Modifies are map{var_id, list<stmt_#>}, 
-	// so modifiesList and usesList no use here.
-
-	//and one more thing to consider here: the function pkb.getVarTable() should return a reference object.
-
 	for (it = str.begin(); it != str.end(); ++it) {
 		if (isMathSymbol(*it) || isSemicolon(*it)) {
 			if (isVariable(variable)) {
-				VarTable varTable = pkb.getVarTable();
+				VarTable& varTable = pkb.getVarTable();
 				int varID = varTable.get_ID(variable);
-
-				//if (flag) {
-					//modifies.set_modifies_stmt(varID, stmtNumber);
-				//}
+				
 				if (modifiesList.empty()) {
 					modifiesList.push_back(varID);
 				}
 				else {
 					usesList.push_back(varID);
-					//uses.set_uses_stmt(varID, stmtNumber);
 				}
 			}
 			variable = "";

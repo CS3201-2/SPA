@@ -13,7 +13,7 @@ class QueryController
 {
 private:
 public:
-	void validateQueries(list<string> queries, PKB my_pkb);
+	void processQueries(list<string> queries, PKB my_pkb);
 
 };
 

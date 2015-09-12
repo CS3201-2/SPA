@@ -2,6 +2,7 @@
 #include "Checker.h"
 #include "Parser.h"
 #include "PKB.h"
+#include "QueryController.h"
 #include <iostream>
 #include <string>
 #include <list>
@@ -12,11 +13,6 @@ typedef list<string> StringList;
 Controller::Controller( string sourceCode) {
 	source = sourceCode;
 }
-
-/*void Controller::display() {
-	for (StringList::const_iterator itr = source.begin(); itr != source.end(); ++itr)
-         cout << *itr << endl;
-}*/
 
 void Controller::processSource() {
 	if (!syntaxCheck()) {
@@ -36,4 +32,23 @@ int Controller::syntaxCheck() {
 PKB Controller::parse() {
 	Parser parser;
 	return parser.parseSource(source);
+}
+
+void Controller::processQuery(string query) {
+	string::iterator itr;
+	list<string> processedQueryList;
+
+	while (!query.empty()) {
+		size_t index = query.find("\n");
+		string temp = query.substr(0, index);
+		query = query.substr(index + 1, query.size());
+
+		index = query.find("\n");
+		temp += " " + query.substr(0, index);
+		query = query.substr(index + 1, query.size());
+		processedQueryList.push_back(temp);
+	}
+
+	QueryController queryController;
+	queryController.processQueries(processedQueryList, ctrPKB);
 }

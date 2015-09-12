@@ -55,7 +55,7 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Pattern
-	arg1 = { "variable", "all" };
+	arg1 = { "variable", "string", "all" };
 	arg2 = { "variable", "constant", "string", "all" };
 	Relationship r7(2, arg1, arg2);
 	relTable["pattern"] = r7;
