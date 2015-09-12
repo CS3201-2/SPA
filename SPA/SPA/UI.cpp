@@ -8,6 +8,7 @@ using namespace std;
 
 int main(void) {
 	ifstream inputFile;
+	ifstream a;
 
 	cout << "Welcome to Team Sigma's SPA project!" << endl;
 	
@@ -27,6 +28,21 @@ int main(void) {
 
 	cout << "Loaded!" << endl;
 	ctr.processSource();
+
+
+	cout << "Start Processing PQL" << endl;
+
+	a.open("query.txt");
+
+	if (a.fail()) {
+		cerr << "Cannot open 'query.txt'" << endl;
+		exit(1);
+	}
+
+	std::string sourceQuery((std::istreambuf_iterator<char>(a)),
+		(std::istreambuf_iterator<char>()));
+
+	ctr.processQuery(sourceQuery);
 
 	cin.ignore();
 	cin.get();
