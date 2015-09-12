@@ -20,16 +20,10 @@ namespace SPA_UnitTest
 		{
 			QueryValidator q;
 			vector<string> queries;
-<<<<<<< HEAD
-			queries.push_back("assign a;variable b; Select a such that Uses(a, \"x\")");
-			Assert::IsTrue(q.isValidDecAndQuery(queries.at(0)));
-=======
-
 			queries.push_back("assign a;variable b; Select a such that Uses(a, \"x\")");
 			queries.push_back("while w; assign a; Select w such that Follows(w, a)");
 			Assert::IsTrue(q.isValidDecAndQuery(queries.at(0)));
 			Assert::IsTrue(q.isValidDecAndQuery(queries.at(1)));
->>>>>>> master
 		}
 
 	};
