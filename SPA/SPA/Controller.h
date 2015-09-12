@@ -15,6 +15,8 @@ public:
 	//void display( void );
 
 	void processSource();
+
+	void processQuery(string query);
  
 private:
 	string source;

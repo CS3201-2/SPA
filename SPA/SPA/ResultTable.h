@@ -25,10 +25,11 @@ public:
 	//when print result, isWholeTrue = 0, table is empty, print none
 	//
 	//select 23, 0, return none; 1, return 23; -1, check table and decidei
-private:
-	
+
 	vector<string> header;
 	vector<vector<int>> result;
+private:
+
 };
 
 #endif
