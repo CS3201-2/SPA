@@ -24,8 +24,10 @@ list<string> QueryResultProjector::getResult() {
 	int index = getIndexOf(_resultTable.getHeader(), _select);
 	string result = "";
 
+	list<string> resultStringList;
+
 	if (_resultTable.getResult().empty()) {
-		result += "none";
+		resultStringList.push_back("none");
 	}
 	else {
 		list<int> resultList;
@@ -35,7 +37,6 @@ list<string> QueryResultProjector::getResult() {
 			}
 		}
 
-		list<string> resultStringList;
 
 		for (list<int>::iterator it = resultList.begin(); it != resultList.end(); ) {
 			if (_selectType != "variable") {
