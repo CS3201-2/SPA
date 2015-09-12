@@ -34,7 +34,7 @@ PKB Controller::parse() {
 	return parser.parseSource(source);
 }
 
-void Controller::processQuery(string query) {
+list<string> Controller::processQuery(string query) {
 	string::iterator itr;
 	list<string> processedQueryList;
 
@@ -50,5 +50,5 @@ void Controller::processQuery(string query) {
 	}
 
 	QueryController queryController;
-	queryController.processQueries(processedQueryList, ctrPKB);
+	return queryController.processQueries(processedQueryList, ctrPKB);
 }
