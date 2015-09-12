@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "QueryValidator.h"
+#include "..\SPA\QueryValidator.h"
+#include "..\SPA\PKB.h"
 //#include <list>
 //#include <string>
 
@@ -15,10 +16,9 @@ namespace SPA_UnitTest
 		TEST_METHOD(isValidQuery)
 		{
 			QueryValidator q;
-			list<string> queries;
-
+			vector<string> queries;
 			queries.push_back("assign a;variable b; Select a such that Uses(a, \"x\")");
-			q.isValidDecAndQuery(queries);
+			Assert::IsTrue(q.isValidDecAndQuery(queries.at(0)));
 		}
 
 	};

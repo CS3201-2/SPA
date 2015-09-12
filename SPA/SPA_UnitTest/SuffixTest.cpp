@@ -1,7 +1,7 @@
 #include<string>
 #include"CppUnitTest.h"
 #include "stdafx.h"
-#include "Suffix.h"
+#include "..\SPA\Suffix.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
