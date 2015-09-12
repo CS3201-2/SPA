@@ -163,7 +163,9 @@ void Parser::processWhile(list<pair<int, string>>::iterator it, list<std::pair<i
 			braces.push("{");
 		}
 		for (int i = 0; i < countNumOfRightBraces(*it); ++i) {
-			braces.pop();
+			if (!braces.empty()) {
+				braces.pop();
+			}
 		}
 		switch (getTypeOfStatement(*it)) {
 		case assignmentStmt: pkb.addAssignList((*it).first); processAssignment(*it, tempModifiesList, tempUsesList); break;
