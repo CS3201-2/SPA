@@ -1,4 +1,4 @@
-#include "QueryValidator.h"
+/*#include "QueryValidator.h"
 #include "RelationshipTable.h"
 #include <iostream>
 
@@ -23,11 +23,11 @@ int main() {
 	//cout << str3 << "\n";
 	//cout << str4 << "\n";
 	//cout << str6 << "\n";
-	q.isValidDecAndQuery(str8);
+	q.isValidDecAndQuery(str6);
 
 	//RelationshipTable r;
 
 	cin.ignore();
 	cin.get();
 	return 0;
-}
+}*/
