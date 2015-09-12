@@ -42,10 +42,6 @@ list<string> Controller::processQuery(string query) {
 		size_t index = query.find("\n");
 		string temp = query.substr(0, index);
 		query = query.substr(index + 1, query.size());
-
-		index = query.find("\n");
-		temp += " " + query.substr(0, index);
-		query = query.substr(index + 1, query.size());
 		processedQueryList.push_back(temp);
 	}
 

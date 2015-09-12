@@ -43,7 +43,7 @@ string QueryEvaluator::evaluate() {
 	for (index = 0; index < queryTree.getSelectSize(); index++) {
 		processSelectClause(getSelectClause(index));
 	}
-
+	/*
 	cout << "splited table" << endl;
 	for (auto& x : resultList) {
 		for (int i = 0; i < x.result.size(); ++i) {
@@ -56,6 +56,7 @@ string QueryEvaluator::evaluate() {
 	}
 
 	cout << "result" << endl;
+	*/
 	QueryResultProjector qrp = QueryResultProjector(resultList, select.at(0), select.at(1), pkb);
 	//cout << qrp.getResult() << endl;
 	return qrp.getResult();
