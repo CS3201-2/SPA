@@ -161,11 +161,11 @@ ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
 		//stack was empty because of poping, going to the next level with fewer stmtList element
 		if (braces.empty() && !wasEmptyBeforePop) {
 			cutList(subStmtList);
-			cout << "sublist is : "<< endl;
+			/*cout << "sublist is : "<< endl;
 			for (auto& x : subStmtList)
 			{
 				cout << x.first;
-			}cout << endl;
+			}cout << endl;*/
 			tempNode = constructAST(subStmtList);
 			subStmtList.clear();
 		}

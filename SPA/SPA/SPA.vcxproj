@@ -173,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="prototype_test.txt" />
+    <Text Include="query.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

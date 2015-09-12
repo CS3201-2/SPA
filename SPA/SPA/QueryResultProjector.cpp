@@ -18,14 +18,16 @@ QueryResultProjector::QueryResultProjector(list<ResultTable> resultList, string 
 	_selectType = selectType;
 }
 
-string QueryResultProjector::getResult() {
+list<string> QueryResultProjector::getResult() {
 	mergeTable();
 
 	int index = getIndexOf(_resultTable.getHeader(), _select);
 	string result = "";
 
+	list<string> resultStringList;
+
 	if (_resultTable.getResult().empty()) {
-		result += "none";
+		resultStringList.push_back("none");
 	}
 	else {
 		list<int> resultList;
@@ -35,23 +37,21 @@ string QueryResultProjector::getResult() {
 			}
 		}
 
+
 		for (list<int>::iterator it = resultList.begin(); it != resultList.end(); ) {
 			if (_selectType != "variable") {
-				result += to_string(*it);
+				resultStringList.push_back(to_string(*it));
 			}
 			else {
 				string varName = _myPkb.getVarTable().getVarName(*it);
-				result += varName;
+				resultStringList.push_back(varName);
 			}
 
 			++it;
-			if (it != resultList.end()) {
-				result += ", ";
-			}
 		}
 	}
 
-	return result;
+	return resultStringList;
 }
 
 void QueryResultProjector::mergeTable() {

@@ -10,7 +10,9 @@ using namespace std;
 class Controller
 {
 public:
-	Controller( string );
+	Controller();
+
+	void intializeCode( string );
 
 	//void display( void );
 
