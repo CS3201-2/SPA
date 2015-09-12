@@ -146,7 +146,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 	if (arrClauses.at(1).find(")") == string::npos) {
 		return INVALID;
 	}
-
+	
 	arrClauses = split(arrClauses.at(1), ')', 2);
 
 	vector<string> arrVar = split(arrClauses.at(0), ',');
@@ -207,7 +207,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 		return NONE;
 	}
 
-	string relType = arrWords.at(0);
+	string relType = stringToLower(arrWords.at(0));
 
 	arrWords = split(arrWords.at(1), '(', 2);
 
