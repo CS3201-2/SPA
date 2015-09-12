@@ -28,7 +28,7 @@ public:
 
 	QueryEvaluator( PKB, QueryTree );
 	QueryEvaluator();
-	void evaluate();
+	list<string> evaluate();
 	
 	vector<string> getSelectClause(int index);
 	vector<string> getSuchThatClause(int index);

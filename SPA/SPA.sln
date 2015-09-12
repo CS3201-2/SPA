@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SPA", "SPA\SPA.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SPA_UnitTest", "SPA_UnitTest\SPA_UnitTest.vcxproj", "{C7252D92-DA33-4D4F-9BC9-F9D4AC43D451}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AutoTesterInUse", "..\..\..\..\Desktop\Autotester\AutoTester-Aug15-VS2015\AutoTester\AutoTesterInUse.vcxproj", "{4641A4C9-A430-4361-9B47-8E08C8155177}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{C7252D92-DA33-4D4F-9BC9-F9D4AC43D451}.Release|x64.Build.0 = Release|x64
 		{C7252D92-DA33-4D4F-9BC9-F9D4AC43D451}.Release|x86.ActiveCfg = Release|Win32
 		{C7252D92-DA33-4D4F-9BC9-F9D4AC43D451}.Release|x86.Build.0 = Release|Win32
+		{4641A4C9-A430-4361-9B47-8E08C8155177}.Debug|x64.ActiveCfg = Debug|x64
+		{4641A4C9-A430-4361-9B47-8E08C8155177}.Debug|x64.Build.0 = Debug|x64
+		{4641A4C9-A430-4361-9B47-8E08C8155177}.Debug|x86.ActiveCfg = Debug|Win32
+		{4641A4C9-A430-4361-9B47-8E08C8155177}.Debug|x86.Build.0 = Debug|Win32
+		{4641A4C9-A430-4361-9B47-8E08C8155177}.Release|x64.ActiveCfg = Release|x64
+		{4641A4C9-A430-4361-9B47-8E08C8155177}.Release|x64.Build.0 = Release|x64
+		{4641A4C9-A430-4361-9B47-8E08C8155177}.Release|x86.ActiveCfg = Release|Win32
+		{4641A4C9-A430-4361-9B47-8E08C8155177}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

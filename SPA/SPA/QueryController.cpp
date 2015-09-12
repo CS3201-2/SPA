@@ -8,9 +8,12 @@
 
 using namespace std;
 
-void QueryController::processQueries(list<string> queries, PKB my_pkb) {
+list<string> QueryController::processQueries(string queries, PKB my_pkb) {
 	//list<bool> isValid;
+
+	/*
 	list<string>::const_iterator iterQueries = queries.begin();
+	list<string> resultList;
 
 	for (iterQueries; iterQueries != queries.end(); iterQueries++) {
 		if (!(*iterQueries).empty()) {
@@ -18,8 +21,18 @@ void QueryController::processQueries(list<string> queries, PKB my_pkb) {
 			if (qv.isValidDecAndQuery(*iterQueries)) {
 				QueryTree qt = qv.getQueryTree();
 				QueryEvaluator qe(my_pkb, qt);
-				qe.evaluate();
+				list<string> result = qe.evaluate();
+				resultList.push_back(result);
 			}
 		}
 	}
+	*/
+	QueryValidator qv;
+	list<string> result;
+	if (qv.isValidDecAndQuery(queries)) {
+		QueryTree qt = qv.getQueryTree();
+		QueryEvaluator qe(my_pkb, qt);
+		result = qe.evaluate();
+	}
+	return result;
 }

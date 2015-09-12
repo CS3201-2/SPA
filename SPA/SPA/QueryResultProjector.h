@@ -14,7 +14,7 @@ class QueryResultProjector
 {
 public:
 	QueryResultProjector(list<ResultTable> resultList, string select, string selectType, PKB myPkb);
-	string getResult();
+	list<string> getResult();
 
 private:
 	list<ResultTable> _resultList;

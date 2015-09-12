@@ -58,7 +58,7 @@ void Parser::addNewLineString(string &content) {
 
 	while (index != std::string::npos) {
 		index++;
-		if (content.at(index) == '}') index++;
+		while (index != content.size() - 1 && content.at(index) == '}') index++;
 		content.insert(index, (size_t)1, '@');
 		index = content.find(';', index);
 	}
