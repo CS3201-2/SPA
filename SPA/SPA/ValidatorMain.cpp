@@ -2,7 +2,7 @@
 #include "RelationshipTable.h"
 #include <iostream>
 
-/*int main() {
+int main() {
 	QueryValidator q;
 	list<string> queries;
 	string str = "assign a, c;variable b; Select a     \nsuch that Uses(a, \"x\")", //for trim()
@@ -23,11 +23,11 @@
 	//cout << str3 << "\n";
 	//cout << str4 << "\n";
 	//cout << str6 << "\n";
-	q.areValidQueries(queries);
+	q.isValidDecAndQuery(str8);
 
 	//RelationshipTable r;
 
 	cin.ignore();
 	cin.get();
 	return 0;
-}*/
+}

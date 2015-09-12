@@ -77,6 +77,7 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 				return false;
 			} else {
 				varMap[synonyms.at(i)] = arrDec.at(0);
+				cout << "dec: " << synonyms.at(i) <<" "<< arrDec.at(0) << endl;
 				qt.insertVariable(synonyms.at(i), arrDec.at(0));
 				//cout << varMap.find("a")->second;
 			}
@@ -192,7 +193,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 
 	qt.insertSuchThat(relType, arrVar, varTypes);
 
-	//cout << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	cout << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return VALID;
 }
@@ -291,7 +292,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 	qt.insertPattern(syn, synType, arrVar, varType);
 
 	//or qt.addRel(reltype, arrVar);
-	//cout << "pattern " << arrVar.at(0) << " " << value << endl;
+	cout << "pattern " << arrVar.at(0) << " " << value << endl;
 	subquery = trim(arrWords.at(1));
 	
 	return VALID;
