@@ -22,7 +22,7 @@
 bool QueryValidator::isValidDecAndQuery(string query)
 {
 	vector<string> splitStr = split(trim(query), ';');
-
+	//cout << "isValidDecAndQuery";
 	if (splitStr.at(0).empty()) {
 		//cout << "Invalid Query" << endl;
 		//qt.invalid();
@@ -56,7 +56,7 @@ QueryTree QueryValidator::getQueryTree() {
 }
 
 bool QueryValidator::isValidDeclaration(string declaration) {
-
+	//cout << "isValidDeclaration";
 	vector<string> arrDec = split(declaration, ' ', 2);
 	//cout << arrDec.at(1) << endl;
 
@@ -77,6 +77,7 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 				return false;
 			} else {
 				varMap[synonyms.at(i)] = arrDec.at(0);
+				cout << "dec: " << synonyms.at(i) <<" "<< arrDec.at(0) << endl;
 				qt.insertVariable(synonyms.at(i), arrDec.at(0));
 				//cout << varMap.find("a")->second;
 			}
@@ -87,6 +88,7 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 }
 
 bool QueryValidator::isValidQuery(string query) {
+	//cout << "isValidQuery";
 	vector<string> arrClauses = split(query, ' ', 2); //don't split into 3 as will have tuples(multiple var) later
 	
 	if (stringToLower(arrClauses.at(0)).compare("select") != 0) {
@@ -125,6 +127,7 @@ bool QueryValidator::isValidQuery(string query) {
 }
 
 QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery){
+	//cout << "findSuchThat";
 	if (findSuchThatString(subquery) == NONE) {
 		return NONE;
 	}
@@ -152,8 +155,8 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 		return INVALID;
 	}
 
-	vector<string> varTypes;
-
+	vector<string> varTypes(arrVar.size());
+	//cout << "\nsuch that: parsing args";
 	for (int i = 0; i < arrVar.size(); i++) {
 		if (isVarNameExists(arrVar.at(i))) {
 			if (!r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)))) {
@@ -192,14 +195,14 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 
 	qt.insertSuchThat(relType, arrVar, varTypes);
 
-	//cout << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return VALID;
 }
 
 QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 	vector<string> arrWords = split(subquery, ' ', 2);
-	
+	//cout << "findPattern";
 	if (!(stringToLower(arrWords.at(0)).compare("pattern") == 0)) {
 		return NONE;
 	}
@@ -220,13 +223,13 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 
 	arrWords = split(arrWords.at(1), ')', 2);
 	
-	vector<string> arrVar = split(arrWords.at(0), ','), varType;
+	vector<string> arrVar = split(arrWords.at(0), ',');
 
 	if (!r.isNumOfArgsEqual(relType, arrVar.size())) {
 		return INVALID;
 	}
 
-
+	vector<string> varType(arrVar.size());
 	//arg1
 	if (isVarNameExists(arrVar.at(0)) && getVarType(arrVar.at(0)).compare("assign") == 0) {
 		if (!r.isArgValid(relType, 1, getVarType(arrVar.at(0)))) {
@@ -299,7 +302,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 
 QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery) {
 	vector<string> arrWords = split(subquery, ' ', 3);
-
+	//cout << "findSuchThatString";
 	if (stringToLower(arrWords.at(0)).compare("such") == 0 && 
 			stringToLower(arrWords.at(1)).compare("that") == 0) {
 		subquery = arrWords.at(2);
