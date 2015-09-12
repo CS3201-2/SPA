@@ -30,7 +30,7 @@ QueryEvaluator::QueryEvaluator(PKB my_pkb, QueryTree qt) {
 	queryTree = qt;
 }
 // entry function for controller;
-void QueryEvaluator::evaluate() {
+string QueryEvaluator::evaluate() {
 	// first get selecet query, for iteration 1, only select first clause. hard code here
 	vector<string> select = getSelectClause(0);
 	int index;
@@ -57,7 +57,8 @@ void QueryEvaluator::evaluate() {
 
 	cout << "result" << endl;
 	QueryResultProjector qrp = QueryResultProjector(resultList, select.at(0), select.at(1), pkb);
-	cout << qrp.getResult() << endl;
+	//cout << qrp.getResult() << endl;
+	return qrp.getResult();
 }
 
 //Retrieve information from respective trees

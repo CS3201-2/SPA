@@ -42,7 +42,11 @@ int main(void) {
 	std::string sourceQuery((std::istreambuf_iterator<char>(a)),
 		(std::istreambuf_iterator<char>()));
 
-	ctr.processQuery(sourceQuery);
+	list<string> result = ctr.processQuery(sourceQuery);
+
+	for (auto& x : result) {
+		cout << x << endl;
+	}
 
 	cin.ignore();
 	cin.get();
