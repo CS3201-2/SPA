@@ -1,251 +1,398 @@
 #include "AST.h"
 
-using namespace std;
+const regex assignmentRegex("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
+const regex procDeclarationRegex("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{*");
+const regex progDeclarationRegex("program(([[:alpha:]])([[:alnum:]]+)*)\\{*");
+const regex whileRegex("while(([[:alpha:]])([[:alnum:]]+)*)\\{*");
+const int assignmentStmt = 0;
+const int procDeclarationStmt = 1;
+const int procCallStmt = 2;
+const int whileStmt = 3;
+const int programStmt = 4;
 
-const string kErrorType = "Error: the type of this line is ambiguous!";
-const regex procDeclaration("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
-const regex elseStmt("else\\{");
-const regex assignment("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
-const regex procCall("call(([[:alpha:]])([[:alnum:]]+)*);\\}*");
-const regex whileStmt("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
-const regex ifStmt("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
-
-//Constructor
-AST::AST(list<pair<int, string>> codeList)
+AST::AST()
 {
-	_code = codeList;
-	_nodeBefore = NULL;
-	string programNameLine = (*codeList.begin()).second;
-	ASTNode programNode = createProgNode(programNameLine);
-	_nodeInProcess.push(programNode);
+	root = NULL;
 }
 
-void AST::constructTree()
+ASTNode* AST::getRoot()
 {
-	for (list<pair<int, string>>::iterator it = _code.begin(); it != _code.end(); ++it)
+	return root;
+}
+
+void AST::acceptStatements(list<pair<int, string>> lst)
+{
+	stmts = lst;
+	build();
+}
+
+bool AST::matchExpression(int index, string exp)
+{
+	checkIndex(index);
+	if (exp == "_")
 	{
-		string line = (*it).second;
-		updateAST(line);
+		return true;
+	}
+	ASTNode* node = getNode(index);
+	if (node->getNodeType() == "assignment")
+	{
+		if (isFullMatch(exp))
+		{
+			return AnotherExpressionTree::compareExpression(node->getRightChild(), exp);
+		}
+		else
+		{
+			string target = cutString(exp);
+			return isPartialMatch(node->getRightChild(), target);
+		}
+	}
+	else
+	{
+		throw "not an assignment";
 	}
 }
 
-void AST::updateAST(string line)
+int AST::getFollowAfter(int index)
 {
-		NodeType type = getLineType(line);
-		ASTNode node;
-		ASTNode* nodePointer = &node;
-		switch (type)
-		{
-		case procedure:
-			createProcNode(nodePointer, line);
-			break;
-		case assign:
-			createAssignNode(nodePointer, line);
-			break;
-		case call:
-			createCallNode(nodePointer, line);
-			break;
-		case whilestmt:
-			createWhileNode(nodePointer, line);
-			break;
-		case ifstmt:
-			createIfNode(nodePointer, line);
-			break;
-		case elf:
-			break;
-		default:
-			throw kErrorType;
-			break;
+	checkIndex(index);
+	ASTNode* nodeChosen = getNode(index);
+	ASTNode* rightSibling = nodeChosen->getRightSibling();
+	if (rightSibling == NULL)
+	{
+		return -1;
+	}
+	else
+	{
+		return rightSibling->getIndex();
+	}
+}
+
+int AST::getFollowBefore(int index)
+{
+	checkIndex(index);
+	ASTNode* nodeChosen = getNode(index);
+	ASTNode* leftSibling = nodeChosen->getLeftSibling();
+	if (leftSibling == NULL)
+	{
+		return -1;
+	}
+	else
+	{
+		return leftSibling->getIndex();
+	}
+}
+
+int AST::getParent(int index)
+{
+	checkIndex(index);
+	ASTNode* nodeChosed = getNode(index);
+	ASTNode* parent = nodeChosed->getParent();
+	if (parent == NULL)
+	{
+		throw "how can that be";
+	}
+	else
+	{
+		return parent->getIndex();
+	}
+}
+
+list<int> AST::getChild(int index)
+{
+	checkIndex(index);
+	list<int> tempLst;
+	tempLst.clear();
+	ASTNode* nodeChosen = getNode(index);
+	if (!isContainer(nodeChosen))
+	{
+		return tempLst;
+	}
+	ASTNode* child = nodeChosen->getRightChild();
+	while (child != NULL)
+	{
+		tempLst.push_back(child->getIndex());
+		child = child->getRightSibling();
+	}
+	return tempLst;
+}
+
+ASTNode* AST::getNode(string s)
+{
+	return procPosition.at(s);
+}
+
+ASTNode* AST::getNode(int index)
+{
+	return statPosition[index];
+}
+
+void AST::build()
+{
+	statPosition.clear();
+	statPosition.resize(stmts.size() + 1, NULL);
+	procPosition.clear();
+	root = constructAST(stmts);
+}
+
+ASTNode * AST::constructAST(list<pair<int, string>>& stmtList)
+{
+	list<pair<int, string>> subStmtList;
+	stack <string> braces;
+	bool wasEmptyBeforePop;
+
+	ASTNode* returnNode = NULL;
+	ASTNode* currentNode = NULL;
+	ASTNode* tempNode = NULL;
+	ASTNode* parentNode = NULL;
+	for (list<pair<int, string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
+		int index = it->first;
+		string statement = it->second;
+		for (int i = 0; i < countNumOfLeftBraces(statement); ++i) {
+			braces.push("{");
 		}
-		if (containsLeftCurlyBracket(line))
+		wasEmptyBeforePop = braces.empty();
+		if (!wasEmptyBeforePop)
 		{
-			_nodeInProcess.push(node);
-			/*
-			if (regex_match(line, elseStmt))
+			subStmtList.push_back(*it);
+		}
+		for (int i = 0; i < countNumOfRightBraces(statement); ++i) {
+			braces.pop();
+		}
+		//stack was empty because of poping, going to the next level with fewer stmtList element
+		if (braces.empty() && !wasEmptyBeforePop) {
+			cutList(subStmtList);
+			cout << "sublist is : "<< endl;
+			for (auto& x : subStmtList)
 			{
-				ASTNode elseNode(statementLst, "else");
-				_nodeInProcess.top().addChildren(elseNode);
-				_nodeInProcess.
+				cout << x.first;
+			}cout << endl;
+			tempNode = constructAST(subStmtList);
+			subStmtList.clear();
+		}
+		//stack was empty initially, stay at this level and append new node to the right sibling
+		else if (braces.empty() && wasEmptyBeforePop) {
+			tempNode = createNode(statement, index);
+		}
+		if (tempNode == NULL)
+		{
+		}
+		else if (tempNode->getIndex() == -1)//it is a procedure statement;
+		{
+			procPosition.insert(pair<string, ASTNode*>
+				(tempNode->getContent(), tempNode));
+		}
+		else//it is a normal statement
+		{
+			statPosition[tempNode->getIndex()] = tempNode;
+		}
+		if (returnNode == NULL) {
+			returnNode = tempNode;
+			currentNode = returnNode;
+		}
+		else if (tempNode != NULL)
+		{
+			if (currentNode->getParent() == NULL && 
+				currentNode->getLeftSibling() == NULL && 
+				currentNode->getRightChild() == NULL &&
+				parentNode == NULL)
+			{
+				parentNode = currentNode;
+				currentNode->setRightChild(tempNode);
+				tempNode->setParent(currentNode);
+				currentNode = tempNode;
 			}
 			else
 			{
-				_nodeInProcess.push(node);
-			}*/
+				currentNode->setRightSibling(tempNode);
+				tempNode->setLeftSibling(currentNode);
+				tempNode->setParent(parentNode);
+				currentNode = tempNode;
+			}
 		}
-		_nodeInProcess.top().addChildren(node);
-		if (_nodeBefore != NULL)
-		{
-			(*_nodeBefore).setSibling(node);
-		}
-		_nodeBefore = &node;
-		if (containsRightCurlyBracket(line))
-		{
-			_nodeBefore = NULL;
-			_nodeInProcess.pop();
-		}
-		
+		tempNode = NULL;
+	}
+	return returnNode;
 }
 
-ASTNode AST::getRoot()
+ASTNode * AST::createNode(string str, int index)
 {
-	return *_root;
+	ASTNode* temp = NULL;
+	switch (getTypeOfStatement(str)) {
+	case assignmentStmt:
+		temp = createAssign(str);
+		break;
+	case procDeclarationStmt:
+		temp = createProc(str);
+		break;
+	case whileStmt:
+		temp = createWhile(str);
+		break;
+	case programStmt:
+		temp = createProg(str);
+	default:
+		throw "error";
+	}
+	temp->setIndex(index);
+	return temp;
 }
 
-NodeType AST::getLineType(string str)
-{
-	if (regex_match(str, assignment)) {
-		return NodeType::assign;
-	}
-	else if (regex_match(str, procDeclaration)) {
-		return NodeType::procedure;
-	}
-	else if (regex_match(str, procCall)) {
-		return NodeType::call;
-	}
-	else if (regex_match(str, whileStmt)) {
-		return NodeType::whilestmt;
-	}
-	else if (regex_match(str, ifStmt)) {
-		return NodeType::ifstmt;
-	}
-	else if (regex_match(str, elseStmt)) {
-		return NodeType::elf;
-	}
-	else {
-		return NodeType::default;
-	}
-}
-
-ASTNode AST::createProgNode(string str)
-{
-	smatch matcher;
-	bool found = regex_search(str, matcher, procDeclaration);
-	if (found)
-	{
-		string name = matcher[1];
-		return ASTNode(NodeType::program, name);
-	}
-	else
-	{
-		throw kErrorType;
-	}
-}
-
-void AST::createProcNode(ASTNode* ptr, string str)
-{
-	smatch matcher;
-	bool found = regex_search(str, matcher, procDeclaration);
-	if (found)
-	{
-		string name = matcher[1];
-		*ptr = ASTNode(NodeType::procedure, name);
-	}
-	else
-	{
-		throw kErrorType;
-	}
-}
-
-void AST::createAssignNode(ASTNode* ptr, string line)
-{
-	*ptr = ASTNode(assign, NULL);
-	ASTNode variableNode(variable, getVariable(line));
-	(*ptr).addChildren(variableNode);
-	addExpression(ptr, getExpression(line));
-}
-
-bool AST::containsRightCurlyBracket(string str)
-{
-	int found = str.find_first_of('{');
-	if (found == -1)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-bool AST::containsLeftCurlyBracket(string str)
-{
-	int found = str.find_first_of('}');
-	if (found == -1)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-string AST::getVariable(string str)
+ASTNode * AST::createAssign(string str)
 {
 	smatch matcher;
 	string variable;
-	bool found = regex_search(str, matcher, assignment);
+	string expression;
+	bool found = regex_search(str, matcher, assignmentRegex);
 	if (found)
 	{
 		variable = matcher[1];
+		expression = matcher[4];
 	}
-	found = regex_search(str, matcher, whileStmt);
-	if (found)
-	{
-		variable = matcher[1];
-	}
-	found = regex_search(str, matcher, ifStmt);
-	if (found)
-	{
-		variable = matcher[1];
-	}
-	return variable;
+	AnotherExpressionTree et;
+	et.build(expression);
+	ASTNode * expressionTree = et.peek();
+	ASTNode * variableNode = new ASTNode(variable, "variable");
+	ASTNode * assignNode = new ASTNode("assignment");
+	assignNode->setLeftChild(variableNode);
+	assignNode->setRightChild(expressionTree);
+	return assignNode;
 }
 
-string AST::getExpression(string str)
-{
-	int index = str.find_first_of('=');
-	return str.substr(index + 1, str.size()-index-1);
-}
-
-void AST::createCallNode(ASTNode* ptr, string line)
+ASTNode * AST::createProg(string str)
 {
 	smatch matcher;
-	bool found = regex_search(line, matcher, procCall);
-	string name;
+	string progName;
+	bool found = regex_search(str, matcher, progDeclarationRegex);
 	if (found)
 	{
-		name = matcher[1];
+		progName = matcher[1];
+	}
+	return new ASTNode(progName, "program");
+}
+
+void AST::cutList(list<pair<int, string>>& lst)
+{
+	int tempIndex;
+	string tempStat;
+
+	tempIndex = lst.front().first;
+	tempStat = lst.front().second;
+	tempStat = tempStat.substr(0, tempStat.size() - 1);
+	lst.pop_front();
+	pair<int, string> newFrontPair(tempIndex, tempStat);
+	lst.push_front(newFrontPair);
+
+	tempIndex = lst.back().first;
+	tempStat = lst.back().second;
+	tempStat = tempStat.substr(0, tempStat.size() - 1);
+	lst.pop_back();
+	pair<int, string> newBackPair(tempIndex, tempStat);
+	lst.push_back(newBackPair);
+}
+
+void AST::checkIndex(int i)
+{
+	if (i > statPosition.size() || i < 0)
+	{
+		throw "index out of bound";
+	}
+}
+
+ASTNode * AST::createProc(string str)
+{
+	return new ASTNode(getProcName(str), "procedure");
+}
+
+ASTNode * AST::createWhile(string str)
+{
+	smatch matcher;
+	string variable;
+	bool found = regex_search(str, matcher, whileRegex);
+	if (found)
+	{
+		variable = matcher[1];
+	}
+	ASTNode* varNode = new ASTNode(variable, "variable");
+	ASTNode* whileNode = new ASTNode("while");
+	whileNode->setLeftChild(varNode);
+	return whileNode;
+}
+
+string AST::getProcName(string str)
+{
+	smatch matcher;
+	string procName;
+	bool found = regex_search(str, matcher, procDeclarationRegex);
+	if (found)
+	{
+		procName = matcher[1];
+	}
+	return procName;
+}
+
+int AST::countNumOfRightBraces(string str)
+{
+	return std::count(str.begin(), str.end(), '}');
+}
+
+int AST::countNumOfLeftBraces(string str)
+{
+	return std::count(str.begin(), str.end(), '{');
+}
+
+int AST::getTypeOfStatement(string str)
+{
+	if (regex_match(str, assignmentRegex)) {
+		return assignmentStmt;
+	}
+	else if (regex_match(str, procDeclarationRegex)) {
+		return procDeclarationStmt;
+	}
+	else if (regex_match(str, whileRegex)) {
+		return whileStmt;
+	}
+	else if (regex_match(str, progDeclarationRegex)) {
+		return programStmt;
 	}
 	else
 	{
-		throw kErrorType;
+		throw "error";
 	}
-	*ptr = ASTNode(call, name);
 }
 
-void AST::createWhileNode(ASTNode* ptr, string line)
+bool AST::isPartialMatch(ASTNode * node, string exp)
 {
-	*ptr = ASTNode(whilestmt, NULL);
-	ASTNode conditionNode(variable, getVariable(line));
-	ASTNode stmtLstNode(statementLst, NULL);
-	(*ptr).addChildren(conditionNode);
-	(*ptr).addChildren(stmtLstNode);
+	if (node != NULL)
+	{
+		bool compare = AnotherExpressionTree::compareExpression(node, exp);
+		if (compare)
+		{
+			return true;
+		}
+		else
+		{
+			ASTNode* right = node->getRightChild();
+			ASTNode* left = node->getLeftChild();
+			return isPartialMatch(right, exp) || isPartialMatch(left, exp);
+		}
+	}
+	else
+	{
+		return false;
+	}
 }
 
-void AST::createIfNode(ASTNode* ptr, string line)
+bool AST::isContainer(ASTNode* node)
 {
-	*ptr = ASTNode(ifstmt, NULL);
-	ASTNode conditionNode(variable, getVariable(line));
-	ASTNode thenNode(statementLst, "then");
-	ASTNode elseNode(statementLst, "else");
-	(*ptr).addChildren(conditionNode);
-	(*ptr).addChildren(thenNode);
-	(*ptr).addChildren(thenNode);
+	return node->getNodeType() == "while" || node->getNodeType() == "if";
 }
 
-void AST::addExpression(ASTNode* ptr, string exp)
+bool AST::isFullMatch(string str)
 {
-	ExpressionTree et(exp);
-	(*ptr).addChildren(et.getRoot());
+	return str[0] != '_';
+}
+
+string AST::cutString(string str)
+{
+	string subStr = str.substr(1, str.size() - 2);
+	return subStr;
 }

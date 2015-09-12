@@ -18,8 +18,11 @@ public:
 
 	int get_size();
 
+	string getVarName(int);
+
+	map<string, int> varTable;
 private:
-	map<string,int> varTable;
+
 };
 
 #endif

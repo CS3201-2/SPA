@@ -1,31 +1,41 @@
 #include<string>
 #include <sstream>
+#include<iostream>
 #include<regex>
 #include<unordered_map>
 #include<stack>
+#include<queue>
 
 using namespace std;
-#ifndef Suffix_H
-#define Suffix_H
-class Suffix
+
+#ifndef Prefix_H
+#define Prefix_H
+
+class Prefix
 {
 	unordered_map<char, int> _inStack;
 	unordered_map<char, int> _outStack;
 	stack<char> _operatorStack;
+	queue<string> _operandQ;
 	string _operandBuffer;
-	string _suffix;
+	list<string> _prefix;
 public:
-	Suffix();
+	Prefix();
 	void acceptExpression(string);
-	string getSuffix();
+	list<string> getPrefix();
+	void print();
 private:
-	void computeSuffix(string);
+	void computePrefix(string);
 	void initializeStack();
 	bool isOperand(char);
 	void updateOperandBuffer(char);
 	void extractOperandBuffer();
 	void solveOperator(char);
 	void popStack(char);
-	void compareOperator(char);	
+	void compareOperator(char);
+	string toString(char);
+	void pushLeft();
+	void popOperand();
 };
+
 #endif

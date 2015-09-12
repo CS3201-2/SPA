@@ -23,6 +23,13 @@ public:
 	Uses& getUses(void);
 	Parent& getParent(void);
 	Follows& getFollows(void);
+	AST& getAST(void);
+	void addWhileList(int);
+	void addAssignList(int);
+	list<int> getWhileList(void);
+	list<int> getAssignList(void);
+	void setAST(AST);
+
 private:
 	Modifies modifies;
 	Uses uses;
@@ -30,6 +37,9 @@ private:
 	VarTable varTable;
 	Follows follows;
 	Parent parent;
+	AST ast;
+	list<int> whileList;
+	list<int> assignList;
 };
 
 #endif

@@ -18,7 +18,7 @@ namespace SPA_UnitTest
 			list<string> queries;
 
 			queries.push_back("assign a;variable b; Select a such that Uses(a, \"x\")");
-			q.isValidQuery(queries);
+			q.isValidDecAndQuery(queries);
 		}
 
 	};

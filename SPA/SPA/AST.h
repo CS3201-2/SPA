@@ -1,41 +1,51 @@
-#include <string>
+#include <iostream>
 #include <list>
-#include <stack>
+#include <string>
 #include <regex>
+#include <stack>
+#include <vector>
+#include <map>
 #include "ASTNode.h"
-#include "ExpressionTree.h"
-#include "NodeTypeEnum.h"
-using namespace std;
+#include "AnotherExpressionTree.h"
 
+using namespace std;
 #ifndef AST_H
 #define AST_H
-
 class AST
 {
-	ASTNode* _root;
-	ASTNode* _nodeBefore;
-	stack<ASTNode> _nodeInProcess;
-	list<pair<int, string>> _code;
-
+	map<string, ASTNode*> procPosition;
+	vector<ASTNode*> statPosition;
+	ASTNode* root;
+	list<pair<int, string>> stmts;
 public:
-	AST(list<pair<int, string>>);
-	void constructTree();
-	ASTNode getRoot();
+	AST();
+	void acceptStatements(list<pair<int, string>>);
+	bool matchExpression(int, string);
+	int getFollowAfter(int);
+	int getFollowBefore(int);
+	int getParent(int);
+	list<int> getChild(int);
 
 private:
-	void updateAST(string);
-	NodeType getLineType(string line);
-	ASTNode createProgNode(string);
-	void createProcNode(ASTNode*, string);
-	void createAssignNode(ASTNode*, string);
-	void createCallNode(ASTNode*, string);
-	void createWhileNode(ASTNode*, string);
-	void createIfNode(ASTNode*, string);
-	void addExpression(ASTNode*, string);
-	bool containsRightCurlyBracket(string);
-	bool containsLeftCurlyBracket(string);
-	string getVariable(string);
-	string getExpression(string);
+	void build();
+	ASTNode* getRoot();
+	ASTNode* getNode(string);
+	ASTNode* getNode(int);
+	ASTNode* constructAST(list<pair<int, string>>&);
+	ASTNode* createNode(string, int);
+	ASTNode* createAssign(string);
+	ASTNode* createProc(string);
+	ASTNode* createWhile(string);
+	ASTNode* createProg(string);
+	string getProcName(string);
+	void cutList(list<pair<int, string>>&);
+	void checkIndex(int);
+	int countNumOfRightBraces(string);
+	int countNumOfLeftBraces(string);
+	int getTypeOfStatement(string);
+	bool isPartialMatch(ASTNode*, string);
+	bool isContainer(ASTNode*);
+	bool isFullMatch(string);
+	string cutString(string);
 };
-
 #endif

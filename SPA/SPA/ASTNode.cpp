@@ -6,18 +6,7 @@ using namespace std;
 ASTNode::ASTNode(string type)
 {
 	setNodeType(type);
-	setNodeContent("NULL");
-	_parent = NULL;
-	_rightChild = NULL;
-	_leftChild = NULL;
-	_leftSibling = NULL;
-	_leftSibling = NULL;
-}
-
-ASTNode::ASTNode(string content, string type)
-{
-	setNodeType(type);
-	setNodeContent(content);
+	_index = 0;
 	_parent = NULL;
 	_rightChild = NULL;
 	_leftChild = NULL;
@@ -25,8 +14,19 @@ ASTNode::ASTNode(string content, string type)
 	_rightSibling = NULL;
 }
 
-string ASTNode::getNodeType()
+ASTNode::ASTNode(string content, string type)
 {
+	_nodeContent = content;
+	setNodeType(type);
+	_index = 0;
+	_parent = NULL;
+	_rightChild = NULL;
+	_leftChild = NULL;
+	_leftSibling = NULL;
+	_rightSibling = NULL;
+}
+
+string ASTNode::getNodeType() {
 	return _nodeType;
 }
 
@@ -35,14 +35,14 @@ void ASTNode::setNodeType(string nodeType)
 	_nodeType = nodeType;
 }
 
-string ASTNode::getNodeContent()
+string ASTNode::getContent()
 {
 	return _nodeContent;
 }
 
-void ASTNode::setNodeContent(string nodeContent)
+int ASTNode::getIndex()
 {
-	_nodeContent = nodeContent;
+	return _index;
 }
 
 void ASTNode::setLeftChild(ASTNode* node) {
@@ -65,6 +65,11 @@ void ASTNode::setParent(ASTNode* node) {
 	_parent = node;
 }
 
+void ASTNode::setIndex(int i)
+{
+	_index = i;
+}
+
 ASTNode* ASTNode::getParent() {
 	return _parent;
 }
@@ -84,3 +89,7 @@ ASTNode* ASTNode::getRightSibling() {
 ASTNode* ASTNode::getLeftSibling() {
 	return _leftSibling;
 }
+
+
+
+
