@@ -732,11 +732,13 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 			int parent = ast.getParent(stoi(arg2));
 			vector<int> temp;
 			while (parent != -1) {
-				if (parent == stoi(arg1)) {
+				// note to Zhao Hang: you are converting a letter to int
+				// arg1 is always a letter or _
+				//if (parent == stoi(arg1)) {
 					temp.push_back(parent);
 					tempResult.addTuple(temp);
 					temp.clear();
-				}
+				//}
 				parent = ast.getParent(parent);
 			}
 			return tempResult;

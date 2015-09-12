@@ -22,5 +22,4 @@ void QueryController::processQueries(list<string> queries, PKB my_pkb) {
 			}
 		}
 	}
-
 }

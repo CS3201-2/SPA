@@ -60,23 +60,26 @@ void QueryResultProjector::mergeTable() {
 
 	for (list<ResultTable>::iterator it = _resultList.begin(); it != _resultList.end(); ++it) {
 		if ((*it).getIsWholeTrue() == notApplicable) {
-			//if resultHeader and result is initialy empty,
-			if (!resultHeader.empty() && !result.empty()) {
-				if ((*it).getResult().empty()) {
-					break;
-				}
-				else {
-					createResultHeader(resultHeader, (*it).getHeader());
-					createResultTable(result, (*it).getResult());
-					list<std::pair<int, int>> commonPairList = getCommonPair(resultHeader);
-					vector<int> indexToRemove = getIndexToRemove(commonPairList);
-					trimResultHeader(resultHeader, indexToRemove);
-					trimResultTable(result, commonPairList, indexToRemove);
-				}
+			//temp data is empty, break immediately
+			if ((*it).getResult().empty()) {
+				resultHeader.clear();
+				result.clear();
+				_resultTable = ResultTable(_isWholeTrue, resultHeader, result);
+				return;
 			}
-			else {
+
+			//the resultHeader and result is initialy empty
+			if (resultHeader.empty() && result.empty()) {
 				resultHeader = (*it).getHeader();
 				result = (*it).getResult();
+			}
+			else {
+				createResultHeader(resultHeader, (*it).getHeader());
+				createResultTable(result, (*it).getResult());
+				list<std::pair<int, int>> commonPairList = getCommonPair(resultHeader);
+				vector<int> indexToRemove = getIndexToRemove(commonPairList);
+				trimResultHeader(resultHeader, indexToRemove);
+				trimResultTable(result, commonPairList, indexToRemove);
 			}
 		}
 		else if ((*it).getIsWholeTrue() == trueTable) {
