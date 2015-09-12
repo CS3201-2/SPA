@@ -10,8 +10,11 @@
 using namespace std;
 
 typedef list<string> StringList;
-Controller::Controller( string sourceCode) {
-	source = sourceCode;
+Controller::Controller() {
+}
+
+void Controller::intializeCode(string code) {
+	source = code;
 }
 
 void Controller::processSource() {
@@ -35,16 +38,18 @@ PKB Controller::parse() {
 }
 
 list<string> Controller::processQuery(string query) {
-	string::iterator itr;
-	list<string> processedQueryList;
-
+	//string::iterator itr;
+	//list<string> processedQueryList;
+	
+	/*
 	while (!query.empty()) {
 		size_t index = query.find("\n");
 		string temp = query.substr(0, index);
 		query = query.substr(index + 1, query.size());
 		processedQueryList.push_back(temp);
 	}
+	*/
 
 	QueryController queryController;
-	return queryController.processQueries(processedQueryList, ctrPKB);
+	return queryController.processQueries(query, ctrPKB);
 }

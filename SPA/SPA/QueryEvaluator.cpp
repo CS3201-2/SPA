@@ -30,7 +30,7 @@ QueryEvaluator::QueryEvaluator(PKB my_pkb, QueryTree qt) {
 	queryTree = qt;
 }
 // entry function for controller;
-string QueryEvaluator::evaluate() {
+list<string> QueryEvaluator::evaluate() {
 	// first get selecet query, for iteration 1, only select first clause. hard code here
 	vector<string> select = getSelectClause(0);
 	int index;
