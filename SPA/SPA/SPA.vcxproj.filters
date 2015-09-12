@@ -184,5 +184,8 @@
     <Text Include="prototype_test.txt">
       <Filter>Resouce Files</Filter>
     </Text>
+    <Text Include="query.txt">
+      <Filter>Resouce Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

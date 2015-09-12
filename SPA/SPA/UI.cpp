@@ -24,7 +24,8 @@ int main(void) {
 	std::string sourceCode((std::istreambuf_iterator<char>(inputFile)),
 		(std::istreambuf_iterator<char>()));
 
-	Controller ctr( sourceCode );
+	Controller ctr;
+	ctr.intializeCode(sourceCode);
 
 	cout << "Loaded!" << endl;
 	ctr.processSource();
