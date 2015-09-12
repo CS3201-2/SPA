@@ -167,7 +167,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SuffixTest.cpp" />
-    <ClCompile Include="unittest1.cpp" />
+    <ClCompile Include="ParserTest.cpp" />
     <ClCompile Include="ValidatorTest.cpp" />
   </ItemGroup>
   <ItemGroup>
