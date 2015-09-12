@@ -18,6 +18,7 @@ public:
 	vector<string> getHeader();
 	vector<vector<int>> getResult();
 	int getIsWholeTrue();
+	int isWholeTrue;// -1 doesnt matter, 0 false, 1 true
 	//when header is empty, check isWholeTrue. isWholeTrue is 1, skip to merge next table;
 	//isWholeTrue is 0, return empty table, isWholeTrue set to 0
 	//
@@ -25,7 +26,7 @@ public:
 	//
 	//select 23, 0, return none; 1, return 23; -1, check table and decidei
 private:
-	int isWholeTrue;// -1 doesnt matter, 0 false, 1 true
+	
 	vector<string> header;
 	vector<vector<int>> result;
 };

@@ -60,3 +60,8 @@ list<int> PKB::getWhileList(void) {
 list<int> PKB::getAssignList(void) {
 	return assignList;
 }
+
+void PKB::setAST(AST a)
+{
+	ast = a;
+}

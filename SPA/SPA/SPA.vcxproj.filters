@@ -25,9 +25,6 @@
     <ClCompile Include="ProcTable.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="Suffix.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
     <ClCompile Include="Uses.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
@@ -45,6 +42,15 @@
     </ClCompile>
     <ClCompile Include="UI.cpp">
       <Filter>Source Files\Front-end Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefix.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="Suffix.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="StackNode.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
     <ClCompile Include="QueryController.cpp">
       <Filter>Source Files\Query Processor</Filter>
@@ -67,17 +73,11 @@
     <ClCompile Include="RelationshipTable.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
-    <ClCompile Include="ValidatorMain.cpp">
-      <Filter>Source Files\Query Processor</Filter>
-    </ClCompile>
     <ClCompile Include="ResultTable.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnotherExpressionTree.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
     <ClInclude Include="ASTNode.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
@@ -99,9 +99,6 @@
     <ClInclude Include="ProcTable.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="Suffix.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
     <ClInclude Include="Uses.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
@@ -116,6 +113,18 @@
     </ClInclude>
     <ClInclude Include="Parser.h">
       <Filter>Header Files\Front-end Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="AnotherExpressionTree.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefix.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="Suffix.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="StackNode.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="QueryController.h">
       <Filter>Header Files\Query Processor</Filter>
@@ -158,17 +167,17 @@
     <Filter Include="Header Files\PKB">
       <UniqueIdentifier>{4c7f4efa-4e89-4e3c-bebc-3fabc74277f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Query Processor">
-      <UniqueIdentifier>{74b6d7a0-b325-4019-a0cf-d70e678c24eb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Front-end Parser">
       <UniqueIdentifier>{10e243dc-a56d-45a2-894c-895171c40266}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\PKB">
       <UniqueIdentifier>{0beae119-0c19-4e75-86e4-4954a7b6901e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Query Processor">
+      <UniqueIdentifier>{2f6e4aeb-8aee-4c74-a629-7d7f35482341}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\Query Processor">
-      <UniqueIdentifier>{b9f3750e-20eb-4d33-8116-48ab5159eae3}</UniqueIdentifier>
+      <UniqueIdentifier>{07a140cf-d85b-4cdf-930a-b77729fa95f5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

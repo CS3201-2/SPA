@@ -1,5 +1,4 @@
-#ifndef QueryEvaluator_H
-#define QueryEvaluator_H
+
 
 #include <string>
 #include <vector>
@@ -10,23 +9,23 @@
 #include "ResultTable.h"
 
 using namespace std; 
-
+#ifndef QueryEvaluator_H
+#define QueryEvaluator_H
 class QueryEvaluator {
 private:
 	PKB pkb;
 	QueryTree queryTree;
 	list<ResultTable> resultList;
-	//int suchThatTreeIndex = 0;
-	//int patternTreeIndex = 0;
-	list<ASTNode> tempResult;
 	bool isInList(list<int>, int);
-	bool isFirstClause;
 
 public:
 	ResultTable processModifies(vector<string> tempString);
 	ResultTable processUses(vector<string> tempString);
 	ResultTable processParent(vector<string> tempString);
 	ResultTable processFollows(vector<string> tempString);
+	ResultTable processParentStar(vector<string> tempstring);
+	ResultTable processFollowsStar(vector<string> tempstring);
+
 	QueryEvaluator( PKB, QueryTree );
 	QueryEvaluator();
 	void evaluate();
@@ -35,10 +34,9 @@ public:
 	vector<string> getSuchThatClause(int index);
 	vector<string> getPatternClause(int index);
 	vector<string> getVarDeclaration(int index);
-	vector<string> combineResult(vector<string> suchThatResult, vector<string> patternResult);
 	void processSuchThatClause(vector<string> tempString);
 	void processPatternClause(vector<string> tempString);
-	//vector<string> updateResult(vector<string> tempResult);
+	void processSelectClause(vector<string> tempString);
 };
 
 #endif

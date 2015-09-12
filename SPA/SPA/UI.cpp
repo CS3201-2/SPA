@@ -26,6 +26,7 @@ int main(void) {
 	Controller ctr( sourceCode );
 
 	cout << "Loaded!" << endl;
+	ctr.processSource();
 
 	cin.ignore();
 	cin.get();

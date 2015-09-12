@@ -130,18 +130,19 @@
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PKB.cpp" />
     <ClCompile Include="ProcTable.cpp" />
+    <ClCompile Include="Prefix.cpp" />
     <ClCompile Include="QueryController.cpp" />
-    <ClCompile Include="QueryValidator.cpp" />
-    <ClCompile Include="Relationship.cpp" />
-    <ClCompile Include="RelationshipTable.cpp" />
     <ClCompile Include="QueryEvaluator.cpp" />
     <ClCompile Include="QueryResultProjector.cpp" />
     <ClCompile Include="QueryTree.cpp" />
+    <ClCompile Include="QueryValidator.cpp" />
+    <ClCompile Include="Relationship.cpp" />
+    <ClCompile Include="RelationshipTable.cpp" />
     <ClCompile Include="ResultTable.cpp" />
+    <ClCompile Include="StackNode.cpp" />
     <ClCompile Include="Suffix.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Uses.cpp" />
-    <ClCompile Include="ValidatorMain.cpp" />
     <ClCompile Include="VarTable.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,14 +157,16 @@
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PKB.h" />
     <ClInclude Include="ProcTable.h" />
+    <ClInclude Include="Prefix.h" />
     <ClInclude Include="QueryController.h" />
     <ClInclude Include="QueryEvaluator.h" />
+    <ClInclude Include="QueryResultProjector.h" />
+    <ClInclude Include="QueryTree.h" />
     <ClInclude Include="QueryValidator.h" />
     <ClInclude Include="Relationship.h" />
     <ClInclude Include="RelationshipTable.h" />
-    <ClInclude Include="QueryResultProjector.h" />
-    <ClInclude Include="QueryTree.h" />
     <ClInclude Include="ResultTable.h" />
+    <ClInclude Include="StackNode.h" />
     <ClInclude Include="Suffix.h" />
     <ClInclude Include="Uses.h" />
     <ClInclude Include="VarTable.h" />
