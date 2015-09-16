@@ -40,15 +40,17 @@ int main(void) {
 		exit(1);
 	}
 
-	std::string sourceQuery((std::istreambuf_iterator<char>(a)),
-		(std::istreambuf_iterator<char>()));
+	string line;
+	while (getline(a, line))
+	{
+		list<string> result = ctr.processQuery(line);
 
-	list<string> result = ctr.processQuery(sourceQuery);
-
-	for (auto& x : result) {
-		cout << x << endl;
+		for (auto& x : result) {
+			cout << x << endl;
+		}
+		cout << "---------------------------------" <<endl;
 	}
-
+	a.close();
 	cin.ignore();
 	cin.get();
 
