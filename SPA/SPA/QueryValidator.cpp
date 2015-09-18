@@ -56,7 +56,7 @@ QueryTree QueryValidator::getQueryTree() {
 }
 
 bool QueryValidator::isValidDeclaration(string declaration) {
-	//cout << "isValidDeclaration";
+	//cout << "isValidDeclaration" << endl;
 	vector<string> arrDec = split(declaration, ' ', 2);
 	//cout << arrDec.at(1) << endl;
 
@@ -127,7 +127,7 @@ bool QueryValidator::isValidQuery(string query) {
 }
 
 QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery){
-	//cout << "findSuchThat";
+	//cout << "findSuchThat" << endl;
 	if (findSuchThatString(subquery) == NONE) {
 		return NONE;
 	}
@@ -162,7 +162,12 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 			if (!r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)))) {
 				return INVALID;
 			} else {
-				varTypes.at(i) = getVarType(arrVar.at(i));
+				//for iter 1 only
+				if (getVarType(arrVar.at(i)) == "stmt") {
+					varTypes.at(i) = "all";
+				} else {
+					varTypes.at(i) = getVarType(arrVar.at(i));
+				}
 			}
 
 		} else if (isStringVar(arrVar.at(i))) {
@@ -195,14 +200,15 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 
 	qt.insertSuchThat(relType, arrVar, varTypes);
 
-	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return VALID;
 }
 
 QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 	vector<string> arrWords = split(subquery, ' ', 2);
-	//cout << "findPattern";
+	//cout << "findPattern" << endl;
 	if (!(stringToLower(arrWords.at(0)).compare("pattern") == 0)) {
 		return NONE;
 	}
@@ -319,7 +325,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 
 QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery) {
 	vector<string> arrWords = split(subquery, ' ', 3);
-	//cout << "findSuchThatString";
+	//cout << "findSuchThatString" << endl;
 	if (stringToLower(arrWords.at(0)).compare("such") == 0 && 
 			stringToLower(arrWords.at(1)).compare("that") == 0) {
 		subquery = arrWords.at(2);
