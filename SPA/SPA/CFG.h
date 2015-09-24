@@ -10,7 +10,7 @@ using namespace std;
 class CFG
 {
 	vector<list<int>> _next;
-	unordered_map<int, CFGNode> _nodeMap;
+	unordered_map<int, CFGNode*> _nodeMap;
 public:
 	CFG();
 	void BuildGraph(list<pair<int, string>>);
@@ -19,8 +19,8 @@ public:
 private:
 	int findNode(int);
 	void createNode(int, list<int>);
+	void createNode(int, int);
 	bool isIfStmt(string);
 	bool isWhileStmt(string);
-	int getFirst(list<int>);
 };
 #endif

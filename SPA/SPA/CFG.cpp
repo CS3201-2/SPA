@@ -19,7 +19,11 @@ void CFG::BuildGraph(list<pair<int, string>> codeLst)
 		if (isIfStmt(stmtString))
 		{
 			createNode(nodeIndex, statBuffer);
+			nodeIndex++;
 			statBuffer.clear();
+			createNode(nodeIndex, stmtIndex);
+			nodeInOperation.push(nodeIndex);
+			nodeInOperation.push(nodeIndex);
 		}
 	}
 }
@@ -27,8 +31,8 @@ void CFG::BuildGraph(list<pair<int, string>> codeLst)
 list<int> CFG::getNext(int i)
 {
 	int nodeIndex = findNode(i);
-	CFGNode node = _nodeMap.at(nodeIndex);
-	if (node.contains(i + 1))
+	CFGNode* node = _nodeMap.at(nodeIndex);
+	if (node->contains(i + 1))
 	{
 		list<int> temp;
 		temp.push_back(i + 1);
@@ -49,7 +53,7 @@ int CFG::findNode(int i)
 	size_t begin = 0;
 	size_t end = _nodeMap.size()-1;
 	size_t mid = (begin + end) / 2;
-	CFGNode currentNode;
+	CFGNode* currentNode;
 	if (i < begin || i > end)//i is illegal
 	{
 		return -1;
@@ -57,16 +61,16 @@ int CFG::findNode(int i)
 	while (begin < end)
 	{
 		currentNode = _nodeMap.at(mid);
-		if (currentNode.contains(i))//find the node
+		if (currentNode->contains(i))//find the node
 		{
 			return mid;
 		}
-		else if (currentNode.isLargerThan(i))//go to left part
+		else if (currentNode->isLargerThan(i))//go to left part
 		{
 			end = mid - 1;
 			mid = (begin + end) / 2;
 		}
-		else if (currentNode.isSmallerThan(i))//go to right part
+		else if (currentNode->isSmallerThan(i))//go to right part
 		{
 			begin = mid + 1;
 			mid = (begin + end) / 2;
@@ -77,7 +81,7 @@ int CFG::findNode(int i)
 		}
 	}
 	currentNode = _nodeMap.at(mid);
-	if (currentNode.contains(i))//find the node
+	if (currentNode->contains(i))//find the node
 	{
 		return mid;
 	}
@@ -89,5 +93,12 @@ int CFG::findNode(int i)
 
 void CFG::createNode(int index, list<int> buffer)
 {
-	CFGNode* temp = new CFGNode(index, buffer)
+	CFGNode* temp = new CFGNode(index, *buffer.begin, *buffer.end);
+	_nodeMap.insert(pair<int, CFGNode*>(index, temp));
+}
+
+void CFG::createNode(int index, int stmtIndex)
+{
+	CFGNode* temp = new CFGNode(index, stmtIndex, stmtIndex);
+	_nodeMap.insert(pair<int, CFGNode*>(index, temp));
 }
