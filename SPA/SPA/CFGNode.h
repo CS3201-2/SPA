@@ -1,4 +1,6 @@
 using namespace std;
+#ifndef CFGNode_H
+#define CFGNode_H
 class CFGNode
 {
 	int _index;
@@ -7,6 +9,9 @@ class CFGNode
 public:
 	CFGNode();
 	CFGNode(int, int, int);
+	bool contains(int);
+	bool isLargerThan(int);
+	bool isSmallerThan(int);
 	~CFGNode();
 };
-
+#endif
