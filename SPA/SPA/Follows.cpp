@@ -27,7 +27,11 @@ int Follows::getIsFollowedStmt(int stmtLine) {
 	return result;
 }
 
-void Follows::printMap() {
+int Follows::getFollowsMapSize() {
+	return followsMap.size();
+}
+
+void Follows::printFollowsMap() {
 	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
 		cout << (*it).first;
 		cout << ":";

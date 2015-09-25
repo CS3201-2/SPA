@@ -17,23 +17,21 @@ list<int> Parent::getChildStmt(int parent)
 	}
 }
 
-void Parent::setParentStmt(int parent, list<int> childrenList)
+void Parent::setParentStmt(int parent, int child)
 {
-	parentMap[parent] = childrenList;
-	/*
 	if (parentMap.find(parent) == parentMap.end()) {
-	std::list<int> emptyList;
-	emptyList.push_back(child);
-	parentMap[parent] = emptyList;
+		std::list<int> emptyList;
+		emptyList.push_back(child);
+		parentMap[parent] = emptyList;
 	}
 	else {
-	std::list<int> list = parentMap.at(parent);
+		std::list<int> list = parentMap.at(parent);
 
-	if (std::find(list.begin(), list.end(), child) == list.end()) {
-	list.push_back(child);
+		if (std::find(list.begin(), list.end(), child) == list.end()) {
+			list.push_back(child);
+		}
+		parentMap[parent] = list;
 	}
-	parentMap[parent] = list;
-	}*/
 }
 
 int Parent::getParentStmt(int stmtNumber) {
@@ -45,7 +43,7 @@ int Parent::getParentStmt(int stmtNumber) {
 	return -1;
 }
 
-void Parent::printMap() {
+void Parent::printParentMap() {
 	for (map<int, std::list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
 		cout << (*it).first;
 		cout << ":";
@@ -57,8 +55,12 @@ void Parent::printMap() {
 	}
 }
 
-void Parent::sortMap() {
+void Parent::sortParentMap() {
 	for (map<int, std::list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
 		(*it).second.sort();
 	}
+}
+
+int Parent::getParentMapSize() {
+	return parentMap.size;
 }

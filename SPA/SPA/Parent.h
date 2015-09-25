@@ -16,13 +16,15 @@ public:
 
 	list<int> getChildStmt(int);
 
-	void setParentStmt(int, list<int>);
+	void setParentStmt(int, int);
 
 	int getParentStmt(int);
 
-	void printMap();
+	void printParentMap();
 
-	void sortMap();
+	void sortParentMap();
+
+	int getParentMapSize();
 private:
 	map<int, std::list<int>> parentMap;
 };
