@@ -116,7 +116,7 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 			break;
 		case procDeclarationStmt:
 			pkb.getProcTable().insertProc(getProcName((*it).second));
-			currentProcedureID = pkb.getProcTable().getID(getProcName((*it).second));
+			currentProcedureID = pkb.getProcTable().getIndex(getProcName((*it).second));
 			modifiesList.clear();
 			usesList.clear();
 			break;
@@ -268,7 +268,7 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 		if (isMathSymbol(*it) || isSemicolon(*it)) {
 			if (isVariable(variable)) {
 				VarTable& varTable = pkb.getVarTable();
-				int varID = varTable.getID(variable);
+				int varID = varTable.getIndex(variable);
 				
 				if (modifiesList.empty()) {
 					modifiesList.push_back(varID);

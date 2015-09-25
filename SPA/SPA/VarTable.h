@@ -12,6 +12,8 @@ class VarTable
 public:
 	VarTable();
 
+	int getIndex(string);
+
 	int getID(string);
 
 	int insertVar(string);

@@ -11,6 +11,8 @@ class ProcTable
 public:
 	ProcTable();
 
+	int getIndex(string);
+
 	int getID(string);
 
 	int insertProc(string);
