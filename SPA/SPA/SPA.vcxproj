@@ -123,7 +123,6 @@
     <ClCompile Include="AST.cpp" />
     <ClCompile Include="ASTNode.cpp" />
     <ClCompile Include="CFG.cpp" />
-    <ClCompile Include="CFGBuilder.cpp" />
     <ClCompile Include="CFGNode.cpp" />
     <ClCompile Include="Checker.cpp" />
     <ClCompile Include="Controller.cpp" />
@@ -155,7 +154,6 @@
     <ClInclude Include="AST.h" />
     <ClInclude Include="ASTNode.h" />
     <ClInclude Include="CFG.h" />
-    <ClInclude Include="CFGBuilder.h" />
     <ClInclude Include="CFGNode.h" />
     <ClInclude Include="Checker.h" />
     <ClInclude Include="Controller.h" />
