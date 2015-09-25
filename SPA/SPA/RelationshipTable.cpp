@@ -6,7 +6,7 @@ RelationshipTable::RelationshipTable() {
 	vector<string> arg2;
 	
 	//ModifiesS (statements)
-	 arg1 = { "assign", "while", "prog_line", "all" };
+	 arg1 = { "stmt", "assign", "while", "prog_line", "all" };
 	 arg2 = { "variable", "string", "all" };
 	Relationship r1(2, arg1, arg2);
 	relTable["modifies"] = r1;
