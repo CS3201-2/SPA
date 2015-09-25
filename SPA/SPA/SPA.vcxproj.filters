@@ -76,6 +76,16 @@
     <ClCompile Include="ResultTable.cpp">
       <Filter>Source Files\Query Processor</Filter>
     </ClCompile>
+    <ClCompile Include="ValidatorMain.cpp" />
+    <ClCompile Include="SPALog.cpp">
+      <Filter>Source Files\Front-end Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="CFG.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="CFGNode.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTNode.h">
@@ -149,6 +159,15 @@
     </ClInclude>
     <ClInclude Include="ResultTable.h">
       <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="SPALog.h">
+      <Filter>Header Files\Front-end Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="CFG.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="CFGNode.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

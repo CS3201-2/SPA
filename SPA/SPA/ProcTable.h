@@ -11,11 +11,15 @@ class ProcTable
 public:
 	ProcTable();
 
-	int get_ID(string);
+	int getIndex(string);
 
-	int insert_Proc(string);
+	int getID(string);
 
-	int get_size();
+	int insertProc(string);
+
+	int getSize();
+
+	void printMap();
 
 private:
 	map<string,int> procTable;

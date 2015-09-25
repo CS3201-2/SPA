@@ -20,6 +20,8 @@ public:
 
 	list<string> processQuery(string query);
  
+	void testingPKB();
+
 private:
 	string source;
 

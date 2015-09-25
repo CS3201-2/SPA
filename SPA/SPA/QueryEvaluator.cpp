@@ -8,6 +8,7 @@
 #include "ResultTable.h"
 #include "QueryResultProjector.h"
 #include "PKB.h"
+#include "SPALog.h"
 #include <string>
 #include <list>
 #include <algorithm>
@@ -43,7 +44,7 @@ list<string> QueryEvaluator::evaluate() {
 	for (index = 0; index < queryTree.getSelectSize(); index++) {
 		processSelectClause(getSelectClause(index));
 	}
-	/*
+	
 	cout << "splited table" << endl;
 	for (auto& x : resultList) {
 		for (int i = 0; i < x.result.size(); ++i) {
@@ -56,7 +57,7 @@ list<string> QueryEvaluator::evaluate() {
 	}
 
 	cout << "result" << endl;
-	*/
+	
 	QueryResultProjector qrp = QueryResultProjector(resultList, select.at(0), select.at(1), pkb);
 	//cout << qrp.getResult() << endl;
 	return qrp.getResult();
@@ -128,11 +129,11 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
-
+	//cout << arg1Type << endl;
 	if (arg2Type == "string") {
-		int arg2ID = pkb.getVarTable().get_ID(arg2);
-		list<int> modifiesLine = pkb.getModifies().get_modifies_line(arg2ID);
-		if (arg1Type == "prog_line") {
+		int arg2ID = pkb.getVarTable().getID(arg2);
+		list<int> modifiesLine = pkb.getModifies().getModifiesLine(arg2ID);
+		if ( arg1Type == "prog_line" ) {
 			ResultTable tempResult = ResultTable();
 			if (find(modifiesLine.begin(), modifiesLine.end(), stoi(arg1)) != modifiesLine.end()) {
 				tempResult.isWholeTrue = 1;
@@ -142,6 +143,26 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			}
 			return tempResult;
 		}
+		else if (arg1Type == "proc_name") {
+			int arg1ID = pkb.getProcTable().getID(arg1);
+			ResultTable tempResult = ResultTable();
+
+			if (find(modifiesLine.begin(), modifiesLine.end(), arg1ID) != modifiesLine.end()) {
+				tempResult.isWholeTrue = 1;
+			}
+			else {
+				tempResult.isWholeTrue = 0;
+			}
+			return tempResult;
+		}
+		else if ( arg1Type == "procedure" ) {
+
+		}
+		else {
+			// arg2 is stmt, while, assign, if, call
+
+		}
+		/*
 		else if (arg1Type == "while" || arg1Type == "assign") {
 			ResultTable tempResult = ResultTable(arg1);
 			list<int> whileList = pkb.getWhileList();
@@ -185,7 +206,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 		}
 		else {
 			cerr << "arg1 input Err" << endl;
-		}
+		}*/
 	}
 
 	else if( arg2Type == "variable" ) {
@@ -266,8 +287,8 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 	string arg2Type = tempString.at(4);
 
 	if (arg2Type == "string") {
-		int arg2ID = pkb.getVarTable().get_ID(arg2);
-		list<int> usesLine = pkb.getUses().get_uses_stmt(arg2ID);
+		int arg2ID = pkb.getVarTable().getID(arg2);
+		list<int> usesLine = pkb.getUses().getUsesStmt(arg2ID);
 		if (arg1Type == "prog_line") {
 			ResultTable tempResult = ResultTable();
 			if (find(usesLine.begin(), usesLine.end(), stoi(arg1)) != usesLine.end()) {
@@ -533,6 +554,7 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
+	//cout << "arg1: "<<arg1Type << "arg2: "  << arg2Type << endl;
 	AST ast = pkb.getAST();
 	if (arg2Type == "prog_line") {
 		list<int> whileList = pkb.getWhileList();
@@ -591,8 +613,9 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg2);
 			list<int> whileList = pkb.getWhileList();
 			list<int> assignList = pkb.getAssignList();
-
+			
 			int rightSibling = ast.getFollowAfter(stoi(arg1));
+			
 			if ( rightSibling == -1) {
 				tempResult.isWholeTrue = 0;
 				return tempResult;
@@ -859,7 +882,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 				}
 			}
 			else if (arg2Type == "all") {
-				list<int> stmtList;
+				list<int> stmtList = whileList;
  				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
 				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
 					for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
@@ -938,7 +961,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 				}
 			}
 			else if (arg1Type == "all") {
-				list<int> stmtList;
+				list<int> stmtList = whileList;
 				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
  				int brother = ast.getFollowBefore(stoi(arg2));
 				while (brother != -1) {
@@ -990,7 +1013,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 				}
 			}
 			else if (arg2Type == "all") {
-				list<int> stmtList;
+				list<int> stmtList = whileList;
 				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
 				int rightSibling = ast.getFollowAfter(stoi(arg1));
 				while (rightSibling != -1) {
@@ -1043,7 +1066,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 				}
 			}
 			else if (arg2Type == "all") {
-				list<int> stmtList;
+				list<int> stmtList = whileList;
 				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
 				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
 					int rightSibling = ast.getFollowAfter(*t);
@@ -1096,7 +1119,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 				}
 			}
 			else if (arg2Type == "all") {
-				list<int> stmtList;
+				list<int> stmtList = whileList;
 				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
 				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
 					int rightSibling = ast.getFollowAfter(*t);
@@ -1132,8 +1155,8 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	//syn has to be assign in prototype
 	if (arg1Type == "string") {
 		ResultTable tempResult = ResultTable(syn);
-		int arg1ID = pkb.getVarTable().get_ID(arg1);
-		list<int> stmtList = pkb.getModifies().get_modifies_line(arg1ID);
+		int arg1ID = pkb.getVarTable().getID(arg1);
+		list<int> stmtList = pkb.getModifies().getModifiesLine(arg1ID);
 		list<int> assignList = pkb.getAssignList();
 		vector<int> temp;
 		for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
@@ -1243,11 +1266,11 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 		resultList.push_back(tempResult);
 		return;
 	}
-	else if (synType == "stmt") {
+	else if (synType == "all") {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
-		list<int> stmtList;
-		stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
+		list<int> stmtList = assignList;
+		//stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
 		stmtList.insert(stmtList.end(), whileList.begin(), whileList.end());
 		for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
 			temp.push_back(*i);

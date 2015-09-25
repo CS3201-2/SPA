@@ -12,12 +12,14 @@ class Modifies
 public:
 	Modifies();
     
-	list<int> get_modifies_line( int );
+	list<int> getModifiesLine( int );
 
-	void set_modifies_stmt( int, int );
+	void setModifiesStmt( int, int );
 	// return list of var_id modified by stmt number
 	list<int> getModifiesVar(int stmt_number);
+	void printMap();
 
+	void sortMap();
 private:
 	map<int,std::list<int>> modifiesMap;
 };

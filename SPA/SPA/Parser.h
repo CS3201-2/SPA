@@ -1,6 +1,7 @@
 #include "PKB.h"
 #include <string>
 #include <list>
+#include <stack>
 
 using namespace std;
 
@@ -14,24 +15,30 @@ public:
 
 	PKB parseSource(string);
 
-	void trim(string& line);
+	void trim(string&);
 
-	void addNewLineString(string& content);
+	void addNewLineString(string&);
 
-	void buildSourceCodeList(string content, list<std::pair<int,string>>& list);
+	void buildSourceCodeList(string, list<std::pair<int, string>>&);
 
-	void processSourceCodeList(list<pair<int, string>>& list);
+	void processSourceCodeList(list<pair<int, string>>&);
 
 private:
 	PKB pkb;
-	void processWhile(list<std::pair<int,string>>::iterator it, list<std::pair<int, string>>& stmtList, list<int>& modifiesList, list<int>& usesList);
-	int countNumOfLeftBraces(std::pair<int, string> pair);
-	int countNumOfRightBraces(std::pair<int, string> pair);
-	void processAssignment(std::pair<int,string> pair, list<int>& modifiesList, list<int>& usesList);
-	bool isVariable(string str);
-	bool isSemicolon(char ch);
-	bool isMathSymbol(char ch);
-	int getTypeOfStatement(std::pair<int, string> pair);
+	Modifies& modifies = pkb.getModifies();
+	Uses& uses = pkb.getUses();
+	Follows& follows = pkb.getFollows();
+	Parent& parent = pkb.getParent();
+	void processWhile(list<std::pair<int, string>>::iterator&, list<std::pair<int, string>>&,
+		list<int>&, list<int>&, list<int>&, int, list<stack<string>>&);
+	int countNumOfLeftBraces(std::pair<int, string>);
+	int countNumOfRightBraces(std::pair<int, string>);
+	void processAssignment(std::pair<int, string>, list<int>&, list<int>&);
+	bool isVariable(string);
+	bool isSemicolon(char);
+	bool isMathSymbol(char);
+	int getTypeOfStatement(string);
+	string getProcName(string);
 };
 
 #endif

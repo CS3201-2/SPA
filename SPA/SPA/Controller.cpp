@@ -32,6 +32,23 @@ int Controller::syntaxCheck() {
 	return checker.checkSyntax(source);
 }
 
+void Controller::testingPKB() {
+	cout << endl;
+	cout << "testing" << endl;
+	cout << endl;
+
+	//change below for testing purpose
+	//ctrPKB.getFollows().printMap();
+	//ctrPKB.getParent().printMap();
+	/*ctrPKB.getVarTable().printMap();
+	ctrPKB.getModifies().sortMap();
+	ctrPKB.getModifies().printMap();
+	ctrPKB.getUses().sortMap();
+	ctrPKB.getUses().printMap();*/
+
+	cout << "end of testing" << endl;
+}
+
 PKB Controller::parse() {
 	Parser parser;
 	return parser.parseSource(source);

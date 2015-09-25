@@ -1,7 +1,4 @@
 #include "Uses.h"
-#include <map>
-#include <list>
-#include <algorithm>
 
 using namespace std;
 
@@ -10,7 +7,7 @@ Uses::Uses()
 {
 }
 
-list<int> Uses::get_uses_stmt( int var_id )
+list<int> Uses::getUsesStmt(int var_id)
 {
 	if (usesMap.find(var_id) == usesMap.end()) {
 		return list<int>();
@@ -20,7 +17,7 @@ list<int> Uses::get_uses_stmt( int var_id )
 	}
 }
 
-void Uses::set_uses_stmt( int var_id, int stmt_number )
+void Uses::setUsesStmt(int var_id, int stmt_number)
 {
 	if (usesMap.find(var_id) == usesMap.end()) {
 		std::list<int> emptyList;
@@ -39,10 +36,28 @@ void Uses::set_uses_stmt( int var_id, int stmt_number )
 
 list<int> Uses::getUsesVar(int stmtNumber) {
 	list<int> varList;
-	for (int i = 0; i < usesMap.size(); i++) {
-		if (find(usesMap[i].begin(), usesMap[i].end(), stmtNumber) != usesMap[i].end()) {
-			varList.push_back(i);
+	for (map<int, std::list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
+		if (find((*it).second.begin(), (*it).second.end(), stmtNumber) != (*it).second.end()) {
+			varList.push_back((*it).first);
 		}
 	}
 	return varList;
+}
+
+void Uses::printMap() {
+	for (map<int, std::list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
+		cout << (*it).first;
+		cout << ":";
+		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
+			cout << *listIt;
+			cout << " ";
+		}
+		cout << endl;
+	}
+}
+
+void Uses::sortMap() {
+	for (map<int, std::list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
+		(*it).second.sort();
+	}
 }

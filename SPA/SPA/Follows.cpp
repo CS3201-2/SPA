@@ -1,23 +1,37 @@
 #include "Follows.h"
-#include <map>
-#include <list>
-#include <algorithm>
 
-using namespace std;
-
-// constructor
-Follows::Follows()
-{
+Follows::Follows() {
 }
 
-list<int> Follows::getFollowsStmt(int stmt_line)
-{
-	return followsMap.at(stmt_line);
+void Follows::setFollowsStmt(int followsFirst, int followsSecond) {
+	followsMap[followsFirst] = followsSecond;
 }
 
-void Follows::setFollowsStmt(int stmt_Line, list<int> stmt_Lines)
-{
-	followsMap[stmt_Line] = stmt_Lines;
-
+int Follows::getFollowsStmt(int stmtLine) {
+	if (followsMap.find(stmtLine) == followsMap.end()) {
+		return -1;
+	}
+	else {
+		return followsMap.at(stmtLine);
+	}
 }
 
+int Follows::getIsFollowedStmt(int stmtLine) {
+	int result = -1;
+	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
+		if ((*it).second == stmtLine) {
+			result = (*it).first;
+			break;
+		}
+	}
+	return result;
+}
+
+void Follows::printMap() {
+	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
+		cout << (*it).first;
+		cout << ":";
+		cout << (*it).second;
+		cout << endl;
+	}
+}
