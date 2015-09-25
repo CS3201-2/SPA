@@ -33,6 +33,8 @@ list<string> QueryController::processQueries(string queries, PKB my_pkb) {
 		QueryTree qt = qv.getQueryTree();
 		QueryEvaluator qe(my_pkb, qt);
 		result = qe.evaluate();
+	} else {
+		result.push_back("Invalid Query");
 	}
 	return result;
 }
