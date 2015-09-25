@@ -22,6 +22,7 @@ private:
 	bool checkRetVal(RETURN_TYPE retVal, bool &isFinished);
 	bool isValidVariableName(string varName);
 	RETURN_TYPE findSuchThatClause(string &subquery);
+	RETURN_TYPE parseSuchThatArgs(string relType, vector<string> &arrVar, vector<string> &varTypes);
 	RETURN_TYPE findSuchThatString(string &subquery);
 	RETURN_TYPE findPatternClause(string &subquery);
 	RETURN_TYPE parsePatternArg1(string relType, string &arg, string &varType);

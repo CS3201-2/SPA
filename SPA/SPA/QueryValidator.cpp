@@ -190,55 +190,55 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 
 	vector<string> varTypes(arrVar.size());
 	//cout << "\nsuch that: parsing args";
-	for (int i = 0; i < arrVar.size(); i++) {
-		if (isVarNameExists(arrVar.at(i))) {
-			if (!r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)))) {
-				return INVALID;
-			}
-			else {
-				varTypes.at(i) = getVarType(arrVar.at(i));
-			}
-
-		}
-		else if (isStringVar(arrVar.at(i))) {
-			if (!r.isArgValid(relType, i + 1, VARTYPE_STRING)) {
-				return INVALID;
-			}
-			else {
-				arrVar.at(i) = arrVar.at(i).substr(1, arrVar.at(i).size() - 2);
-				varTypes.at(i) = VARTYPE_STRING;
-			}
-
-		}
-		else if (isPositiveInteger(arrVar.at(i))) {
-			if (!r.isArgValid(relType, i + 1, VARTYPE_PROG_LINE)) {
-				return INVALID;
-			}
-			else {
-				varTypes.at(i) = VARTYPE_PROG_LINE;
-			}
-
-		}
-		else if (arrVar.at(i).compare("_") == 0) {
-			if (!r.isArgValid(relType, i + 1, VARTYPE_ALL)) {
-				return INVALID;
-			}
-			else {
-				varTypes.at(i) = VARTYPE_ALL;
-			}
-
-		}
-		else {
-			return INVALID;
-		}
+	if (parseSuchThatArgs(relType, arrVar, varTypes) == INVALID) {
+		return INVALID;
 	}
-
+	
 	qt.insertSuchThat(relType, arrVar, varTypes);
 
 	cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return VALID;
+}
+
+QueryValidator::RETURN_TYPE QueryValidator::parseSuchThatArgs(string relType, 
+		vector<string>& arrVar, vector<string>& varTypes){
+	
+	for (int i = 0; i < arrVar.size(); i++) {
+		if (isVarNameExists(arrVar.at(i))) {
+			if (!r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)))) {
+				return INVALID;
+			} else {
+				varTypes.at(i) = getVarType(arrVar.at(i));
+			}
+
+		} else if (isStringVar(arrVar.at(i))) {
+			if (!r.isArgValid(relType, i + 1, VARTYPE_STRING)) {
+				return INVALID;
+			} else {
+				arrVar.at(i) = arrVar.at(i).substr(1, arrVar.at(i).size() - 2);
+				varTypes.at(i) = VARTYPE_STRING;
+			}
+
+		} else if (isPositiveInteger(arrVar.at(i))) {
+			if (!r.isArgValid(relType, i + 1, VARTYPE_PROG_LINE)) {
+				return INVALID;
+			} else {
+				varTypes.at(i) = VARTYPE_PROG_LINE;
+			}
+
+		} else if (arrVar.at(i).compare("_") == 0) {
+			if (!r.isArgValid(relType, i + 1, VARTYPE_ALL)) {
+				return INVALID;
+			} else {
+				varTypes.at(i) = VARTYPE_ALL;
+			}
+
+		} else {
+			return INVALID;
+		}
+	}
 }
 
 QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) {
@@ -311,7 +311,9 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 	return VALID;
 }
 
-QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg1(string relType, string &arg, string &varType) {
+QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg1(string relType, 
+		string &arg, string &varType) {
+	
 	if (isVarNameExists(arg) && getVarType(arg).compare(VARTYPE_ASSIGN) == 0) {
 		if (!r.isArgValid(relType, 1, getVarType(arg))) {
 			return INVALID;
@@ -345,7 +347,9 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg1(string relType, str
 	}
 }
 
-QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType, string &arg, string &varType) {
+QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType, 
+		string &arg, string &varType) {
+	
 	//string value;
 	if (arg.size() >= 5) {
 		if (arg.at(0) == '_' && arg.at(arg.size() - 1) == '_'  &&
