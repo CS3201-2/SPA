@@ -18,7 +18,7 @@ int main() {
 		str11 = "stmt s; Select s such that Modifies(s, \"i\")",
 		str12 = "stmt s; Select s such that Next(s,s)",
 		str13 = "while w; Select w Pattern w(\"x\", _ )",
-		str14 = "if if1; Select if1 Pattern if1(\"i\", _, _ )";
+		str14 = "if If; Select If Pattern If(\"i\", _, _ )";
 	//queries.push_back(str);
 	//queries.push_back(str2);
 	//queries.push_back(str3);

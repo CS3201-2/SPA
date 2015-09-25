@@ -10,6 +10,11 @@ const char SYMBOL_COMMA = ',';
 const char SYMBOL_OPEN_BRACKET = '(';
 const char SYMBOL_CLOSE_BRACKET = ')';
 
+const vector<string> KEYWORDS = { "constant", "stmt", "assign", "while", "if", 
+	"procedure", "call", "prog_line", "select", "modifies", "uses", "parent", 
+	"parent*", "follows", "follows*", "pattern", "next", "next*", "calls", 
+	"calls*", "affects", "affects*", "with" };
+
 const string VARTYPE_VARIABLE = "variable";
 const string VARTYPE_STRING = "string";
 const string VARTYPE_SUBSTRING = "substring";
@@ -69,7 +74,8 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 	if (!(arrDec.at(0).compare(VARTYPE_STMT) == 0 || arrDec.at(0).compare(VARTYPE_ASSIGN) == 0 ||
 		arrDec.at(0).compare(VARTYPE_WHILE) == 0 || arrDec.at(0).compare(VARTYPE_VARIABLE) == 0 ||
 		arrDec.at(0).compare(VARTYPE_CONSTANT) == 0 || arrDec.at(0).compare(VARTYPE_PROG_LINE) == 0 ||
-		arrDec.at(0).compare(VARTYPE_IF) == 0 || arrDec.at(0).compare(VARTYPE_PROCEDURE) == 0)) {
+		arrDec.at(0).compare(VARTYPE_IF) == 0 || arrDec.at(0).compare(VARTYPE_PROCEDURE) == 0 ||
+		arrDec.at(0).compare(VARTYPE_CALL) == 0)) {
 		return false;
 	}
 
@@ -245,7 +251,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			} else if (getVarType(arrWords.at(0)).compare(VARTYPE_IF) == 0) {
 				relType = "patternIf";
 				syn = arrWords.at(0);
-				synType = VARTYPE_WHILE;
+				synType = VARTYPE_IF;
 
 			} else {
 				return INVALID;
@@ -400,6 +406,10 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery)
 bool QueryValidator::isValidVariableName(string varName)
 {
 	if (varName.length() == 0) {
+		return false;
+	}
+
+	if (std::find(KEYWORDS.begin(), KEYWORDS.end(), stringToLower(varName)) != KEYWORDS.end()) {
 		return false;
 	}
 
