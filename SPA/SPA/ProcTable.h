@@ -11,11 +11,11 @@ class ProcTable
 public:
 	ProcTable();
 
-	int get_ID(string);
+	int getID(string);
 
-	int insert_Proc(string);
+	int insertProc(string);
 
-	int get_size();
+	int getSize();
 
 	void printMap();
 
