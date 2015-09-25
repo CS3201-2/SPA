@@ -86,9 +86,6 @@
     <ClCompile Include="CFGNode.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="CFGBuilder.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTNode.h">
@@ -170,9 +167,6 @@
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="CFGNode.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
-    <ClInclude Include="CFGBuilder.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
