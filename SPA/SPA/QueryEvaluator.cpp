@@ -131,9 +131,9 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 	string arg2Type = tempString.at(4);
 	//cout << arg1Type << endl;
 	if (arg2Type == "string") {
-		int arg2ID = pkb.getVarTable().get_ID(arg2);
-		list<int> modifiesLine = pkb.getModifies().get_modifies_line(arg2ID);
-		if (arg1Type == "prog_line") {
+		int arg2ID = pkb.getVarTable().getID(arg2);
+		list<int> modifiesLine = pkb.getModifies().getModifiesLine(arg2ID);
+		if ( arg1Type == "prog_line" ) {
 			ResultTable tempResult = ResultTable();
 			if (find(modifiesLine.begin(), modifiesLine.end(), stoi(arg1)) != modifiesLine.end()) {
 				tempResult.isWholeTrue = 1;
@@ -143,7 +143,19 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if ( arg1Type == "procedure" || arg1Type == "proc_name" ) {
+		else if (arg1Type == "proc_name") {
+			int arg1ID = pkb.getProcTable().getID(arg1);
+			ResultTable tempResult = ResultTable();
+
+			if (find(modifiesLine.begin(), modifiesLine.end(), arg1ID) != modifiesLine.end()) {
+				tempResult.isWholeTrue = 1;
+			}
+			else {
+				tempResult.isWholeTrue = 0;
+			}
+			return tempResult;
+		}
+		else if ( arg1Type == "procedure" ) {
 
 		}
 		else {
@@ -275,7 +287,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 	string arg2Type = tempString.at(4);
 
 	if (arg2Type == "string") {
-		int arg2ID = pkb.getVarTable().get_ID(arg2);
+		int arg2ID = pkb.getVarTable().getID(arg2);
 		list<int> usesLine = pkb.getUses().get_uses_stmt(arg2ID);
 		if (arg1Type == "prog_line") {
 			ResultTable tempResult = ResultTable();
@@ -1143,8 +1155,8 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	//syn has to be assign in prototype
 	if (arg1Type == "string") {
 		ResultTable tempResult = ResultTable(syn);
-		int arg1ID = pkb.getVarTable().get_ID(arg1);
-		list<int> stmtList = pkb.getModifies().get_modifies_line(arg1ID);
+		int arg1ID = pkb.getVarTable().getID(arg1);
+		list<int> stmtList = pkb.getModifies().getModifiesLine(arg1ID);
 		list<int> assignList = pkb.getAssignList();
 		vector<int> temp;
 		for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
