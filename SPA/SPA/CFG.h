@@ -11,6 +11,13 @@ class CFG
 {
 	vector<list<int>> _next;
 	unordered_map<int, CFGNode*> _nodeMap;
+
+	list<pair<int, string>>::iterator _codeIterator;
+	list<pair<int, string>> _codeLst;
+	stack<int> _nodeInOperation;
+	list<int> _statBuffer;
+	int _nodeIndex;
+	int _currentNodeIndex;
 public:
 	CFG();
 	void BuildGraph(list<pair<int, string>>);
@@ -18,8 +25,8 @@ public:
 	~CFG();
 private:
 	int findNode(int);
-	void createNode(int, list<int>);
-	void createNode(int, int);
+	void extractBuffer();
+	void solveCode();
 	bool isIfStmt(string);
 	bool isWhileStmt(string);
 };
