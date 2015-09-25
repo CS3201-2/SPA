@@ -139,6 +139,7 @@
     <ClCompile Include="Relationship.cpp" />
     <ClCompile Include="RelationshipTable.cpp" />
     <ClCompile Include="ResultTable.cpp" />
+    <ClCompile Include="SPALog.cpp" />
     <ClCompile Include="StackNode.cpp" />
     <ClCompile Include="Suffix.cpp" />
     <ClCompile Include="UI.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Relationship.h" />
     <ClInclude Include="RelationshipTable.h" />
     <ClInclude Include="ResultTable.h" />
+    <ClInclude Include="SPALog.h" />
     <ClInclude Include="StackNode.h" />
     <ClInclude Include="Suffix.h" />
     <ClInclude Include="Uses.h" />
