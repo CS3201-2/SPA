@@ -1,6 +1,8 @@
 #include <string>
 #include <map>
 #include <list>
+#include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -12,13 +14,17 @@ class Parent
 public:
 	Parent();
 
+	list<int> getChildStmt(int);
+
+	void setParentStmt(int, list<int>);
+
 	int getParentStmt(int);
 
-	void setParentStmt(int, int);
+	void printMap();
 
+	void sortMap();
 private:
-	//key is child id, value is parent id
-	map<int, int> parentMap;
+	map<int, std::list<int>> parentMap;
 };
 
 #endif

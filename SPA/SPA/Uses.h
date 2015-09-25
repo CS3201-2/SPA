@@ -1,6 +1,8 @@
 #include <string>
 #include <map>
 #include <list>
+#include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -12,13 +14,17 @@ class Uses
 public:
 	Uses();
 
-	list<int> get_uses_stmt( int );
+	list<int> getUsesStmt(int);
 
-	void set_uses_stmt( int, int );
+	void setUsesStmt(int, int);
 
 	list<int> getUsesVar(int stmt_number);
+
+	void printMap();
+
+	void sortMap();
 private:
-	map<int,std::list<int>> usesMap;
+	map<int, std::list<int>> usesMap;
 };
 
 #endif
