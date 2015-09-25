@@ -6,7 +6,7 @@ RelationshipTable::RelationshipTable() {
 	vector<string> arg2;
 	
 	//ModifiesS (statements)
-	 arg1 = { "stmt", "assign", "while", "prog_line", "all" };
+	 arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "proc_name" }; //
 	 arg2 = { "variable", "string", "all" };
 	Relationship r1(2, arg1, arg2);
 	relTable["modifies"] = r1;
@@ -15,7 +15,7 @@ RelationshipTable::RelationshipTable() {
 	//cout << relTable.find("modifies*")->second.arg1.at(0);
 	
 	//UsesS (statements)
-	arg1 = { "assign", "while", "prog_line", "all" };
+	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "proc_name" }; //
 	arg2 = { "variable", "string", "all" };
 	Relationship r2(2, arg1, arg2);
 	relTable["uses"] = r2;
@@ -23,44 +23,109 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Parent
-	arg1 = { "prog_line", "while", "all" };
-	arg2 = { "stmt", "assign", "prog_line", "while", "all" };
+	arg1 = { "stmt", "prog_line", "while", "if" }; //
+	arg2 = { "stmt", "assign", "prog_line", "while", "if" , "call" }; //
 	Relationship r3(2, arg1, arg2);
 	relTable["parent"] = r3;
 	arg1.clear();
 	arg2.clear();
 
 	//Parent*
-	arg1 = { "prog_line", "while" , "all" };
-	arg2 = { "stmt", "assign", "prog_line", "while", "all" };
+	arg1 = { "stmt", "prog_line", "while", "if" }; //
+	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call" }; //
 	Relationship r4(2, arg1, arg2);
 	relTable["parent*"] = r4;
 	arg1.clear();
 	arg2.clear();
 
 	//Follows
-	arg1 = { "stmt", "assign", "prog_line", "while", "all" };
-	arg2 = { "stmt", "assign", "prog_line", "while", "all" };
+	arg1 = { "stmt", "assign", "prog_line", "while", "if", "call", "all" }; //
+	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "all" }; //
 	Relationship r5(2, arg1, arg2);
 	relTable["follows"] = r5;
 	arg1.clear();
 	arg2.clear();
 
-	//Followst
-	arg1 = { "stmt", "assign", "prog_line", "while", "all" };
-	arg2 = { "stmt", "assign", "prog_line", "while", "all" };
+	//Follows*
+	arg1 = { "stmt", "assign", "prog_line", "while", "if", "call", "all" };
+	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "all" };
 	Relationship r6(2, arg1, arg2);
 	relTable["follows*"] = r6;
 	arg1.clear();
 	arg2.clear();
 
-	//Pattern
+	/*//Pattern-assign
 	arg1 = { "variable", "string", "all" };
-	arg2 = { "variable", "constant", "string", "all" };
+	arg2 = { "string", "substring", "all" };
 	Relationship r7(2, arg1, arg2);
 	relTable["pattern"] = r7;
 	arg1.clear();
 	arg2.clear();
+
+	//Pattern-if
+	arg1 = { "variable", "string", "all" };
+	arg2 = { "all" };
+	Relationship r7(2, arg1, arg2);
+	relTable["pattern"] = r7;
+	arg1.clear();
+	arg2.clear();
+
+	//Pattern-while
+	arg1 = { "variable", "string", "all" };
+	arg2 = { "all" };
+	Relationship r7(2, arg1, arg2);
+	relTable["pattern"] = r7;
+	arg1.clear();
+	arg2.clear();
+
+	//Next
+	arg1 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
+	arg2 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
+	Relationship r7(2, arg1, arg2);
+	relTable["pattern"] = r7;
+	arg1.clear();
+	arg2.clear();
+
+	//Next*
+	arg1 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
+	arg2 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
+	Relationship r7(2, arg1, arg2);
+	relTable["pattern"] = r7;
+	arg1.clear();
+	arg2.clear();
+
+	//Calls
+	arg1 = { "procedure", "proc_name", "all" };
+	arg2 = { "procedure", "proc_name", "all" };
+	Relationship r7(2, arg1, arg2);
+	relTable["pattern"] = r7;
+	arg1.clear();
+	arg2.clear();
+
+	//Calls*
+	arg1 = { "procedure", "proc_name", "all" };
+	arg2 = { "procedure", "proc_name", "all" };
+	Relationship r7(2, arg1, arg2);
+	relTable["pattern"] = r7;
+	arg1.clear();
+	arg2.clear();
+
+	//Affects
+	arg1 = { "prog_line", "assign", "all" };
+	arg2 = { "prog_line", "assign", "all" };
+	Relationship r7(2, arg1, arg2);
+	relTable["pattern"] = r7;
+	arg1.clear();
+	arg2.clear();
+
+	//Affects*
+	arg1 = { "prog_line", "stmt", "assign", "all" };
+	arg2 = { "prog_line", "stmt", "assign", "all" };
+	Relationship r7(2, arg1, arg2);
+	relTable["pattern"] = r7;
+	arg1.clear();
+	arg2.clear();
+	*/
 }
 
 bool RelationshipTable::hasRelationship(string rel) {
