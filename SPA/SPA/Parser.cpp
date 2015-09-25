@@ -37,10 +37,6 @@ PKB Parser::parseSource( string source ) {
 	buildSourceCodeList(source, sourceCodeList);
 	
 	processSourceCodeList(sourceCodeList);
-	cout << "end of everything before ast." << endl;
-	AST ast = AST();
-	ast.acceptStatements(sourceCodeList);
-	pkb.setAST(ast);
 
 	return pkb;
 }

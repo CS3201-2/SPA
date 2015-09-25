@@ -12,15 +12,17 @@ class VarTable
 public:
 	VarTable();
 
-	int get_ID(string);
+	int getID(string);
 
-	int insert_Var(string);
+	int insertVar(string);
 
-	int get_size();
+	int getSize();
 
 	string getVarName(int);
 
 	map<string, int> varTable;
+
+	void printMap();
 private:
 
 };
