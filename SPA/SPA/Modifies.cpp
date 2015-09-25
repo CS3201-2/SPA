@@ -11,7 +11,7 @@ Modifies::Modifies()
 {
 }
 
-list<int> Modifies::get_modifies_line( int var_id )
+list<int> Modifies::getModifiesLine( int var_id )
 {
 	if (modifiesMap.find(var_id) == modifiesMap.end()) {
 		return list<int>();
@@ -21,7 +21,7 @@ list<int> Modifies::get_modifies_line( int var_id )
 	
 }
 
-void Modifies::set_modifies_stmt( int var_id, int stmt_number )
+void Modifies::setModifiesStmt( int var_id, int stmt_number )
 {
 	if (modifiesMap.find(var_id) == modifiesMap.end()) {
 		std::list<int> emptyList;
@@ -48,3 +48,21 @@ list<int> Modifies::getModifiesVar(int stmtNumber) {
 	return varList;
 }
 
+void Modifies::printMap() {
+	for (map<int, std::list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
+
+		cout << (*it).first;
+		cout << ":";
+		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
+			cout << *listIt;
+			cout << " ";
+		}
+		cout << endl;
+	}
+}
+
+void Modifies::sortMap() {
+	for (map<int, std::list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
+		(*it).second.sort();
+	}
+}

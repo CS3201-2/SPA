@@ -17,6 +17,8 @@ public:
 
 	int get_size();
 
+	void printMap();
+
 private:
 	map<string,int> procTable;
 	

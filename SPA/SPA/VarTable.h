@@ -21,6 +21,8 @@ public:
 	string getVarName(int);
 
 	map<string, int> varTable;
+
+	void printMap();
 private:
 
 };

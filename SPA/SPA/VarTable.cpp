@@ -40,4 +40,10 @@ string VarTable::getVarName(int varId) {
 	}
 }
 
-
+void VarTable::printMap() {
+	for (map<string, int>::iterator it = varTable.begin(); it != varTable.end(); ++it) {
+		cout << (*it).first;
+		cout << ":";
+		cout << (*it).second << endl;
+	}
+}
