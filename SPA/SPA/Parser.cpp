@@ -96,40 +96,63 @@ void Parser::buildSourceCodeList(string content, list<std::pair<int, string>>& l
 	}
 }
 
-void Parser::processSourceCodeList(list<std::pair<int, string>>& stmtList) {
+void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 	list<int> modifiesList;
 	list<int> usesList;
+	list<int> childrenList;
+	int currentProcedureID;
+	list<stack<string>> bracesList;
+	int prevStmtLine = -1;
+	int prevStmtType = invalidStmt;
 
-	Modifies& modifies = pkb.getModifies();
-	Uses& uses = pkb.getUses();
-	for (list<std::pair<int,string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
-		switch (getTypeOfStatement(*it)){
-		case assignmentStmt: 
-			pkb.addAssignList((*it).first); 
-			processAssignment(*it, modifiesList, usesList); 
+	for (list<std::pair<int, string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
+		int stmtNumber = (*it).first;
+		int stmtType = getTypeOfStatement((*it).second);
+
+		switch (stmtType) {
+		case assignmentStmt:
+			pkb.addAssignList((*it).first);
+			processAssignment(*it, modifiesList, usesList);
 			break;
-		case procDeclarationStmt: 
+		case procDeclarationStmt:
+			pkb.getProcTable().insertProc(getProcName((*it).second));
+			currentProcedureID = pkb.getProcTable().getID(getProcName((*it).second));
 			modifiesList.clear();
 			usesList.clear();
 			break;
 		case procCallStmt: break;
-		case whileStmt: 
-			pkb.addWhileList((*it).first); 
-			processWhile(it, stmtList, modifiesList, usesList); 
+		case whileStmt:
+			pkb.addWhileList((*it).first);
+			processWhile(it, stmtList, modifiesList, usesList, childrenList, currentProcedureID, bracesList);
 			break;
 		case ifStmt: break;//for if
 		case elseStmt: break;//for else
 		case invalidStmt: break;//for invalid statement
 		default: break;
 		}
-		
-		int stmtNumber = (*it).first;
+
+		//modifies
 		for (list<int>::iterator listIter1 = modifiesList.begin(); listIter1 != modifiesList.end(); ++listIter1) {
-			modifies.set_modifies_stmt(*listIter1, stmtNumber);
+			modifies.setModifiesStmt(*listIter1, stmtNumber);
+			modifies.setModifiesStmt(*listIter1, currentProcedureID);
 		}
+		//uses
 		for (list<int>::iterator listIter2 = usesList.begin(); listIter2 != usesList.end(); ++listIter2) {
-			uses.set_uses_stmt(*listIter2, stmtNumber);
+			uses.setUsesStmt(*listIter2, stmtNumber);
+			uses.setUsesStmt(*listIter2, currentProcedureID);
 		}
+		//follows
+		if ((prevStmtType != procDeclarationStmt && prevStmtType != elseStmt && prevStmtType != invalidStmt)
+			&& stmtType != procDeclarationStmt) {
+			follows.setFollowsStmt(prevStmtLine, stmtNumber);
+		}
+		prevStmtLine = stmtNumber;
+		prevStmtType = stmtType;
+		//parent
+		if (stmtType == whileStmt) {
+			parent.setParentStmt(stmtNumber, childrenList);
+		}
+		childrenList.empty();
 	}
 }
 
@@ -143,41 +166,93 @@ int Parser::countNumOfRightBraces(std::pair<int, string> pair) {
 	return std::count(str.begin(), str.end(), '}');
 }
 
-void Parser::processWhile(list<pair<int, string>>::iterator it, list<std::pair<int, string>>& stmtList, list<int>& modifiesList, list<int>& usesList) {
+void Parser::processWhile(list<pair<int, string>>::iterator& it, list<std::pair<int, string>>& stmtList,
+	list<int>& modifiesList, list<int>& usesList, list<int>& childrenList, int currentProcedureID,
+	list<stack<string>>& braceList) {
 	stack <string> braces;
 	braces.push("{");
+	braceList.push_back(braces);
 
 	modifiesList.clear();
 	usesList.clear();
 
 	list<int> tempModifiesList;
 	list<int> tempUsesList;
+	list<int> tempChildrenList;
+	int prevStmtLine = -1;
+	int prevStmtType = invalidStmt;
 
 	++it;//to skip the starting of this while statement
-	while (!braces.empty()) {
+	while (!braceList.back().empty()) {
 		for (int i = 0; i < countNumOfLeftBraces(*it); ++i) {
-			braces.push("{");
-		}
-		for (int i = 0; i < countNumOfRightBraces(*it); ++i) {
-			if (!braces.empty()) {
-				braces.pop();
+			for (list<stack<string>>::iterator iter = braceList.begin(); iter != braceList.end(); ++iter) {
+				if (!(*iter).empty()) {
+					(*iter).push("{");
+				}
 			}
 		}
-		switch (getTypeOfStatement(*it)) {
-		case assignmentStmt: pkb.addAssignList((*it).first); processAssignment(*it, tempModifiesList, tempUsesList); break;
-		case procDeclarationStmt: break;
+		for (int i = 0; i < countNumOfRightBraces(*it); ++i) {
+			for (list<stack<string>>::iterator iter1 = braceList.begin(); iter1 != braceList.end(); ++iter1) {
+				if (!(*iter1).empty()) {
+					(*iter1).pop();
+				}
+			}
+		}
+
+		int stmtNumber = (*it).first;
+		int stmtType = getTypeOfStatement((*it).second);
+
+		switch (stmtType) {
+		case assignmentStmt:
+			pkb.addAssignList((*it).first);
+			processAssignment(*it, tempModifiesList, tempUsesList);
+			break;
+		case procDeclarationStmt: break; //error
 		case procCallStmt: break;
-		case whileStmt: pkb.addWhileList((*it).first); processWhile(it, stmtList, tempModifiesList, tempUsesList); break;
+		case whileStmt:
+			pkb.addWhileList((*it).first);
+			processWhile(it, stmtList, tempModifiesList, tempUsesList, tempChildrenList, currentProcedureID, braceList);
+			break;
 		case ifStmt: break;//for if
 		case elseStmt: break;//for else
 		case invalidStmt: break;//for invalid statement
+		}
+		if (stmtNumber != -1) {
+			childrenList.push_back(stmtNumber);
+		}
+
+		//modifies
+		for (list<int>::iterator listIter1 = tempModifiesList.begin(); listIter1 != tempModifiesList.end(); ++listIter1) {
+			modifies.setModifiesStmt(*listIter1, stmtNumber);
+			modifies.setModifiesStmt(*listIter1, currentProcedureID);
+		}
+		//uses
+		for (list<int>::iterator listIter2 = tempUsesList.begin(); listIter2 != tempUsesList.end(); ++listIter2) {
+			uses.setUsesStmt(*listIter2, stmtNumber);
+			uses.setUsesStmt(*listIter2, currentProcedureID);
+		}
+
+		//follows
+		if ((prevStmtType != procDeclarationStmt && prevStmtType != elseStmt && prevStmtType != invalidStmt)
+			&& stmtType != procDeclarationStmt) {
+			follows.setFollowsStmt(prevStmtLine, stmtNumber);
+		}
+		prevStmtLine = stmtNumber;
+		prevStmtType = stmtType;
+
+		//parent
+		if (stmtType == whileStmt) {
+			parent.setParentStmt(stmtNumber, tempChildrenList);
 		}
 
 		modifiesList.splice(modifiesList.end(), tempModifiesList);
 		usesList.splice(usesList.end(), tempUsesList);
 
-		++it;
+		if (!braceList.back().empty()) {
+			++it;
+		}
 	}
+	braceList.pop_back();
 }
 
 void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesList, list<int>& usesList) {
@@ -193,7 +268,7 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 		if (isMathSymbol(*it) || isSemicolon(*it)) {
 			if (isVariable(variable)) {
 				VarTable& varTable = pkb.getVarTable();
-				int varID = varTable.get_ID(variable);
+				int varID = varTable.getID(variable);
 				
 				if (modifiesList.empty()) {
 					modifiesList.push_back(varID);
@@ -234,11 +309,13 @@ bool Parser::isMathSymbol(char ch) {
 	}
 }
 
-int Parser::getTypeOfStatement(pair<int, string> pair) {
+string Parser::getProcName(string str) {
+	smatch m;
+	regex_search(str, m, procDeclarationRegex);
+	return m[1];
+}
 
-
-	string str = pair.second;
-
+int Parser::getTypeOfStatement(string str) {
 	if (regex_match(str, assignmentRegex)) {
 		return assignmentStmt;
 	}

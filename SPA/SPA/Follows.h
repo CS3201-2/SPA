@@ -1,6 +1,8 @@
 #include <string>
 #include <map>
 #include <list>
+#include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -12,13 +14,18 @@ class Follows
 public:
 	Follows();
 
-	list<int> getFollowsStmt(int);
+	void setFollowsStmt(int, int);
 
-	void setFollowsStmt(int, list<int>);
+	//Follows (8, A), A will be returned
+	int getFollowsStmt(int);
+
+	//Follows (B, 8): B will be returned
+	int getIsFollowedStmt(int);
+
+	void printMap();
 
 private:
-	// key is stmt line, value is a list of young brothers.
-	map<int, std::list<int>> followsMap;
+	map<int, int> followsMap;
 };
 
 #endif

@@ -30,7 +30,8 @@ int main(void) {
 	cout << "Loaded!" << endl;
 	ctr.processSource();
 
-
+	ctr.testingPKB();
+	
 	cout << "Start Processing PQL" << endl;
 
 	a.open("query.txt");
