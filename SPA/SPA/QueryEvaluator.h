@@ -17,6 +17,7 @@ private:
 	QueryTree queryTree;
 	list<ResultTable> resultList;
 	bool isInList(list<int>, int);
+	bool isValidStmt(int);
 
 public:
 	ResultTable processModifies(vector<string> tempString);
