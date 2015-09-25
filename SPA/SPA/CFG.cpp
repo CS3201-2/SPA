@@ -8,11 +8,11 @@ void CFG::BuildGraph(list<pair<int, string>> codeLst)
 	_next.reserve(codeLst.size());
 	_statBuffer.clear();
 	_codeLst = codeLst;
-	_codeIterator = _codeLst.begin;
+	_codeIterator = _codeLst.begin();
 	_nodeIndex = 0;
 	_currentNodeIndex = 0;
 
-	while (_codeIterator != _codeLst.end)
+	while (_codeIterator != _codeLst.end())
 	{
 		solveCode();
 	}
@@ -86,7 +86,7 @@ void CFG::extractBuffer()
 {
 	if (!_statBuffer.empty())
 	{
-		CFGNode* temp = new CFGNode(_nodeIndex, *(_statBuffer.begin), *(_statBuffer.end));
+		CFGNode* temp = new CFGNode(_nodeIndex, *(_statBuffer.begin()), *(_statBuffer.end()));
 		_nodeMap.insert(pair<int, CFGNode*>(_nodeIndex, temp));
 		_currentNodeIndex = _nodeIndex;
 	}
@@ -108,4 +108,14 @@ void CFG::solveCode()
 	{
 		_statBuffer.push_back(codeIndex);
 	}
+}
+
+bool CFG::isIfStmt(string)
+{
+	return false;
+}
+
+bool CFG::isWhileStmt(string)
+{
+	return false;
 }
