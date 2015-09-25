@@ -8,6 +8,7 @@
 #include "ResultTable.h"
 #include "QueryResultProjector.h"
 #include "PKB.h"
+#include "SPALog.h"
 #include <string>
 #include <list>
 #include <algorithm>
@@ -35,7 +36,6 @@ list<string> QueryEvaluator::evaluate() {
 	vector<string> select = getSelectClause(0);
 	int index;
 	for (index = 0; index < queryTree.getSuchThatSize(); index++) {
-		
 		processSuchThatClause(getSuchThatClause(index));
 	}
 	for (index = 0; index < queryTree.getPatternSize(); index++) {
@@ -143,6 +143,14 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			}
 			return tempResult;
 		}
+		else if ( arg1Type == "procedure" || arg1Type == "proc_name" ) {
+
+		}
+		else {
+			// arg2 is stmt, while, assign, if, call
+
+		}
+		/*
 		else if (arg1Type == "while" || arg1Type == "assign") {
 			ResultTable tempResult = ResultTable(arg1);
 			list<int> whileList = pkb.getWhileList();
@@ -186,7 +194,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 		}
 		else {
 			cerr << "arg1 input Err" << endl;
-		}
+		}*/
 	}
 
 	else if( arg2Type == "variable" ) {
