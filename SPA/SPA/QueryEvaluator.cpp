@@ -288,7 +288,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 
 	if (arg2Type == "string") {
 		int arg2ID = pkb.getVarTable().getID(arg2);
-		list<int> usesLine = pkb.getUses().get_uses_stmt(arg2ID);
+		list<int> usesLine = pkb.getUses().getUsesStmt(arg2ID);
 		if (arg1Type == "prog_line") {
 			ResultTable tempResult = ResultTable();
 			if (find(usesLine.begin(), usesLine.end(), stoi(arg1)) != usesLine.end()) {
