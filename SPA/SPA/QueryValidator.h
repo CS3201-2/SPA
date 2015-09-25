@@ -19,6 +19,7 @@ private:
 	//bool parseString(string query);
 	bool isValidDeclaration(string declaration);
 	bool isValidQuery(string query);
+	bool checkRetVal(RETURN_TYPE retVal, bool &isFinished);
 	bool isValidVariableName(string varName);
 	RETURN_TYPE findSuchThatClause(string &subquery);
 	RETURN_TYPE findSuchThatString(string &subquery);

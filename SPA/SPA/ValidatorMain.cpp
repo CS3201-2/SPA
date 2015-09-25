@@ -12,7 +12,7 @@ int main() {
 		str5 = "assign a,    c; variable aa;Select a     such that Uses(a, \"x\")", // to check map
 		str6 = "assign   a,   c;Select   a     such that uses  (_, \"x\")", //to check parseQuery(), findSuchThatClause()
 		str7 = "assign   a,   c;Select   a     pattern a (\"a\", _\"x\"_)", //to check parseQuery(), findPattern()
-		str8 = "assign   a,   c;Select   a     pattern a (\"a\", _\"x\"_) such that Uses  (_, \"x\") ", // to check findSuchThatClause() and findPattern()
+		str8 = "assign   a,   c;Select   a     pattern a (\"a\", _\"x\"_) such that Uses  (a, \"x\") pattern a (\"a\", _\"x\"_)", // to check findSuchThatClause() and findPattern()
 		str9 = "assign a; Select a Pattern a(\"x\", \"0\")",
 		str10 = "stmt s; Select s such that Follows(s, 1)",
 		str11 = "stmt s; Select s such that Modifies(s, \"i\")",
@@ -29,7 +29,7 @@ int main() {
 	//cout << str3 << "\n";
 	//cout << str4 << "\n";
 	//cout << str6 << "\n";
-	q.isValidDecAndQuery(str14);
+	q.isValidDecAndQuery(str8);
 
 	//RelationshipTable r;
 

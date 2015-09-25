@@ -117,27 +117,46 @@ bool QueryValidator::isValidQuery(string query) {
 
 	qt.insertSelect(arrClauses.at(0), getVarType(arrClauses.at(0)));
 
-	if (findSuchThatClause(arrClauses.at(1)) == INVALID) {
-		//cout << "invalid such that";
-		return false;
+	bool isFinished = false;
+	RETURN_TYPE retVal;
+
+	while (!isFinished) {
+		retVal = findSuchThatClause(arrClauses.at(1));
+		
+		if (checkRetVal(retVal, isFinished) == false) {
+			return false;
+		}
+
+		retVal = findPatternClause(arrClauses.at(1));
+
+		if (checkRetVal(retVal, isFinished) == false) {
+			return false;
+		}
+
+		/*retVal = findWithClause(arrClauses.at(1));
+
+		if (checkRetVal(retVal, isFinished) == false) {
+			return false;
+		}*/	
 	}
 
-	if (findPatternClause(arrClauses.at(1)) == INVALID) {
-		//cout << "invalid pattern"; 
-		return false;
-	}
-
-	if (findSuchThatClause(arrClauses.at(1)) == INVALID) {
-		//cout << "invalid such that";
-		return false;
-	}
-
-	if (arrClauses.at(1).size() > 1) {
-		return false;
-	}
 	//cout << arrClauses.at(1).size();
 
 	return true;
+}
+
+bool QueryValidator::checkRetVal(RETURN_TYPE retVal, bool & isFinished){
+	if (retVal == INVALID) {
+		return false;
+	} else if (retVal == NONE) {
+		isFinished = true;
+		return true;
+	} else if (retVal == VALID) {
+		isFinished = false;
+		return true;
+	}
+
+	return false;
 }
 
 QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery) {
@@ -379,6 +398,7 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType, str
 		return INVALID;
 	}
 }
+
 QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery) {
 	vector<string> arrWords = split(subquery, SYMBOL_SPACE, 3);
 	//cout << "findSuchThatString" << endl;
@@ -403,8 +423,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery)
 	return NONE;
 }
 
-bool QueryValidator::isValidVariableName(string varName)
-{
+bool QueryValidator::isValidVariableName(string varName){
 	if (varName.length() == 0) {
 		return false;
 	}
