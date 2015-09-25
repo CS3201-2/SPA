@@ -162,12 +162,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 			if (!r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)))) {
 				return INVALID;
 			} else {
-				//for iter 1 only
-				if (getVarType(arrVar.at(i)) == "stmt") {
-					varTypes.at(i) = "all";
-				} else {
 					varTypes.at(i) = getVarType(arrVar.at(i));
-				}
 			}
 
 		} else if (isStringVar(arrVar.at(i))) {
