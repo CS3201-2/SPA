@@ -22,7 +22,9 @@ public:
 	//Follows (B, 8): B will be returned
 	int getIsFollowedStmt(int);
 
-	void printMap();
+	void printFollowsMap();
+
+	int getFollowsMapSize();
 
 private:
 	map<int, int> followsMap;
