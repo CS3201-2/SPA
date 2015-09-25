@@ -21,8 +21,10 @@ private:
 	bool isValidQuery(string query);
 	bool isValidVariableName(string varName);
 	RETURN_TYPE findSuchThatClause(string &subquery);
-	RETURN_TYPE findPatternClause(string &subquery);
 	RETURN_TYPE findSuchThatString(string &subquery);
+	RETURN_TYPE findPatternClause(string &subquery);
+	RETURN_TYPE parsePatternArg1(string relType, string &arg, string &varType);
+	RETURN_TYPE parsePatternArg2(string relType, string &arg, string &varType);
 	
 	vector<string> split(string str, char c);
 	vector<string> split(string str, char c, int num);

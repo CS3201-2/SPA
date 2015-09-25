@@ -54,7 +54,7 @@ RelationshipTable::RelationshipTable() {
 	arg1.clear();
 	arg2.clear();
 
-	/*//Pattern-assign
+	//Pattern-assign
 	arg1 = { "variable", "string", "all" };
 	arg2 = { "string", "substring", "all" };
 	Relationship r7(2, arg1, arg2);
@@ -65,7 +65,7 @@ RelationshipTable::RelationshipTable() {
 	//Pattern-if
 	arg1 = { "variable", "string", "all" };
 	arg2 = { "all" };
-	Relationship r8(2, arg1, arg2);
+	Relationship r8(3, arg1, arg2);
 	relTable["patternIf"] = r8;
 	arg1.clear();
 	arg2.clear();
@@ -133,7 +133,6 @@ RelationshipTable::RelationshipTable() {
 	relTable["with"] = r16;
 	arg1.clear();
 	arg2.clear();
-	*/
 }
 
 bool RelationshipTable::hasRelationship(string rel) {

@@ -1,4 +1,4 @@
-/*#include "QueryValidator.h"
+#include "QueryValidator.h"
 #include "RelationshipTable.h"
 #include <iostream>
 
@@ -15,7 +15,10 @@ int main() {
 		str8 = "assign   a,   c;Select   a     pattern a (\"a\", _\"x\"_) such that Uses  (_, \"x\") ", // to check findSuchThatClause() and findPattern()
 		str9 = "assign a; Select a Pattern a(\"x\", \"0\")",
 		str10 = "stmt s; Select s such that Follows(s, 1)",
-		str11 = "stmt s; Select s such that Modifies(s, \"i\")";
+		str11 = "stmt s; Select s such that Modifies(s, \"i\")",
+		str12 = "stmt s; Select s such that Next(s,s)",
+		str13 = "while w; Select w Pattern w(\"x\", _ )",
+		str14 = "if if1; Select if1 Pattern if1(\"i\", _, _ )";
 	//queries.push_back(str);
 	//queries.push_back(str2);
 	//queries.push_back(str3);
@@ -26,11 +29,11 @@ int main() {
 	//cout << str3 << "\n";
 	//cout << str4 << "\n";
 	//cout << str6 << "\n";
-	q.isValidDecAndQuery(str11);
+	q.isValidDecAndQuery(str14);
 
 	//RelationshipTable r;
 
 	cin.ignore();
 	cin.get();
 	return 0;
-}*/
+}
