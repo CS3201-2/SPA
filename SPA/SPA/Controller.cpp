@@ -38,7 +38,7 @@ void Controller::testingPKB() {
 	cout << endl;
 
 	//change below for testing purpose
-	//ctrPKB.getFollows().printMap();
+	ctrPKB.getFollows().printFollowsMap();
 	//ctrPKB.getParent().printMap();
 	/*ctrPKB.getVarTable().printMap();
 	ctrPKB.getModifies().sortMap();

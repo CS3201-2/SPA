@@ -42,9 +42,11 @@ int ProcTable::getSize()
 }
 
 void ProcTable::printMap() {
+	cout << "procedure table" << endl;
 	for (map<string, int>::iterator it = procTable.begin(); it != procTable.end(); ++it) {
 		cout << (*it).first;
 		cout << ":";
 		cout << (*it).second << endl;
 	}
+	cout << endl;
 }

@@ -46,6 +46,7 @@ int Parent::getParentStmt(int stmtNumber) {
 }
 
 void Parent::printParentMap() {
+	cout << "parent table" << endl;
 	for (map<int, std::list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
 		cout << (*it).first;
 		cout << ":";
@@ -55,6 +56,7 @@ void Parent::printParentMap() {
 		}
 		cout << endl;
 	}
+	cout << endl;
 }
 
 void Parent::sortParentMap() {
