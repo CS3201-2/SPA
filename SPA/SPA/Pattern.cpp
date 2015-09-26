@@ -16,6 +16,7 @@ string Pattern::convertToPostFix(string str) {
 	list<string> tokenList;
 	list<string> postfixList;
 	string variable = "";
+	string result = "";
 
 	for (string::iterator it = str.begin(); it != str.end(); ++it) {
 		string temp(1, *it);
@@ -65,7 +66,11 @@ string Pattern::convertToPostFix(string str) {
 		opStack.pop();
 	}
 
+	for (list<string>::iterator i = postfixList.begin(); i != postfixList.end(); ++i) {
+		result += *i;
+	}
 
+	return result;
 }
 
 int Pattern::getPriority(string str) {

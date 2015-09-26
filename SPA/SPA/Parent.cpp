@@ -64,5 +64,5 @@ void Parent::sortParentMap() {
 }
 
 int Parent::getParentMapSize() {
-	return parentMap.size;
+	return parentMap.size();
 }
