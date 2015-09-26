@@ -15,6 +15,7 @@ void CFG::BuildGraph(list<pair<int, string>> codeLst)
 	while (_codeIterator != _codeLst.end())
 	{
 		solveCode();
+		_codeIterator++;
 	}
 
 }
@@ -107,6 +108,14 @@ int CFG::createContainerNode(int index)
 	return _nodeIndex - 1;
 }
 
+int CFG::createDummyNode()
+{
+	CFGNode* temp = new CFGNode(_nodeIndex, -1, -1);
+	_nodeMap.insert(pair<int, CFGNode*>(_nodeIndex, temp));
+	_nodeIndex++;
+	return _nodeIndex - 1;
+}
+
 int CFG::getType(string str)
 {
 	if (isIfStmt(str))
@@ -121,6 +130,11 @@ int CFG::getType(string str)
 	{
 		throw "Something wrong here--->CFG getType";
 	}
+}
+
+int CFG::countBrace(string str)
+{
+	return 0;
 }
 
 void CFG::solveCode()
@@ -147,9 +161,56 @@ void CFG::solveCode()
 		//here can only be noraml statement
 		_statBuffer.push_back(codeIndex);
 	}
+	
+	for (int i = 0; i < countBrace(codeContent); i++)
+	{
+		int tempNodeIndex = extractBuffer();
+		if (tempNodeIndex != -1)
+		{
+			solveNode(tempNodeIndex, 0);
+		}
 
-
-	solveBrace(codeContent);
+		pair<int,int> temp = _nodeInOperation.top();
+		_nodeInOperation.pop();
+		pair<int, int> top = _nodeInOperation.top();
+		if (top.second == TYPE_WHILE)
+		{
+			updateVector(temp.first, top.first);
+			top.second = TYPE_NORMAL;
+			_nodeInOperation.pop();
+			_nodeInOperation.push(top);
+		}
+		else if (top.second == TYPE_THEN)
+		{
+			top.second = TYPE_ELSE;
+			_nodeInOperation.pop();
+			_nodeInOperation.push(temp);
+			_nodeInOperation.push(top);
+			_codeIterator++;
+		}
+		else if (top.second == TYPE_ELSE)
+		{
+			_nodeInOperation.pop();
+			pair<int, int> temp2 = _nodeInOperation.top();
+			_nodeInOperation.pop();
+			int dummy = createDummyNode();
+			updateVector(temp.first, dummy);
+			updateVector(temp2.first, dummy);
+			_nodeInOperation.push(Pair(dummy, TYPE_NORMAL));
+		}
+		else if (top.second == TYPE_NORMAL)
+		{
+			updateVector(top.first, temp.first);
+			_nodeInOperation.pop();
+			_nodeInOperation.push(temp);
+			initializeStack();
+		}
+		else//top.second == TYPE_PROC
+		{
+			throw "someting wrong here--->CFG solve code";
+		}
+		
+	}
 }
 
 void CFG::solveNode(int index, int type)

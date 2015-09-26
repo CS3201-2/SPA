@@ -31,6 +31,9 @@ private:
 	int findNode(int);
 	int extractBuffer();
 	int createContainerNode(int);
+	int createDummyNode();
+	int getType(string);
+	int countBrace(string);
 	void solveCode();
 	void solveNode(int,int);
 	void initializeStack();
