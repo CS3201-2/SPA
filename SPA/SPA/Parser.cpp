@@ -173,12 +173,12 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 
 int Parser::countNumOfLeftBraces(std::pair<int,string> pair) {
 	string str = pair.second;
-	return std::count(str.begin(), str.end(), '{');
+	return count(str.begin(), str.end(), '{');
 }
 
 int Parser::countNumOfRightBraces(std::pair<int, string> pair) {
 	string str = pair.second;
-	return std::count(str.begin(), str.end(), '}');
+	return count(str.begin(), str.end(), '}');
 }
 
 void Parser::processWhile(list<pair<int, string>>::iterator& it, list<std::pair<int, string>>& stmtList,

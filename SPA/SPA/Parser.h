@@ -23,6 +23,7 @@ public:
 
 	void processSourceCodeList(list<pair<int, string>>&);
 
+	list<pair<int, string>> prepareSourceList(string);
 private:
 	PKB pkb;
 	Modifies& modifies = pkb.getModifies();
