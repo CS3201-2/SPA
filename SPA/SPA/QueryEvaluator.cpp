@@ -1688,7 +1688,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
-	AST ast = pkb.getAST();
+	/*AST ast = pkb.getAST();
 	if (arg2Type == "prog_line") {
 
 		if (arg1Type == "prog_line") {//means result table should reaturn 1 or 0;
@@ -1699,14 +1699,14 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 					tempResult.isWholeTrue = 1;
 					return tempResult;
 				}
-				parent = ast.getParent(parent);
+				//parent = ast.getParent(parent);
 			}
 			tempResult.isWholeTrue = 0;
 			return tempResult;
 		}
 		else if (arg1Type == "while" || arg1Type == "all") {
 			ResultTable tempResult = ResultTable(arg1);
-			int parent = ast.getParent(stoi(arg2));
+			//int parent = ast.getParent(stoi(arg2));
 			vector<int> temp;
 			while (parent != -1) {
 				// note to Zhao Hang: you are converting a letter to int
@@ -1844,7 +1844,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 		else {
 			return ResultTable();
 		}
-	}
+	}*/
 }
 
 ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
@@ -1852,7 +1852,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
-	AST ast = pkb.getAST();
+	/*AST ast = pkb.getAST();
 	if (arg2Type == "prog_line") {
 		list<int> whileList = pkb.getWhileList();
 		list<int> assignList = pkb.getAssignList();
@@ -2080,7 +2080,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 			cerr << "arg1Type" << endl;
 			return ResultTable();
 		}
-	}
+	}*/
 }
 
 void QueryEvaluator::processPatternClause(vector<string> tempString) {
@@ -2091,7 +2091,7 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	string arg2 = tempString.at(4);
 	string arg2Type = tempString.at(5);
 
-	AST ast = pkb.getAST();
+	/*AST ast = pkb.getAST();
 	//syn has to be assign in prototype
 	if (arg1Type == "string") {
 		ResultTable tempResult = ResultTable(syn);
