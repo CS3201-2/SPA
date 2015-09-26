@@ -259,7 +259,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			return tempResult;*/
 		}
 		else {
-			SPALog::log("Error: Modifies arg1 wrong type");
+			SPALog::log("Error: Modifies arg1 wrong type, arg2 string");
 		}
 			
 	}
@@ -386,7 +386,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			}*/
 		}
 		else {
-			SPALog::log("Error: Modifies arg1 wrong type");
+			SPALog::log("Error: Modifies arg1 wrong type, arg2 variable");
 		}
 		
 	}
@@ -530,7 +530,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			return tempResult;*/
 		}
 		else {
-			SPALog::log("Error: Uses arg1 wrong type");
+			SPALog::log("Error: Uses arg1 wrong type, arg2 type string");
 		}
 
 	}
@@ -657,7 +657,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 									  }*/
 		}
 		else {
-			SPALog::log("Error: Uses arg1 wrong type");
+			SPALog::log("Error: Uses arg1 wrong type, arg2 variable");
 		}
 
 	}
@@ -678,12 +678,30 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
-	AST ast = pkb.getAST();
-	if (arg2Type == "prog_line") {
-		
-		if (arg1Type == "prog_line") {//means result table should reaturn 1 or 0;
+	list<int> whileList = pkb.getWhileList();
+	list<int> assignList = pkb.getAssignList();
+	//list<int> stmtList = pkb.getStmtList();
+	//list<int> ifList = pkb.getIfList();
+    //list<int> callList = pkb.getCallList();
+	list<int> parentList = whileList;
+	//parentList.insert(parentList.end(),ifList.begin(),ifList.end());
+	if (arg1Type == "prog_line") {
+		bool isNotParrent = find(parentList.begin(), parentList.end(), stoi(arg1)) == parentList.end();
+		if (!isValidStmt(stoi(arg1)) || isNotParrent ) {
 			ResultTable tempResult = ResultTable();
-			if (ast.getParent(stoi(arg2))==stoi(arg1)) {
+			tempResult.isWholeTrue = 0;
+			return tempResult;
+		}
+
+		list<int> childList = pkb.getParent().getChildStmt(stoi(arg1));
+
+		if (arg2Type == "prog_line") {
+			ResultTable tempResult = ResultTable();
+			if (!isValidStmt(stoi(arg2))) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			if (pkb.getParent().getParentStmt(stoi(arg2)) == stoi(arg1)) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -691,12 +709,80 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "while" || arg1Type == "all") {
-			ResultTable tempResult = ResultTable(arg1);
-			int parent = ast.getParent(stoi(arg2));
+		else if (arg2Type == "assign") {
 			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			for (list<int>::iterator t = childList.begin(); t != childList.end(); t++) {
+				if (isInList(assignList, *t)) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "while") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			for (list<int>::iterator t = childList.begin(); t != childList.end(); t++) {
+				if (isInList(whileList, *t)) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "if") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			for (list<int>::iterator t = childList.begin(); t != childList.end(); t++) {
+				if (isInList(ifList, *t)) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "call") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			for (list<int>::iterator t = childList.begin(); t != childList.end(); t++) {
+				if (isInList(callList, *t)) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "stmt") {
+			//does stmt means every stmt line?
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			for (list<int>::iterator t = childList.begin(); t != childList.end(); t++) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+			}
+			return tempResult;
+		}
+		else {
+			SPALog::log("Error: Parent arg1 prog_line, arg2 wrong type");
+		}
 
-			if (parent != -1) {
+	}
+	else if (arg1Type == "while") {
+		if (arg2Type == "prog_line") {
+			ResultTable tempResult = ResultTable(arg1);
+			if (!isValidStmt(stoi(arg2))) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			int parent = pkb.getParent().getParentStmt(stoi(arg2));
+			vector<int> temp;
+			if (parent != 0 && isInList(whileList, parent)) {
 				temp.push_back(parent);
 				tempResult.addTuple(temp);
 				temp.clear();
@@ -706,42 +792,36 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-	}
-	else if (arg2Type == "while" || arg2Type == "assign" || arg2Type == "all") {
-		list<int> whileList = pkb.getWhileList();
-		list<int> assignList = pkb.getAssignList();
-		if (arg1Type == "prog_line") {
+		else if (arg2Type == "assign") {
 			vector<int> temp;
-			ResultTable tempResult = ResultTable(arg2);
-			if (find(whileList.begin(), whileList.end(), stoi(arg1)) == whileList.end()) {
+			ResultTable tempResult = ResultTable(arg1,arg2);
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					if (isInList(assignList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "while") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			//this does not affect results but may increase the speed
+			if (arg1 == arg2) {
 				tempResult.isWholeTrue = 0;
 				return tempResult;
 			}
-			list<int> childList = ast.getChild(stoi(arg1));
-			if (arg2Type=="while") {
-				for (list<int>::iterator t = childList.begin(); t != childList.end(); t++) {
-					if (isInList(whileList, *t)) {
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					if (isInList(whileList, *i)) {
 						temp.push_back(*t);
-						tempResult.addTuple(temp);
-						temp.clear();
-					}
-				}
-			}
-			else if(arg2Type =="assign") {
-				for (list<int>::iterator t = childList.begin(); t != childList.end(); t++) {
-					if (isInList(assignList, *t)) {
-						temp.push_back(*t);
-						tempResult.addTuple(temp);
-						temp.clear();
-					}
-				}
-			}
-			else if (arg2Type == "all") {
-				list<int> stmtList = whileList;
-				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
-				for (list<int>::iterator t = childList.begin(); t != childList.end(); t++) {
-					if (isInList(stmtList, *t)) {
-						temp.push_back(*t);
+						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
 					}
@@ -749,63 +829,281 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "while") {
-			vector<int> temp;
-			ResultTable tempResult = ResultTable(arg1,arg2);
-			if (arg2Type == "while") {
-				if (arg1 == arg2) {
-					tempResult.isWholeTrue = 0;
-					return tempResult;
-				}
-				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
-					list<int> childList = ast.getChild(*t);
-					for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
-						if (isInList(whileList, *i)) {
-							temp.push_back(*t);
-							temp.push_back(*i);
-							tempResult.addTuple(temp);
-							temp.clear();
-						}
+		else if (arg2Type == "if") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					if (isInList(ifList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
 					}
 				}
 			}
-			else if (arg2Type == "assign") {
-				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
-					list<int> childList = ast.getChild(*t);
-					for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
-						if (isInList(assignList, *i)) {
-							temp.push_back(*t);
-							temp.push_back(*i);
-							tempResult.addTuple(temp);
-							temp.clear();
-						}
+			return tempResult;*/
+		}
+		else if (arg2Type == "call") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					if (isInList(callList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
 					}
 				}
 			}
-			else if (arg2Type == "all") {
-				list<int> stmtList = whileList;
- 				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
-				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
-					list<int> childList = ast.getChild(*t);
-					for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
-						if (isInList(stmtList, *i)) {
-							temp.push_back(*t);
-							temp.push_back(*i);
-							tempResult.addTuple(temp);
-							temp.clear();
-						}
+			return tempResult;*/
+		}
+		else if (arg2Type == "stmt") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					if (isInList(stmtList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
 					}
 				}
 			}
-			return tempResult;
+			return tempResult;*/
 		}
 		else {
-			return ResultTable();
+			SPALog::log("Error: Parent arg1 while, arg2 wrong type");
+		}
+	}
+	else if (arg1Type == "if") {
+		if (arg2Type == "prog_line") {
+			/*ResultTable tempResult = ResultTable(arg1);
+			if (!isValidStmt(stoi(arg2))) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			int parent = pkb.getParent().getParentStmt(stoi(arg2));
+			vector<int> temp;
+			if (parent != 0 && isInList(ifList, parent)) {
+				temp.push_back(parent);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			else {
+				tempResult.isWholeTrue = 0;
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "assign") {
+			/*
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					if (isInList(assignList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "while") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			
+			/*for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					if (isInList(whileList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}*/
+			return tempResult;
+		}
+		else if (arg2Type == "if") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			//this does not affect results but may increase the speed
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			/*for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					if (isInList(ifList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "call") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+			list<int> childList = pkb.getParent().getChildStmt(*t);
+			for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+			if (isInList(callList, *i)) {
+			temp.push_back(*t);
+			temp.push_back(*i);
+			tempResult.addTuple(temp);
+			temp.clear();
+			}
+			}
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "stmt") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+			list<int> childList = pkb.getParent().getChildStmt(*t);
+			for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+			if (isInList(stmtList, *i)) {
+			temp.push_back(*t);
+			temp.push_back(*i);
+			tempResult.addTuple(temp);
+			temp.clear();
+			}
+			}
+			}
+			return tempResult;*/
+		}
+		else {
+			SPALog::log("Error: Parent arg1 if, arg2 wrong type");
+		}
+	}
+	else if (arg1Type == "stmt") {
+		if (arg2Type == "prog_line") {
+			ResultTable tempResult = ResultTable(arg1);
+			if (!isValidStmt(stoi(arg2))) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			int parent = pkb.getParent().getParentStmt(stoi(arg2));
+			vector<int> temp;
+			if (parent != 0 ) {
+				temp.push_back(parent);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			else {
+				tempResult.isWholeTrue = 0;
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "assign") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = parentList.begin(); t != parentList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					if (isInList(assignList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "while") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = parentList.begin(); t != parentList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					if (isInList(whileList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "if") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = parentList.begin(); t != parentList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					/*if (isInList(ifList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}*/
+				}
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "call") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = parentList.begin(); t != parentList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					/*if (isInList(callList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}*/
+				}
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "stmt") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			//this does not affect results but may increase the speed
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			for (list<int>::iterator t = parentList.begin(); t != parentList.end(); t++) {
+				list<int> childList = pkb.getParent().getChildStmt(*t);
+				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
+					/*if (isInList(stmtList, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}*/
+				}
+			}
+			return tempResult;
+		}
+		//this does not affect results but may increase the speed
+		else {
+			SPALog::log("Error: Parent arg1 stmt, arg2 wrong type");
 		}
 	}
 	else {
-		cerr << "arg2 input err" << endl;
+		SPALog::log("Error: Parent arg1 wrong type");
 	}
+
 }
 
 ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
