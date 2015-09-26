@@ -782,7 +782,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			}
 			int parent = pkb.getParent().getParentStmt(stoi(arg2));
 			vector<int> temp;
-			if (parent != 0 && isInList(whileList, parent)) {
+			if (parent != -1 && isInList(whileList, parent)) {
 				temp.push_back(parent);
 				tempResult.addTuple(temp);
 				temp.clear();
@@ -890,7 +890,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			}
 			int parent = pkb.getParent().getParentStmt(stoi(arg2));
 			vector<int> temp;
-			if (parent != 0 && isInList(ifList, parent)) {
+			if (parent != -1 && isInList(ifList, parent)) {
 				temp.push_back(parent);
 				tempResult.addTuple(temp);
 				temp.clear();
@@ -1000,7 +1000,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			}
 			int parent = pkb.getParent().getParentStmt(stoi(arg2));
 			vector<int> temp;
-			if (parent != 0 ) {
+			if (parent != -1 ) {
 				temp.push_back(parent);
 				tempResult.addTuple(temp);
 				temp.clear();
@@ -1112,14 +1112,33 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
-	//cout << "arg1: "<<arg1Type << "arg2: "  << arg2Type << endl;
-	AST ast = pkb.getAST();
-	if (arg2Type == "prog_line") {
-		list<int> whileList = pkb.getWhileList();
-		list<int> assignList = pkb.getAssignList();
-		if (arg1Type == "prog_line") {//means result table should reaturn 1 or 0;
+	list<int> whileList = pkb.getWhileList();
+	list<int> assignList = pkb.getAssignList();
+	//list<int> stmtList = pkb.getStmtList();
+	//list<int> ifList = pkb.getIfList();
+	//list<int> callList = pkb.getCallList();
+	list<int> parentList = whileList;
+	//parentList.insert(parentList.end(),ifList.begin(),ifList.end());
+	if (arg1Type == "prog_line") {
+		if (!isValidStmt(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
-			if (ast.getFollowBefore(stoi(arg2)) == stoi(arg1)) {
+			tempResult.isWholeTrue = 0;
+			return tempResult;
+		}
+
+		int littleBrother = pkb.getFollows().getFollowsStmt(stoi(arg1));
+		if (littleBrother = -1) {
+			ResultTable tempResult = ResultTable();
+			tempResult.isWholeTrue = 0;
+			return tempResult;
+		}
+		if (arg2Type == "prog_line") {
+			ResultTable tempResult = ResultTable();
+			if (!isValidStmt(stoi(arg2))) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			if ( stoi(arg1) == littleBrother) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -1127,178 +1146,541 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "while" || arg1Type == "assign" || arg1Type == "all") {
-			ResultTable tempResult = ResultTable(arg1);
-			int brother = ast.getFollowBefore(stoi(arg2));
-			if (brother == -1) {
-				tempResult.isWholeTrue = 0;
-				return tempResult;
-			}
-			vector<int> temp;
-			if (arg1Type == "while") {
-				if (isInList(whileList, brother)) {
-					temp.push_back(brother);
-					tempResult.addTuple(temp);
-					temp.clear();
-				}	
-			}
-			else if (arg1Type == "assign") {
-				if (isInList(assignList, brother)) {
-					temp.push_back(brother);
-					tempResult.addTuple(temp);
-					temp.clear();
-				}
-			}
-			else if (arg1Type == "all") {
-				list<int> stmtList = whileList;
-				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
-				if (isInList(stmtList, brother)) {
-					temp.push_back(brother);
-					tempResult.addTuple(temp);
-					temp.clear();
-				}
-			}
-			else {
-				cerr << "arg1 input err" << endl;
-			}
-			return tempResult;
-		}
-	}
-	else if (arg2Type == "while" || arg2Type == "assign" || arg2Type == "all") {
-		
-		if (arg1Type == "prog_line") {
+		else if (arg2Type == "assign") {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
-			list<int> whileList = pkb.getWhileList();
-			list<int> assignList = pkb.getAssignList();
+			if (isInList(assignList, littleBrother)) {
+				temp.push_back(littleBrother);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "while") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			if (isInList(whileList, littleBrother)) {
+				temp.push_back(littleBrother);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "if") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			if (isInList(ifList, littleBrother)) {
+				temp.push_back(littleBrother);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "call") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			if (isInList(callList, littleBrother)) {
+				temp.push_back(littleBrither);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "stmt") {
+			//does stmt means every stmt line?
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
 			
-			int rightSibling = ast.getFollowAfter(stoi(arg1));
+			temp.push_back(littleBrother);
+			tempResult.addTuple(temp);
+			temp.clear();
 			
-			if ( rightSibling == -1) {
+			return tempResult;
+		}
+		else {
+			SPALog::log("Error: Follow arg1 prog_line, arg2 wrong type");
+		}
+
+	}
+	else if (arg1Type == "while") {
+		if (arg2Type == "prog_line") {
+			ResultTable tempResult = ResultTable(arg1);
+			if (!isValidStmt(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
 				return tempResult;
 			}
-			if (arg2Type == "while") {
-				if (isInList(whileList, rightSibling)) {
-					temp.push_back(rightSibling);
-					tempResult.addTuple(temp);
-					temp.clear();
-				}
+			int brother = pkb.getFollows().getIsFollowedStmt(stoi(arg2));
+			vector<int> temp;
+			if (brother != -1 && isInList(whileList, brother)) {
+				temp.push_back(brother);
+				tempResult.addTuple(temp);
+				temp.clear();
 			}
-			else if (arg2Type == "assign") {
-				if (isInList(assignList, rightSibling)) {
-					temp.push_back(rightSibling);
-					tempResult.addTuple(temp);
-					temp.clear();
-				}
+			else {
+				tempResult.isWholeTrue = 0;
 			}
-			else if (arg2Type == "all") {
-				list<int> stmtList = whileList;
-				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
-				if (isInList(stmtList, rightSibling)) {
-					temp.push_back(rightSibling);
+			return tempResult;
+		}
+		else if (arg2Type == "assign") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(assignList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
 					tempResult.addTuple(temp);
 					temp.clear();
 				}
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "while" ) {
+		else if (arg2Type == "while") {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
-			list<int> whileList = pkb.getWhileList();
-			list<int> assignList = pkb.getAssignList();
-			if (arg2Type == "while") {
-				if (arg1 == arg2) {
-					tempResult.isWholeTrue = 0;
-					return tempResult;
-				}
-				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
-					int rightSibling = ast.getFollowAfter(*t);
-					if (rightSibling != -1 && isInList(whileList, rightSibling)) {
-						temp.push_back(*t);
-						temp.push_back(rightSibling);
-						tempResult.addTuple(temp);
-						temp.clear();
-					}
-				}
+			//this does not affect results but may increase the speed
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
 			}
-			else if (arg2Type == "assign") {
-				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
-					int rightSibling = ast.getFollowAfter(*t);
-					if (rightSibling != -1 && isInList(assignList, rightSibling)) {
-						temp.push_back(*t);
-						temp.push_back(rightSibling);
-						tempResult.addTuple(temp);
-						temp.clear();
-					}
-				}
-			}
-			else if (arg2Type == "all") {
-				list<int> stmtList = whileList;
-				stmtList.insert(stmtList.end(),assignList.begin(), assignList.end());
-				for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
-					int rightSibling = ast.getFollowAfter(*t);
-					if (rightSibling != -1 && isInList(stmtList, rightSibling)) {
-						temp.push_back(*t);
-						temp.push_back(rightSibling);
-						tempResult.addTuple(temp);
-						temp.clear();
-					}
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(whileList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
 				}
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "assign") {
+		else if (arg2Type == "if") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(ifList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "call") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(callList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "stmt") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(stmtList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;*/
+		}
+		else {
+			SPALog::log("Error: Follows arg1 while, arg2 wrong type");
+		}
+	}
+	else if (arg1Type == "if") {
+		if (arg2Type == "prog_line") {
+			ResultTable tempResult = ResultTable(arg1);
+			if (!isValidStmt(stoi(arg2))) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			int brother = pkb.getFollows().getIsFollowedStmt(stoi(arg2));
+			vector<int> temp;
+			/*if (brother != -1 && isInList(ifList, brother)) {
+				temp.push_back(brother);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			else {
+				tempResult.isWholeTrue = 0;
+			}*/
+			return tempResult;
+		}
+		else if (arg2Type == "assign") {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
-			list<int> whileList = pkb.getWhileList();
-			list<int> assignList = pkb.getAssignList();
-			if (arg2Type == "while") {
-				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
-					int rightSibling = ast.getFollowAfter(*t);
-					if (rightSibling != -1 && isInList(whileList, rightSibling)) {
-						temp.push_back(*t);
-						temp.push_back(rightSibling);
-						tempResult.addTuple(temp);
-						temp.clear();
-					}
+			/*for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(assignList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}*/
+			return tempResult;
+		}
+		else if (arg2Type == "while") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			
+			/*for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(whileList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}*/
+			return tempResult;
+		}
+		else if (arg2Type == "if") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(ifList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
 				}
 			}
-			else if (arg2Type == "assign") {
-				if (arg1 == arg2) {
-					tempResult.isWholeTrue = 0;
-					return tempResult;
-				}
-				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
-					int rightSibling = ast.getFollowAfter(*t);
-					if (rightSibling != -1 && isInList(assignList, rightSibling)) {
-						temp.push_back(*t);
-						temp.push_back(rightSibling);
-						tempResult.addTuple(temp);
-						temp.clear();
-					}
+			return tempResult;*/
+		}
+		else if (arg2Type == "call") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(callList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
 				}
 			}
-			else if (arg2Type == "all") {
-				list<int> stmtList = whileList;
-				stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
- 				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
-					int rightSibling = ast.getFollowAfter(*t);
-					if (rightSibling != -1 && isInList(stmtList, rightSibling)) {
-						temp.push_back(*t);
-						temp.push_back(rightSibling);
-						tempResult.addTuple(temp);
-						temp.clear();
-					}
+			return tempResult;*/
+		}
+		else if (arg2Type == "stmt") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(stmtList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
 				}
+			}
+			return tempResult;*/
+		}
+		else {
+			SPALog::log("Error: Follows arg1 if, arg2 wrong type");
+		}
+	}
+	else if (arg1Type == "assign") {
+		if (arg2Type == "prog_line") {
+			ResultTable tempResult = ResultTable(arg1);
+			if (!isValidStmt(stoi(arg2))) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			int brother = pkb.getFollows().getIsFollowedStmt(stoi(arg2));
+			vector<int> temp;
+			if (brother != -1 && isInList(assignList, brother)) {
+				temp.push_back(brother);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			else {
+				tempResult.isWholeTrue = 0;
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "assign") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(assignList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "while") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				if (isInList(whileList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "if") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				/*if (isInList(ifList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}*/
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "call") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				/*if (isInList(callList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}*/
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "stmt") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
+				int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+				/*if (isInList(stmtList, littleBrother)) {
+					temp.push_back(*t);
+					temp.push_back(littleBrother);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}*/
 			}
 			return tempResult;
 		}
 		else {
-			return ResultTable();
+			SPALog::log("Error: Follows arg1 assign, arg2 wrong type");
 		}
 	}
+	else if (arg1Type == "call") {
+		if (arg2Type == "prog_line") {
+			ResultTable tempResult = ResultTable(arg1);
+			if (!isValidStmt(stoi(arg2))) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			int brother = pkb.getFollows().getIsFollowedStmt(stoi(arg2));
+			vector<int> temp;
+			/*if (brother != -1 && isInList(callList, brother)) {
+			temp.push_back(brother);
+			tempResult.addTuple(temp);
+			temp.clear();
+			}
+			else {
+			tempResult.isWholeTrue = 0;
+			}*/
+			return tempResult;
+		}
+		else if (arg2Type == "assign") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			/*for (list<int>::iterator t = callList.begin(); t != callList.end(); t++) {
+			int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+			if (isInList(assignList, littleBrother)) {
+			temp.push_back(*t);
+			temp.push_back(littleBrother);
+			tempResult.addTuple(temp);
+			temp.clear();
+			}
+			}*/
+			return tempResult;
+		}
+		else if (arg2Type == "while") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+
+			/*for (list<int>::iterator t = callList.begin(); t != callList.end(); t++) {
+			int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+			if (isInList(whileList, littleBrother)) {
+			temp.push_back(*t);
+			temp.push_back(littleBrother);
+			tempResult.addTuple(temp);
+			temp.clear();
+			}
+			}*/
+			return tempResult;
+		}
+		else if (arg2Type == "if") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = callList.begin(); t != callList.end(); t++) {
+			int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+			if (isInList(ifList, littleBrother)) {
+			temp.push_back(*t);
+			temp.push_back(littleBrother);
+			tempResult.addTuple(temp);
+			temp.clear();
+			}
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "call") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg1 == arg2) {
+			tempResult.isWholeTrue = 0;
+			return tempResult;
+			}
+			for (list<int>::iterator t = callList.begin(); t != callList.end(); t++) {
+			int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+			if (isInList(callList, littleBrother)) {
+			temp.push_back(*t);
+			temp.push_back(littleBrother);
+			tempResult.addTuple(temp);
+			temp.clear();
+			}
+			}
+			return tempResult;*/
+		}
+		else if (arg2Type == "stmt") {
+			/*vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = callList.begin(); t != callList.end(); t++) {
+			int littleBrother = pkb.getFollows().getFollowsStmt(*t);
+			if (isInList(stmtList, littleBrother)) {
+			temp.push_back(*t);
+			temp.push_back(littleBrother);
+			tempResult.addTuple(temp);
+			temp.clear();
+			}
+			}
+			return tempResult;*/
+		}
+		else {
+			SPALog::log("Error: Follows arg1 call, arg2 wrong type");
+		}
+	}
+	else if (arg1Type == "stmt") {
+		if (arg2Type == "prog_line") {
+			ResultTable tempResult = ResultTable(arg1);
+			if (!isValidStmt(stoi(arg2))) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			int brother = pkb.getFollows().getIsFollowedStmt(stoi(arg2));
+			vector<int> temp;
+			/*if (brother != -1 && isInList(stmtList, brother)) {
+			temp.push_back(brother);
+			tempResult.addTuple(temp);
+			temp.clear();
+			}
+			else {
+			tempResult.isWholeTrue = 0;
+			}*/
+			return tempResult;
+		}
+		else if (arg2Type == "assign") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
+				int brother = pkb.getFollows().getIsFollowedStmt(*t);
+				temp.push_back(brother);
+				temp.push_back(*t);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "while") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				int brother = pkb.getFollows().getIsFollowedStmt(*t);
+				temp.push_back(brother);
+				temp.push_back(*t);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "if") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			/*for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+				int brother = pkb.getFollows().getIsFollowedStmt(*t);
+				temp.push_back(brother);
+				temp.push_back(*t);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}*/
+			return tempResult;
+		}
+		else if (arg2Type == "call") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			/*for (list<int>::iterator t = callList.begin(); t != callList.end(); t++) {
+				int brother = pkb.getFollows().getIsFollowedStmt(*t);
+				temp.push_back(brother);
+				temp.push_back(*t);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}*/
+			return tempResult;
+		}
+		else if (arg2Type == "stmt") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			/*for (list<int>::iterator t = stmtList.begin(); t != stmtList.end(); t++) {
+				int brother = pkb.getFollows().getIsFollowedStmt(*t);
+				temp.push_back(brother);
+				temp.push_back(*t);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}*/
+			return tempResult;
+		}
+		else {
+			SPALog::log("Error: Follows arg1 stmt, arg2 wrong type");
+		}
+	}
+
 }
 
 ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
