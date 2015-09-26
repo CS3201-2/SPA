@@ -9,15 +9,19 @@ using namespace std;
 #define CFG_H
 class CFG
 {
+	const int TYPE_PROC = -1;
+	const int TYPE_NORMAL = 0;
+	const int TYPE_WHILE = 1;
+	const int TYPE_THEN = 2;
+	const int TYPE_ELSE = 3;
 	vector<list<int>> _next;
 	unordered_map<int, CFGNode*> _nodeMap;
 
 	list<pair<int, string>>::iterator _codeIterator;
 	list<pair<int, string>> _codeLst;
-	stack<int> _nodeInOperation;
+	stack<pair<int,int>> _nodeInOperation;
 	list<int> _statBuffer;
 	int _nodeIndex;
-	int _currentNodeIndex;
 public:
 	CFG();
 	void BuildGraph(list<pair<int, string>>);
@@ -25,9 +29,20 @@ public:
 	~CFG();
 private:
 	int findNode(int);
-	void extractBuffer();
+	int extractBuffer();
+	int createContainerNode(int);
 	void solveCode();
+	void solveNode(int,int);
+	void initializeStack();
+	void updateVector(int, int);
+	bool isContainer(string);
 	bool isIfStmt(string);
 	bool isWhileStmt(string);
+	bool isProc(string);
+	template <typename T>
+	Pair<T,T> Pair(T, T)
+	{
+		return pair<T, T>(T, T);
+	}
 };
 #endif
