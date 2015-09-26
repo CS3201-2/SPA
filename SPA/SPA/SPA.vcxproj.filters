@@ -86,7 +86,7 @@
     <ClCompile Include="CFGNode.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="CFGBuilder.cpp">
+    <ClCompile Include="Pattern.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
   </ItemGroup>
@@ -172,7 +172,7 @@
     <ClInclude Include="CFGNode.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="CFGBuilder.h">
+    <ClInclude Include="Pattern.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>

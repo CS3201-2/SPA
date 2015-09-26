@@ -38,6 +38,10 @@ Parent& PKB::getParent(void) {
 	return parent;
 }
 
+Pattern& PKB::getPattern() {
+	return pattern;
+}
+
 AST& PKB::getAST(void) {
 	return ast;
 }

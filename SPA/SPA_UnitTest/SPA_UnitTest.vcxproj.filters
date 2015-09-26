@@ -29,7 +29,7 @@
     <ClCompile Include="ValidatorTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SuffixTest.cpp">
+    <ClCompile Include="QueryTreeTest1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ParserTest.cpp">

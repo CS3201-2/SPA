@@ -113,10 +113,11 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 		case assignmentStmt:
 			pkb.addAssignList((*it).first);
 			processAssignment(*it, modifiesList, usesList);
+			processPatternStmt(*it, stmtType);
 			break;
 		case procDeclarationStmt:
 			pkb.getProcTable().insertProc(getProcName((*it).second));
-			currentProcedureID = pkb.getProcTable().getID(getProcName((*it).second));
+			currentProcedureID = pkb.getProcTable().getIndex(getProcName((*it).second));
 			modifiesList.clear();
 			usesList.clear();
 			break;
@@ -206,6 +207,7 @@ void Parser::processWhile(list<pair<int, string>>::iterator& it, list<std::pair<
 		case assignmentStmt:
 			pkb.addAssignList((*it).first);
 			processAssignment(*it, tempModifiesList, tempUsesList);
+			processPatternStmt(*it, stmtType);
 			break;
 		case procDeclarationStmt: break; //error
 		case procCallStmt: break;
@@ -268,7 +270,7 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 		if (isMathSymbol(*it) || isSemicolon(*it)) {
 			if (isVariable(variable)) {
 				VarTable& varTable = pkb.getVarTable();
-				int varID = varTable.getID(variable);
+				int varID = varTable.getIndex(variable);
 				
 				if (modifiesList.empty()) {
 					modifiesList.push_back(varID);
@@ -337,4 +339,12 @@ int Parser::getTypeOfStatement(string str) {
 	else {
 		return invalidStmt;
 	}
+}
+
+void Parser::processPatternStmt(pair<int, string> stmt, int stmtType) {
+	//currently it is only for assignment
+	smatch m;
+	regex_search(stmt.second, m, assignmentRegex);
+	//1 is the LHS of assignment, 4 is the RHS of assignment
+	pattern.setPattern(stmt.first, m[1], m[4]);
 }

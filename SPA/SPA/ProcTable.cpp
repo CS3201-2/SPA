@@ -10,9 +10,23 @@ ProcTable::ProcTable(void)
 {
 }
 
+int ProcTable::getIndex(string procName) {
+	if (procTable.find(procName) != procTable.end()) {
+		return procTable.at(procName);
+	}
+	else {
+		return insertProc(procName);
+	}
+}
+
 int ProcTable::getID(string procName)
 {
-	return procTable.at(procName);
+	if (procTable.find(procName) != procTable.end()) {
+		return procTable.at(procName);
+	}
+	else {
+		return 0;
+	}
 }
 
 int ProcTable::insertProc(string procName)

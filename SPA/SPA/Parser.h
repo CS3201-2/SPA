@@ -29,6 +29,7 @@ private:
 	Uses& uses = pkb.getUses();
 	Follows& follows = pkb.getFollows();
 	Parent& parent = pkb.getParent();
+	Pattern& pattern = pkb.getPattern();
 	void processWhile(list<std::pair<int, string>>::iterator&, list<std::pair<int, string>>&,
 		list<int>&, list<int>&, list<int>&, int, list<stack<string>>&);
 	int countNumOfLeftBraces(std::pair<int, string>);
@@ -39,6 +40,7 @@ private:
 	bool isMathSymbol(char);
 	int getTypeOfStatement(string);
 	string getProcName(string);
+	void processPatternStmt(pair<int, string>, int);
 };
 
 #endif

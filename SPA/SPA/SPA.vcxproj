@@ -44,7 +44,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -123,7 +123,6 @@
     <ClCompile Include="AST.cpp" />
     <ClCompile Include="ASTNode.cpp" />
     <ClCompile Include="CFG.cpp" />
-    <ClCompile Include="CFGBuilder.cpp" />
     <ClCompile Include="CFGNode.cpp" />
     <ClCompile Include="Checker.cpp" />
     <ClCompile Include="Controller.cpp" />
@@ -131,6 +130,7 @@
     <ClCompile Include="Modifies.cpp" />
     <ClCompile Include="Parent.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="PKB.cpp" />
     <ClCompile Include="ProcTable.cpp" />
     <ClCompile Include="Prefix.cpp" />
@@ -155,7 +155,6 @@
     <ClInclude Include="AST.h" />
     <ClInclude Include="ASTNode.h" />
     <ClInclude Include="CFG.h" />
-    <ClInclude Include="CFGBuilder.h" />
     <ClInclude Include="CFGNode.h" />
     <ClInclude Include="Checker.h" />
     <ClInclude Include="Controller.h" />
@@ -163,6 +162,7 @@
     <ClInclude Include="Parent.h" />
     <ClInclude Include="Modifies.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="Pattern.h" />
     <ClInclude Include="PKB.h" />
     <ClInclude Include="ProcTable.h" />
     <ClInclude Include="Prefix.h" />

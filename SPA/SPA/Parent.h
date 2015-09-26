@@ -20,9 +20,11 @@ public:
 
 	int getParentStmt(int);
 
-	void printMap();
+	void printParentMap();
 
-	void sortMap();
+	void sortParentMap();
+
+	int getParentMapSize();
 private:
 	map<int, std::list<int>> parentMap;
 };

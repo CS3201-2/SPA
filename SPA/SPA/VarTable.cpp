@@ -10,13 +10,22 @@ VarTable::VarTable(void)
 {
 }
 
+int VarTable::getIndex(string varName) {
+	if (varTable.find(varName) != varTable.end()) {
+		return varTable.at(varName);
+	}
+	else {
+		return insertVar(varName);
+	}
+}
+
 int VarTable::getID(string varName)
 {
 	if (varTable.find(varName) != varTable.end()) {
 		return varTable.at(varName); 
 	}
 	else {
-		return insertVar(varName);
+		return 0;
 	}
 }
 
