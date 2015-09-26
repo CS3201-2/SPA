@@ -9,10 +9,15 @@
 
 using namespace std;
 
-PKB::PKB()
-{
+/*PKB* PKB::_PKBInstance = NULL;
 
-}
+PKB* PKB::getPKBInstance() {
+	if (!_PKBInstance) {
+		_PKBInstance = new PKB;
+	}
+
+	return _PKBInstance;
+}*/
 
 ProcTable& PKB::getProcTable(void) {
 	return procTable;

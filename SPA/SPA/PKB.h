@@ -17,7 +17,8 @@ using namespace std;
 class PKB
 {
 public:
-	PKB();
+	//static PKB* getPKBInstance();
+	PKB() {};
 	ProcTable& getProcTable(void);
 	VarTable& getVarTable(void);
 	Modifies& getModifies(void);
@@ -33,6 +34,7 @@ public:
 	void setAST(AST);
 
 private:
+	//static PKB* _PKBInstance;
 	Modifies modifies;
 	Uses uses;
 	ProcTable procTable;
