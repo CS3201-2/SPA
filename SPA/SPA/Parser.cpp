@@ -113,6 +113,7 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 		case assignmentStmt:
 			pkb.addAssignList((*it).first);
 			processAssignment(*it, modifiesList, usesList);
+			
 			break;
 		case procDeclarationStmt:
 			pkb.getProcTable().insertProc(getProcName((*it).second));
@@ -337,4 +338,12 @@ int Parser::getTypeOfStatement(string str) {
 	else {
 		return invalidStmt;
 	}
+}
+
+void Parser::processPatternStmt(pair<int, string> stmt, int stmtType) {
+	//currently it is only for assignment
+	smatch m;
+	regex_search(stmt.second, m, assignmentRegex);
+	//1 is the LHS of assignment, 4 is the RHS of assignment
+	pattern.setPattern(stmt.first, m[1], m[4]);
 }

@@ -5,6 +5,7 @@
 #include "Parent.h"
 #include "ProcTable.h"
 #include "VarTable.h"
+#include "Pattern.h"
 #include <string>
 #include <list>
 
@@ -24,6 +25,7 @@ public:
 	Parent& getParent(void);
 	Follows& getFollows(void);
 	AST& getAST(void);
+	Pattern& getPattern();
 	void addWhileList(int);
 	void addAssignList(int);
 	list<int> getWhileList(void);
@@ -37,6 +39,7 @@ private:
 	VarTable varTable;
 	Follows follows;
 	Parent parent;
+	Pattern pattern;
 	AST ast;
 	list<int> whileList;
 	list<int> assignList;
