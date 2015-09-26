@@ -27,7 +27,7 @@ private:
 
 	PKB ctrPKB;
 	
-	int syntaxCheck();
+	int syntaxCheck(list<pair<int, string>>&);
 
 	PKB parse();
 };
