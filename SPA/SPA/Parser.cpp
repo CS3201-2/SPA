@@ -113,7 +113,7 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 		case assignmentStmt:
 			pkb.addAssignList((*it).first);
 			processAssignment(*it, modifiesList, usesList);
-			
+			processPatternStmt(*it, stmtType);
 			break;
 		case procDeclarationStmt:
 			pkb.getProcTable().insertProc(getProcName((*it).second));
@@ -207,6 +207,7 @@ void Parser::processWhile(list<pair<int, string>>::iterator& it, list<std::pair<
 		case assignmentStmt:
 			pkb.addAssignList((*it).first);
 			processAssignment(*it, tempModifiesList, tempUsesList);
+			processPatternStmt(*it, stmtType);
 			break;
 		case procDeclarationStmt: break; //error
 		case procCallStmt: break;
