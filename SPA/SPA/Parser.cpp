@@ -6,12 +6,13 @@
 #include <algorithm>
 #include <regex>
 
-const regex assignmentRegex("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
-const regex procDeclarationRegex("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
-const regex procCallRegex("call(([[:alpha:]])([[:alnum:]]+)*);\\}*");
-const regex whileRegex("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
-const regex ifRegex("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
+const regex assignmentRegex("((^[[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
+const regex procDeclarationRegex("procedure((^[[:alpha:]])([[:alnum:]]+)*)\\{");
+const regex procCallRegex("call((^[[:alpha:]])([[:alnum:]]+)*);\\}*");
+const regex whileRegex("while((^[[:alpha:]])([[:alnum:]]+)*)\\{");
+const regex ifRegex("if((^[[:alpha:]])([[:alnum:]]+)*)then\\{");
 const regex elseRegex("else\\{");
+const regex variableRegex("(^[[:alpha:]])([[:alnum:]]+)*$");
 const int assignmentStmt = 0;
 const int procDeclarationStmt = 1;
 const int procCallStmt = 2;
@@ -72,6 +73,12 @@ void Parser::addNewLineString(string &content) {
 		index++;
 		content.insert(index, (size_t)1, '@');
 		index = content.find('{', index);
+	}
+	
+	cout << content << endl;
+
+	if (content.back() != '@') {
+		content += "@";
 	}
 }
 
@@ -295,8 +302,7 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 }
 
 bool Parser::isVariable(string str) {
-	regex variable("(^[[:alpha:]])([[:alnum:]]+)*$");
-	return regex_match(str, variable);
+	return regex_match(str, variableRegex);
 }
 
 bool Parser::isSemicolon(char ch) {
@@ -311,7 +317,7 @@ bool Parser::isSemicolon(char ch) {
 //test whether a char is + - * /
 bool Parser::isMathSymbol(char ch) {
 	switch (ch) {
-	case '+': case'-': case'*': case'/': case'=':
+	case '+': case'-': case'*': case'=':
 		return true;
 	default:
 		return false;
