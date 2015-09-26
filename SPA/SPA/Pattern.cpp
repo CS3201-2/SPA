@@ -90,7 +90,7 @@ bool Pattern::isParenthesis(string str) {
 }
 
 bool Pattern::isOperator(string str) {
-	return (str == "+" || str == "-" || str == "*" || str == "/");
+	return (str == "+" || str == "-" || str == "*");
 }
 
 void Pattern::printMap() {
