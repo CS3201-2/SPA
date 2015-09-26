@@ -17,8 +17,10 @@ list<int> Parent::getChildStmt(int parent)
 	}
 }
 
-void Parent::setParentStmt(int parent, int child)
+void Parent::setParentStmt(int parent, list<int> childrenList)
 {
+	parentMap[parent] = childrenList;
+/*
 	if (parentMap.find(parent) == parentMap.end()) {
 		std::list<int> emptyList;
 		emptyList.push_back(child);
@@ -31,7 +33,7 @@ void Parent::setParentStmt(int parent, int child)
 			list.push_back(child);
 		}
 		parentMap[parent] = list;
-	}
+	}*/
 }
 
 int Parent::getParentStmt(int stmtNumber) {

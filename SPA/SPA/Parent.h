@@ -16,7 +16,7 @@ public:
 
 	list<int> getChildStmt(int);
 
-	void setParentStmt(int, int);
+	void setParentStmt(int, list<int>);
 
 	int getParentStmt(int);
 
