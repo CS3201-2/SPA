@@ -26,6 +26,15 @@ Parser::Parser()
 
 }
 
+list<pair<int, string>> Parser::prepareSourceList(string source) {
+	trim(source);
+	addNewLineString(source);
+	list<pair<int, string>> sourceCodeList;
+	buildSourceCodeList(source, sourceCodeList);
+
+	return sourceCodeList;
+}
+
 PKB Parser::parseSource( string source ) {
 	
 	trim(source);
@@ -54,18 +63,16 @@ void Parser::addNewLineString(string &content) {
 
 	while (index != std::string::npos) {
 		index++;
-		while (index != content.size() - 1 && content.at(index) == '}') index++;
+		while (index != content.size() && content.at(index) == '}') index++;
 		content.insert(index, (size_t)1, '@');
 		index = content.find(';', index);
 	}
-
 	index = content.find('{');
 	while (index != std::string::npos) {
 		index++;
 		content.insert(index, (size_t)1, '@');
 		index = content.find('{', index);
 	}
-
 }
 
 void Parser::buildSourceCodeList(string content, list<std::pair<int, string>>& list) {
