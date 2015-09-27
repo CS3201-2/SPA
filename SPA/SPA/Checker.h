@@ -25,7 +25,7 @@ private:
 	bool isSemicolon(char);
 	bool isOperator(char);
 	bool isParenthesis(char);
-	string getProcName(string);
+	string getProcName(int, string);
 	int countNumOfLeftBraces(string);
 	int countNumOfRightBraces(string);
 	bool popBrackets(stack<int>&, string);

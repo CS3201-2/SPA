@@ -40,7 +40,7 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 		case procDeclarationStmt:
 			// update current procedure
 			if (brackets.empty()) {
-				currentProc = getProcName(stmt);
+				currentProc = getProcName(stmtType, stmt);
 			}
 			else {
 				return false;
@@ -49,8 +49,8 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 			brackets.push(1);
 
 			//update procedure list
-			if (find(procedureList.begin(), procedureList.end(), getProcName(stmt)) == procedureList.end()) {
-				procedureList.push_back(getProcName(stmt));
+			if (find(procedureList.begin(), procedureList.end(), getProcName(stmtType, stmt)) == procedureList.end()) {
+				procedureList.push_back(getProcName(stmtType, stmt));
 			}
 			else {
 				return false;
@@ -61,8 +61,8 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 			if (!popBrackets(brackets, stmt)) { return false; }
 
 			//update called procedure list, if it is not current procedure
-			if (currentProc != getProcName(stmt)) {
-				calledProcList.push_back(getProcName(stmt));
+			if (currentProc != getProcName(stmtType, stmt)) {
+				calledProcList.push_back(getProcName(stmtType, stmt));
 			}
 			else { 
 				return false; 
@@ -133,9 +133,14 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 	return true;
 }
 
-string Checker::getProcName(string str) {
+string Checker::getProcName(int stmtType, string str) {
 	smatch m;
-	regex_search(str, m, procDeclarationRegex);
+	if (stmtType == procDeclarationStmt) {
+		regex_search(str, m, procDeclarationRegex);
+	}
+	else {
+		regex_search(str, m, procCallRegex);
+	}
 	return m[1];
 }
 
@@ -180,8 +185,8 @@ bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair
 			if (!popBrackets(brackets, stmt)) { return false; }
 
 			//update called procedure list, if it is not current procedure
-			if (currentProc != getProcName(stmt)) {
-				calledProcList.push_back(getProcName(stmt));
+			if (currentProc != getProcName(stmtType, stmt)) {
+				calledProcList.push_back(getProcName(stmtType, stmt));
 			}
 			else {
 				return false;
