@@ -32,10 +32,12 @@ int Follows::getFollowsMapSize() {
 }
 
 void Follows::printFollowsMap() {
+	cout << "follows table" << endl;
 	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
 		cout << (*it).first;
 		cout << ":";
 		cout << (*it).second;
 		cout << endl;
 	}
+	cout << endl;
 }

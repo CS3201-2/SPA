@@ -45,6 +45,7 @@ list<int> Uses::getUsesVar(int stmtNumber) {
 }
 
 void Uses::printMap() {
+	cout << "uses table" << endl;
 	for (map<int, std::list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
 		cout << (*it).first;
 		cout << ":";
@@ -54,6 +55,7 @@ void Uses::printMap() {
 		}
 		cout << endl;
 	}
+	cout << endl;
 }
 
 void Uses::sortMap() {

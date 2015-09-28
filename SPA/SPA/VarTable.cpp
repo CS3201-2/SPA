@@ -10,6 +10,7 @@ VarTable::VarTable(void)
 {
 }
 
+//for inserting
 int VarTable::getIndex(string varName) {
 	if (varTable.find(varName) != varTable.end()) {
 		return varTable.at(varName);
@@ -19,6 +20,7 @@ int VarTable::getIndex(string varName) {
 	}
 }
 
+//must return a true ID
 int VarTable::getID(string varName)
 {
 	if (varTable.find(varName) != varTable.end()) {
@@ -50,9 +52,11 @@ string VarTable::getVarName(int varId) {
 }
 
 void VarTable::printMap() {
+	cout << "variable table" << endl;
 	for (map<string, int>::iterator it = varTable.begin(); it != varTable.end(); ++it) {
 		cout << (*it).first;
 		cout << ":";
 		cout << (*it).second << endl;
 	}
+	cout << endl;
 }

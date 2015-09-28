@@ -9,10 +9,15 @@
 
 using namespace std;
 
-PKB::PKB()
-{
+/*PKB* PKB::_PKBInstance = NULL;
 
-}
+PKB* PKB::getPKBInstance() {
+	if (!_PKBInstance) {
+		_PKBInstance = new PKB;
+	}
+
+	return _PKBInstance;
+}*/
 
 ProcTable& PKB::getProcTable(void) {
 	return procTable;
@@ -32,6 +37,10 @@ Uses& PKB::getUses(void) {
 
 Follows& PKB::getFollows(void) {
 	return follows;
+}
+
+Calls& PKB::getCalls() {
+	return calls;
 }
 
 Parent& PKB::getParent(void) {

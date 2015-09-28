@@ -19,7 +19,14 @@ list<int> Parent::getChildStmt(int parent)
 
 void Parent::setParentStmt(int parent, list<int> childrenList)
 {
-	parentMap[parent] = childrenList;
+	if (parentMap.find(parent) == parentMap.end()) {
+		parentMap[parent] = childrenList;
+	}
+	else {
+		list<int> existingChildrenList = parentMap.at(parent);
+		existingChildrenList.insert(existingChildrenList.end(), childrenList.begin(), childrenList.end());
+		parentMap[parent] = existingChildrenList;
+	}
 /*
 	if (parentMap.find(parent) == parentMap.end()) {
 		std::list<int> emptyList;
@@ -46,6 +53,7 @@ int Parent::getParentStmt(int stmtNumber) {
 }
 
 void Parent::printParentMap() {
+	cout << "parent table" << endl;
 	for (map<int, std::list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
 		cout << (*it).first;
 		cout << ":";
@@ -55,11 +63,13 @@ void Parent::printParentMap() {
 		}
 		cout << endl;
 	}
+	cout << endl;
 }
 
 void Parent::sortParentMap() {
 	for (map<int, std::list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
 		(*it).second.sort();
+		(*it).second.unique();
 	}
 }
 

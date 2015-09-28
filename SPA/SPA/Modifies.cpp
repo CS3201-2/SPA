@@ -49,6 +49,7 @@ list<int> Modifies::getModifiesVar(int stmtNumber) {
 }
 
 void Modifies::printMap() {
+	cout << "modifies table" << endl;
 	for (map<int, std::list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
 
 		cout << (*it).first;
@@ -59,6 +60,7 @@ void Modifies::printMap() {
 		}
 		cout << endl;
 	}
+	cout << endl;
 }
 
 void Modifies::sortMap() {

@@ -90,10 +90,12 @@ bool Pattern::isParenthesis(string str) {
 }
 
 bool Pattern::isOperator(string str) {
-	return (str == "+" || str == "-" || str == "*" || str == "/");
+	return (str == "+" || str == "-" || str == "*");
 }
 
 void Pattern::printMap() {
+	cout << "pattern table" << endl;
+
 	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
 		cout << (*it).first;
 		cout << ":";
@@ -102,4 +104,6 @@ void Pattern::printMap() {
 		cout << (*it).second.second;
 		cout << endl;
 	}
+
+	cout << endl;
 }

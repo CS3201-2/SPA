@@ -89,6 +89,9 @@
     <ClCompile Include="Pattern.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="Calls.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTNode.h">
@@ -173,6 +176,9 @@
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="Pattern.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="Calls.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
