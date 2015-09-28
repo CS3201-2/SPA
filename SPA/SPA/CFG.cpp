@@ -7,7 +7,7 @@ CFG::CFG()
 {
 }
 
-void CFG::BuildGraph(list<pair<int, string>> codeLst)
+void CFG::buildGraph(list<pair<int, string>> codeLst)
 {
 	_next.reserve(codeLst.size());
 	_statBuffer.clear();
@@ -18,8 +18,10 @@ void CFG::BuildGraph(list<pair<int, string>> codeLst)
 
 	while (_codeIterator != _codeLst.end())
 	{
+		cout << _codeIterator->second << endl;
 		solveCode();
 		_codeIterator++;
+		cout << " good!" << endl;
 	}
 
 }
@@ -42,16 +44,18 @@ list<int> CFG::getNext(int i)
 
 void CFG::printMap()
 {
+	cout << "size of the array is " << _next.size() << endl;
+	cout << "size of the map is " << _nodeMap.size() << endl;
 	for (int i = 0; i < _next.size(); i++)
 	{
-		CFGNode* node = _nodeMap.at(i);
 		list<int> temp = _next.at(i);
+		CFGNode* node = _nodeMap.at(i);
 		cout << i << "(" << node->getStrat() << "," << node->getEnd() << "):";
 		for (list<int>::iterator it = temp.begin(); it != temp.end(); it++)
 		{
 			cout << " " << *it;
 		}
-		std::cout << "/n";
+		std::cout << endl;
 	}
 }
 
@@ -107,7 +111,9 @@ int CFG::extractBuffer()
 	CFGNode* temp = NULL;
 	if (!_statBuffer.empty())
 	{
-		temp = new CFGNode(_nodeIndex, *(_statBuffer.begin()), *(_statBuffer.end()));
+		int begin = _statBuffer.front();
+		int end = _statBuffer.back();
+		temp = new CFGNode(_nodeIndex, begin, end);
 		_statBuffer.clear();
 		_nodeMap.insert(std::make_pair(_nodeIndex, temp));
 		_nodeIndex++;
@@ -163,73 +169,80 @@ void CFG::solveCode()
 	if (isContainer(codeContent))
 	{
 		int tempNodeIndex = extractBuffer();
+		int tempContainerNodeIndex = createContainerNode(codeIndex);
 		if (tempNodeIndex != -1)
 		{
 			solveNode(tempNodeIndex, 0);
 		}
-		tempNodeIndex = createContainerNode(codeIndex);
-		solveNode(tempNodeIndex, getType(codeContent));
+		solveNode(tempContainerNodeIndex, getType(codeContent));
 	}
 	else if (isProc(codeContent))
 	{
 		initializeStack();
+		_statBuffer.clear();
 		_nodeInOperation.push(std::make_pair(-1, TYPE_PROC));
 	}
 	else
 	{
 		//here can only be noraml statement
 		_statBuffer.push_back(codeIndex);
-	}
-	
-	for (int i = 0; i < countBrace(codeContent); i++)
-	{
-		int tempNodeIndex = extractBuffer();
-		if (tempNodeIndex != -1)
+		int brace = countBrace(codeContent);
+		for (int i = 0; i < brace; i++)
 		{
-			solveNode(tempNodeIndex, 0);
-		}
+			int tempNodeIndex = extractBuffer();
+			if (tempNodeIndex != -1)
+			{
+				solveNode(tempNodeIndex, 0);
+			}
 
-		pair<int,int> temp = _nodeInOperation.top();
-		_nodeInOperation.pop();
-		pair<int, int> top = _nodeInOperation.top();
-		if (top.second == TYPE_WHILE)
-		{
-			updateVector(temp.first, top.first);
-			top.second = TYPE_NORMAL;
+			pair<int, int> temp = _nodeInOperation.top();
 			_nodeInOperation.pop();
-			_nodeInOperation.push(top);
+			pair<int, int> top = _nodeInOperation.top();
+			int type_temp = temp.second;
+			int type_top = top.second;
+			if (top.second == TYPE_WHILE)
+			{
+				updateVector(temp.first, top.first);
+				top.second = TYPE_NORMAL;
+				_nodeInOperation.pop();
+				_nodeInOperation.push(top);
+			}
+			else if (top.second == TYPE_THEN)
+			{
+				top.second = TYPE_ELSE;
+				_nodeInOperation.pop();
+				_nodeInOperation.push(temp);
+				_nodeInOperation.push(top);
+				_codeIterator++;
+			}
+			else if (top.second == TYPE_ELSE)
+			{
+				_nodeInOperation.pop();
+				pair<int, int> temp2 = _nodeInOperation.top();
+				_nodeInOperation.pop();
+				int dummy = createDummyNode();
+				updateVector(temp2.first, dummy);
+				updateVector(temp.first, dummy);
+				_nodeInOperation.push(std::make_pair(dummy, TYPE_NORMAL));
+			}
+			else if (top.second == TYPE_NORMAL)
+			{
+				updateVector(top.first, temp.first);
+				_nodeInOperation.pop();
+				_nodeInOperation.push(temp);
+				initializeStack();
+			}
+			else if (top.second == TYPE_PROC)
+			{
+				updateVector(temp.first, -1);
+				initializeStack();
+			}
+			else//top.second == TYPE_PROC
+			{
+				throw "someting wrong here--->CFG solve code";
+			}
 		}
-		else if (top.second == TYPE_THEN)
-		{
-			top.second = TYPE_ELSE;
-			_nodeInOperation.pop();
-			_nodeInOperation.push(temp);
-			_nodeInOperation.push(top);
-			_codeIterator++;
-		}
-		else if (top.second == TYPE_ELSE)
-		{
-			_nodeInOperation.pop();
-			pair<int, int> temp2 = _nodeInOperation.top();
-			_nodeInOperation.pop();
-			int dummy = createDummyNode();
-			updateVector(temp.first, dummy);
-			updateVector(temp2.first, dummy);
-			_nodeInOperation.push(std::make_pair(dummy, TYPE_NORMAL));
-		}
-		else if (top.second == TYPE_NORMAL)
-		{
-			updateVector(top.first, temp.first);
-			_nodeInOperation.pop();
-			_nodeInOperation.push(temp);
-			initializeStack();
-		}
-		else//top.second == TYPE_PROC
-		{
-			throw "someting wrong here--->CFG solve code";
-		}
-		
-	}
+	}	
 }
 
 void CFG::solveNode(int index, int type)
@@ -257,9 +270,16 @@ void CFG::initializeStack()
 
 void CFG::updateVector(int position, int value)
 {
-	if (position < _next.size())
+	if (position < 0)
 	{
-		_next[position].push_back(value);
+
+	}
+	else if (position < _next.size())
+	{
+		if (value != _next[position].front())
+		{
+			_next[position].push_back(value);
+		}
 	}
 	else
 	{
@@ -276,7 +296,8 @@ bool CFG::isContainer(string str)
 
 bool CFG::isIfStmt(string str)
 {
-	return regex_match(str, REGEX_IF);
+	bool result = regex_match(str, REGEX_IF);
+	return result;
 }
 
 bool CFG::isWhileStmt(string str)

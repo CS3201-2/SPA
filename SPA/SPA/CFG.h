@@ -28,7 +28,7 @@ class CFG
 	int _nodeIndex;
 public:
 	CFG();
-	void BuildGraph(list<pair<int, string>>);
+	void buildGraph(list<pair<int, string>>);
 	list<int> getNext(int);
 	void printMap();
 	~CFG();
