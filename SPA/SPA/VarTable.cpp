@@ -10,6 +10,7 @@ VarTable::VarTable(void)
 {
 }
 
+//for inserting
 int VarTable::getIndex(string varName) {
 	if (varTable.find(varName) != varTable.end()) {
 		return varTable.at(varName);
@@ -19,6 +20,7 @@ int VarTable::getIndex(string varName) {
 	}
 }
 
+//must return a true ID
 int VarTable::getID(string varName)
 {
 	if (varTable.find(varName) != varTable.end()) {

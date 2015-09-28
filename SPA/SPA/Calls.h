@@ -25,7 +25,7 @@ public:
 	bool isCallValid(int, int);
 
 	void printCallsMap();
-
+	
 private:
 	map<int, int> callsMap;
 };

@@ -39,6 +39,10 @@ Follows& PKB::getFollows(void) {
 	return follows;
 }
 
+Calls& PKB::getCalls() {
+	return calls;
+}
+
 Parent& PKB::getParent(void) {
 	return parent;
 }

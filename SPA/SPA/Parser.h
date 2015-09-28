@@ -13,7 +13,7 @@ class Parser
 public:
 	Parser();
 
-	PKB parseSource(string);
+	PKB parseSource(list<pair<int, string>>);
 
 	void trim(string&);
 
@@ -31,8 +31,8 @@ private:
 	Follows& follows = pkb.getFollows();
 	Parent& parent = pkb.getParent();
 	Pattern& pattern = pkb.getPattern();
-	void processWhile(list<std::pair<int, string>>::iterator&, list<std::pair<int, string>>&,
-		list<int>&, list<int>&, list<int>&, int, list<stack<string>>&);
+	void processNestedStmt(list<std::pair<int, string>>::iterator&, list<std::pair<int, string>>&,
+		list<int>&, list<int>&, list<int>&, int, list<stack<string>>&, list<pair<int, pair<int, string>>>&);
 	int countNumOfLeftBraces(std::pair<int, string>);
 	int countNumOfRightBraces(std::pair<int, string>);
 	void processAssignment(std::pair<int, string>, list<int>&, list<int>&);
@@ -40,8 +40,11 @@ private:
 	bool isSemicolon(char);
 	bool isMathSymbol(char);
 	int getTypeOfStatement(string);
-	string getProcName(string);
+	string getProcName(int, string);
+	string getProcNameCallStmt(string);
 	void processPatternStmt(pair<int, string>, int);
+	string getControlVarName(int, string);
+	void processCalledProcList(list<pair<int, pair<int, string>>>);
 };
 
 #endif

@@ -18,18 +18,42 @@ void Controller::intializeCode(string code) {
 }
 
 void Controller::processSource() {
-	if (!syntaxCheck()) {
+	Parser parser;
+
+	list<pair<int, string>> sourceList = parser.prepareSourceList(source);
+
+	if (!syntaxCheck(sourceList)) {
+		cout << endl << endl;
+		cout << "syntax wrong!!!" << endl << endl << endl;
+	}
+	else {
+		ctrPKB = parse(sourceList);
+	}
+
+
+	//for testing
+	/*cout << "parsed source list" << endl;
+	for (list<pair<int, string>>::iterator it = sourceList.begin(); it != sourceList.end(); ++it) {
+		//cout << (*it).first << " : ";
+		cout << (*it).second << endl;
+	}*/
+	//cout << "end of printing" << endl;
+	//for testing ends
+
+
+
+	/*if (!syntaxCheck()) {
 		cerr << "The SOURCE file got sytax error!" << endl;
 		exit(1);
 	} else {
 		ctrPKB = parse();
-	}
+	}*/
 
 }
 
-int Controller::syntaxCheck() {
+bool Controller::syntaxCheck(list<pair<int, string>>& sourceList) {
 	Checker checker;
-	return checker.checkSyntax(source);
+	return checker.isSyntaxCorrect(sourceList);
 }
 
 void Controller::testingPKB() {
@@ -37,21 +61,26 @@ void Controller::testingPKB() {
 	cout << "testing" << endl;
 	cout << endl;
 
+	
+
 	//change below for testing purpose
-	ctrPKB.getFollows().printFollowsMap();
-	//ctrPKB.getParent().printMap();
-	/*ctrPKB.getVarTable().printMap();
+	ctrPKB.getProcTable().printMap();
+	ctrPKB.getVarTable().printMap();
 	ctrPKB.getModifies().sortMap();
 	ctrPKB.getModifies().printMap();
 	ctrPKB.getUses().sortMap();
-	ctrPKB.getUses().printMap();*/
+	ctrPKB.getUses().printMap();
+	ctrPKB.getCalls().printCallsMap();
+	/*ctrPKB.getFollows().printFollowsMap();
+	ctrPKB.getParent().sortParentMap();
+	ctrPKB.getParent().printParentMap();*/
 
 	cout << "end of testing" << endl;
 }
 
-PKB Controller::parse() {
+PKB Controller::parse(list<pair<int, string>> sourceList) {
 	Parser parser;
-	return parser.parseSource(source);
+	return parser.parseSource(sourceList);
 }
 
 list<string> Controller::processQuery(string query) {
