@@ -415,14 +415,14 @@ string Parser::getControlVarName(int stmtType, string stmt) {
 //process call stmt for modifies, uses, call
 void Parser::processCalledProcList(list<pair<int, pair<int, string>>> calledProcList) {
 	for (list<pair<int, pair<int, string>>>::iterator it = calledProcList.begin(); it != calledProcList.end(); ++it) {
-		int currentProcID = (*it).first;
+		int currProcID = (*it).first;
 		int calledProcID = pkb.getProcTable().getID(getProcNameCallStmt((*it).second.second));
 
-		pkb.getCalls().setCallsStmt(currentProcID, calledProcID);
+		pkb.setCalls(currProcID, calledProcID);
 	}
 
 	for (list<pair<int, pair<int, string>>>::iterator it = calledProcList.begin(); it != calledProcList.end(); ++it) {
-		
+		//to implement modifies and uses for call procedure statement
 	}
 }
 

@@ -78,3 +78,25 @@ void PKB::setAST(AST a)
 {
 	ast = a;
 }
+
+
+//Calls
+void PKB::setCalls(int first, int second) {
+	getCalls().setCalls(first, second);
+}
+
+int PKB::getCallsFirst(int second) {
+	getCalls().getCallsFirst(second);
+}
+
+int PKB::getCallsSecond(int first) {
+	getCalls().getCallsSecond(first);
+}
+
+bool PKB::isCallsValid(int first, int second) {
+	getCalls().isCallValid(first, second);
+}
+
+void PKB::printAllCalls() {
+	getCalls().printAllCalls();
+}

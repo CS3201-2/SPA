@@ -14,7 +14,7 @@ class Calls
 public:
 	Calls();
 
-	void setCallsStmt(int, int);
+	void setCalls(int, int);
 
 	//Calls (B, 8): B will be returned
 	int getCallsFirst(int);
@@ -24,7 +24,7 @@ public:
 
 	bool isCallValid(int, int);
 
-	void printCallsMap();
+	void printAllCalls();
 	
 private:
 	map<int, int> callsMap;
