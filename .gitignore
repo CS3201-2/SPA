@@ -2,6 +2,9 @@
 *.sdf
 *.ipch
 *.tlog
+*.exe
+*.ilk
+*.lib
 SPA/SPA/Debug/
 SPA/SPA_UnitTest/Debug/
 SPA/.vs/
