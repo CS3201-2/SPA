@@ -1,4 +1,8 @@
 #include "CFG.h"
+const regex REGEX_WHILE("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
+const regex REGEX_IF("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
+const regex REGEX_PROC("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
+
 CFG::CFG()
 {
 }
@@ -26,7 +30,7 @@ list<int> CFG::getNext(int i)
 	CFGNode* node = _nodeMap.at(nodeIndex);
 	if (node->contains(i + 1))
 	{
-		list<int> temp;
+		list<int> temp = list<int>();
 		temp.push_back(i + 1);
 		return temp;
 	}
@@ -36,16 +40,31 @@ list<int> CFG::getNext(int i)
 	}
 }
 
+void CFG::printMap()
+{
+	for (int i = 0; i < _next.size(); i++)
+	{
+		CFGNode* node = _nodeMap.at(i);
+		list<int> temp = _next.at(i);
+		cout << i << "(" << node->getStrat() << "," << node->getEnd() << "):";
+		for (list<int>::iterator it = temp.begin(); it != temp.end(); it++)
+		{
+			cout << " " << *it;
+		}
+		std::cout << "/n";
+	}
+}
+
 CFG::~CFG()
 {
 }
 
 int CFG::findNode(int i)
 {
-	size_t begin = 0;
-	size_t end = _nodeMap.size()-1;
-	size_t mid = (begin + end) / 2;
-	CFGNode* currentNode;
+	int begin = 0;
+	int end = _nodeMap.size()-1;
+	int mid = (begin + end) / 2;
+	CFGNode* currentNode = NULL;
 	if (i < begin || i > end)//i is illegal
 	{
 		return -1;
@@ -90,7 +109,7 @@ int CFG::extractBuffer()
 	{
 		temp = new CFGNode(_nodeIndex, *(_statBuffer.begin()), *(_statBuffer.end()));
 		_statBuffer.clear();
-		_nodeMap.insert(pair<int, CFGNode*>(_nodeIndex, temp));
+		_nodeMap.insert(std::make_pair(_nodeIndex, temp));
 		_nodeIndex++;
 		return _nodeIndex-1;
 	}
@@ -103,7 +122,7 @@ int CFG::extractBuffer()
 int CFG::createContainerNode(int index)
 {
 	CFGNode* temp = new CFGNode(_nodeIndex, index, index);
-	_nodeMap.insert(pair<int, CFGNode*>(_nodeIndex, temp));
+	_nodeMap.insert(std::make_pair(_nodeIndex, temp));
 	_nodeIndex++;
 	return _nodeIndex - 1;
 }
@@ -111,7 +130,7 @@ int CFG::createContainerNode(int index)
 int CFG::createDummyNode()
 {
 	CFGNode* temp = new CFGNode(_nodeIndex, -1, -1);
-	_nodeMap.insert(pair<int, CFGNode*>(_nodeIndex, temp));
+	_nodeMap.insert(std::make_pair(_nodeIndex, temp));
 	_nodeIndex++;
 	return _nodeIndex - 1;
 }
@@ -134,7 +153,7 @@ int CFG::getType(string str)
 
 int CFG::countBrace(string str)
 {
-	return 0;
+	return std::count(str.begin(), str.end(), '}');
 }
 
 void CFG::solveCode()
@@ -154,7 +173,7 @@ void CFG::solveCode()
 	else if (isProc(codeContent))
 	{
 		initializeStack();
-		_nodeInOperation.push(Pair(-1, TYPE_PROC));
+		_nodeInOperation.push(std::make_pair(-1, TYPE_PROC));
 	}
 	else
 	{
@@ -196,7 +215,7 @@ void CFG::solveCode()
 			int dummy = createDummyNode();
 			updateVector(temp.first, dummy);
 			updateVector(temp2.first, dummy);
-			_nodeInOperation.push(Pair(dummy, TYPE_NORMAL));
+			_nodeInOperation.push(std::make_pair(dummy, TYPE_NORMAL));
 		}
 		else if (top.second == TYPE_NORMAL)
 		{
@@ -225,7 +244,7 @@ void CFG::solveNode(int index, int type)
 			_nodeInOperation.pop();	
 		}
 	}
-	_nodeInOperation.push(Pair(index, type));
+	_nodeInOperation.push(std::make_pair(index, type));
 }
 
 void CFG::initializeStack()
@@ -244,7 +263,7 @@ void CFG::updateVector(int position, int value)
 	}
 	else
 	{
-		list<int> lst;
+		list<int> lst = list<int>();
 		lst.push_back(value);
 		_next.push_back(lst);
 	}
@@ -255,17 +274,17 @@ bool CFG::isContainer(string str)
 	return isIfStmt(str) || isWhileStmt(str);
 }
 
-bool CFG::isIfStmt(string)
+bool CFG::isIfStmt(string str)
 {
-	return false;
+	return regex_match(str, REGEX_IF);
 }
 
-bool CFG::isWhileStmt(string)
+bool CFG::isWhileStmt(string str)
 {
-	return false;
+	return regex_match(str, REGEX_WHILE);;
 }
 
-bool CFG::isProc(string)
+bool CFG::isProc(string str)
 {
-	return false;
+	return regex_match(str, REGEX_PROC);
 }
