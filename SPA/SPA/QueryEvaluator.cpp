@@ -130,6 +130,24 @@ bool QueryEvaluator::isValidStmt(int stmt) {
 	return true;
 }
 
+list<int> QueryEvaluator::getList(string listName) {
+	if (listName == "assign") {
+		return pkb.getAssignList();
+	}
+	else if (listName == "while") {
+		return pkb.getWhileList();
+	}
+	else if (listName == "if") {
+		return pkb.getIfList();
+	}
+	else if (listName == "call") {
+		return pkb.getCallList();
+	}
+	else if (listName == "stmt") {
+		return pkb.getStmtList();
+	}
+}
+
 ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 
 	string arg1 = tempString.at(1);
@@ -216,7 +234,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			return tempResult;
 		}
 		else if ( arg1Type == "call" ) {
-			/*
+			
 			ResultTable tempResult = ResultTable(arg1);
 			list<int> callList = pkb.getCallList();
 			vector<int> temp;
@@ -228,10 +246,10 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 				}
 			}
 			return tempResult;
-			*/
+			
 		} 
 		else if ( arg1Type == "if" ) {
-			/*
+			
 			ResultTable tempResult = ResultTable(arg1);
 			list<int> ifList = pkb.getIfList();
 			vector<int> temp;
@@ -242,7 +260,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 					temp.clear();
 				}
 			}
-			return tempResult;*/
+			return tempResult;
 		}
 		else if (arg1Type == "stmt") {
 			/*

@@ -18,6 +18,7 @@ private:
 	list<ResultTable> resultList;
 	bool isInList(list<int>, int);
 	bool isValidStmt(int);
+	list<int> getList(string listName);
 
 public:
 	ResultTable processModifies(vector<string> tempString);
