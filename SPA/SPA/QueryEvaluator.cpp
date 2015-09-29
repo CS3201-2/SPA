@@ -910,50 +910,12 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 void QueryEvaluator::processSelectClause(vector<string> tempString) {
 	string syn = tempString.at(0);
 	string synType = tempString.at(1);
-	list<int> whileList = pkb.getWhileList();
-	list<int> assignList = pkb.getAssignList();
-	if (synType == "while") {
+
+	if (synType == "variable") {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
-		for (list<int>::iterator i = whileList.begin(); i != whileList.end(); i++) {
-			temp.push_back(*i);
-			tempResult.addTuple(temp);
-			temp.clear();
-		}
-		resultList.push_back(tempResult);
-		return;
-	}
-	else if (synType == "assign") {
-		ResultTable tempResult = ResultTable(syn);
-		vector<int> temp;
-		for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
-			temp.push_back(*i);
-			tempResult.addTuple(temp);
-			temp.clear();
-		}
-		resultList.push_back(tempResult);
-		return;
-	}
-	else if (synType == "all") {
-		ResultTable tempResult = ResultTable(syn);
-		vector<int> temp;
-		list<int> stmtList = assignList;
-		//stmtList.insert(stmtList.end(), assignList.begin(), assignList.end());
-		stmtList.insert(stmtList.end(), whileList.begin(), whileList.end());
-		for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
-			temp.push_back(*i);
-			tempResult.addTuple(temp);
-			temp.clear();
-		}
-		resultList.push_back(tempResult);
-		return;
-	}
-	else if (synType == "variable") {
-		ResultTable tempResult = ResultTable(syn);
-		vector<int> temp;
-		list<int> stmtList;
 		auto& varTable = pkb.getVarTable().varTable;
-		for (map<string,int>::iterator i = varTable.begin(); i != varTable.end(); i++) {
+		for (map<string, int>::iterator i = varTable.begin(); i != varTable.end(); i++) {
 			temp.push_back(i->second);
 			tempResult.addTuple(temp);
 			temp.clear();
@@ -961,13 +923,34 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 		resultList.push_back(tempResult);
 		return;
 	}
-	else if (synType == "string" || "prog_line") {
-		ResultTable tempResult = ResultTable();
+	else if (synType == "procedure") {
+		ResultTable tempResult = ResultTable(syn);
+		vector<int> temp;
+		list<int> procList = pkb.getProcList();
+		for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
+			temp.push_back(*i);
+			tempResult.addTuple(temp);
+			temp.clear();
+		}
+		resultList.push_back(tempResult);
+		return;
+	}
+	else if (synType == "boolean") {
+		ResultTable tempResult = ResultTable(syn);
 		tempResult.isWholeTrue = 1;
 		resultList.push_back(tempResult);
 		return;
 	}
 	else {
+		list<int> targetList = getList(synType);
+		ResultTable tempResult = ResultTable(syn);
+		vector<int> temp;
+		for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
+			temp.push_back(*i);
+			tempResult.addTuple(temp);
+			temp.clear();
+		}
+		resultList.push_back(tempResult);
 		return;
 	}
 }
