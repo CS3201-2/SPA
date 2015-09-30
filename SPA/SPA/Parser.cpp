@@ -242,6 +242,7 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::
 	list<int> controlVarList;
 	controlVarList.push_back(controlVarID);
 	pkb.setUses((*it).first, controlVarList);
+	pkb.setUses(currentProcID, controlVarList);
 
 	++it;//to skip the starting of this while statement
 	while (!braceList.back().empty()) {
