@@ -14,7 +14,7 @@ class Modifies
 public:
 	Modifies();
     
-	void setModifies();
+	void setModifies(int, list<int>);
 	list<int> getModifiesFirst(int);
 	list<int> getModifiesSecond(int);
 	bool isModifiesValid(int, int);

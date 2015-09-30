@@ -18,6 +18,7 @@ public:
 	int getFollowsSecond(int);
 	bool isFollowValid(int, int);
 	void printFollowsMap();
+	map<int, int> getFollowsMap();
 
 private:
 	map<int, int> followsMap;

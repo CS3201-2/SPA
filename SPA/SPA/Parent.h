@@ -19,6 +19,7 @@ public:
 	list<int> getParentSecond(int);
 	bool isParentValid(int, int);
 	void printAllParent();
+	map<int, list<int>> getParentMap();
 
 private:
 	map<int, list<int>> parentMap;

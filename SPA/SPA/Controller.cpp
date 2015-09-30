@@ -22,13 +22,15 @@ void Controller::processSource() {
 
 	list<pair<int, string>> sourceList = parser.prepareSourceList(source);
 
-	if (!syntaxCheck(sourceList)) {
+	ctrPKB = parse(sourceList);
+	//Note: must change back, now it is skipping checker!!!
+	/*if (!syntaxCheck(sourceList)) {
 		cout << endl << endl;
 		cout << "syntax wrong!!!" << endl << endl << endl;
 	}
 	else {
 		ctrPKB = parse(sourceList);
-	}
+	}*/
 
 
 	//for testing
@@ -61,19 +63,7 @@ void Controller::testingPKB() {
 	cout << "testing" << endl;
 	cout << endl;
 
-	
-
 	//change below for testing purpose
-	ctrPKB.getProcTable().printMap();
-	ctrPKB.getVarTable().printMap();
-	ctrPKB.getModifies().sortMap();
-	ctrPKB.getModifies().printMap();
-	ctrPKB.getUses().sortMap();
-	ctrPKB.getUses().printMap();
-	ctrPKB.getCalls().printCallsMap();
-	/*ctrPKB.getFollows().printFollowsMap();
-	ctrPKB.getParent().sortParentMap();
-	ctrPKB.getParent().printParentMap();*/
 
 	cout << "end of testing" << endl;
 }

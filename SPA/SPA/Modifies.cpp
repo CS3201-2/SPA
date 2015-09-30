@@ -10,8 +10,15 @@ Modifies::Modifies()
 //first stmtLine, second varID
 
 //set modifies need to see parser to decided
-void Modifies::setModifies() {
-
+void Modifies::setModifies(int first, list<int> second) {
+	if (modifiesMap.find(first) == modifiesMap.end()) {
+		modifiesMap[first] = second;
+	}
+	else {
+		list<int> existingModifiesList = modifiesMap.at(first);
+		existingModifiesList.insert(existingModifiesList.end(), second.begin(), second.end());
+		modifiesMap[first] = existingModifiesList;
+	}
 }
 
 list<int> Modifies::getModifiesFirst(int second) {
@@ -46,7 +53,7 @@ bool Modifies::isModifiesValid(int first, int second) {
 
 void Modifies::printAllModifies() {
 	cout << "modifies table" << endl;
-	for (map<int, std::list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
 
 		cout << (*it).first;
 		cout << ":";
@@ -58,23 +65,6 @@ void Modifies::printAllModifies() {
 	}
 	cout << endl;
 }
-
-/*void Modifies::setModifiesStmt( int var_id, int stmt_number )
-{
-	if (modifiesMap.find(var_id) == modifiesMap.end()) {
-		std::list<int> emptyList;
-		emptyList.push_back(stmt_number);
-		modifiesMap[var_id] = emptyList;
-	}
-	else {
-		std::list<int> list = modifiesMap.at(var_id);
-
-		if (std::find(list.begin(), list.end(), stmt_number) == list.end()) {
-			list.push_back(stmt_number);
-		}
-		modifiesMap[var_id] = list;
-	}
-}*/
 
 
 /*void Modifies::sortMap() {

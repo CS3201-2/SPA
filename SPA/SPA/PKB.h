@@ -55,14 +55,14 @@ public:
 	void printProcTable();
 	
 	//Modifies
-	void setModifies(); // input parameter to be decided later
+	void setModifies(int, list<int>); // input parameter to be decided later
 	list<int> getModifiesFirst(int);
 	list<int> getModifiesSecond(int);
 	bool isModifiesValid(int, int);
 	void printAllModifies();
 
 	//Uses
-	void setUses(); //input parameter to be decided later
+	void setUses(int, list<int>); //input parameter to be decided later
 	list<int> getUsesFirst(int);
 	list<int> getUsesSecond(int);
 	bool isUsesValid(int, int);
@@ -85,6 +85,7 @@ public:
 	int getFollowsSecond(int);
 	bool isFollowsValid(int, int);
 	void printAllFollows();
+	map<int, int> getFollowsMap();
 
 	//FollowsStar
 	void setFollowsStar(int, list<int>); 
@@ -94,11 +95,11 @@ public:
 	void printAllFollowsStar();
 
 	//Calls
-	/*void setCalls(int, int);
+	void setCalls(int, int);
 	int getCallsFirst(int);
 	int getCallsSecond(int);
 	bool isCallsValid(int, int);
-	void printAllCalls();*/
+	void printAllCalls();
 
 	//CallsStar
 	/*void setCallsStar(int, list<int>);
@@ -113,6 +114,7 @@ public:
 	list<int> getParentSecond(int);
 	bool isParentValid(int, int);
 	void printAllParent();
+	map<int, list<int>> getParentMap();
 
 	//ParentStar
 	void setParentStar(int, list<int>);

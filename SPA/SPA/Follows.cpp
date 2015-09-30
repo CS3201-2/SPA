@@ -46,3 +46,7 @@ void Follows::printFollowsMap() {
 	}
 	cout << endl;
 }
+
+map<int, int> Follows::getFollowsMap() {
+	return followsMap;
+}

@@ -176,8 +176,8 @@ size_t PKB::getProcTableSize() {
 
 
 //Modifies
-void PKB::setModifies() {
-	getModifies().setModifies();
+void PKB::setModifies(int first, list<int> second) {
+	getModifies().setModifies(first, second);
 } // input parameter to be decided later
 
 list<int> PKB::getModifiesFirst(int second) {
@@ -198,8 +198,8 @@ void PKB::printAllModifies() {
 
 
 //Uses
-void PKB::setUses() {
-	getUses().setUses();
+void PKB::setUses(int first, list<int> second) {
+	getUses().setUses(first, second);
 } //input parameter to be decided later
 
 list<int> PKB::getUsesFirst(int second) {
@@ -277,6 +277,10 @@ void PKB::printAllFollows() {
 	getFollows().printFollowsMap();
 }
 
+map<int, int> PKB::getFollowsMap() {
+	return getFollows().getFollowsMap();
+}
+
 
 //FollowsStar
 void PKB::setFollowsStar(int first, list<int> second) {
@@ -300,7 +304,6 @@ void PKB::printAllFollowsStar() {
 }
 
 
-/*
 //Calls
 void PKB::setCalls(int first, int second) {
 	getCalls().setCalls(first, second);
@@ -350,7 +353,11 @@ bool PKB::isParentValid(int first, int second) {
 }
 
 void PKB::printAllParent() {
-	return getParent().printAllParent();
+	getParent().printAllParent();
+}
+
+map<int, list<int>> PKB::getParentMap() {
+	return getParent().getParentMap();
 }
 
 

@@ -7,8 +7,15 @@ Uses::Uses()
 }
 
 // need to see parser to decide the input
-void Uses::setUses() {
-
+void Uses::setUses(int first, list<int> second) {
+	if (usesMap.find(first) == usesMap.end()) {
+		usesMap[first] = second;
+	}
+	else {
+		list<int> existingUsesList = usesMap.at(first);
+		existingUsesList.insert(existingUsesList.end(), second.begin(), second.end());
+		usesMap[first] = existingUsesList;
+	}
 }
 
 list<int> Uses::getUsesFirst(int second) {

@@ -1,10 +1,4 @@
 #include "Parser.h"
-#include "PKB.h"
-#include "AST.h"
-#include <string>
-#include <list>
-#include <algorithm>
-#include <regex>
 
 const regex assignmentRegex("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
 const regex procDeclarationRegex("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
@@ -38,8 +32,47 @@ list<pair<int, string>> Parser::prepareSourceList(string source) {
 
 PKB Parser::parseSource(list<pair<int, string>> sourceCodeList) {
 	processSourceCodeList(sourceCodeList);
+	//follows*, parent*
 	//code below should be inside design extracter, once singleton pattern is done, shift it to design extracter
+	generateFollowsStar();
+	generateParentStar();
+	
 	return pkb;
+}
+
+void Parser::generateFollowsStar() {
+	map<int, int> followsMap = pkb.getFollowsMap();
+	list<int> tempList;
+
+	for (map<int, int>::reverse_iterator it = followsMap.rbegin(); it != followsMap.rend(); ++it) {
+		int first = (*it).first;
+		int firstPotential = (*it).second;
+
+		tempList.push_back(firstPotential);
+		list<int> secondList = pkb.getFollowsStarSecond(firstPotential);
+		tempList.insert(tempList.end(), secondList.begin(), secondList.end());
+
+		pkb.setFollowsStar(first, tempList);
+		tempList.clear();
+	}
+}
+
+void Parser::generateParentStar() {
+	map<int, list<int>> parentMap = pkb.getParentMap();
+	list<int> tempList;
+	for (map<int, list<int>>::reverse_iterator it = parentMap.rbegin(); it != parentMap.rend(); ++it) {
+		int first = (*it).first;
+		list<int> potentialFirstList = (*it).second;
+
+		for (list<int>::iterator sit = potentialFirstList.begin(); sit != potentialFirstList.end(); ++sit) {
+			tempList.push_back(*sit);
+			list<int> secondList = pkb.getParentStarSecond(*sit);
+			tempList.insert(tempList.end(), secondList.begin(), secondList.end());
+		}
+
+		pkb.setParentStar(first, tempList);
+		tempList.clear();
+	}
 }
 
 void Parser::trim(string& line) {
@@ -47,7 +80,6 @@ void Parser::trim(string& line) {
 }
 
 void Parser::addNewLineString(string &content) {
-
 	string::iterator itr;
 
 	size_t index = content.find(';');
@@ -76,15 +108,13 @@ void Parser::buildSourceCodeList(string content, list<std::pair<int, string>>& l
 	size_t length;
 	int count = 1;
 	string line;
-	regex procDeclaration("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
-	regex elseStmt("else\\{");
 
 	while (tail != std::string::npos) {
 		length = tail - head;
 		line = content.substr(head, length);
 		std::pair<int, string> pair;
 
-		if (regex_match(line, procDeclaration) || regex_match(line, elseStmt)) {
+		if (regex_match(line, procDeclarationRegex) || regex_match(line, elseRegex)) {
 			pair.first = -1;
 		}
 		else {
@@ -105,47 +135,49 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 	//int1 is the currentProcID, pair is the *it
 	pair<int, pair<int, string>> temp;
 	list<pair<int, pair<int, string>>> calledProcList;
-	int currentProcedureID;
+	int currentProcID;
 	list<stack<string>> bracesList;
 	int prevStmtLine = -1;
 	int prevStmtType = invalidStmt;
 
 	for (list<std::pair<int, string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
 		int stmtNumber = (*it).first;
-		int stmtType = getTypeOfStatement((*it).second);
+		int stmtType = getTypeOfStmt((*it).second);
 
 		switch (stmtType) {
 		case assignmentStmt:
-			pkb.addAssignList((*it).first);
+			pkb.addAssignToList(stmtNumber);
 			processAssignment(*it, modifiesList, usesList);
 			processPatternStmt(*it, stmtType);
 			break;
 
 		case procDeclarationStmt:
-			pkb.getProcTable().insertProc(getProcName(stmtType, (*it).second));
-			currentProcedureID = pkb.getProcTable().getIndex(getProcName(stmtType, (*it).second));
+			//pkb.insertProc(getProcName(stmtType, (*it).second));
+			currentProcID = pkb.insertProc(getProcName(stmtType, (*it).second));
 			modifiesList.clear();
 			usesList.clear();
 			break;
 
 		case procCallStmt: 
-			temp = make_pair(currentProcedureID, *it);
+			pkb.addCallToList(stmtNumber);
+			temp = make_pair(currentProcID, *it);
 			calledProcList.push_back(temp);
 			modifiesList.clear();
 			usesList.clear();
 			break;
 
 		case whileStmt:
-			pkb.addWhileList((*it).first);
+			pkb.addWhileToList(stmtNumber);
 			processPatternStmt(*it, stmtType);
 			//push control variable to useslist
-			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcedureID, bracesList, calledProcList);
+			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcID, bracesList, calledProcList);
 			break;
 
 		case ifStmt: 
+			pkb.addIfToList(stmtNumber);
 			processPatternStmt(*it, stmtType);
 			//push control variable to useslist
-			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcedureID, bracesList, calledProcList);
+			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcID, bracesList, calledProcList);
 			break;
 
 		case invalidStmt: break;//for invalid statement
@@ -153,15 +185,13 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 		}
 
 		//modifies
-		for (list<int>::iterator listIter1 = modifiesList.begin(); listIter1 != modifiesList.end(); ++listIter1) {
-			modifies.setModifiesStmt(*listIter1, stmtNumber);
-			modifies.setModifiesStmt(*listIter1, currentProcedureID);
-		}
+		pkb.setModifies(stmtNumber, modifiesList);
+		pkb.setModifies(currentProcID, modifiesList);
+		
 		//uses
-		for (list<int>::iterator listIter2 = usesList.begin(); listIter2 != usesList.end(); ++listIter2) {
-			uses.setUsesStmt(*listIter2, stmtNumber);
-			uses.setUsesStmt(*listIter2, currentProcedureID);
-		}
+		pkb.setUses(stmtNumber, usesList);
+		pkb.setUses(currentProcID, usesList);
+		
 		//follows
 		if ((prevStmtType != procDeclarationStmt && prevStmtType != elseStmt && prevStmtType != invalidStmt)
 			&& stmtType != procDeclarationStmt && prevStmtLine != stmtNumber) {
@@ -171,7 +201,7 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 		prevStmtType = stmtType;
 		//parent
 		if (stmtType == whileStmt || stmtType == ifStmt) {
-			parent.setParentStmt(stmtNumber, childrenList);
+			pkb.setParent(stmtNumber, childrenList);
 		}
 		//process call stmt for modifies, uses, call
 		processCalledProcList(calledProcList);
@@ -189,7 +219,7 @@ int Parser::countNumOfRightBraces(std::pair<int, string> pair) {
 }
 
 void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::pair<int, string>>& stmtList,
-	list<int>& modifiesList, list<int>& usesList, list<int>& childrenList, int currentProcedureID,
+	list<int>& modifiesList, list<int>& usesList, list<int>& childrenList, int currentProcID,
 	list<stack<string>>& braceList, list<pair<int,pair<int, string>>>& calledProcList) {
 	stack <string> braces;
 	braces.push("{");
@@ -207,8 +237,10 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::
 	int prevStmtType = invalidStmt;
 
 	//put control variable into Uses
-	int controlVarID = pkb.getVarTable().getIndex(getControlVarName(getTypeOfStatement((*it).second), (*it).second));
-	uses.setUsesStmt(controlVarID, (*it).first);
+	int controlVarID = pkb.insertVar(getControlVarName(getTypeOfStmt((*it).second), (*it).second));
+	list<int> controlVarList;
+	controlVarList.push_back(controlVarID);
+	pkb.setUses((*it).first, controlVarList);
 
 	++it;//to skip the starting of this while statement
 	while (!braceList.back().empty()) {
@@ -228,31 +260,33 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::
 		}
 
 		int stmtNumber = (*it).first;
-		int stmtType = getTypeOfStatement((*it).second);
+		int stmtType = getTypeOfStmt((*it).second);
 
 		switch (stmtType) {
 		case assignmentStmt:
-			pkb.addAssignList((*it).first);
+			pkb.addAssignToList(stmtNumber);
 			processAssignment(*it, tempModifiesList, tempUsesList);
 			processPatternStmt(*it, stmtType);
 			break;
 
 		case procCallStmt: 
-			temp = make_pair(currentProcedureID, *it);
+			pkb.addCallToList(stmtNumber);
+			temp = make_pair(currentProcID, *it);
 			calledProcList.push_back(temp);
 			tempModifiesList.clear();
 			tempUsesList.clear();
 			break;
 
 		case whileStmt:
+			pkb.addWhileToList(stmtNumber);
 			processPatternStmt(*it, stmtType);
-			pkb.addWhileList((*it).first);
-			processNestedStmt(it, stmtList, tempModifiesList, tempUsesList, tempChildrenList, currentProcedureID, braceList, calledProcList);
+			processNestedStmt(it, stmtList, tempModifiesList, tempUsesList, tempChildrenList, currentProcID, braceList, calledProcList);
 			break;
 
 		case ifStmt:
+			pkb.addIfToList(stmtNumber);
 			processPatternStmt(*it, stmtType);
-			processNestedStmt(it, stmtList, tempModifiesList, tempUsesList, tempChildrenList, currentProcedureID, braceList, calledProcList);
+			processNestedStmt(it, stmtList, tempModifiesList, tempUsesList, tempChildrenList, currentProcID, braceList, calledProcList);
 			break;//for if
 
 		case invalidStmt: break;//for invalid statement
@@ -262,27 +296,24 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::
 		}
 
 		//modifies
-		for (list<int>::iterator listIter1 = tempModifiesList.begin(); listIter1 != tempModifiesList.end(); ++listIter1) {
-			modifies.setModifiesStmt(*listIter1, stmtNumber);
-			modifies.setModifiesStmt(*listIter1, currentProcedureID);
-		}
+		pkb.setModifies(stmtNumber, modifiesList);
+		pkb.setModifies(currentProcID, modifiesList);
+		
 		//uses
-		for (list<int>::iterator listIter2 = tempUsesList.begin(); listIter2 != tempUsesList.end(); ++listIter2) {
-			uses.setUsesStmt(*listIter2, stmtNumber);
-			uses.setUsesStmt(*listIter2, currentProcedureID);
-		}
+		pkb.setUses(stmtNumber, usesList);
+		pkb.setUses(currentProcID, usesList);
 
 		//follows
 		if ((prevStmtType != procDeclarationStmt && prevStmtType != elseStmt && prevStmtType != invalidStmt)
 			&& stmtType != procDeclarationStmt && prevStmtLine != stmtNumber) {
-			follows.setFollowsStmt(prevStmtLine, stmtNumber);
+			pkb.setFollows(prevStmtLine, stmtNumber);
 		}
 		prevStmtLine = stmtNumber;
 		prevStmtType = stmtType;
 
 		//parent
 		if (stmtType == whileStmt || stmtType == ifStmt) {
-			parent.setParentStmt(stmtNumber, tempChildrenList);
+			pkb.setParent(stmtNumber, tempChildrenList);
 		}
 
 		modifiesList.splice(modifiesList.end(), tempModifiesList);
@@ -307,8 +338,7 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 	for (it = str.begin(); it != str.end(); ++it) {
 		if (isMathSymbol(*it) || isSemicolon(*it)) {
 			if (isVariable(variable)) {
-				VarTable& varTable = pkb.getVarTable();
-				int varID = varTable.getIndex(variable);
+				int varID = pkb.insertVar(variable);
 				
 				if (modifiesList.empty()) {
 					modifiesList.push_back(varID);
@@ -359,7 +389,7 @@ string Parser::getProcName(int stmtType, string str) {
 	return m[1];
 }
 
-int Parser::getTypeOfStatement(string str) {
+int Parser::getTypeOfStmt(string str) {
 	if (regex_match(str, assignmentRegex)) {
 		return assignmentStmt;
 	}
@@ -418,7 +448,7 @@ string Parser::getControlVarName(int stmtType, string stmt) {
 void Parser::processCalledProcList(list<pair<int, pair<int, string>>> calledProcList) {
 	for (list<pair<int, pair<int, string>>>::iterator it = calledProcList.begin(); it != calledProcList.end(); ++it) {
 		int currProcID = (*it).first;
-		int calledProcID = pkb.getProcTable().getID(getProcNameCallStmt((*it).second.second));
+		int calledProcID = pkb.getProcID(getProcNameCallStmt((*it).second.second));
 
 		pkb.setCalls(currProcID, calledProcID);
 	}
