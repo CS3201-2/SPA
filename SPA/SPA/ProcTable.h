@@ -1,7 +1,9 @@
 #include <string>
 #include <map>
+#include <iostream>
 
 using namespace std;
+
 
 #ifndef ProcTable_H
 #define ProcTable_H
@@ -11,10 +13,10 @@ class ProcTable
 public:
 	ProcTable();
 
-	//procTable
 	int insertProc(string);
-	int getProcID(string); 	//return 0 for invalid procName input
+	int getProcID(string); 
 	string getProcName(int);
+	size_t getProcTableSize();
 	void printProcTable();
 
 private:

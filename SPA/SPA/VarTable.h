@@ -4,6 +4,7 @@
 
 using namespace std;
 
+
 #ifndef VarTable_H
 #define VarTable_H
 
@@ -15,6 +16,7 @@ public:
 	int insertVar(string);
 	int getVarID(string); 	//return 0 for invalid varName input
 	string getVarName(int);
+	size_t getVarTableSize();
 	void printVarTable();
 
 private:

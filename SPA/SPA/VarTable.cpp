@@ -1,6 +1,5 @@
 #include "VarTable.h"
 
-using namespace std;
 
 // construactor
 VarTable::VarTable(void)
@@ -33,6 +32,13 @@ string VarTable::getVarName(int varID) {
 			return (*it).first;
 		}
 	}
+
+	//dummy return, should never be used
+	return "";
+}
+
+size_t VarTable::getVarTableSize() {
+	return varTable.size();
 }
 
 void VarTable::printVarTable() {

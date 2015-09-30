@@ -1,9 +1,5 @@
 #include "ProcTable.h"
-#include <map>
-#include <string>
-#include <iostream>
 
-using namespace std;
 
 // constructor
 ProcTable::ProcTable(void)
@@ -36,6 +32,13 @@ string ProcTable::getProcName(int procID) {
 			return (*it).first;
 		}
 	}
+
+	//dummy return, should never be used
+	return "";
+}
+
+size_t ProcTable::getProcTableSize() {
+	return procTable.size();
 }
 
 void ProcTable::printProcTable() {
