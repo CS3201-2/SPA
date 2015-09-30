@@ -184,7 +184,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
-			if (pkb.isModifiesValid(stoi(arg1), stoi(arg2))) {
+			if (pkb.isModifiesValid(stoi(arg1), arg2ID)) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -319,7 +319,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
-			if (pkb.isUsesValid(stoi(arg1), stoi(arg2))) {
+			if (pkb.isUsesValid(stoi(arg1), arg2ID)) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
