@@ -54,14 +54,15 @@ RelationshipTable::RelationshipTable() {
 	arg1.clear();
 	arg2.clear();
 
-	/*//Pattern-assign
+
+	//Pattern-assign
 	arg1 = { "variable", "string", "all" };
-	arg2 = { "string", "substring", "all" };
+	arg2 = { "variable", "constant", "string", "all" };
 	Relationship r7(2, arg1, arg2);
 	relTable["pattern"] = r7;
 	arg1.clear();
 	arg2.clear();
-
+	/*
 	//Pattern-if
 	arg1 = { "variable", "string", "all" };
 	arg2 = { "all" };

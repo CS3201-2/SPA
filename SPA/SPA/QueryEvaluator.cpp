@@ -92,6 +92,12 @@ vector<string> QueryEvaluator::getVarDeclaration(int index) {
 //Process Clause
 void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	string relationship = tempString.at(0);
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
+	string log = "Such that clause: "+relationship + "( " + arg1 + ":" + arg1Type + ", "+ arg2 + ":" + arg2Type + ")\n";
+	SPALog::log(log);
 
 	if (relationship == "modifies") {
 		resultList.push_back(processModifies(tempString));
@@ -137,7 +143,7 @@ list<int> QueryEvaluator::getList(string listName) {
 	else if (listName == "call") {
 		return pkb.getCallList();
 	}
-	else if (listName == "stmt") {
+	else if (listName == "stmt" || "all") {
 		return pkb.getStmtList();
 	}
 	else if (listName == "procedure") {
@@ -168,7 +174,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			return tempResult;
 		}
 
-		list<int> modifiesLine = pkb.getModifiesSecond(arg2ID);
+		list<int> modifiesLine = pkb.getModifiesFirst(arg2ID);
 
 		if ( arg1Type == "prog_line" ) {
 			ResultTable tempResult = ResultTable();
@@ -178,7 +184,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
-			if (pkb.isModifiesValid(stoi(arg1), stoi(arg2))) {
+			if (pkb.isModifiesValid(stoi(arg1), arg2ID)) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -220,7 +226,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			
 	}
 
-	else if( arg2Type == "variable" ) {
+	else if( arg2Type == "variable" || "all") {
 		
 		if (arg1Type == "prog_line") {
 			if (!pkb.isValidStmtNo(stoi(arg1))) {
@@ -274,17 +280,12 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			return tempResult;
 		}
 	}
-	
-	else if (arg2Type == "all") {
-		// if arg2Type == "all" not implement yet
-	}
 
 	else {
 		SPALog::log("Error: Modifies arg2 wrong type");
 	}
 	
 }
-
 
 ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 
@@ -304,7 +305,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			return tempResult;
 		}
 
-		list<int> usesLine = pkb.getUsesSecond(arg2ID);
+		list<int> usesLine = pkb.getUsesFirst(arg2ID);
 
 		if (arg1Type == "prog_line") {
 			ResultTable tempResult = ResultTable();
@@ -314,7 +315,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
-			if (pkb.isUsesValid(stoi(arg1), stoi(arg2))) {
+			if (pkb.isUsesValid(stoi(arg1), arg2ID)) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -356,7 +357,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 
 	}
 
-	else if (arg2Type == "variable") {
+	else if (arg2Type == "variable" || "all") {
 		if (arg1Type == "prog_line") {
 			if (!pkb.isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
@@ -410,16 +411,11 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 		}
 	}
 
-	else if (arg2Type == "all") {
-		// if arg2Type == "all" not implement yet
-	}
-
 	else {
 		SPALog::log("Error: Uses arg2 wrong type");
 	}
 
 }
-
 
 ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 	
@@ -427,13 +423,11 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
-	//need API for parent List
-	list<int> whileList = pkb.getWhileList();
-	list<int> ifList = pkb.getIfList();
-	list<int> parentList = whileList;
-	parentList.insert(parentList.end(),ifList.begin(),ifList.end());
+	
+	list<int> parentList = pkb.getParentList();
+
 	if (arg1Type == "prog_line") {
-		bool isNotParrent = find(parentList.begin(), parentList.end(), stoi(arg1)) == parentList.end();
+		bool isNotParrent = !isInList(parentList, stoi(arg1));
 		if (!pkb.isValidStmtNo(stoi(arg1)) || isNotParrent ) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
@@ -614,13 +608,11 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
-	//need API for parent List
-	list<int> whileList = pkb.getWhileList();
-	list<int> ifList = pkb.getIfList();
-	list<int> parentList = whileList;
-	parentList.insert(parentList.end(), ifList.begin(), ifList.end());
+	
+	list<int> parentList = pkb.getParentList();
+	
 	if (arg1Type == "prog_line") {
-		bool isNotParrent = find(parentList.begin(), parentList.end(), stoi(arg1)) == parentList.end();
+		bool isNotParrent = !isInList(parentList, stoi(arg1));
 		if (!pkb.isValidStmtNo(stoi(arg1)) || isNotParrent) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
@@ -819,54 +811,54 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	string arg2 = tempString.at(4);
 	string arg2Type = tempString.at(5);
 
-	/*AST ast = pkb.getAST();
+	string log = "Pattern clause: assign (" + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
+	SPALog::log(log);
+
 	//syn has to be assign in prototype
 	if (arg1Type == "string") {
 		ResultTable tempResult = ResultTable(syn);
-		int arg1ID = pkb.getVarTable().getID(arg1);
-		list<int> stmtList = pkb.getModifies().getModifiesLine(arg1ID);
-		list<int> assignList = pkb.getAssignList();
 		vector<int> temp;
-		for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
-			//cout << *i << " : " << ast.matchExpression(*i, arg2)<<endl;
-			if ( isInList(assignList,*i) && ast.matchExpression(*i,arg2)) {
-		
+		if (arg2Type == "all") {
+			list<int> assignList = pkb.getAssignWithFirstExact(arg1);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
-				//tempResult.isWholeTrue = 1;
-				//resultList.push_back(tempResult);
-				//return;
 			}
 		}
-		
-		resultList.push_back(tempResult);
-		return;
-	}
-	else if (arg1Type == "all") {
-		ResultTable tempResult = ResultTable(syn);
-		list<int> assignList = pkb.getAssignList();
-		vector<int> temp;
-		for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
-				if (ast.matchExpression(*i, arg2)) {
-					temp.push_back(*i);
-					tempResult.addTuple(temp);
-					temp.clear();
-				}
-			
+		else {
+			//iter 1 "constant or string" or variable
+			list<int> assignList = pkb.getAssignWithBoth(arg1, arg2);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
 		}
 		resultList.push_back(tempResult);
 		return;
 	}
 	else if (arg1Type == "variable") {
 		ResultTable tempResult = ResultTable(syn, arg1);
-		list<int> assignList = pkb.getAssignList();
 		vector<int> temp;
-		Modifies modifies = pkb.getModifies();
-		for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
-			list<int> varList = modifies.getModifiesVar(*i);
-			for (list<int>::iterator t = varList.begin(); t != varList.end(); t++) {
-				if (ast.matchExpression(*i, arg2)) {
+		if (arg2Type == "all") {
+			list<int> varList = pkb.getVarList();
+			for (list<int>::iterator i = varList.begin(); i != varList.end(); i++) {
+				list<int> assignList = pkb.getAssignWithFirstExact(pkb.getVarName(*i));
+				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
+					temp.push_back(*t);
+					temp.push_back(*i);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+		}
+		else {
+			//iter 1 "constant or string" or "variable"
+			list<int> assignList = pkb.getAssignWithSecond(arg2);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+				list<int> modifiedVarList = pkb.getModifiesSecond(*i);
+				for (list<int>::iterator t = modifiedVarList.begin(); t != modifiedVarList.end(); t++) {
 					temp.push_back(*i);
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
@@ -877,46 +869,48 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		resultList.push_back(tempResult);
 		return;
 	}
-	else {
+	else if (arg1Type == "all") {
+		ResultTable tempResult = ResultTable(syn);
+		vector<int> temp;
+		if (arg2Type == "all") {
+			list<int> assignList = pkb.getAssignList();
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+		}
+		else {
+			// arg2Type is constant or string or variable
+			list<int> assignList = pkb.getAssignWithSecond(arg2);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+		}
+		resultList.push_back(tempResult);
 		return;
 	}
-	//Right hand side of the pattern clause is given to patternMatchAssign() in the PKB
-	//patternMatchAssign() will return all assignment statements that matches the given string
-
-	//Case 1: LHS is a constant variable
-	/*
-	1. We use the value of the assign synonym to search the Modifies table to get the variable that is modified
-	2. If variable matches LHS, assignment statement number will be accepted 
-	3. Result will be intersected with current values of the synonym
-	*/
+	else {
+		SPALog::log("pattern arg1 type wrong");
+		return;
+	}
 	
-	//Case 2: LHS is a variable synonym or "_"
-	// If the LHS is "_", no intersection is required.
-
-	//Process while pattern node
-	//Case 1: LHS is a constant variable
-	/*
-	1. Use a patternMatchWhile() where when given the control variable, it will return all while statements that use it.
-	2. Return while statements are then used in a set intersection with respective synonyms 
-	*/
-
-	//Case 2: LHS is a variable synonym
-	/*
-	1. We get the control variable for each of the while statements
-	2. Control variables are then intersected with the respective synonyms
-	*/
 }
 
 void QueryEvaluator::processSelectClause(vector<string> tempString) {
 	string syn = tempString.at(0);
 	string synType = tempString.at(1);
+	string log = "Select clause: select " + syn + ":" + synType +"\n";
+	SPALog::log(log);
 
 	if (synType == "variable") {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
-		auto& varTable = pkb.getVarTable().varTable;
-		for (map<string, int>::iterator i = varTable.begin(); i != varTable.end(); i++) {
-			temp.push_back(i->second);
+		list<int> varTable = pkb.getVarList();
+		for (list<int>::iterator i = varTable.begin(); i != varTable.end(); i++) {
+			temp.push_back(*i);
 			tempResult.addTuple(temp);
 			temp.clear();
 		}
