@@ -494,6 +494,10 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			list<int> arg2List = getList(arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1,arg2);
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
 				list<int> childList = pkb.getParentSecond(*t);
 				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
@@ -587,6 +591,10 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 			list<int> arg2List = getList(arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
 				int littleBrother = pkb.getFollowsSecond(*t);
 				if (isInList(arg2List, littleBrother)) {
@@ -683,6 +691,10 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 			list<int> arg2List = getList(arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
 				list<int> childList = pkb.getParentStarSecond(*t);
 				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
@@ -784,6 +796,10 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 			list<int> arg2List = getList(arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
 				list<int> littleBrothers = pkb.getFollowsStarSecond(*t);
 				for (list<int>::iterator i = littleBrothers.begin(); i != littleBrothers.end(); i++) {
@@ -828,7 +844,8 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		}
 		else {
 			//iter 1 "constant or string" or variable
-			list<int> assignList = pkb.getAssignWithBoth(arg1, arg2);
+			string arg2Trim = arg2.substr(2, arg2.length() - 4);
+			list<int> assignList = pkb.getAssignWithBoth(arg1, arg2Trim);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
@@ -855,7 +872,8 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		}
 		else {
 			//iter 1 "constant or string" or "variable"
-			list<int> assignList = pkb.getAssignWithSecond(arg2);
+			string arg2Trim = arg2.substr(2, arg2.length() - 4);
+			list<int> assignList = pkb.getAssignWithSecond(arg2Trim);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				list<int> modifiedVarList = pkb.getModifiesSecond(*i);
 				for (list<int>::iterator t = modifiedVarList.begin(); t != modifiedVarList.end(); t++) {
@@ -882,7 +900,8 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		}
 		else {
 			// arg2Type is constant or string or variable
-			list<int> assignList = pkb.getAssignWithSecond(arg2);
+			string arg2Trim = arg2.substr(2, arg2.length() - 4);
+			list<int> assignList = pkb.getAssignWithSecond(arg2Trim);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
