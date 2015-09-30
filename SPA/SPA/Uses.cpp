@@ -7,6 +7,63 @@ Uses::Uses()
 {
 }
 
+void Uses::setUses() {
+
+}
+
+list<int> Uses::getUsesFirst(int second) {
+	list<int> resultList;
+	for (map<int, list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
+		if (find((*it).second.begin(), (*it).second.end(), second) != (*it).second.end()) {
+			resultList.push_back((*it).first);
+		}
+	}
+
+	return resultList;
+}
+
+list<int> Uses::getUsesSecond(int first) {
+	if (usesMap.find(first) == usesMap.end()) {
+		return list<int>();
+	}
+	else {
+		return usesMap.at(first);
+	}
+}
+
+bool Uses::isUsesValid(int first, int second) {
+	if (usesMap.find(first) == usesMap.end()) {
+		return false;
+	}
+	else {
+		list<int> childrenList = usesMap.at(first);
+		return find(childrenList.begin(), childrenList.end(), second) != childrenList.end();
+	}
+}
+
+void Uses::printAllUses() {
+	cout << "uses table" << endl;
+	for (map<int, std::list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
+		cout << (*it).first;
+		cout << ":";
+		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
+			cout << *listIt;
+			cout << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+
+
+
+
+
+
+
+
+
+
 list<int> Uses::getUsesStmt(int var_id)
 {
 	if (usesMap.find(var_id) == usesMap.end()) {

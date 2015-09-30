@@ -14,6 +14,13 @@ class Uses
 public:
 	Uses();
 
+	void setUses(); //input parameter to be decided later
+	list<int> getUsesFirst(int);
+	list<int> getUsesSecond(int);
+	bool isUsesValid(int, int);
+	void printAllUses();
+
+
 	list<int> getUsesStmt(int);
 
 	void setUsesStmt(int, int);

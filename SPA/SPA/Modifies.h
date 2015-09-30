@@ -12,6 +12,13 @@ class Modifies
 public:
 	Modifies();
     
+	void setModifies();
+	list<int> getModifiesFirst(int);
+	list<int> getModifiesSecond(int);
+	bool isModifiesValid(int, int);
+	void printAllModifies();
+
+
 	list<int> getModifiesLine( int );
 
 	void setModifiesStmt( int, int );

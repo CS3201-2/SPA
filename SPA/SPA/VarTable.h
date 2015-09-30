@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 #ifndef VarTable_H
 #define VarTable_H
 
