@@ -4,7 +4,6 @@
 #include <vector>
 #include <iostream>
 #include "PKB.h"
-#include "ASTNode.h"
 #include "QueryTree.h"
 #include "ResultTable.h"
 
