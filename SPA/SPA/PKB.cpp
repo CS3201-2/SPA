@@ -80,7 +80,7 @@ list<int> PKB::getProcList() {
 	size_t totalNoProc = getProcTableSize();
 	list<int> procList;
 	for (int i = 1; i <= totalNoProc; ++i) {
-		procList.push_back(i);
+		procList.push_back(0 - i);
 	}
 
 	return procList;
