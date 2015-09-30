@@ -40,6 +40,7 @@ bool FollowsStar::isFollowsStarValid(int first, int second) {
 }
 
 void FollowsStar::printAllFollowsStar() {
+	cout << "follows star" << endl;
 	for (map<int, std::list<int>>::iterator it = followsStarMap.begin(); it != followsStarMap.end(); ++it) {
 		cout << (*it).first;
 		cout << ":";
@@ -48,5 +49,13 @@ void FollowsStar::printAllFollowsStar() {
 			cout << " ";
 		}
 		cout << endl;
+	}
+	cout << endl;
+}
+
+void FollowsStar::sortAndUnifyMap() {
+	for (map<int, std::list<int>>::iterator it = followsStarMap.begin(); it != followsStarMap.end(); ++it) {
+		(*it).second.sort();
+		(*it).second.unique();
 	}
 }

@@ -41,6 +41,7 @@ bool ParentStar::isParentStarValid(int first, int second) {
 }
 
 void ParentStar::printAllParentStar() {
+	cout << "parent star" << endl;
 	for (map<int, std::list<int>>::iterator it = parentStarMap.begin(); it != parentStarMap.end(); ++it) {
 		cout << (*it).first;
 		cout << ":";
@@ -49,5 +50,13 @@ void ParentStar::printAllParentStar() {
 			cout << " ";
 		}
 		cout << endl;
+	}
+	cout << endl;
+}
+
+void ParentStar::sortAndUnifyMap() {
+	for (map<int, std::list<int>>::iterator it = parentStarMap.begin(); it != parentStarMap.end(); ++it) {
+		(*it).second.sort();
+		(*it).second.unique();
 	}
 }

@@ -36,7 +36,8 @@ PKB Parser::parseSource(list<pair<int, string>> sourceCodeList) {
 	//code below should be inside design extracter, once singleton pattern is done, shift it to design extracter
 	generateFollowsStar();
 	generateParentStar();
-	
+	pkb.houseKeeping();
+
 	return pkb;
 }
 

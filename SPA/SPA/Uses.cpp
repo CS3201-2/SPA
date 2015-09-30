@@ -8,13 +8,15 @@ Uses::Uses()
 
 // need to see parser to decide the input
 void Uses::setUses(int first, list<int> second) {
-	if (usesMap.find(first) == usesMap.end()) {
-		usesMap[first] = second;
-	}
-	else {
-		list<int> existingUsesList = usesMap.at(first);
-		existingUsesList.insert(existingUsesList.end(), second.begin(), second.end());
-		usesMap[first] = existingUsesList;
+	if (second.size() != 0) {
+		if (usesMap.find(first) == usesMap.end()) {
+			usesMap[first] = second;
+		}
+		else {
+			list<int> existingUsesList = usesMap.at(first);
+			existingUsesList.insert(existingUsesList.end(), second.begin(), second.end());
+			usesMap[first] = existingUsesList;
+		}
 	}
 }
 
@@ -62,15 +64,9 @@ void Uses::printAllUses() {
 	cout << endl;
 }
 
-
-
-
-
-
-
-
-/*void Uses::sortMap() {
+void Uses::sortAndUnifyMap() {
 	for (map<int, std::list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
 		(*it).second.sort();
+		(*it).second.unique();
 	}
-}*/
+}

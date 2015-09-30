@@ -20,6 +20,7 @@ public:
 	bool isParentValid(int, int);
 	void printAllParent();
 	map<int, list<int>> getParentMap();
+	void sortAndUnifyMap();
 
 private:
 	map<int, list<int>> parentMap;

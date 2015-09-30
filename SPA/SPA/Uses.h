@@ -19,6 +19,7 @@ public:
 	list<int> getUsesSecond(int);
 	bool isUsesValid(int, int);
 	void printAllUses();
+	void sortAndUnifyMap();
 
 private:
 	map<int, list<int>> usesMap;

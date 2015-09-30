@@ -19,6 +19,7 @@ public:
 	list<int> getParentStarSecond(int);
 	bool isParentStarValid(int, int);
 	void printAllParentStar();
+	void sortAndUnifyMap();
 
 private:
 	map<int, list<int>> parentStarMap;

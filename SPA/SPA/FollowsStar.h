@@ -19,6 +19,7 @@ public:
 	list<int> getFollowsStarSecond(int);
 	bool isFollowsStarValid(int, int);
 	void printAllFollowsStar();
+	void sortAndUnifyMap();
 
 private:
 	map<int, list<int>> followsStarMap;

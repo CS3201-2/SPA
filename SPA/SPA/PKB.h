@@ -23,10 +23,6 @@ public:
 	//static PKB* getPKBInstance();
 	PKB() {};
 
-	//new APIs
-	//PKB housekeeping function
-	//sort and unify function for Modifies, Uses, FollowsStar, CallsStar, Parent, ParentStar
-	//unify ifList
 	//general
 	bool isValidStmtNo(int);
 	void addWhileToList(int);
@@ -41,6 +37,11 @@ public:
 	list<int> getIfList();
 	list<int> getStmtList(); //everything
 	list<int> getParentList(); //while and if list
+
+	//PKB housekeeping function
+	//sort and unify function for Modifies, Uses, FollowsStar, CallsStar, Parent, ParentStar
+	//unify ifList
+	void houseKeeping();
 
 	//varTable
 	int insertVar(string);

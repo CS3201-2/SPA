@@ -64,9 +64,9 @@ map<int, list<int>> Parent::getParentMap() {
 	return parentMap;
 }
 
-/*void Parent::sortParentMap() {
+void Parent::sortAndUnifyMap() {
 	for (map<int, std::list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
 		(*it).second.sort();
 		(*it).second.unique();
 	}
-}*/
+}

@@ -11,13 +11,15 @@ Modifies::Modifies()
 
 //set modifies need to see parser to decided
 void Modifies::setModifies(int first, list<int> second) {
-	if (modifiesMap.find(first) == modifiesMap.end()) {
-		modifiesMap[first] = second;
-	}
-	else {
-		list<int> existingModifiesList = modifiesMap.at(first);
-		existingModifiesList.insert(existingModifiesList.end(), second.begin(), second.end());
-		modifiesMap[first] = existingModifiesList;
+	if (second.size() != 0) {
+		if (modifiesMap.find(first) == modifiesMap.end()) {
+			modifiesMap[first] = second;
+		}
+		else {
+			list<int> existingModifiesList = modifiesMap.at(first);
+			existingModifiesList.insert(existingModifiesList.end(), second.begin(), second.end());
+			modifiesMap[first] = existingModifiesList;
+		}
 	}
 }
 
@@ -66,9 +68,9 @@ void Modifies::printAllModifies() {
 	cout << endl;
 }
 
-
-/*void Modifies::sortMap() {
+void Modifies::sortAndUnifyMap() {
 	for (map<int, std::list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
 		(*it).second.sort();
+		(*it).second.unique();
 	}
-}*/
+}

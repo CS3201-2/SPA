@@ -53,6 +53,14 @@ Pattern& PKB::getPattern() {
 	return pattern;
 }
 
+void PKB::houseKeeping() {
+	getModifies().sortAndUnifyMap();
+	getUses().sortAndUnifyMap();
+	//getParent().sortAndUnifyMap();
+	//getFollowsStar().sortAndUnifyMap();
+	//getParentStar().sortAndUnifyMap();
+	ifStmtList.unique();
+}
 
 //general
 bool PKB::isValidStmtNo(int stmtNo) {

@@ -19,6 +19,7 @@ public:
 	list<int> getModifiesSecond(int);
 	bool isModifiesValid(int, int);
 	void printAllModifies();
+	void sortAndUnifyMap();
 
 private:
 	map<int, list<int>> modifiesMap;
