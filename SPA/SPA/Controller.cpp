@@ -63,8 +63,25 @@ void Controller::testingPKB() {
 	cout << "testing" << endl;
 	cout << endl;
 
-	//change below for testing purpose
+	ctrPKB.printVarTable();
+	ctrPKB.printProcTable();
+	ctrPKB.printAllModifies();
+	ctrPKB.printAllUses();
 
+	//change below for testing purpose
+	/*ctrPKB.printVarTable();
+	ctrPKB.printProcTable();
+
+	ctrPKB.printAllFollows();
+	ctrPKB.printAllFollowsStar();
+	/*list<int> followsFirst = ctrPKB.getWhileList();
+	for (list<int>::iterator it = followsFirst.begin(); it != followsFirst.end(); ++it) {
+		cout << *it << ", ";
+	}
+	cout << endl;
+
+	ctrPKB.printAllParent();
+	ctrPKB.printAllParentStar();*/
 	cout << "end of testing" << endl;
 }
 
