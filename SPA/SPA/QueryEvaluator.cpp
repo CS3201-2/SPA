@@ -226,7 +226,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			
 	}
 
-	else if( arg2Type == "variable" ) {
+	else if( arg2Type == "variable" || "all") {
 		
 		if (arg1Type == "prog_line") {
 			if (!pkb.isValidStmtNo(stoi(arg1))) {
@@ -279,10 +279,6 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-	}
-	
-	else if (arg2Type == "all") {
-		// if arg2Type == "all" not implement yet
 	}
 
 	else {
@@ -361,7 +357,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 
 	}
 
-	else if (arg2Type == "variable") {
+	else if (arg2Type == "variable" || "all") {
 		if (arg1Type == "prog_line") {
 			if (!pkb.isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
@@ -415,10 +411,6 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 		}
 	}
 
-	else if (arg2Type == "all") {
-		// if arg2Type == "all" not implement yet
-	}
-
 	else {
 		SPALog::log("Error: Uses arg2 wrong type");
 	}
@@ -435,7 +427,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 	list<int> parentList = pkb.getParentList();
 
 	if (arg1Type == "prog_line") {
-		bool isNotParrent = find(parentList.begin(), parentList.end(), stoi(arg1)) == parentList.end();
+		bool isNotParrent = !isInList(parentList, stoi(arg1));
 		if (!pkb.isValidStmtNo(stoi(arg1)) || isNotParrent ) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
@@ -620,7 +612,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 	list<int> parentList = pkb.getParentList();
 	
 	if (arg1Type == "prog_line") {
-		bool isNotParrent = find(parentList.begin(), parentList.end(), stoi(arg1)) == parentList.end();
+		bool isNotParrent = !isInList(parentList, stoi(arg1));
 		if (!pkb.isValidStmtNo(stoi(arg1)) || isNotParrent) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
