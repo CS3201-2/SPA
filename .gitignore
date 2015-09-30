@@ -5,6 +5,7 @@
 *.exe
 *.ilk
 *.lib
+*.log
 SPA/SPA/Debug/
 SPA/SPA_UnitTest/Debug/
 SPA/.vs/
