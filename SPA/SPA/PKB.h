@@ -42,6 +42,7 @@ public:
 	void addCallToList(int);
 	void addIfToList(int);
 	list<int> getProcList();
+	list<int> getVarList();
 	list<int> getWhileList();
 	list<int> getAssignList();
 	list<int> getCallList();
