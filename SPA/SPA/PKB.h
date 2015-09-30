@@ -95,18 +95,18 @@ public:
 	void printAllFollows();
 
 	//FollowsStar
-	/*void setFollowsStar(int, list<int>); 
+	void setFollowsStar(int, list<int>); 
 	list<int> getFollowsStarFirst(int);
 	list<int> getFollowsStarSecond(int);
 	bool isFollowsStarValid(int, int);
-	void printAllFollowsStar();*/
+	void printAllFollowsStar();
 
 	//Calls
-	void setCalls(int, int);
+	/*void setCalls(int, int);
 	int getCallsFirst(int);
 	int getCallsSecond(int);
 	bool isCallsValid(int, int);
-	void printAllCalls();
+	void printAllCalls();*/
 
 	//CallsStar
 	/*void setCallsStar(int, list<int>);
@@ -123,18 +123,18 @@ public:
 	void printAllParent();
 
 	//ParentStar
-	/*void setParentStar(int, list<int>);
+	void setParentStar(int, list<int>);
 	list<int> getParentStarFirst(int);
 	list<int> getParentStarSecond(int);
 	bool isParentStarValid(int, int);
-	void printAllParent();*/
+	void printAllParent();
 
 	//Next
-	void setNext(int, int);
+	/*void setNext(int, int);
 	list<int> getNextFirst(int);
 	list<int> getNextSecond(int);
 	bool isNextvalid(int, int);
-	void printAllNext();
+	void printAllNext();*/
 	//new APIs ends
 
 
