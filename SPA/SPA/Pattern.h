@@ -15,7 +15,14 @@ class Pattern
 public:
 	Pattern();
 	void setPattern(int, string, string);
-	void printMap();
+	list<int> getAssignWithFirstExact(string);
+	list<int> getAssignWithSecondExact(string);
+	list<int> getAssignWithSecond(string);
+	list<int> getAssignWithBothExact(string, string);
+	list<int> getAssignWithBoth(string, string);
+	list<int> getIfWithFirstExact(string);
+	list<int> getWhileWithFisrtExact(string);
+	void printAllPattern();
 	//getStmtFromLHS, getStmtFromRHS, getStmtFromBoth, getPatternFromStmtLine
 
 private:

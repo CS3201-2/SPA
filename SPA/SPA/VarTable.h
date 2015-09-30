@@ -1,5 +1,6 @@
 #include <string>
 #include <map>
+#include <iostream>
 
 using namespace std;
 
@@ -12,21 +13,13 @@ class VarTable
 public:
 	VarTable();
 
-	int getIndex(string);
-
-	int getID(string);
-
 	int insertVar(string);
-
-	int getSize();
-
+	int getVarID(string); 	//return 0 for invalid varName input
 	string getVarName(int);
+	void printVarTable();
 
-	map<string, int> varTable;
-
-	void printMap();
 private:
-
+	map<string, int> varTable;
 };
 
 #endif

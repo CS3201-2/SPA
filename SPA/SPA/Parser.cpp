@@ -138,11 +138,13 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 		case whileStmt:
 			pkb.addWhileList((*it).first);
 			processPatternStmt(*it, stmtType);
+			//push control variable to useslist
 			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcedureID, bracesList, calledProcList);
 			break;
 
 		case ifStmt: 
 			processPatternStmt(*it, stmtType);
+			//push control variable to useslist
 			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcedureID, bracesList, calledProcList);
 			break;
 
@@ -163,7 +165,7 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 		//follows
 		if ((prevStmtType != procDeclarationStmt && prevStmtType != elseStmt && prevStmtType != invalidStmt)
 			&& stmtType != procDeclarationStmt && prevStmtLine != stmtNumber) {
-			follows.setFollowsStmt(prevStmtLine, stmtNumber);
+			pkb.setFollows(prevStmtLine, stmtNumber);
 		}
 		prevStmtLine = stmtNumber;
 		prevStmtType = stmtType;
@@ -388,15 +390,15 @@ void Parser::processPatternStmt(pair<int, string> stmt, int stmtType) {
 	if (stmtType == assignmentStmt) {
 		regex_search(stmt.second, m, assignmentRegex);
 		//1 is the LHS of assignment, 4 is the RHS of assignment
-		pattern.setPattern(stmt.first, m[1], m[4]);
+		pkb.setPattern(stmt.first, m[1], m[4]);
 	}
 	else if(stmtType == whileStmt) {
 		controlVar = getControlVarName(stmtType, stmt.second);
-		pattern.setPattern(stmt.first, controlVar, "_while_");
+		pkb.setPattern(stmt.first, controlVar, "_while_");
 	}
 	else if (stmtType == ifStmt) {
 		controlVar = getControlVarName(stmtType, stmt.second);
-		pattern.setPattern(stmt.first, controlVar, "_if_");
+		pkb.setPattern(stmt.first, controlVar, "_if_");
 	}
 }
 

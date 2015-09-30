@@ -14,13 +14,15 @@ class Follows
 public:
 	Follows();
 
-	void setFollowsStmt(int, int);
-
-	//Follows (8, A), A will be returned
-	int getFollowsStmt(int);
+	void setFollows(int, int);
 
 	//Follows (B, 8): B will be returned
-	int getIsFollowedStmt(int);
+	int getFollowsFirst(int);
+
+	//Follows (8, A), A will be returned
+	int getFollowsSecond(int);
+
+	bool isFollowValid(int, int);
 
 	void printFollowsMap();
 

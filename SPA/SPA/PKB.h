@@ -41,11 +41,14 @@ public:
 	void addAssignToList(int);
 	void addCallToList(int);
 	void addIfToList(int);
+	list<int> getProcList();
 	list<int> getWhileList();
 	list<int> getAssignList();
 	list<int> getCallList();
 	list<int> getIfList();
-	
+	list<int> getStmtList(); //everything
+	list<int> getParentList(); //while and if list
+
 	//varTable
 	int insertVar(string);
 	int getVarID(string); 	//return 0 for invalid varName input
@@ -74,11 +77,13 @@ public:
 
 	//Pattern
 	void setPattern(int, string, string);
-	list<int> getAssignWithFirst(string);
-	list<int> getAssignWithSecond(string);
-	list<int> getAssignWithBoth(string, string);
-	list<int> getIfWithFirst(string);
-	list<int> getWhileWithFirst(string);
+	list<int> getAssignWithFirstExact(string);         //pattern a ("x", _)
+	list<int> getAssignWithSecond(string);             //pattern a (_, _"x"_)
+	list<int> getAssignWithSecondExact(string);        //pattern a (_, "x")
+	list<int> getAssignWithBoth(string, string);       //pattern a ("x", _"x"_)
+	list<int> getAssignWithBothExact(string, string);  //pattern a ("x", "x")
+	list<int> getIfWithFirstExact(string);
+	list<int> getWhileWithFirstExact(string);
 	void printAllPattern();
 
 	//Follows
@@ -89,11 +94,11 @@ public:
 	void printAllFollows();
 
 	//FollowsStar
-	void setFollowsStar(int, list<int>); 
+	/*void setFollowsStar(int, list<int>); 
 	list<int> getFollowsStarFirst(int);
 	list<int> getFollowsStarSecond(int);
 	bool isFollowsStarValid(int, int);
-	void printAllFollowsStar();
+	void printAllFollowsStar();*/
 
 	//Calls
 	void setCalls(int, int);
@@ -103,11 +108,11 @@ public:
 	void printAllCalls();
 
 	//CallsStar
-	void setCallsStar(int, list<int>);
+	/*void setCallsStar(int, list<int>);
 	list<int> getCallsStarFirst(int);
 	list<int> getCallsStarSecond(int);
 	bool isCallsStarValid(int, int);
-	void printAllCallsStar();
+	void printAllCallsStar();*/
 
 	//Parent
 	void setParent(int, list<int>); 
@@ -117,11 +122,11 @@ public:
 	void printAllParent();
 
 	//ParentStar
-	void setParentStar(int, list<int>);
+	/*void setParentStar(int, list<int>);
 	list<int> getParentStarFirst(int);
 	list<int> getParentStarSecond(int);
 	bool isParentStarValid(int, int);
-	void printAllParent();
+	void printAllParent();*/
 
 	//Next
 	void setNext(int, int);
@@ -129,9 +134,6 @@ public:
 	list<int> getNextSecond(int);
 	bool isNextvalid(int, int);
 	void printAllNext();
-
-
-
 	//new APIs ends
 
 

@@ -10,17 +10,18 @@ ProcTable::ProcTable(void)
 {
 }
 
-int ProcTable::getIndex(string procName) {
+int ProcTable::insertProc(string procName) {
 	if (procTable.find(procName) != procTable.end()) {
 		return procTable.at(procName);
 	}
 	else {
-		return insertProc(procName);
+		int id = 0 - (procTable.size() + 1);
+		procTable[procName] = id;
+		return id;
 	}
 }
 
-int ProcTable::getID(string procName)
-{
+int ProcTable::getProcID(string procName) {
 	if (procTable.find(procName) != procTable.end()) {
 		return procTable.at(procName);
 	}
@@ -29,19 +30,15 @@ int ProcTable::getID(string procName)
 	}
 }
 
-int ProcTable::insertProc(string procName)
-{
-	int id = 0 - (procTable.size() + 1);
-	procTable.insert(std::pair<string, int>(procName, id));
-	return id;
+string ProcTable::getProcName(int procID) {
+	for (map<string, int>::iterator it = procTable.begin(); it != procTable.end(); ++it) {
+		if ((*it).second == procID) {
+			return (*it).first;
+		}
+	}
 }
 
-int ProcTable::getSize()
-{
-	return procTable.size();
-}
-
-void ProcTable::printMap() {
+void ProcTable::printProcTable() {
 	cout << "procedure table" << endl;
 	for (map<string, int>::iterator it = procTable.begin(); it != procTable.end(); ++it) {
 		cout << (*it).first;

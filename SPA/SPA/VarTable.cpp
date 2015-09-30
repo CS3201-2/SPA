@@ -1,7 +1,4 @@
 #include "VarTable.h"
-#include <map>
-#include <string>
-#include <iostream>
 
 using namespace std;
 
@@ -10,48 +7,35 @@ VarTable::VarTable(void)
 {
 }
 
-//for inserting
-int VarTable::getIndex(string varName) {
+int VarTable::insertVar(string varName) {
 	if (varTable.find(varName) != varTable.end()) {
 		return varTable.at(varName);
 	}
 	else {
-		return insertVar(varName);
+		int id = varTable.size() + 1;
+		varTable[varName] = id;
+		return id;
 	}
 }
 
-//must return a true ID
-int VarTable::getID(string varName)
-{
+int VarTable::getVarID(string varName) {
 	if (varTable.find(varName) != varTable.end()) {
-		return varTable.at(varName); 
+		return varTable.at(varName);
 	}
 	else {
 		return 0;
 	}
 }
 
-int VarTable::insertVar(string varName)
-{
-	int id = varTable.size() + 1;
-	varTable.insert( std::pair<string,int>( varName, id ) );
-	return id;
-}
-
-int VarTable::getSize()
-{
-	return varTable.size();
-}
-
-string VarTable::getVarName(int varId) {
+string VarTable::getVarName(int varID) {
 	for (map<string, int>::iterator it = varTable.begin(); it != varTable.end(); ++it) {
-		if ((*it).second == varId) {
+		if ((*it).second == varID) {
 			return (*it).first;
 		}
 	}
 }
 
-void VarTable::printMap() {
+void VarTable::printVarTable() {
 	cout << "variable table" << endl;
 	for (map<string, int>::iterator it = varTable.begin(); it != varTable.end(); ++it) {
 		cout << (*it).first;

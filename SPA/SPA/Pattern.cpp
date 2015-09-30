@@ -3,12 +3,92 @@
 Pattern::Pattern() {
 }
 
-void Pattern::setPattern(int stmtLine, string LHSStr, string RHSStr) {
-	string LHSPostFix = convertToPostFix(LHSStr);
-	string RHSPostFix = convertToPostFix(RHSStr);
+void Pattern::setPattern(int stmtNo, string first, string second) {
+	string firstPostFix = convertToPostFix(first);
+	string secondPostFix = convertToPostFix(second);
 
-	pair<string, string> p = make_pair(LHSPostFix, RHSPostFix);
-	patternMap[stmtLine] = p;
+	pair<string, string> p = make_pair(firstPostFix, secondPostFix);
+	patternMap[stmtNo] = p;
+}
+
+list<int> Pattern::getAssignWithFirstExact(string first) {
+	list<int> result;
+	string firstPostFix = convertToPostFix(first);
+	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
+		if ((*it).second.first == firstPostFix && 
+			((*it).second.second != "_if_" || (*it).second.second != "_while_")) {
+			result.push_back((*it).first);
+		}
+	}
+	return result;
+}
+
+list<int> Pattern::getAssignWithSecondExact(string second) {
+	list<int> result;
+	string secondPostFix = convertToPostFix(second);
+	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
+		if ((*it).second.second == secondPostFix) {
+			result.push_back((*it).first);
+		}
+	}
+	return result;
+}
+
+list<int> Pattern::getAssignWithSecond(string second) {
+	list<int> result;
+	string secondPostFix = convertToPostFix(second);
+	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
+		if (((*it).second.second).find(secondPostFix) != string::npos) {
+			result.push_back((*it).first);
+		}
+	}
+	return result;
+}
+
+list<int> Pattern::getAssignWithBothExact(string first, string second) {
+	list<int> result;
+	string firstPostFix = convertToPostFix(first);
+	string secondPostFix = convertToPostFix(second);
+	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
+		if ((*it).second.first == firstPostFix && (*it).second.second == secondPostFix) {
+			result.push_back((*it).first);
+		}
+	}
+	return result;
+}
+
+list<int> Pattern::getAssignWithBoth(string first, string second) {
+	list<int> result;
+	string firstPostFix = convertToPostFix(first);
+	string secondPostFix = convertToPostFix(second);
+	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
+		if ((*it).second.first == firstPostFix && ((*it).second.second).find(secondPostFix) != string::npos) {
+			result.push_back((*it).first);
+		}
+	}
+	return result;
+}
+
+list<int> Pattern::getIfWithFirstExact(string first) {
+	list<int> result;
+	string firstPostFix = convertToPostFix(first);
+	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
+		if ((*it).second.first == firstPostFix && (*it).second.second == "._if_.") {
+			result.push_back((*it).first);
+		}
+	}
+	return result;
+}
+
+list<int> Pattern::getWhileWithFisrtExact(string first) {
+	list<int> result;
+	string firstPostFix = convertToPostFix(first);
+	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
+		if ((*it).second.first == firstPostFix && (*it).second.second == "._while_.") {
+			result.push_back((*it).first);
+		}
+	}
+	return result;
 }
 
 string Pattern::convertToPostFix(string str) {
@@ -93,7 +173,7 @@ bool Pattern::isOperator(string str) {
 	return (str == "+" || str == "-" || str == "*");
 }
 
-void Pattern::printMap() {
+void Pattern::printAllPattern() {
 	cout << "pattern table" << endl;
 
 	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {

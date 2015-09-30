@@ -37,6 +37,7 @@ bool Calls::isCallValid(int first, int second) {
 		return callsMap.at(first) == second;
 	}
 }
+
 void Calls::printAllCalls() {
 	cout << "calls table" << endl;
 	for (map<int, int>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
