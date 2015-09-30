@@ -36,7 +36,7 @@ bool Follows::isFollowValid(int first, int second) {
 	}
 }
 
-void Follows::printFollowsMap() {
+void Follows::printAllFollows() {
 	cout << "follows table" << endl;
 	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
 		cout << (*it).first;

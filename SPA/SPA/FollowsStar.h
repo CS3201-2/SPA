@@ -6,6 +6,9 @@
 using namespace std;
 
 
+#ifndef FollowsStar_H
+#define FollowsStar_H
+
 class FollowsStar 
 {
 public: 
@@ -20,3 +23,5 @@ public:
 private:
 	map<int, list<int>> followsStarMap;
 };
+
+#endif

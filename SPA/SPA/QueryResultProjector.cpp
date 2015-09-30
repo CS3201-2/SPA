@@ -43,7 +43,7 @@ list<string> QueryResultProjector::getResult() {
 				resultStringList.push_back(to_string(*it));
 			}
 			else {
-				string varName = _myPkb.getVarTable().getVarName(*it);
+				string varName = _myPkb.getVarName(*it);
 				resultStringList.push_back(varName);
 			}
 

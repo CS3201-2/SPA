@@ -17,7 +17,7 @@ public:
 	int getFollowsFirst(int);
 	int getFollowsSecond(int);
 	bool isFollowValid(int, int);
-	void printFollowsMap();
+	void printAllFollows();
 	map<int, int> getFollowsMap();
 
 private:

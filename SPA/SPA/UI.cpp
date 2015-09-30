@@ -30,8 +30,11 @@ int main(void) {
 	cout << "Loaded!" << endl;
 	ctr.processSource();
 
+	// comment this part before pushing
 	ctr.testingPKB();
 	
+	//uncomnment this part before pushing
+	/*
 	cout << "Start Processing PQL" << endl;
 
 	a.open("query.txt");
@@ -52,6 +55,7 @@ int main(void) {
 		cout << "---------------------------------" <<endl;
 	}
 	a.close();
+	*/
 	cin.ignore();
 	cin.get();
 

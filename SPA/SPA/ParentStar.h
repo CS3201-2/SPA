@@ -6,6 +6,9 @@
 using namespace std;
 
 
+#ifndef ParentStar_H
+#define ParentStar_H
+
 class ParentStar 
 {
 public:
@@ -20,3 +23,5 @@ public:
 private:
 	map<int, list<int>> parentStarMap;
 };
+
+#endif

@@ -274,7 +274,7 @@ bool PKB::isFollowsValid(int first, int second) {
 }
 
 void PKB::printAllFollows() {
-	getFollows().printFollowsMap();
+	getFollows().printAllFollows();
 }
 
 map<int, int> PKB::getFollowsMap() {
@@ -310,15 +310,15 @@ void PKB::setCalls(int first, int second) {
 }
 
 int PKB::getCallsFirst(int second) {
-	getCalls().getCallsFirst(second);
+	return getCalls().getCallsFirst(second);
 }
 
 int PKB::getCallsSecond(int first) {
-	getCalls().getCallsSecond(first);
+	return getCalls().getCallsSecond(first);
 }
 
 bool PKB::isCallsValid(int first, int second) {
-	getCalls().isCallValid(first, second);
+	return getCalls().isCallValid(first, second);
 }
 
 void PKB::printAllCalls() {
