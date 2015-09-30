@@ -819,30 +819,31 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	string arg2 = tempString.at(4);
 	string arg2Type = tempString.at(5);
 
-	/*AST ast = pkb.getAST();
+	//AST ast = pkb.getAST();
 	//syn has to be assign in prototype
 	if (arg1Type == "string") {
 		ResultTable tempResult = ResultTable(syn);
-		int arg1ID = pkb.getVarTable().getID(arg1);
-		list<int> stmtList = pkb.getModifies().getModifiesLine(arg1ID);
-		list<int> assignList = pkb.getAssignList();
 		vector<int> temp;
-		for (list<int>::iterator i = stmtList.begin(); i != stmtList.end(); i++) {
-			//cout << *i << " : " << ast.matchExpression(*i, arg2)<<endl;
-			if ( isInList(assignList,*i) && ast.matchExpression(*i,arg2)) {
-		
+		if (arg2Type == "all") {
+			list<int> assignList = pkb.getAssignWithFirstExact(arg1);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
-				//tempResult.isWholeTrue = 1;
-				//resultList.push_back(tempResult);
-				//return;
 			}
 		}
-		
-		resultList.push_back(tempResult);
-		return;
+		else {
+			//iter 1 "constant or string"
+			list<int> assignList = pkb.getAssignWithBothExact(arg1, arg2);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+		}
 	}
+		
+	
 	else if (arg1Type == "all") {
 		ResultTable tempResult = ResultTable(syn);
 		list<int> assignList = pkb.getAssignList();
@@ -880,31 +881,7 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	else {
 		return;
 	}
-	//Right hand side of the pattern clause is given to patternMatchAssign() in the PKB
-	//patternMatchAssign() will return all assignment statements that matches the given string
-
-	//Case 1: LHS is a constant variable
-	/*
-	1. We use the value of the assign synonym to search the Modifies table to get the variable that is modified
-	2. If variable matches LHS, assignment statement number will be accepted 
-	3. Result will be intersected with current values of the synonym
-	*/
 	
-	//Case 2: LHS is a variable synonym or "_"
-	// If the LHS is "_", no intersection is required.
-
-	//Process while pattern node
-	//Case 1: LHS is a constant variable
-	/*
-	1. Use a patternMatchWhile() where when given the control variable, it will return all while statements that use it.
-	2. Return while statements are then used in a set intersection with respective synonyms 
-	*/
-
-	//Case 2: LHS is a variable synonym
-	/*
-	1. We get the control variable for each of the while statements
-	2. Control variables are then intersected with the respective synonyms
-	*/
 }
 
 void QueryEvaluator::processSelectClause(vector<string> tempString) {
@@ -914,9 +891,9 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 	if (synType == "variable") {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
-		auto& varTable = pkb.getVarTable().varTable;
-		for (map<string, int>::iterator i = varTable.begin(); i != varTable.end(); i++) {
-			temp.push_back(i->second);
+		list<int> varTable = pkb.getVarList();
+		for (list<int>::iterator i = varTable.begin(); i != varTable.end(); i++) {
+			temp.push_back(*i);
 			tempResult.addTuple(temp);
 			temp.clear();
 		}
