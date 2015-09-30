@@ -143,7 +143,7 @@ list<int> QueryEvaluator::getList(string listName) {
 	else if (listName == "call") {
 		return pkb.getCallList();
 	}
-	else if (listName == "stmt") {
+	else if (listName == "stmt" || "all") {
 		return pkb.getStmtList();
 	}
 	else if (listName == "procedure") {
