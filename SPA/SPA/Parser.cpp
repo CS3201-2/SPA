@@ -297,12 +297,12 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::
 		}
 
 		//modifies
-		pkb.setModifies(stmtNumber, modifiesList);
-		pkb.setModifies(currentProcID, modifiesList);
+		pkb.setModifies(stmtNumber, tempModifiesList);
+		pkb.setModifies(currentProcID, tempModifiesList);
 		
 		//uses
-		pkb.setUses(stmtNumber, usesList);
-		pkb.setUses(currentProcID, usesList);
+		pkb.setUses(stmtNumber, tempUsesList);
+		pkb.setUses(currentProcID, tempUsesList);
 
 		//follows
 		if ((prevStmtType != procDeclarationStmt && prevStmtType != elseStmt && prevStmtType != invalidStmt)
