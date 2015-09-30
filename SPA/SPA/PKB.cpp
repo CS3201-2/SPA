@@ -1,13 +1,7 @@
 #include "PKB.h"
-#include "AST.h"
-#include "Modifies.h"
-#include "Uses.h"
-#include "ProcTable.h"
-#include "VarTable.h"
-#include <string>
-#include <list>
 
 using namespace std;
+
 
 /*PKB* PKB::_PKBInstance = NULL;
 
@@ -19,108 +13,210 @@ PKB* PKB::getPKBInstance() {
 	return _PKBInstance;
 }*/
 
-ProcTable& PKB::getProcTable(void) {
+ProcTable& PKB::getProcTable() {
 	return procTable;
 }
 
-VarTable& PKB::getVarTable(void) {
+VarTable& PKB::getVarTable() {
 	return varTable;
 }
 
-Modifies& PKB::getModifies(void) {
+Modifies& PKB::getModifies() {
 	return modifies;
 }
 
-Uses& PKB::getUses(void) {
+Uses& PKB::getUses() {
 	return uses;
 }
 
-Follows& PKB::getFollows(void) {
+Follows& PKB::getFollows() {
 	return follows;
+}
+
+FollowsStar& PKB::getFollowsStar() {
+	return followsStar;
 }
 
 Calls& PKB::getCalls() {
 	return calls;
 }
 
-Parent& PKB::getParent(void) {
+Parent& PKB::getParent() {
 	return parent;
+}
+
+ParentStar& PKB::getParentStar() {
+	return parentStar;
 }
 
 Pattern& PKB::getPattern() {
 	return pattern;
 }
 
-AST& PKB::getAST(void) {
-	return ast;
-}
-
-void PKB::addWhileList(int stmtLine) {
-	if (find(whileList.begin(), whileList.end(), stmtLine) == whileList.end()) {
-		whileList.push_back(stmtLine);
-	}
-}
-
-void PKB::addAssignList(int stmtLine) {
-	if (find(assignList.begin(), assignList.end(), stmtLine) == assignList.end()) {
-		assignList.push_back(stmtLine);
-	}
-}
-
-list<int> PKB::getWhileList(void) {
-	return whileList;
-}
-list<int> PKB::getAssignList(void) {
-	return assignList;
-}
-
-void PKB::setAST(AST a)
-{
-	ast = a;
-}
 
 //general
-/*
-bool isValidStmtNo(int);
-void addWhileToList(int);
-void addAssignToList(int);
-void addCallToList(int);
-void addIfToList(int);
-list<int> getWhileList();
-list<int> getAssignList();
-list<int> getCallList();
-list<int> getIfList();
+bool PKB::isValidStmtNo(int stmtNo) {
+	size_t totalNoStmt = assignStmtList.size() + whileStmtList.size() + ifStmtList.size() + callStmtList.size();
+	return (stmtNo > 0 && (size_t)stmtNo <= totalNoStmt);
+}
+
+void PKB::addWhileToList(int whileStmt) {
+	whileStmtList.push_back(whileStmt);
+}
+
+void PKB::addAssignToList(int assignStmt) {
+	assignStmtList.push_back(assignStmt);
+}
+
+void PKB::addCallToList(int callStmt) {
+	callStmtList.push_back(callStmt);
+}
+//Note: might insert duplicate ifStmt
+void PKB::addIfToList(int ifStmt) {
+	ifStmtList.push_back(ifStmt);
+}
+
+list<int> PKB::getProcList() {
+	size_t totalNoProc = getProcTableSize();
+	list<int> procList;
+	for (int i = 1; i <= totalNoProc; ++i) {
+		procList.push_back(i);
+	}
+
+	return procList;
+}
+
+list<int> PKB::getVarList() {
+	size_t totalNoVar = getVarTableSize();
+	list<int> varList;
+	for (int i = 1; i <= totalNoVar; ++i) {
+		varList.push_back(i);
+	}
+
+	return varList;
+}
+
+list<int> PKB::getWhileList() {
+	return whileStmtList;
+}
+
+list<int> PKB::getAssignList() {
+	return assignStmtList;
+}
+
+list<int> PKB::getCallList() {
+	return callStmtList;
+}
+
+list<int> PKB::getIfList() {
+	return ifStmtList;
+}
+
+list<int> PKB::getStmtList() {
+	size_t totalNoStmt = assignStmtList.size() + whileStmtList.size() + ifStmtList.size() + callStmtList.size();
+	list<int> stmtList;
+	for (int i = 1; i <= totalNoStmt; ++i) {
+		stmtList.push_back(i);
+	}
+
+	return stmtList;
+} 
+
+list<int> PKB::getParentList() {
+	list<int> parentList = whileStmtList;
+	parentList.insert(parentList.end(), whileStmtList.begin(), whileStmtList.end());
+	parentList.sort();
+	
+	return parentList;
+}
 
 
 //varTable
-int insertVar(string);
-int getVarID(string); 	//return 0 for invalid varName input
-string getVarName(int);
-void printVarTable();
+int PKB::insertVar(string varName) {
+	return getVarTable().insertVar(varName);
+}
+
+int PKB::getVarID(string varName) {
+	return getVarTable().getVarID(varName);
+}
+
+string PKB::getVarName(int varID) {
+	return getVarTable().getVarName(varID);
+}
+
+void PKB::printVarTable() {
+	getVarTable().printVarTable();
+}
+
+size_t PKB::getVarTableSize() {
+	return getVarTable().getVarTableSize();
+}
 
 
 //procTable
-int insertProc(string);
-int getProcID(string); 	//return 0 for invalid procName input
-string getProcName(int);
-void printProcTable();
+int PKB::insertProc(string procName) {
+	return getProcTable().insertProc(procName);
+}
+
+int PKB::getProcID(string procName) {
+	return getProcTable().getProcID(procName);
+} 
+
+string PKB::getProcName(int procID) {
+	return getProcTable().getProcName(procID);
+}
+
+void PKB::printProcTable() {
+	getProcTable().printProcTable();
+}
+
+size_t PKB::getProcTableSize() {
+	return getProcTable().getProcTableSize();
+}
 
 
 //Modifies
-void setModifies(); // input parameter to be decided later
-list<int> getModifiesFirst(int);
-list<int> getModifiesSecond(int);
-bool isModifiesValid(int, int);
-void printAllModifies();
+void PKB::setModifies() {
+	getModifies().setModifies();
+} // input parameter to be decided later
+
+list<int> PKB::getModifiesFirst(int second) {
+	return getModifies().getModifiesFirst(second);
+}
+
+list<int> PKB::getModifiesSecond(int first) {
+	return getModifies().getModifiesSecond(first);
+}
+
+bool PKB::isModifiesValid(int first, int second) {
+	return getModifies().isModifiesValid(first, second);
+}
+
+void PKB::printAllModifies() {
+	getModifies().printAllModifies();
+}
 
 
 //Uses
-void setUses(); //input parameter to be decided later
-list<int> getUsesFirst(int);
-list<int> getUsesSecond(int);
-bool isUsesValid(int, int);
-void printAllUses();
-*/
+void PKB::setUses() {
+	getUses().setUses();
+} //input parameter to be decided later
+
+list<int> PKB::getUsesFirst(int second) {
+	return getUses().getUsesFirst(second);
+}
+
+list<int> PKB::getUsesSecond(int first) {
+	return getUses().getUsesSecond(first);
+}
+
+bool PKB::isUsesValid(int first, int second) {
+	return getUses().isUsesValid(first, second);
+}
+
+void PKB::printAllUses() {
+	getUses().printAllUses();
+}
 
 
 //Pattern
@@ -181,16 +277,30 @@ void PKB::printAllFollows() {
 	getFollows().printFollowsMap();
 }
 
-/*
+
 //FollowsStar
-void setFollowsStar(int, list<int>);
-list<int> getFollowsStarFirst(int);
-list<int> getFollowsStarSecond(int);
-bool isFollowsStarValid(int, int);
-void printAllFollowsStar();
-*/
+void PKB::setFollowsStar(int first, list<int> second) {
+	getFollowsStar().setFollowsStar(first, second);
+}
+
+list<int> PKB::getFollowsStarFirst(int second) {
+	return getFollowsStar().getFollowsStarFirst(second);
+}
+
+list<int> PKB::getFollowsStarSecond(int first) {
+	return getFollowsStar().getFollowsStarSecond(first);
+}
+
+bool PKB::isFollowsStarValid(int first, int second) {
+	return getFollowsStar().isFollowsStarValid(first, second);
+}
+
+void PKB::printAllFollowsStar() {
+	getFollowsStar().printAllFollowsStar();
+}
 
 
+/*
 //Calls
 void PKB::setCalls(int first, int second) {
 	getCalls().setCalls(first, second);
@@ -221,6 +331,7 @@ bool isCallsStarValid(int, int);
 void printAllCallsStar();
 */
 
+
 //Parent
 void PKB::setParent(int first, list<int> second) {
 	getParent().setParent(first, second);
@@ -242,14 +353,28 @@ void PKB::printAllParent() {
 	return getParent().printAllParent();
 }
 
-/*
-//ParentStar
-void setParentStar(int, list<int>);
-list<int> getParentStarFirst(int);
-list<int> getParentStarSecond(int);
-bool isParentStarValid(int, int);
-void printAllParent();
 
+//ParentStar
+void PKB::setParentStar(int first, list<int> second) {
+	getParentStar().setParentStar(first, second);
+}
+
+list<int> PKB::getParentStarFirst(int second) {
+	return getParentStar().getParentStarFirst(second);
+}
+
+list<int> PKB::getParentStarSecond(int first) {
+	return getParentStar().getParentStarSecond(first);
+}
+
+bool PKB::isParentStarValid(int first, int second) {
+	return getParentStar().isParentStarValid(first, second);
+}
+
+void PKB::printAllParentStar() {
+	getParentStar().printAllParentStar();
+}
+/*
 //Next
 void setNext(int, int);
 list<int> getNextFirst(int);

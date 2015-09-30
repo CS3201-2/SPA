@@ -1,11 +1,11 @@
-#include <stack>
-#include <string>
-#include <iostream>
-#include <stack>
 #include <list>
+#include <string>
 #include <map>
+#include <stack>
+#include <iostream>
 
 using namespace std;
+
 
 #ifndef Pattern_H
 #define Pattern_H
@@ -23,7 +23,6 @@ public:
 	list<int> getIfWithFirstExact(string);
 	list<int> getWhileWithFisrtExact(string);
 	void printAllPattern();
-	//getStmtFromLHS, getStmtFromRHS, getStmtFromBoth, getPatternFromStmtLine
 
 private:
 	map<int, pair<string, string>> patternMap;

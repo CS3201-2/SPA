@@ -1,22 +1,22 @@
 #include <string>
 #include <list>
-#include <algorithm>
 #include <map>
 #include <iostream>
-#include "Parent.h"
 
 using namespace std;
+
 
 class ParentStar 
 {
 public:
 	ParentStar();
-	list<int> getChildStarStmt(int);
-	list<int> getParentStarStmt(int);
-	void createParentStarMap();
-	void printParentStarMap();
+
+	void setParentStar(int, list<int>);
+	list<int> getParentStarFirst(int);
+	list<int> getParentStarSecond(int);
+	bool isParentStarValid(int, int);
+	void printAllParentStar();
 
 private:
-	Parent parent = Parent();
 	map<int, list<int>> parentStarMap;
 };

@@ -92,6 +92,12 @@
     <ClCompile Include="Calls.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="FollowsStar.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="ParentStar.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTNode.h">
@@ -179,6 +185,12 @@
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="Calls.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="FollowsStar.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="ParentStar.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #include "Follows.h"
 
+
 Follows::Follows() {
 }
 
@@ -8,15 +9,13 @@ void Follows::setFollows(int first, int second) {
 }
 
 int Follows::getFollowsFirst(int second) {
-	int result = 0;
 	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
 		if ((*it).second == second) {
-			result = (*it).first;
-			break;
+			return (*it).first;
 		}
 	}
 
-	return result;
+	return 0;
 }
 
 int Follows::getFollowsSecond(int first) {
@@ -35,10 +34,6 @@ bool Follows::isFollowValid(int first, int second) {
 	else {
 		return followsMap.at(first) == second;
 	}
-}
-
-int Follows::getFollowsMapSize() {
-	return followsMap.size();
 }
 
 void Follows::printFollowsMap() {

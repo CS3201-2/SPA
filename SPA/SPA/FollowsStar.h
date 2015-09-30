@@ -2,20 +2,21 @@
 #include <list>
 #include <algorithm>
 #include <iostream>
-#include "Follows.h"
 
 using namespace std;
+
 
 class FollowsStar 
 {
 public: 
 	FollowsStar();
-	list<int> getFollowsStarStmt(int);
-	list<int> getIsFollowedStarStmt(int);
-	void createFollowsStarMap();
-	void printFollowsStarMap();
+
+	void setFollowsStar(int, list<int>);
+	list<int> getFollowsStarFirst(int);
+	list<int> getFollowsStarSecond(int);
+	bool isFollowsStarValid(int, int);
+	void printAllFollowsStar();
 
 private:
-	Follows follows = Follows();
 	map<int, list<int>> followsStarMap;
 };

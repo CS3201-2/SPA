@@ -128,8 +128,10 @@
     <ClCompile Include="Checker.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Follows.cpp" />
+    <ClCompile Include="FollowsStar.cpp" />
     <ClCompile Include="Modifies.cpp" />
     <ClCompile Include="Parent.cpp" />
+    <ClCompile Include="ParentStar.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="PKB.cpp" />
@@ -161,8 +163,10 @@
     <ClInclude Include="Checker.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Follows.h" />
+    <ClInclude Include="FollowsStar.h" />
     <ClInclude Include="Parent.h" />
     <ClInclude Include="Modifies.h" />
+    <ClInclude Include="ParentStar.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Pattern.h" />
     <ClInclude Include="PKB.h" />

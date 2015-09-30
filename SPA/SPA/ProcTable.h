@@ -20,8 +20,7 @@ public:
 	void printProcTable();
 
 private:
-	map<string,int> procTable;
-	
+	map<string, int> procTable;
 };
 
 #endif

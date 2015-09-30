@@ -1,10 +1,10 @@
 #include <string>
 #include <map>
 #include <list>
-#include <algorithm>
 #include <iostream>
 
 using namespace std;
+
 
 #ifndef Parent_H
 #define Parent_H
@@ -20,19 +20,8 @@ public:
 	bool isParentValid(int, int);
 	void printAllParent();
 
-	list<int> getChildStmt(int);
-
-	void setParentStmt(int, list<int>);
-
-	int getParentStmt(int);
-
-	void printParentMap();
-
-	void sortParentMap();
-
-	int getParentMapSize();
 private:
-	map<int, std::list<int>> parentMap;
+	map<int, list<int>> parentMap;
 };
 
 #endif

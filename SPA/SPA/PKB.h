@@ -1,8 +1,9 @@
-#include "AST.h"
 #include "Modifies.h"
 #include "Uses.h"
 #include "Follows.h"
+#include "FollowsStar.h"
 #include "Parent.h"
+#include "ParentStar.h"
 #include "Calls.h"
 #include "ProcTable.h"
 #include "VarTable.h"
@@ -12,6 +13,7 @@
 
 using namespace std;
 
+
 #ifndef PKB_H
 #define PKB_H
 
@@ -20,21 +22,11 @@ class PKB
 public:
 	//static PKB* getPKBInstance();
 	PKB() {};
-	ProcTable& getProcTable(void);
-	VarTable& getVarTable(void);
-	Modifies& getModifies(void);
-	Uses& getUses(void);
-	Parent& getParent(void);
-	Follows& getFollows(void);
-	Calls& getCalls();
-	AST& getAST(void);
-	Pattern& getPattern();
-	void addWhileList(int);
-	void addAssignList(int);
-	void setAST(AST);
 
 	//new APIs
+	//PKB housekeeping function
 	//sort and unify function for Modifies, Uses, FollowsStar, CallsStar, Parent, ParentStar
+	//unify ifList
 	//general
 	bool isValidStmtNo(int);
 	void addWhileToList(int);
@@ -127,7 +119,7 @@ public:
 	list<int> getParentStarFirst(int);
 	list<int> getParentStarSecond(int);
 	bool isParentStarValid(int, int);
-	void printAllParent();
+	void printAllParentStar();
 
 	//Next
 	/*void setNext(int, int);
@@ -145,12 +137,29 @@ private:
 	ProcTable procTable;
 	VarTable varTable;
 	Follows follows;
+	FollowsStar followsStar;
+	ParentStar parentStar;
 	Parent parent;
 	Pattern pattern;
-	AST ast;
 	Calls calls;
-	list<int> whileList;
-	list<int> assignList;
+	list<int> whileStmtList;
+	list<int> assignStmtList;
+	list<int> callStmtList;
+	list<int> ifStmtList;
+
+	ProcTable& getProcTable();
+	VarTable& getVarTable();
+	Modifies& getModifies();
+	Uses& getUses();
+	Parent& getParent();
+	ParentStar& getParentStar();
+	Follows& getFollows();
+	FollowsStar& getFollowsStar();
+	Calls& getCalls();
+	Pattern& getPattern();
+
+	size_t getVarTableSize();
+	size_t getProcTableSize();
 };
 
 #endif

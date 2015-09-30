@@ -1,8 +1,10 @@
 #include <string>
 #include <map>
 #include <list>
+#include <iostream>
 
 using namespace std;
+
 
 #ifndef Modifies_H
 #define Modifies_H
@@ -18,17 +20,8 @@ public:
 	bool isModifiesValid(int, int);
 	void printAllModifies();
 
-
-	list<int> getModifiesLine( int );
-
-	void setModifiesStmt( int, int );
-	// return list of var_id modified by stmt number
-	list<int> getModifiesVar(int stmt_number);
-	void printMap();
-
-	void sortMap();
 private:
-	map<int,std::list<int>> modifiesMap;
+	map<int, list<int>> modifiesMap;
 };
 
 #endif

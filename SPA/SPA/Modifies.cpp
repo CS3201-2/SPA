@@ -1,10 +1,5 @@
 #include "Modifies.h"
-#include <map>
-#include <list>
-#include <algorithm>
-#include <iostream>
 
-using namespace std;
 
 // constructor
 Modifies::Modifies()
@@ -44,8 +39,8 @@ bool Modifies::isModifiesValid(int first, int second) {
 		return false;
 	}
 	else {
-		list<int> childrenList = modifiesMap.at(first);
-		return find(childrenList.begin(), childrenList.end(), second) != childrenList.end();
+		list<int> modifiesList = modifiesMap.at(first);
+		return find(modifiesList.begin(), modifiesList.end(), second) != modifiesList.end();
 	}
 }
 
@@ -64,17 +59,7 @@ void Modifies::printAllModifies() {
 	cout << endl;
 }
 
-list<int> Modifies::getModifiesLine( int var_id )
-{
-	if (modifiesMap.find(var_id) == modifiesMap.end()) {
-		return list<int>();
-	} else{
-		return modifiesMap.at(var_id);
-	}
-	
-}
-
-void Modifies::setModifiesStmt( int var_id, int stmt_number )
+/*void Modifies::setModifiesStmt( int var_id, int stmt_number )
 {
 	if (modifiesMap.find(var_id) == modifiesMap.end()) {
 		std::list<int> emptyList;
@@ -89,35 +74,11 @@ void Modifies::setModifiesStmt( int var_id, int stmt_number )
 		}
 		modifiesMap[var_id] = list;
 	}
-}
+}*/
 
-list<int> Modifies::getModifiesVar(int stmtNumber) {
-	list<int> varList;
-	for (int i = 0; i < modifiesMap.size(); i++) {
-		if (find(modifiesMap[i].begin(), modifiesMap[i].end(), stmtNumber) != modifiesMap[i].end()) {
-			varList.push_back(i);
-		}
-	}
-	return varList;
-}
 
-void Modifies::printMap() {
-	cout << "modifies table" << endl;
-	for (map<int, std::list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
-
-		cout << (*it).first;
-		cout << ":";
-		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			cout << *listIt;
-			cout << " ";
-		}
-		cout << endl;
-	}
-	cout << endl;
-}
-
-void Modifies::sortMap() {
+/*void Modifies::sortMap() {
 	for (map<int, std::list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
 		(*it).second.sort();
 	}
-}
+}*/
