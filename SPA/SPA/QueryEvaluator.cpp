@@ -494,6 +494,10 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			list<int> arg2List = getList(arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1,arg2);
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
 				list<int> childList = pkb.getParentSecond(*t);
 				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
@@ -587,6 +591,10 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 			list<int> arg2List = getList(arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
 				int littleBrother = pkb.getFollowsSecond(*t);
 				if (isInList(arg2List, littleBrother)) {
@@ -683,6 +691,10 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 			list<int> arg2List = getList(arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
 				list<int> childList = pkb.getParentStarSecond(*t);
 				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
@@ -784,6 +796,10 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 			list<int> arg2List = getList(arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
+			if (arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
 				list<int> littleBrothers = pkb.getFollowsStarSecond(*t);
 				for (list<int>::iterator i = littleBrothers.begin(); i != littleBrothers.end(); i++) {
