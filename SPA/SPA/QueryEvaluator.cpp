@@ -844,7 +844,8 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		}
 		else {
 			//iter 1 "constant or string" or variable
-			list<int> assignList = pkb.getAssignWithBoth(arg1, arg2);
+			string arg2Trim = arg2.substr(2, arg2.length() - 4);
+			list<int> assignList = pkb.getAssignWithBoth(arg1, arg2Trim);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
@@ -871,7 +872,8 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		}
 		else {
 			//iter 1 "constant or string" or "variable"
-			list<int> assignList = pkb.getAssignWithSecond(arg2);
+			string arg2Trim = arg2.substr(2, arg2.length() - 4);
+			list<int> assignList = pkb.getAssignWithSecond(arg2Trim);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				list<int> modifiedVarList = pkb.getModifiesSecond(*i);
 				for (list<int>::iterator t = modifiedVarList.begin(); t != modifiedVarList.end(); t++) {
@@ -898,7 +900,8 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		}
 		else {
 			// arg2Type is constant or string or variable
-			list<int> assignList = pkb.getAssignWithSecond(arg2);
+			string arg2Trim = arg2.substr(2, arg2.length() - 4);
+			list<int> assignList = pkb.getAssignWithSecond(arg2Trim);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
