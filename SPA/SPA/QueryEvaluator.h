@@ -12,7 +12,6 @@ using namespace std;
 #define QueryEvaluator_H
 class QueryEvaluator {
 private:
-	PKB pkb;
 	QueryTree queryTree;
 	list<ResultTable> resultList;
 	bool isInList(list<int>, int);
@@ -26,7 +25,7 @@ public:
 	ResultTable processParentStar(vector<string> tempstring);
 	ResultTable processFollowsStar(vector<string> tempstring);
 
-	QueryEvaluator( PKB, QueryTree );
+	QueryEvaluator(QueryTree);
 	QueryEvaluator();
 	list<string> evaluate();
 	

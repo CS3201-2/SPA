@@ -1,4 +1,3 @@
-//#include "AST.h"
 #include "Modifies.h"
 #include "Uses.h"
 #include "ProcTable.h"
@@ -7,7 +6,7 @@
 #include "QueryTree.h"
 #include "ResultTable.h"
 #include "QueryResultProjector.h"
-#include "PKB.h"
+#include "pkb.h"
 #include "SPALog.h"
 #include <string>
 #include <list>
@@ -21,13 +20,11 @@ using namespace::std;
 //QueryEvaluator assumes 1st element in suchThat tree and 1st element in pattern tree form the first query
 
 QueryEvaluator::QueryEvaluator() {
-	pkb = PKB();
 	queryTree = QueryTree();
 }
 
 
-QueryEvaluator::QueryEvaluator(PKB my_pkb, QueryTree qt) {
-	pkb = my_pkb;
+QueryEvaluator::QueryEvaluator(QueryTree qt) {
 	queryTree = qt;
 }
 // entry function for controller;
@@ -44,22 +41,23 @@ list<string> QueryEvaluator::evaluate() {
 	for (index = 0; index < queryTree.getSelectSize(); index++) {
 		processSelectClause(getSelectClause(index));
 	}
-	
-	cout << "splited table" << endl;
+
+	//logging should be removed before final submission
+	string str;
+	str = "splited table\n";
 	for (auto& x : resultList) {
 		for (int i = 0; i < x.result.size(); ++i) {
 			for (int j = 0; j < x.result[i].size(); ++j) {
-				cout << x.result[i][j] << ", ";
+				str += to_string(x.result[i][j]) + ", ";
 			}
-			cout << endl;
+			str += "\n";
 		}
-		cout << "-----------------------------------" << endl;
+		str += "-----------------------------------\n";
 	}
-
-	cout << "result" << endl;
+	SPALog::log(str);
+	//logging should be removed before final submission ends
 	
-	QueryResultProjector qrp = QueryResultProjector(resultList, select.at(0), select.at(1), pkb);
-	//cout << qrp.getResult() << endl;
+	QueryResultProjector qrp = QueryResultProjector(resultList, select.at(0), select.at(1));
 	return qrp.getResult();
 }
 
@@ -132,22 +130,22 @@ bool QueryEvaluator::isInList(list<int> list, int number) {
 
 list<int> QueryEvaluator::getList(string listName) {
 	if (listName == "assign") {
-		return pkb.getAssignList();
+		return PKB::getPKBInstance()->getAssignList();
 	}
 	else if (listName == "while") {
-		return pkb.getWhileList();
+		return PKB::getPKBInstance()->getWhileList();
 	}
 	else if (listName == "if") {
-		return pkb.getIfList();
+		return PKB::getPKBInstance()->getIfList();
 	}
 	else if (listName == "call") {
-		return pkb.getCallList();
+		return PKB::getPKBInstance()->getCallList();
 	}
 	else if (listName == "stmt" || "all") {
-		return pkb.getStmtList();
+		return PKB::getPKBInstance()->getStmtList();
 	}
 	else if (listName == "procedure") {
-		return pkb.getProcList();
+		return PKB::getPKBInstance()->getProcList();
 	}
 	else {
 		list<int> emptyList;
@@ -165,7 +163,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 	
 	if (arg2Type == "string") {
 
-		int arg2ID = pkb.getVarID(arg2);
+		int arg2ID = PKB::getPKBInstance()->getVarID(arg2);
 		
 		if (!arg2ID) {
 			ResultTable tempResult = ResultTable();
@@ -174,17 +172,17 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			return tempResult;
 		}
 
-		list<int> modifiesLine = pkb.getModifiesFirst(arg2ID);
+		list<int> modifiesLine = PKB::getPKBInstance()->getModifiesFirst(arg2ID);
 
 		if ( arg1Type == "prog_line" ) {
 			ResultTable tempResult = ResultTable();
 
-			if (!pkb.isValidStmtNo(stoi(arg1))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
-			if (pkb.isModifiesValid(stoi(arg1), arg2ID)) {
+			if (PKB::getPKBInstance()->isModifiesValid(stoi(arg1), arg2ID)) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -194,7 +192,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 		}
 		else if ( arg1Type == "proc_name" ) {
 			ResultTable tempResult = ResultTable();
-			int arg1ID = pkb.getProcID(arg1);
+			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("arg1 is not a valid proc_name!\n");
@@ -229,13 +227,13 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 	else if( arg2Type == "variable" || "all") {
 		
 		if (arg1Type == "prog_line") {
-			if (!pkb.isValidStmtNo(stoi(arg1))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
 				tempResult.isWholeTrue = 0;
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
-			list<int> varList = pkb.getModifiesSecond(stoi(arg1));
+			list<int> varList = PKB::getPKBInstance()->getModifiesSecond(stoi(arg1));
 			ResultTable tempResult = ResultTable(arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = varList.begin(); i != varList.end(); i++) {
@@ -246,14 +244,14 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			return tempResult;
 		}
 		else if (arg1Type == "proc_name") {
-			int arg1ID = pkb.getProcID(arg1);
+			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
 				ResultTable tempResult = ResultTable();
 				tempResult.isWholeTrue = 0;
 				SPALog::log("arg1 is invalid prog_name!\n");
 				return tempResult;
 			}
-			list<int> varList = pkb.getModifiesSecond(arg1ID);
+			list<int> varList = PKB::getPKBInstance()->getModifiesSecond(arg1ID);
 			ResultTable tempResult = ResultTable(arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = varList.begin(); i != varList.end(); i++) {
@@ -269,7 +267,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
-				list<int> varList = pkb.getModifiesSecond(*i);
+				list<int> varList = PKB::getPKBInstance()->getModifiesSecond(*i);
 				for (list<int>::iterator j = varList.begin(); j != varList.end(); j++) {
 					temp.push_back(*i);
 					temp.push_back(*j);
@@ -296,7 +294,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 	
 	if (arg2Type == "string") {
 
-		int arg2ID = pkb.getVarID(arg2);
+		int arg2ID = PKB::getPKBInstance()->getVarID(arg2);
 
 		if (!arg2ID) {
 			ResultTable tempResult = ResultTable();
@@ -305,17 +303,17 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			return tempResult;
 		}
 
-		list<int> usesLine = pkb.getUsesFirst(arg2ID);
+		list<int> usesLine = PKB::getPKBInstance()->getUsesFirst(arg2ID);
 
 		if (arg1Type == "prog_line") {
 			ResultTable tempResult = ResultTable();
 
-			if (!pkb.isValidStmtNo(stoi(arg1))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
-			if (pkb.isUsesValid(stoi(arg1), arg2ID)) {
+			if (PKB::getPKBInstance()->isUsesValid(stoi(arg1), arg2ID)) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -325,7 +323,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 		}
 		else if (arg1Type == "proc_name") {
 			ResultTable tempResult = ResultTable();
-			int arg1ID = pkb.getProcID(arg1);
+			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("arg1 is not a valid proc_name!\n");
@@ -359,13 +357,13 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 
 	else if (arg2Type == "variable" || "all") {
 		if (arg1Type == "prog_line") {
-			if (!pkb.isValidStmtNo(stoi(arg1))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
 				tempResult.isWholeTrue = 0;
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
-			list<int> varList = pkb.getUsesSecond(stoi(arg1));
+			list<int> varList = PKB::getPKBInstance()->getUsesSecond(stoi(arg1));
 			ResultTable tempResult = ResultTable(arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = varList.begin(); i != varList.end(); i++) {
@@ -376,14 +374,14 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			return tempResult;
 		}
 		else if (arg1Type == "proc_name") {
-			int arg1ID = pkb.getProcID(arg1);
+			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
 				ResultTable tempResult = ResultTable();
 				tempResult.isWholeTrue = 0;
 				SPALog::log("arg1 is invalid prog_name!\n");
 				return tempResult;
 			}
-			list<int> varList = pkb.getUsesSecond(arg1ID);
+			list<int> varList = PKB::getPKBInstance()->getUsesSecond(arg1ID);
 			ResultTable tempResult = ResultTable(arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = varList.begin(); i != varList.end(); i++) {
@@ -399,7 +397,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
-				list<int> varList = pkb.getUsesSecond(*i);
+				list<int> varList = PKB::getPKBInstance()->getUsesSecond(*i);
 				for (list<int>::iterator j = varList.begin(); j != varList.end(); j++) {
 					temp.push_back(*i);
 					temp.push_back(*j);
@@ -424,27 +422,27 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
 	
-	list<int> parentList = pkb.getParentList();
+	list<int> parentList = PKB::getPKBInstance()->getParentList();
 
 	if (arg1Type == "prog_line") {
 		bool isNotParrent = !isInList(parentList, stoi(arg1));
-		if (!pkb.isValidStmtNo(stoi(arg1)) || isNotParrent ) {
+		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1)) || isNotParrent ) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
 			SPALog::log("Parent arg1 is not a valid prog_line or is not a parent stmt");
 			return tempResult;
 		}
 
-		list<int> childList = pkb.getParentSecond(stoi(arg1));
+		list<int> childList = PKB::getPKBInstance()->getParentSecond(stoi(arg1));
 
 		if (arg2Type == "prog_line") {
 			ResultTable tempResult = ResultTable();
-			if (!pkb.isValidStmtNo(stoi(arg2))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("Parent arg2 is not a valid prog_line");
 				return tempResult;
 			}
-			if (pkb.isParentValid(stoi(arg1), stoi(arg2))) {
+			if (PKB::getPKBInstance()->isParentValid(stoi(arg1), stoi(arg2))) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -472,12 +470,12 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 		list<int> arg1List = getList(arg1Type);
 		if (arg2Type == "prog_line") {
 			ResultTable tempResult = ResultTable(arg1);
-			if (!pkb.isValidStmtNo(stoi(arg2))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("Parent arg2 is not a valid prog_line");
 				return tempResult;
 			}
-			int parent = pkb.getParentFirst(stoi(arg2));
+			int parent = PKB::getPKBInstance()->getParentFirst(stoi(arg2));
 			vector<int> temp;
 			if (parent != 0 && isInList(arg1List, parent)) {
 				temp.push_back(parent);
@@ -499,7 +497,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 				return tempResult;
 			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
-				list<int> childList = pkb.getParentSecond(*t);
+				list<int> childList = PKB::getPKBInstance()->getParentSecond(*t);
 				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
 					if (isInList(arg2List, *i)) {
 						temp.push_back(*t);
@@ -522,14 +520,14 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 	string arg2Type = tempString.at(4);
 	
 	if (arg1Type == "prog_line") {
-		if (!pkb.isValidStmtNo(stoi(arg1))) {
+		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
 			SPALog::log("Follows arg1 is not a valid prog_line");
 			return tempResult;
 		}
 
-		int littleBrother = pkb.getFollowsSecond(stoi(arg1));
+		int littleBrother = PKB::getPKBInstance()->getFollowsSecond(stoi(arg1));
 		if (littleBrother == 0) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
@@ -537,12 +535,12 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 		}
 		if (arg2Type == "prog_line") {
 			ResultTable tempResult = ResultTable();
-			if (!pkb.isValidStmtNo(stoi(arg2))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("Follows arg2 is not a valid prog_line");
 				return tempResult;
 			}
-			if ( pkb.isFollowsValid(stoi(arg1), stoi(arg2))){
+			if ( PKB::getPKBInstance()->isFollowsValid(stoi(arg1), stoi(arg2))){
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -569,12 +567,12 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 		list<int> arg1List = getList(arg1Type);
 		if (arg2Type == "prog_line") {
 			ResultTable tempResult = ResultTable(arg1);
-			if (!pkb.isValidStmtNo(stoi(arg2))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("Follows arg2 is not a valid prog_line");
 				return tempResult;
 			}
-			int brother = pkb.getFollowsFirst(stoi(arg2));
+			int brother = PKB::getPKBInstance()->getFollowsFirst(stoi(arg2));
 			vector<int> temp;
 			if (brother != 0 && isInList(arg1List, brother)) {
 				temp.push_back(brother);
@@ -596,7 +594,7 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 				return tempResult;
 			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
-				int littleBrother = pkb.getFollowsSecond(*t);
+				int littleBrother = PKB::getPKBInstance()->getFollowsSecond(*t);
 				if (isInList(arg2List, littleBrother)) {
 					temp.push_back(*t);
 					temp.push_back(littleBrother);
@@ -617,27 +615,27 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
 	
-	list<int> parentList = pkb.getParentList();
+	list<int> parentList = PKB::getPKBInstance()->getParentList();
 	
 	if (arg1Type == "prog_line") {
 		bool isNotParrent = !isInList(parentList, stoi(arg1));
-		if (!pkb.isValidStmtNo(stoi(arg1)) || isNotParrent) {
+		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1)) || isNotParrent) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
 			SPALog::log("Parent* arg1 is not a valid prog_line or is not a parent stmt");
 			return tempResult;
 		}
 
-		list<int> childList = pkb.getParentStarSecond(stoi(arg1));
+		list<int> childList = PKB::getPKBInstance()->getParentStarSecond(stoi(arg1));
 
 		if (arg2Type == "prog_line") {
 			ResultTable tempResult = ResultTable();
-			if (!pkb.isValidStmtNo(stoi(arg2))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("Parent* arg2 is not a valid prog_line");
 				return tempResult;
 			}
-			if (pkb.isParentStarValid(stoi(arg1), stoi(arg2))) {
+			if (PKB::getPKBInstance()->isParentStarValid(stoi(arg1), stoi(arg2))) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -665,12 +663,12 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 		list<int> arg1List = getList(arg1Type);
 		if (arg2Type == "prog_line") {
 			ResultTable tempResult = ResultTable(arg1);
-			if (!pkb.isValidStmtNo(stoi(arg2))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("Parent* arg2 is not a valid prog_line");
 				return tempResult;
 			}
-			list<int> parents = pkb.getParentStarFirst(stoi(arg2));
+			list<int> parents = PKB::getPKBInstance()->getParentStarFirst(stoi(arg2));
 			vector<int> temp;
 			if (parents.size() != 0 )  {
 				for (list<int>::iterator t = parents.begin(); t != parents.end(); t++) {
@@ -696,7 +694,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 				return tempResult;
 			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
-				list<int> childList = pkb.getParentStarSecond(*t);
+				list<int> childList = PKB::getPKBInstance()->getParentStarSecond(*t);
 				for (list<int>::iterator i = childList.begin(); i != childList.end(); i++) {
 					if (isInList(arg2List, *i)) {
 						temp.push_back(*t);
@@ -719,14 +717,14 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 	string arg2Type = tempString.at(4);
 
 	if (arg1Type == "prog_line") {
-		if (!pkb.isValidStmtNo(stoi(arg1))) {
+		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
 			SPALog::log("Follows* arg1 is not a valid prog_line");
 			return tempResult;
 		}
 
-		list<int> littleBrothers = pkb.getFollowsStarSecond(stoi(arg1));
+		list<int> littleBrothers = PKB::getPKBInstance()->getFollowsStarSecond(stoi(arg1));
 		if (littleBrothers.size() == 0) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
@@ -735,12 +733,12 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 		}
 		if (arg2Type == "prog_line") {
 			ResultTable tempResult = ResultTable();
-			if (!pkb.isValidStmtNo(stoi(arg2))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("Follows* arg2 is not a valid prog_line");
 				return tempResult;
 			}
-			if (pkb.isFollowsStarValid(stoi(arg1), stoi(arg2))) {
+			if (PKB::getPKBInstance()->isFollowsStarValid(stoi(arg1), stoi(arg2))) {
 				tempResult.isWholeTrue = 1;
 			}
 			else {
@@ -770,12 +768,12 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 		list<int> arg1List = getList(arg1Type);
 		if (arg2Type == "prog_line") {
 			ResultTable tempResult = ResultTable(arg1);
-			if (!pkb.isValidStmtNo(stoi(arg2))) {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
 				SPALog::log("Follows* arg2 is not a valid prog_line");
 				return tempResult;
 			}
-			list<int> brothers = pkb.getFollowsStarFirst(stoi(arg2));
+			list<int> brothers = PKB::getPKBInstance()->getFollowsStarFirst(stoi(arg2));
 			vector<int> temp;
 			if (brothers.size() != 0 ) {
 				for (list<int>::iterator t = brothers.begin(); t != brothers.end(); t++) {
@@ -801,7 +799,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 				return tempResult;
 			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
-				list<int> littleBrothers = pkb.getFollowsStarSecond(*t);
+				list<int> littleBrothers = PKB::getPKBInstance()->getFollowsStarSecond(*t);
 				for (list<int>::iterator i = littleBrothers.begin(); i != littleBrothers.end(); i++) {
 					if (isInList(arg2List, *i)) {
 						temp.push_back(*t);
@@ -835,7 +833,7 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
 		if (arg2Type == "all") {
-			list<int> assignList = pkb.getAssignWithFirstExact(arg1);
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithFirstExact(arg1);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
@@ -845,7 +843,7 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		else {
 			//iter 1 "constant or string" or variable
 			string arg2Trim = arg2.substr(2, arg2.length() - 4);
-			list<int> assignList = pkb.getAssignWithBoth(arg1, arg2Trim);
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithBoth(arg1, arg2Trim);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
@@ -859,9 +857,9 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		ResultTable tempResult = ResultTable(syn, arg1);
 		vector<int> temp;
 		if (arg2Type == "all") {
-			list<int> varList = pkb.getVarList();
+			list<int> varList = PKB::getPKBInstance()->getVarList();
 			for (list<int>::iterator i = varList.begin(); i != varList.end(); i++) {
-				list<int> assignList = pkb.getAssignWithFirstExact(pkb.getVarName(*i));
+				list<int> assignList = PKB::getPKBInstance()->getAssignWithFirstExact(PKB::getPKBInstance()->getVarName(*i));
 				for (list<int>::iterator t = assignList.begin(); t != assignList.end(); t++) {
 					temp.push_back(*t);
 					temp.push_back(*i);
@@ -873,9 +871,9 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		else {
 			//iter 1 "constant or string" or "variable"
 			string arg2Trim = arg2.substr(2, arg2.length() - 4);
-			list<int> assignList = pkb.getAssignWithSecond(arg2Trim);
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2Trim);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
-				list<int> modifiedVarList = pkb.getModifiesSecond(*i);
+				list<int> modifiedVarList = PKB::getPKBInstance()->getModifiesSecond(*i);
 				for (list<int>::iterator t = modifiedVarList.begin(); t != modifiedVarList.end(); t++) {
 					temp.push_back(*i);
 					temp.push_back(*t);
@@ -891,7 +889,7 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
 		if (arg2Type == "all") {
-			list<int> assignList = pkb.getAssignList();
+			list<int> assignList = PKB::getPKBInstance()->getAssignList();
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
@@ -901,7 +899,7 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 		else {
 			// arg2Type is constant or string or variable
 			string arg2Trim = arg2.substr(2, arg2.length() - 4);
-			list<int> assignList = pkb.getAssignWithSecond(arg2Trim);
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2Trim);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
@@ -927,7 +925,7 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 	if (synType == "variable") {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
-		list<int> varTable = pkb.getVarList();
+		list<int> varTable = PKB::getPKBInstance()->getVarList();
 		for (list<int>::iterator i = varTable.begin(); i != varTable.end(); i++) {
 			temp.push_back(*i);
 			tempResult.addTuple(temp);
@@ -939,7 +937,7 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 	else if (synType == "procedure") {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
-		list<int> procList = pkb.getProcList();
+		list<int> procList = PKB::getPKBInstance()->getProcList();
 		for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
 			temp.push_back(*i);
 			tempResult.addTuple(temp);

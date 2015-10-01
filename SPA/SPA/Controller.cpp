@@ -2,6 +2,7 @@
 #include "Checker.h"
 #include "Parser.h"
 #include "PKB.h"
+#include "QueryController.h"
 #include <iostream>
 #include <string>
 #include <list>
@@ -21,15 +22,14 @@ void Controller::processSource() {
 
 	list<pair<int, string>> sourceList = parser.prepareSourceList(source);
 
-	parse(sourceList);
 	//Note: must change back, now it is skipping checker!!!
-	/*if (!syntaxCheck(sourceList)) {
+	if (!syntaxCheck(sourceList)) {
 		cout << endl << endl;
 		cout << "syntax wrong!!!" << endl << endl << endl;
 	}
 	else {
-		ctrPKB = parse(sourceList);
-	}*/
+		parser.parseSource(sourceList);
+	}
 
 
 	//for testing
@@ -40,16 +40,6 @@ void Controller::processSource() {
 	}*/
 	//cout << "end of printing" << endl;
 	//for testing ends
-
-
-
-	/*if (!syntaxCheck()) {
-		cerr << "The SOURCE file got sytax error!" << endl;
-		exit(1);
-	} else {
-		ctrPKB = parse();
-	}*/
-
 }
 
 bool Controller::syntaxCheck(list<pair<int, string>>& sourceList) {
@@ -82,25 +72,8 @@ void Controller::logPKB() {
 	cout << "end of logging" << endl;
 }
 
-void Controller::parse(list<pair<int, string>> sourceList) {
-	Parser parser;
-	parser.parseSource(sourceList);
-}
-
 list<string> Controller::processQuery(string query) {
-	//string::iterator itr;
-	//list<string> processedQueryList;
-	
-	/*
-	while (!query.empty()) {
-		size_t index = query.find("\n");
-		string temp = query.substr(0, index);
-		query = query.substr(index + 1, query.size());
-		processedQueryList.push_back(temp);
-	}
-	*/
-
-	//QueryController queryController;
-	//return queryController.processQueries(query);
+	QueryController queryController;
+	return queryController.processQueries(query);
 	return list<string>();
 }

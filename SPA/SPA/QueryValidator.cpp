@@ -195,7 +195,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 
 	qt.insertSuchThat(relType, arrVar, varTypes);
 
-	cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return VALID;

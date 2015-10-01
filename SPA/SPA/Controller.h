@@ -26,8 +26,6 @@ private:
 	string source;
 	
 	bool syntaxCheck(list<pair<int, string>>&);
-
-	void parse(list<pair<int, string>>);
 };
 
 #endif
