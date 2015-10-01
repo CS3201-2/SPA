@@ -1,7 +1,7 @@
+#include "SPALog.h"
 #include <string>
 #include <map>
 #include <list>
-#include <iostream>
 
 using namespace std;
 
@@ -18,7 +18,7 @@ public:
 	list<int> getUsesFirst(int);
 	list<int> getUsesSecond(int);
 	bool isUsesValid(int, int);
-	void printAllUses();
+	void logUses();
 	void sortAndUnifyMap();
 
 private:

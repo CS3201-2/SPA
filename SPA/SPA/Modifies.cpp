@@ -53,19 +53,17 @@ bool Modifies::isModifiesValid(int first, int second) {
 	}
 }
 
-void Modifies::printAllModifies() {
-	cout << "modifies table" << endl;
+void Modifies::logModifies() {
+	string str = "modifies table\n";
 	for (map<int, list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
-
-		cout << (*it).first;
-		cout << ":";
+		str += to_string((*it).first) + ": ";
 		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			cout << *listIt;
-			cout << " ";
+			str += to_string(*listIt) + ", ";
 		}
-		cout << endl;
+		str += "\n";
 	}
-	cout << endl;
+	str += "\n";
+	SPALog::log(str);
 }
 
 void Modifies::sortAndUnifyMap() {

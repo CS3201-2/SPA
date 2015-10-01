@@ -41,12 +41,12 @@ size_t ProcTable::getProcTableSize() {
 	return procTable.size();
 }
 
-void ProcTable::printProcTable() {
-	cout << "procedure table" << endl;
+void ProcTable::logProcTable() {
+	string str = "procedure table\n";
 	for (map<string, int>::iterator it = procTable.begin(); it != procTable.end(); ++it) {
-		cout << (*it).first;
-		cout << ":";
-		cout << (*it).second << endl;
+		str += (*it).first + ": " + to_string((*it).second) + "\n";
 	}
-	cout << endl;
+	str += "\n";
+
+	SPALog::log(str);
 }

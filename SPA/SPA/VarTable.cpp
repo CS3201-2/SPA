@@ -41,12 +41,12 @@ size_t VarTable::getVarTableSize() {
 	return varTable.size();
 }
 
-void VarTable::printVarTable() {
-	cout << "variable table" << endl;
+void VarTable::logVarTable() {
+	string str = "variable table\n";
 	for (map<string, int>::iterator it = varTable.begin(); it != varTable.end(); ++it) {
-		cout << (*it).first;
-		cout << ":";
-		cout << (*it).second << endl;
+		str += (*it).first + ": " + to_string((*it).second) + "\n";
 	}
-	cout << endl;
+	str += "\n";
+
+	SPALog::log(str);
 }

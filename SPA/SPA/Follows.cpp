@@ -36,15 +36,14 @@ bool Follows::isFollowValid(int first, int second) {
 	}
 }
 
-void Follows::printAllFollows() {
-	cout << "follows table" << endl;
+void Follows::logFollows() {
+	string str = "follows table\n";
 	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
-		cout << (*it).first;
-		cout << ":";
-		cout << (*it).second;
-		cout << endl;
+		str += to_string((*it).first) + ": " + to_string((*it).second) + "\n";
 	}
-	cout << endl;
+	str += "\n";
+
+	SPALog::log(str);
 }
 
 map<int, int> Follows::getFollowsMap() {

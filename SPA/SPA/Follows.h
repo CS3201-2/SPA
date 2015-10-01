@@ -1,3 +1,4 @@
+#include "SPALog.h"
 #include <string>
 #include <iostream>
 #include <map>
@@ -17,7 +18,7 @@ public:
 	int getFollowsFirst(int);
 	int getFollowsSecond(int);
 	bool isFollowValid(int, int);
-	void printAllFollows();
+	void logFollows();
 	map<int, int> getFollowsMap();
 
 private:

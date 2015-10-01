@@ -1,7 +1,7 @@
+#include "SPALog.h"
 #include <string>
 #include <map>
 #include <list>
-#include <iostream>
 
 using namespace std;
 
@@ -18,7 +18,7 @@ public:
 	list<int> getModifiesFirst(int);
 	list<int> getModifiesSecond(int);
 	bool isModifiesValid(int, int);
-	void printAllModifies();
+	void logModifies();
 	void sortAndUnifyMap();
 
 private:

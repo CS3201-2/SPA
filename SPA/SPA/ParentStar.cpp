@@ -40,18 +40,17 @@ bool ParentStar::isParentStarValid(int first, int second) {
 	}
 }
 
-void ParentStar::printAllParentStar() {
-	cout << "parent star" << endl;
+void ParentStar::logParentStar() {
+	string str = "parent star\n";
 	for (map<int, std::list<int>>::iterator it = parentStarMap.begin(); it != parentStarMap.end(); ++it) {
-		cout << (*it).first;
-		cout << ":";
+		str += to_string((*it).first) + ": ";
 		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			cout << *listIt;
-			cout << " ";
+			str += to_string(*listIt) + ", ";
 		}
-		cout << endl;
+		str += "\n";
 	}
-	cout << endl;
+	str += "\n";
+	SPALog::log(str);
 }
 
 void ParentStar::sortAndUnifyMap() {

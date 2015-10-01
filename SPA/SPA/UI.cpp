@@ -31,7 +31,7 @@ int main(void) {
 	ctr.processSource();
 
 	// comment this part before pushing
-	//ctr.testingPKB();
+	ctr.logPKB();
 	
 	//uncomnment this part before pushing
 	

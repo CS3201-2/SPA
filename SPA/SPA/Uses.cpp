@@ -50,18 +50,18 @@ bool Uses::isUsesValid(int first, int second) {
 	}
 }
 
-void Uses::printAllUses() {
-	cout << "uses table" << endl;
-	for (map<int, std::list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
-		cout << (*it).first;
-		cout << ":";
+void Uses::logUses() {
+	string str = "uses table\n";
+	for (map<int, list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
+		str += to_string((*it).first) + ": ";
 		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			cout << *listIt;
-			cout << " ";
+			str += to_string(*listIt) + ", ";
 		}
-		cout << endl;
+		str += "\n";
 	}
-	cout << endl;
+	str += "\n";
+
+	SPALog::log(str);
 }
 
 void Uses::sortAndUnifyMap() {

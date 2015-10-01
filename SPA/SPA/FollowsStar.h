@@ -1,7 +1,7 @@
+#include "SPALog.h"
 #include <map>
 #include <list>
 #include <algorithm>
-#include <iostream>
 
 using namespace std;
 
@@ -18,7 +18,7 @@ public:
 	list<int> getFollowsStarFirst(int);
 	list<int> getFollowsStarSecond(int);
 	bool isFollowsStarValid(int, int);
-	void printAllFollowsStar();
+	void logFollowsStar();
 	void sortAndUnifyMap();
 
 private:

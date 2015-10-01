@@ -1,3 +1,4 @@
+#include "SPALog.h"
 #include <string>
 #include <map>
 #include <iostream>
@@ -17,7 +18,7 @@ public:
 	int getProcID(string); 
 	string getProcName(int);
 	size_t getProcTableSize();
-	void printProcTable();
+	void logProcTable();
 
 private:
 	map<string, int> procTable;

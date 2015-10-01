@@ -174,17 +174,13 @@ bool Pattern::isOperator(string str) {
 	return (str == "+" || str == "-" || str == "*");
 }
 
-void Pattern::printAllPattern() {
-	cout << "pattern table" << endl;
+void Pattern::logPattern() {
+	string str =  "pattern table\n";
 
 	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
-		cout << (*it).first;
-		cout << ":";
-		cout << (*it).second.first;
-		cout << ", ";
-		cout << (*it).second.second;
-		cout << endl;
+		str += to_string((*it).first) + ": " + (*it).second.first + "       ||||      " + (*it).second.second + "\n";
 	}
+	str += "\n";
 
-	cout << endl;
+	SPALog::log(str);
 }

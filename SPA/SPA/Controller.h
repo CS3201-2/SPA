@@ -20,7 +20,7 @@ public:
 
 	list<string> processQuery(string query);
  
-	void testingPKB();
+	void logPKB();
 
 private:
 	string source;

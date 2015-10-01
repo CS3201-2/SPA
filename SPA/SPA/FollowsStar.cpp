@@ -39,18 +39,17 @@ bool FollowsStar::isFollowsStarValid(int first, int second) {
 	}
 }
 
-void FollowsStar::printAllFollowsStar() {
-	cout << "follows star" << endl;
+void FollowsStar::logFollowsStar() {
+	string str = "follows star\n";
 	for (map<int, std::list<int>>::iterator it = followsStarMap.begin(); it != followsStarMap.end(); ++it) {
-		cout << (*it).first;
-		cout << ":";
+		str += to_string((*it).first) + ": ";
 		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			cout << *listIt;
-			cout << " ";
+			str += to_string(*listIt) + ", ";
 		}
-		cout << endl;
+		str += "\n";
 	}
-	cout << endl;
+	str += "\n";
+	SPALog::log(str);
 }
 
 void FollowsStar::sortAndUnifyMap() {

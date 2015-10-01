@@ -47,27 +47,27 @@ public:
 	int insertVar(string);
 	int getVarID(string); 	//return 0 for invalid varName input
 	string getVarName(int);
-	void printVarTable();
+	void logVarTable();
 
 	//procTable
 	int insertProc(string);
 	int getProcID(string); 	//return 0 for invalid procName input
 	string getProcName(int);
-	void printProcTable();
+	void logProcTable();
 	
 	//Modifies
 	void setModifies(int, list<int>); // input parameter to be decided later
 	list<int> getModifiesFirst(int);
 	list<int> getModifiesSecond(int);
 	bool isModifiesValid(int, int);
-	void printAllModifies();
+	void logModifies();
 
 	//Uses
 	void setUses(int, list<int>); //input parameter to be decided later
 	list<int> getUsesFirst(int);
 	list<int> getUsesSecond(int);
 	bool isUsesValid(int, int);
-	void printAllUses();
+	void logUses();
 
 	//Pattern
 	void setPattern(int, string, string);
@@ -78,14 +78,14 @@ public:
 	list<int> getAssignWithBothExact(string, string);  //pattern a ("x", "x")
 	list<int> getIfWithFirstExact(string);
 	list<int> getWhileWithFirstExact(string);
-	void printAllPattern();
+	void logPattern();
 
 	//Follows
 	void setFollows(int, int);
 	int getFollowsFirst(int);
 	int getFollowsSecond(int);
 	bool isFollowsValid(int, int);
-	void printAllFollows();
+	void logFollows();
 	map<int, int> getFollowsMap();
 
 	//FollowsStar
@@ -93,14 +93,14 @@ public:
 	list<int> getFollowsStarFirst(int);
 	list<int> getFollowsStarSecond(int);
 	bool isFollowsStarValid(int, int);
-	void printAllFollowsStar();
+	void logFollowsStar();
 
 	//Calls
 	void setCalls(int, int);
 	int getCallsFirst(int);
 	int getCallsSecond(int);
 	bool isCallsValid(int, int);
-	void printAllCalls();
+	void logCalls();
 
 	//CallsStar
 	/*void setCallsStar(int, list<int>);
@@ -114,7 +114,7 @@ public:
 	int getParentFirst(int);
 	list<int> getParentSecond(int);
 	bool isParentValid(int, int);
-	void printAllParent();
+	void logParent();
 	map<int, list<int>> getParentMap();
 
 	//ParentStar
@@ -122,7 +122,7 @@ public:
 	list<int> getParentStarFirst(int);
 	list<int> getParentStarSecond(int);
 	bool isParentStarValid(int, int);
-	void printAllParentStar();
+	void logParentStar();
 
 	//Next
 	/*void setNext(int, int);

@@ -46,18 +46,18 @@ bool Parent::isParentValid(int first, int second) {
 	}
 }
 
-void Parent::printAllParent() {
-	cout << "parent table" << endl;
+void Parent::logParent() {
+	string str = "parent table\n";
 	for (map<int, std::list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
-		cout << (*it).first;
-		cout << ":";
+		str += to_string((*it).first) + ": ";
 		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			cout << *listIt;
-			cout << " ";
+			str += to_string(*listIt) + ", ";
 		}
-		cout << endl;
+		str += "\n";
 	}
-	cout << endl;
+	str += "\n";
+
+	SPALog::log(str);
 }
 
 map<int, list<int>> Parent::getParentMap() {

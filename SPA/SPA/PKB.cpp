@@ -152,8 +152,8 @@ string PKB::getVarName(int varID) {
 	return getVarTable().getVarName(varID);
 }
 
-void PKB::printVarTable() {
-	getVarTable().printVarTable();
+void PKB::logVarTable() {
+	getVarTable().logVarTable();
 }
 
 size_t PKB::getVarTableSize() {
@@ -174,8 +174,8 @@ string PKB::getProcName(int procID) {
 	return getProcTable().getProcName(procID);
 }
 
-void PKB::printProcTable() {
-	getProcTable().printProcTable();
+void PKB::logProcTable() {
+	getProcTable().logProcTable();
 }
 
 size_t PKB::getProcTableSize() {
@@ -200,8 +200,8 @@ bool PKB::isModifiesValid(int first, int second) {
 	return getModifies().isModifiesValid(first, second);
 }
 
-void PKB::printAllModifies() {
-	getModifies().printAllModifies();
+void PKB::logModifies() {
+	getModifies().logModifies();
 }
 
 
@@ -222,8 +222,8 @@ bool PKB::isUsesValid(int first, int second) {
 	return getUses().isUsesValid(first, second);
 }
 
-void PKB::printAllUses() {
-	getUses().printAllUses();
+void PKB::logUses() {
+	getUses().logUses();
 }
 
 
@@ -259,8 +259,8 @@ list<int> PKB::getWhileWithFirstExact(string first) {
 	return getPattern().getWhileWithFisrtExact(first);
 }
 
-void PKB::printAllPattern() {
-	getPattern().printAllPattern();
+void PKB::logPattern() {
+	getPattern().logPattern();
 }
 
 
@@ -281,8 +281,8 @@ bool PKB::isFollowsValid(int first, int second) {
 	return getFollows().isFollowValid(first, second);
 }
 
-void PKB::printAllFollows() {
-	getFollows().printAllFollows();
+void PKB::logFollows() {
+	getFollows().logFollows();
 }
 
 map<int, int> PKB::getFollowsMap() {
@@ -307,8 +307,8 @@ bool PKB::isFollowsStarValid(int first, int second) {
 	return getFollowsStar().isFollowsStarValid(first, second);
 }
 
-void PKB::printAllFollowsStar() {
-	getFollowsStar().printAllFollowsStar();
+void PKB::logFollowsStar() {
+	getFollowsStar().logFollowsStar();
 }
 
 
@@ -329,7 +329,7 @@ bool PKB::isCallsValid(int first, int second) {
 	return getCalls().isCallValid(first, second);
 }
 
-void PKB::printAllCalls() {
+void PKB::logCalls() {
 	getCalls().printAllCalls();
 }
 
@@ -360,8 +360,8 @@ bool PKB::isParentValid(int first, int second) {
 	return getParent().isParentValid(first, second);
 }
 
-void PKB::printAllParent() {
-	getParent().printAllParent();
+void PKB::logParent() {
+	getParent().logParent();
 }
 
 map<int, list<int>> PKB::getParentMap() {
@@ -386,8 +386,8 @@ bool PKB::isParentStarValid(int first, int second) {
 	return getParentStar().isParentStarValid(first, second);
 }
 
-void PKB::printAllParentStar() {
-	getParentStar().printAllParentStar();
+void PKB::logParentStar() {
+	getParentStar().logParentStar();
 }
 /*
 //Next

@@ -1,8 +1,8 @@
+#include "SPALog.h"
 #include <list>
 #include <string>
 #include <map>
 #include <stack>
-#include <iostream>
 
 using namespace std;
 
@@ -22,7 +22,7 @@ public:
 	list<int> getAssignWithBoth(string, string);
 	list<int> getIfWithFirstExact(string);
 	list<int> getWhileWithFisrtExact(string);
-	void printAllPattern();
+	void logPattern();
 
 private:
 	map<int, pair<string, string>> patternMap;

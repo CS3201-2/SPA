@@ -1,7 +1,7 @@
+#include "SPALog.h"
 #include <string>
 #include <list>
 #include <map>
-#include <iostream>
 
 using namespace std;
 
@@ -18,7 +18,7 @@ public:
 	list<int> getParentStarFirst(int);
 	list<int> getParentStarSecond(int);
 	bool isParentStarValid(int, int);
-	void printAllParentStar();
+	void logParentStar();
 	void sortAndUnifyMap();
 
 private:

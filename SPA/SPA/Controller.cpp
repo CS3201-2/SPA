@@ -58,31 +58,29 @@ bool Controller::syntaxCheck(list<pair<int, string>>& sourceList) {
 	return checker.isSyntaxCorrect(sourceList);
 }
 
-void Controller::testingPKB() {
+void Controller::logPKB() {
 	cout << endl;
-	cout << "testing" << endl;
+	cout << "logging" << endl;
 	cout << endl;
 
-	ctrPKB.printVarTable();
-	ctrPKB.printProcTable();
-	ctrPKB.printAllModifies();
-	ctrPKB.printAllUses();
+	ctrPKB.logVarTable();
+	ctrPKB.logProcTable();
+	ctrPKB.logModifies();
+	ctrPKB.logUses();
+	ctrPKB.logFollows();
+	ctrPKB.logFollowsStar();
+	ctrPKB.logParent();
+	ctrPKB.logParentStar();
+	ctrPKB.logPattern();
+
 
 	//change below for testing purpose
-	/*ctrPKB.printVarTable();
-	ctrPKB.printProcTable();
-
-	ctrPKB.printAllFollows();
-	ctrPKB.printAllFollowsStar();
 	/*list<int> followsFirst = ctrPKB.getWhileList();
 	for (list<int>::iterator it = followsFirst.begin(); it != followsFirst.end(); ++it) {
 		cout << *it << ", ";
 	}
-	cout << endl;
-
-	ctrPKB.printAllParent();
-	ctrPKB.printAllParentStar();*/
-	cout << "end of testing" << endl;
+	cout << endl;*/
+	cout << "end of logging" << endl;
 }
 
 PKB Controller::parse(list<pair<int, string>> sourceList) {
