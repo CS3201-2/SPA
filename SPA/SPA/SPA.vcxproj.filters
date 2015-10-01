@@ -52,6 +52,30 @@
     <ClCompile Include="StackNode.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="QueryController.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryEvaluator.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryResultProjector.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryTree.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryValidator.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="Relationship.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="RelationshipTable.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
+    <ClCompile Include="ResultTable.cpp">
+      <Filter>Source Files\Query Processor</Filter>
+    </ClCompile>
     <ClCompile Include="ValidatorMain.cpp" />
     <ClCompile Include="SPALog.cpp">
       <Filter>Source Files\Front-end Parser</Filter>
@@ -124,6 +148,30 @@
     <ClInclude Include="StackNode.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
+    <ClInclude Include="QueryController.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryEvaluator.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryResultProjector.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryTree.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryValidator.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="Relationship.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="RelationshipTable.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
+    <ClInclude Include="ResultTable.h">
+      <Filter>Header Files\Query Processor</Filter>
+    </ClInclude>
     <ClInclude Include="SPALog.h">
       <Filter>Header Files\Front-end Parser</Filter>
     </ClInclude>
@@ -167,6 +215,12 @@
     </Filter>
     <Filter Include="Source Files\PKB">
       <UniqueIdentifier>{0beae119-0c19-4e75-86e4-4954a7b6901e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Query Processor">
+      <UniqueIdentifier>{2f6e4aeb-8aee-4c74-a629-7d7f35482341}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Query Processor">
+      <UniqueIdentifier>{07a140cf-d85b-4cdf-930a-b77729fa95f5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
