@@ -18,7 +18,9 @@ int main() {
 		str11 = "stmt s; Select s such that Modifies(s, \"i\")",
 		str12 = "stmt s; Select s such that Next(s,s)",
 		str13 = "while w; Select w Pattern w(\"x\", _ )",
-		str14 = "if If; Select If Pattern If(\"i\", _, _ )";
+		str14 = "if If; Select If Pattern If(\"i\", _, _ )",
+		str15 = "assign a1; assign a2; Select a1 such that Follows(a1, a2)",
+		str16 = "assign a; Select a pattern a(\"x\", _)";
 	//queries.push_back(str);
 	//queries.push_back(str2);
 	//queries.push_back(str3);
@@ -29,7 +31,7 @@ int main() {
 	//cout << str3 << "\n";
 	//cout << str4 << "\n";
 	//cout << str6 << "\n";
-	q.isValidDecAndQuery(str8);
+	q.isValidDecAndQuery(str16);
 
 	//RelationshipTable r;
 

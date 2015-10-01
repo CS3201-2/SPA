@@ -1,4 +1,4 @@
-#include "CFG.h"
+/*#include "CFG.h"
 CFG::CFG()
 {
 }
@@ -101,4 +101,4 @@ void CFG::createNode(int index, int stmtIndex)
 {
 	CFGNode* temp = new CFGNode(index, stmtIndex, stmtIndex);
 	_nodeMap.insert(pair<int, CFGNode*>(index, temp));
-}
+}*/
