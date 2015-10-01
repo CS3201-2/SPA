@@ -4,25 +4,34 @@ Calls::Calls() {
 }
 
 void Calls::setCalls(int first, int second) {
-	callsMap[first] = second;
+	list<int> secondList;
+
+	if (callsMap.find(first) == callsMap.end()) {
+		secondList.push_back(second);
+		callsMap[first] = secondList;
+	}
+	else {
+		secondList = callsMap.at(first);
+		secondList.push_back(second);
+		callsMap[first] = secondList;
+	}
 }
 
 //Calls (B, 8): B will be returned
-int Calls::getCallsFirst(int second) {
-	int result = 0;
-	for (map<int, int>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
-		if ((*it).second == second) {
-			result = (*it).first;
-			break;
+list<int> Calls::getCallsFirst(int second) {
+	list<int> result;
+	for (map<int, list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
+		if (find((*it).second.begin(), (*it).second.end(), second) != (*it).second.end()) {
+			result.push_back((*it).first);
 		}
 	}
 	return result;
 }
 
 //Calls (8, A), A will be returned
-int Calls::getCallsSecond(int first) {
+list<int> Calls::getCallsSecond(int first) {
 	if (callsMap.find(first) == callsMap.end()) {
-		return 0;
+		return list<int>();
 	}
 	else {
 		return callsMap.at(first);
@@ -34,17 +43,21 @@ bool Calls::isCallValid(int first, int second) {
 		return false;
 	}
 	else {
-		return callsMap.at(first) == second;
+		list<int> callsList = callsMap.at(first);
+		return find(callsList.begin(), callsList.end(), second) != callsList.end();
 	}
 }
 
-void Calls::printAllCalls() {
-	cout << "calls table" << endl;
-	for (map<int, int>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
-		cout << (*it).first;
-		cout << ":";
-		cout << (*it).second;
-		cout << endl;
+void Calls::logCalls() {
+	string str = "calls table\n";
+	for (map<int, std::list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
+		str += to_string((*it).first) + ": ";
+		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
+			str += to_string(*listIt) + ", ";
+		}
+		str += "\n";
 	}
-	cout << endl;
+	str += "\n";
+
+	SPALog::log(str);
 }

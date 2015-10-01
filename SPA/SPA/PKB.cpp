@@ -317,11 +317,11 @@ void PKB::setCalls(int first, int second) {
 	getCalls().setCalls(first, second);
 }
 
-int PKB::getCallsFirst(int second) {
+list<int> PKB::getCallsFirst(int second) {
 	return getCalls().getCallsFirst(second);
 }
 
-int PKB::getCallsSecond(int first) {
+list<int> PKB::getCallsSecond(int first) {
 	return getCalls().getCallsSecond(first);
 }
 
@@ -330,7 +330,7 @@ bool PKB::isCallsValid(int first, int second) {
 }
 
 void PKB::logCalls() {
-	getCalls().printAllCalls();
+	getCalls().logCalls();
 }
 
 /*

@@ -97,8 +97,8 @@ public:
 
 	//Calls
 	void setCalls(int, int);
-	int getCallsFirst(int);
-	int getCallsSecond(int);
+	list<int> getCallsFirst(int);
+	list<int> getCallsSecond(int);
 	bool isCallsValid(int, int);
 	void logCalls();
 
