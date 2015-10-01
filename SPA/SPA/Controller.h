@@ -24,12 +24,10 @@ public:
 
 private:
 	string source;
-
-	PKB ctrPKB;
 	
 	bool syntaxCheck(list<pair<int, string>>&);
 
-	PKB parse(list<pair<int, string>>);
+	void parse(list<pair<int, string>>);
 };
 
 #endif

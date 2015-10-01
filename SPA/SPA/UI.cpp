@@ -35,7 +35,7 @@ int main(void) {
 	
 	//uncomnment this part before pushing
 	
-	cout << "Start Processing PQL" << endl;
+	/*cout << "Start Processing PQL" << endl;
 
 	a.open("query.txt");
 
@@ -55,7 +55,7 @@ int main(void) {
 		cout << "---------------------------------" <<endl;
 	}
 	a.close();
-	
+	*/
 	cin.ignore();
 	cin.get();
 

@@ -20,8 +20,8 @@ using namespace std;
 class PKB
 {
 public:
-	//static PKB* getPKBInstance();
-	PKB() {};
+	static PKB* getPKBInstance();
+	//PKB() {};
 
 	//general
 	bool isValidStmtNo(int);
@@ -134,7 +134,8 @@ public:
 
 
 private:
-	//static PKB* _PKBInstance;
+	static PKB* PKBInstance;
+	PKB() {};
 	Modifies modifies;
 	Uses uses;
 	ProcTable procTable;

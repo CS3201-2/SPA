@@ -16,12 +16,10 @@ public:
 	Parser();
 
 	list<pair<int, string>> prepareSourceList(string);
-	PKB parseSource(list<pair<int, string>>);
+	void parseSource(list<pair<int, string>>);
 	
 
 private:
-	PKB pkb;
-
 	void trim(string&);
 	void addNewLineString(string&);
 	void buildSourceCodeList(string, list<std::pair<int, string>>&);

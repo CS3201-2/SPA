@@ -3,15 +3,15 @@
 using namespace std;
 
 
-/*PKB* PKB::_PKBInstance = NULL;
+PKB* PKB::PKBInstance = NULL;
 
 PKB* PKB::getPKBInstance() {
-	if (!_PKBInstance) {
-		_PKBInstance = new PKB;
+	if (!PKBInstance) {
+		PKBInstance = new PKB();
 	}
 
-	return _PKBInstance;
-}*/
+	return PKBInstance;
+}
 
 ProcTable& PKB::getProcTable() {
 	return procTable;

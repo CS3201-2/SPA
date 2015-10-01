@@ -2,7 +2,6 @@
 #include "Checker.h"
 #include "Parser.h"
 #include "PKB.h"
-#include "QueryController.h"
 #include <iostream>
 #include <string>
 #include <list>
@@ -22,7 +21,7 @@ void Controller::processSource() {
 
 	list<pair<int, string>> sourceList = parser.prepareSourceList(source);
 
-	ctrPKB = parse(sourceList);
+	parse(sourceList);
 	//Note: must change back, now it is skipping checker!!!
 	/*if (!syntaxCheck(sourceList)) {
 		cout << endl << endl;
@@ -63,15 +62,15 @@ void Controller::logPKB() {
 	cout << "logging" << endl;
 	cout << endl;
 
-	ctrPKB.logVarTable();
-	ctrPKB.logProcTable();
-	ctrPKB.logModifies();
-	ctrPKB.logUses();
-	ctrPKB.logFollows();
-	ctrPKB.logFollowsStar();
-	ctrPKB.logParent();
-	ctrPKB.logParentStar();
-	ctrPKB.logPattern();
+	PKB::getPKBInstance()->logVarTable();
+	PKB::getPKBInstance()->logProcTable();
+	PKB::getPKBInstance()->logModifies();
+	PKB::getPKBInstance()->logUses();
+	PKB::getPKBInstance()->logFollows();
+	PKB::getPKBInstance()->logFollowsStar();
+	PKB::getPKBInstance()->logParent();
+	PKB::getPKBInstance()->logParentStar();
+	PKB::getPKBInstance()->logPattern();
 
 
 	//change below for testing purpose
@@ -83,9 +82,9 @@ void Controller::logPKB() {
 	cout << "end of logging" << endl;
 }
 
-PKB Controller::parse(list<pair<int, string>> sourceList) {
+void Controller::parse(list<pair<int, string>> sourceList) {
 	Parser parser;
-	return parser.parseSource(sourceList);
+	parser.parseSource(sourceList);
 }
 
 list<string> Controller::processQuery(string query) {
@@ -101,6 +100,7 @@ list<string> Controller::processQuery(string query) {
 	}
 	*/
 
-	QueryController queryController;
-	return queryController.processQueries(query, ctrPKB);
+	//QueryController queryController;
+	//return queryController.processQueries(query);
+	return list<string>();
 }
