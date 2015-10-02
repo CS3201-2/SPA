@@ -61,3 +61,14 @@ void Calls::logCalls() {
 
 	SPALog::log(str);
 }
+
+map<int, list<int>> Calls::getCallsMap() {
+	return callsMap;
+}
+
+void Calls::sortAndUnifyMap() {
+	for (map<int, std::list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
+		(*it).second.sort();
+		(*it).second.unique();
+	}
+}

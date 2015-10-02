@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 #ifndef Calls_H
 #define Calls_H
 
@@ -20,6 +21,8 @@ public:
 	list<int> getCallsSecond(int);
 	bool isCallValid(int, int);
 	void logCalls();
+	void sortAndUnifyMap();
+	map<int, list<int>> getCallsMap();
 	
 private:
 	map<int, list<int>> callsMap;
