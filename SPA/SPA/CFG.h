@@ -19,6 +19,8 @@ class CFG
 	const int TYPE_ELSE = 3;
 
 	vector<list<int>> _next;
+	vector<list<int>> _nextTable;
+	vector<list<int>> _beforeTable;
 	unordered_map<int, CFGNode*> _nodeMap;
 
 	list<pair<int, string>>::iterator _codeIterator;
@@ -43,6 +45,8 @@ private:
 	void solveNode(int,int);
 	void initializeStack();
 	void updateVector(int, int);
+	void storeNextTable();
+	void storeNext(int);
 	bool isContainer(string);
 	bool isIfStmt(string);
 	bool isWhileStmt(string);

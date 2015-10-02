@@ -23,7 +23,7 @@ void CFG::buildGraph(list<pair<int, string>> codeLst)
 		_codeIterator++;
 		cout << " good!" << endl;
 	}
-
+	storeNextTable();
 }
 
 list<int> CFG::getNext(int i)
@@ -287,6 +287,55 @@ void CFG::updateVector(int position, int value)
 		lst.push_back(value);
 		_next.push_back(lst);
 	}
+}
+
+void CFG::storeNextTable()
+{
+	_nextTable.reserve(_codeLst.size());
+	int currentStat = -1;
+	for (int i = 0; i < _next.size(); i++)
+	{
+		storeNext(i);
+	}
+}
+
+void CFG::storeNext(int index)
+{
+	CFGNode* node = _nodeMap.at(index);
+	int begin = node->getStrat();
+	int end = node->getEnd();
+	list<int> temp;
+	for (int i = begin; i < end; i++)
+	{
+		temp.push_back(i + 1);
+		_nextTable[i] = temp;
+		temp.clear();
+	}
+	temp = _next[index];
+	list<int> buffer;
+	if (temp.size() == 1)
+	{
+		int x = temp.front();
+		if (x == -1)
+		{
+			
+		}
+		else
+		{
+			CFGNode* tempNode = _nodeMap.at(x);
+			buffer.push_back(tempNode->getStrat());
+		}
+	}
+	else if (temp.size() == 2)
+	{
+		int x = temp.front();
+		CFGNode* tempNode = _nodeMap.at(x);
+		buffer.push_back(tempNode->getStrat());
+		x = temp.back();
+		tempNode = _nodeMap.at(x);
+		buffer.push_back(tempNode->getStrat());
+	}
+	_nextTable[end] = buffer;
 }
 
 bool CFG::isContainer(string str)
