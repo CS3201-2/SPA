@@ -119,9 +119,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AnotherExpressionTree.cpp" />
-    <ClCompile Include="AST.cpp" />
-    <ClCompile Include="ASTNode.cpp" />
     <ClCompile Include="Calls.cpp" />
     <ClCompile Include="CallsStar.cpp" />
     <ClCompile Include="CFG.cpp" />
@@ -137,7 +134,6 @@
     <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="PKB.cpp" />
     <ClCompile Include="ProcTable.cpp" />
-    <ClCompile Include="Prefix.cpp" />
     <ClCompile Include="QueryController.cpp" />
     <ClCompile Include="QueryEvaluator.cpp" />
     <ClCompile Include="QueryResultProjector.cpp" />
@@ -147,17 +143,12 @@
     <ClCompile Include="RelationshipTable.cpp" />
     <ClCompile Include="ResultTable.cpp" />
     <ClCompile Include="SPALog.cpp" />
-    <ClCompile Include="StackNode.cpp" />
-    <ClCompile Include="Suffix.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Uses.cpp" />
     <ClCompile Include="ValidatorMain.cpp" />
     <ClCompile Include="VarTable.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnotherExpressionTree.h" />
-    <ClInclude Include="AST.h" />
-    <ClInclude Include="ASTNode.h" />
     <ClInclude Include="Calls.h" />
     <ClInclude Include="CallsStar.h" />
     <ClInclude Include="CFG.h" />
@@ -173,7 +164,6 @@
     <ClInclude Include="Pattern.h" />
     <ClInclude Include="PKB.h" />
     <ClInclude Include="ProcTable.h" />
-    <ClInclude Include="Prefix.h" />
     <ClInclude Include="QueryController.h" />
     <ClInclude Include="QueryEvaluator.h" />
     <ClInclude Include="QueryResultProjector.h" />
@@ -183,8 +173,6 @@
     <ClInclude Include="RelationshipTable.h" />
     <ClInclude Include="ResultTable.h" />
     <ClInclude Include="SPALog.h" />
-    <ClInclude Include="StackNode.h" />
-    <ClInclude Include="Suffix.h" />
     <ClInclude Include="Uses.h" />
     <ClInclude Include="VarTable.h" />
   </ItemGroup>
