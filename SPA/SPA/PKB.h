@@ -5,6 +5,7 @@
 #include "Parent.h"
 #include "ParentStar.h"
 #include "Calls.h"
+#include "CallsStar.h"
 #include "ProcTable.h"
 #include "VarTable.h"
 #include "Pattern.h"
@@ -39,7 +40,7 @@ public:
 	list<int> getParentList(); //while and if list
 
 	//PKB housekeeping function
-	//sort and unify function for Modifies, Uses, FollowsStar, CallsStar, Parent, ParentStar
+	//sort and unify function for Modifies, Uses, FollowsStar, Parent, ParentStar
 	//unify ifList
 	void houseKeeping();
 
@@ -101,13 +102,17 @@ public:
 	list<int> getCallsSecond(int);
 	bool isCallsValid(int, int);
 	void logCalls();
+	void sortAndUnifyCallsMap();
+	map<int, list<int>> getCallsMap();
 
 	//CallsStar
-	/*void setCallsStar(int, list<int>);
+	void setCallsStar(int, int);
 	list<int> getCallsStarFirst(int);
 	list<int> getCallsStarSecond(int);
 	bool isCallsStarValid(int, int);
-	void printAllCallsStar();*/
+	bool isCallsStarFirstFound(int);
+	void logCallsStar();
+	void sortAndUnifyCallsStarMap();
 
 	//Parent
 	void setParent(int, list<int>); 
@@ -146,6 +151,7 @@ private:
 	Parent parent;
 	Pattern pattern;
 	Calls calls;
+	CallsStar callsStar;
 	list<int> whileStmtList;
 	list<int> assignStmtList;
 	list<int> callStmtList;
@@ -160,6 +166,7 @@ private:
 	Follows& getFollows();
 	FollowsStar& getFollowsStar();
 	Calls& getCalls();
+	CallsStar& getCallsStar();
 	Pattern& getPattern();
 
 	size_t getVarTableSize();
