@@ -41,6 +41,10 @@ Calls& PKB::getCalls() {
 	return calls;
 }
 
+CallsStar& PKB::getCallsStar() {
+	return callsStar;
+}
+
 Parent& PKB::getParent() {
 	return parent;
 }
@@ -317,11 +321,11 @@ void PKB::setCalls(int first, int second) {
 	getCalls().setCalls(first, second);
 }
 
-int PKB::getCallsFirst(int second) {
+list<int> PKB::getCallsFirst(int second) {
 	return getCalls().getCallsFirst(second);
 }
 
-int PKB::getCallsSecond(int first) {
+list<int> PKB::getCallsSecond(int first) {
 	return getCalls().getCallsSecond(first);
 }
 
@@ -330,17 +334,46 @@ bool PKB::isCallsValid(int first, int second) {
 }
 
 void PKB::logCalls() {
-	getCalls().printAllCalls();
+	getCalls().logCalls();
 }
 
-/*
+void PKB::sortAndUnifyCallsMap() {
+	getCalls().sortAndUnifyMap();
+}
+
+map<int, list<int>> PKB::getCallsMap() {
+	return getCalls().getCallsMap();
+}
+
+
 //CallsStar
-void setCallsStar(int, list<int>);
-list<int> getCallsStarFirst(int);
-list<int> getCallsStarSecond(int);
-bool isCallsStarValid(int, int);
-void printAllCallsStar();
-*/
+void PKB::setCallsStar(int first, int second) {
+	getCallsStar().setCallsStar(first, second);
+}
+
+list<int> PKB::getCallsStarFirst(int second) {
+	return getCallsStar().getCallsStarFirst(second);
+}
+
+list<int> PKB::getCallsStarSecond(int first) {
+	return getCallsStar().getCallsStarSecond(first);
+}
+
+bool PKB::isCallsStarValid(int first, int second) {
+	return getCallsStar().isCallsStarValid(first, second);
+}
+
+bool PKB::isCallsStarFirstFound(int first) {
+	return getCallsStar().isCallsStarFirstFound(first);
+}
+
+void PKB::logCallsStar() {
+	getCallsStar().logCallsStar();
+}
+
+void PKB::sortAndUnifyCallsStarMap() {
+	getCallsStar().sortAndUnifyMap();
+}
 
 
 //Parent

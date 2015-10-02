@@ -21,10 +21,11 @@ Checker::Checker() {
 
 bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 	stack<int> brackets; // must be empty after this for loop
-	list<string> calledProcList;
-	list<string> procedureList;
+	pair<int, string> calledPair;
+	list<pair<int, string>> calledProcList; //int is the currProcID, string is the calledProcName
 	stack<pair<int, string>> ifStack; //must be empty after the for loop
-	string currentProc;
+	int currProcID;
+	string procName;
 	list<stack<int>> bracketList;
 
 	for (list<pair<int, string>>::iterator it = sourceList.begin(); it != sourceList.end(); ++it) {
@@ -40,29 +41,28 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 		case procDeclarationStmt:
 			// update current procedure
 			if (brackets.empty()) {
-				currentProc = getProcName(stmtType, stmt);
+				procName = getProcName(stmtType, stmt);
+				if (PKB::getPKBInstance()->getProcID(procName) == 0) {
+					currProcID = PKB::getPKBInstance()->insertProc(procName);
+				}
+				else {
+					return false;
+				}
 			}
 			else {
 				return false;
 			}
 			//update brackets;
 			brackets.push(1);
-
-			//update procedure list
-			if (find(procedureList.begin(), procedureList.end(), getProcName(stmtType, stmt)) == procedureList.end()) {
-				procedureList.push_back(getProcName(stmtType, stmt));
-			}
-			else {
-				return false;
-			}
 			break;
 
 		case procCallStmt:
 			if (!popBrackets(brackets, stmt)) { return false; }
-
+			procName = getProcName(stmtType, stmt);
 			//update called procedure list, if it is not current procedure
-			if (currentProc != getProcName(stmtType, stmt)) {
-				calledProcList.push_back(getProcName(stmtType, stmt));
+			if (currProcID != PKB::getPKBInstance()->getProcID(procName)) {
+				calledPair = make_pair(currProcID, procName);
+				calledProcList.push_back(calledPair);
 			}
 			else { 
 				return false; 
@@ -71,7 +71,7 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 			break;
 
 		case whileStmt: 
-			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currentProc, bracketList)) {
+			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
 				return false;
 			}
 
@@ -85,7 +85,7 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 			else {
 				return false;
 			}
-			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currentProc, bracketList)) {
+			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
 				return false;
 			}
 			break;
@@ -100,7 +100,7 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 			else {
 				return false;
 			}
-			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currentProc, bracketList)) {
+			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
 				return false;
 			}
 
@@ -124,9 +124,63 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 		return false;
 	}
 
-	for (list<string>::iterator it = calledProcList.begin(); it != calledProcList.end(); ++it) {
-		if (find(procedureList.begin(), procedureList.end(), *it) == procedureList.end()) {
+	//construction of calls and callsStar should be moved under design extractor (should also be a singleton pattern)
+	//checker gets the callsMap and callsStarMap and validate them
+	if (!isCallValid(calledProcList)) { return false; }
+	PKB::getPKBInstance()->sortAndUnifyCallsMap();
+	if (!isCallsStarValid()) { return false; }
+	PKB::getPKBInstance()->sortAndUnifyCallsStarMap();
+
+	return true;
+}
+
+bool Checker::isCallsStarValid() {
+	map<int, list<int>> callsMap = PKB::getPKBInstance()->getCallsMap();
+	bool isValid = true;
+	
+	//loop through all the first in callsMap
+	for (map<int, list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
+		int first = (*it).first;
+		if (PKB::getPKBInstance()->getCallsStarSecond(first).size() == 0) {
+			list<int> firstList;
+			firstList.push_back(first);
+			processCallsStar(isValid, firstList);
+		}
+	}
+
+	return isValid;
+}
+
+void Checker::processCallsStar(bool& isValid, list<int> firstList) {
+	int first = firstList.back();
+	list<int> secondList = PKB::getPKBInstance()->getCallsSecond(first);
+	
+	for (list<int>::iterator it = secondList.begin(); it != secondList.end(); ++it) {
+		list<int> tempFirstList = firstList;
+		if (find(tempFirstList.begin(), tempFirstList.end(), *it) == tempFirstList.end()) {
+			for (list<int>::iterator tfit = tempFirstList.begin(); tfit != tempFirstList.end(); ++tfit) {
+				PKB::getPKBInstance()->setCallsStar(*tfit, *it);
+			}
+		}
+		else {
+			isValid = false;
+			return;
+		}
+		tempFirstList.push_back(*it);
+		processCallsStar(isValid, tempFirstList);
+	}
+}
+
+bool Checker::isCallValid(list<pair<int, string>> calledProcList) {
+	for (list<pair<int, string>>::iterator it = calledProcList.begin(); it != calledProcList.end(); ++it) {
+		int callFirstID = (*it).first;
+		int callSecondID = PKB::getPKBInstance()->getProcID((*it).second);
+
+		if (callSecondID == 0) {
 			return false;
+		}
+		else {
+			PKB::getPKBInstance()->setCalls(callFirstID, callSecondID);
 		}
 	}
 
@@ -145,11 +199,13 @@ string Checker::getProcName(int stmtType, string str) {
 }
 
 bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair<int, string>>& sourceList,
-	stack<int>& brackets, list<string>& calledProcList, string currentProc, list<stack<int>>& bracketList) {
+	stack<int>& brackets, list<pair<int, string>>& calledProcList, int currProcID, list<stack<int>>& bracketList) {
 	
 	stack<int> forBracketList;
 	forBracketList.push(1);
 	bracketList.push_back(forBracketList);
+	pair<int, string> calledPair;
+	string procName;
 
 	stack<pair<int, string>> ifStack; //must be empty after the for loop
 	brackets.push(1);
@@ -184,18 +240,20 @@ bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair
 		case procCallStmt:
 			if (!popBrackets(brackets, stmt)) { return false; }
 
+			if (!popBrackets(brackets, stmt)) { return false; }
+			procName = getProcName(stmtType, stmt);
 			//update called procedure list, if it is not current procedure
-			if (currentProc != getProcName(stmtType, stmt)) {
-				calledProcList.push_back(getProcName(stmtType, stmt));
+			if (currProcID != PKB::getPKBInstance()->getProcID(procName)) {
+				calledPair = make_pair(currProcID, procName);
+				calledProcList.push_back(calledPair);
 			}
 			else {
 				return false;
 			}
-			//add procedure into ProcTable
 			break;
 
 		case whileStmt:
-			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currentProc, bracketList)) {
+			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
 				return false;
 			}
 			break;
@@ -208,7 +266,7 @@ bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair
 			else {
 				return false;
 			}
-			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currentProc, bracketList)) {
+			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
 				return false;
 			}
 			break;
@@ -223,7 +281,7 @@ bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair
 			else {
 				return false;
 			}
-			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currentProc, bracketList)) {
+			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
 				return false;
 			}
 			break;

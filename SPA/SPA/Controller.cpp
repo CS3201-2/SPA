@@ -3,6 +3,7 @@
 #include "Parser.h"
 #include "PKB.h"
 #include "QueryController.h"
+#include "SPALog.h"
 #include <iostream>
 #include <string>
 #include <list>
@@ -22,7 +23,8 @@ void Controller::processSource() {
 
 	list<pair<int, string>> sourceList = parser.prepareSourceList(source);
 
-	//Note: must change back, now it is skipping checker!!!
+	logSourceCode(sourceList);
+
 	if (!syntaxCheck(sourceList)) {
 		cout << endl << endl;
 		cout << "syntax wrong!!!" << endl << endl << endl;
@@ -30,6 +32,7 @@ void Controller::processSource() {
 	else {
 		parser.parseSource(sourceList);
 	}
+	cout << "end of checker" << endl;
 
 
 	//for testing
@@ -40,6 +43,26 @@ void Controller::processSource() {
 	}*/
 	//cout << "end of printing" << endl;
 	//for testing ends
+}
+
+void Controller::logSourceCode(list<pair<int, string>> sourceList) {
+	string str;
+	for (auto& x : sourceList) {
+		if (x.first < 0) {
+			str += to_string(x.first) + " : " + x.second + "\n";
+		}
+		else if (x.first < 10) {
+			str += to_string(x.first) + "  : " + x.second + "\n";
+		}
+		else if (x.first < 100){
+			str += to_string(x.first) + " : " + x.second + "\n";
+		}
+		else {
+			str += to_string(x.first) + ": " + x.second + "\n";
+		}
+	}
+
+	SPALog::log(str);
 }
 
 bool Controller::syntaxCheck(list<pair<int, string>>& sourceList) {
@@ -61,6 +84,8 @@ void Controller::logPKB() {
 	PKB::getPKBInstance()->logParent();
 	PKB::getPKBInstance()->logParentStar();
 	PKB::getPKBInstance()->logPattern();
+	PKB::getPKBInstance()->logCalls();
+	PKB::getPKBInstance()->logCallsStar();
 
 
 	//change below for testing purpose

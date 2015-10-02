@@ -1,3 +1,4 @@
+#include "SPALog.h"
 #include <string>
 #include <map>
 #include <list>
@@ -5,6 +6,7 @@
 #include <iostream>
 
 using namespace std;
+
 
 #ifndef Calls_H
 #define Calls_H
@@ -15,19 +17,15 @@ public:
 	Calls();
 
 	void setCalls(int, int);
-
-	//Calls (B, 8): B will be returned
-	int getCallsFirst(int);
-
-	//Calls (8, A), A will be returned
-	int getCallsSecond(int);
-
+	list<int> getCallsFirst(int);
+	list<int> getCallsSecond(int);
 	bool isCallValid(int, int);
-
-	void printAllCalls();
+	void logCalls();
+	void sortAndUnifyMap();
+	map<int, list<int>> getCallsMap();
 	
 private:
-	map<int, int> callsMap;
+	map<int, list<int>> callsMap;
 };
 
 #endif
