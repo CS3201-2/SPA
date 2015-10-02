@@ -1,3 +1,4 @@
+#include "PKB.h"
 #include <string>
 #include <list>
 #include <regex>
@@ -17,7 +18,7 @@ public:
 
 private:
 	bool processNestedStmt(list<pair<int, string>>::iterator&, list<pair<int, string>>&, 
-		stack<int>&, list<string>&, string, list<stack<int>>&);
+		stack<int>&, list<pair<int, string>>&, int, list<stack<int>>&);
 	int getTypeOfStmt(string);
 	bool isAssignmentValid(string);
 	bool isVariable(string);
@@ -25,6 +26,9 @@ private:
 	bool isSemicolon(char);
 	bool isOperator(char);
 	bool isParenthesis(char);
+	bool isCallValid(list<pair<int, string>>);
+	bool isCallsStarValid();
+	void processCallsStar(bool&, list<int>);
 	string getProcName(int, string);
 	int countNumOfLeftBraces(string);
 	int countNumOfRightBraces(string);
