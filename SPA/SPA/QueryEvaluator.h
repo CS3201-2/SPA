@@ -22,8 +22,10 @@ public:
 	ResultTable processUses(vector<string> tempString);
 	ResultTable processParent(vector<string> tempString);
 	ResultTable processFollows(vector<string> tempString);
-	ResultTable processParentStar(vector<string> tempstring);
-	ResultTable processFollowsStar(vector<string> tempstring);
+	ResultTable processParentStar(vector<string> tempString);
+	ResultTable processFollowsStar(vector<string> tempString);
+	ResultTable processCalls(vector<string> tempString);
+	ResultTable processCallsStar(vector<string> tempString);
 
 	QueryEvaluator(QueryTree);
 	QueryEvaluator();

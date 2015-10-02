@@ -115,6 +115,12 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	else if (relationship == "follows*") {
 		resultList.push_back(processFollowsStar(tempString));
 	}
+	else if (relationship == "calls") {
+		resultList.push_back(processCalls(tempString));
+	}
+	else if (relationship == "call*") {
+		resultList.push_back(processCallsStar(tempString));
+	}
 	else {
 
 	}
@@ -816,6 +822,201 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 
 }
 
+ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
+	if (arg1Type == "proc_name") {
+		int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
+
+		if (!arg1ID) {
+			ResultTable tempResult = ResultTable();
+			tempResult.isWholeTrue = 0;
+			SPALog::log("arg1 is not a valid proc id!\n");
+			return tempResult;
+		}
+
+		list<int> procedureCalled = PKB::getPKBInstance()->getCallsSecond(arg1ID);
+
+		if (arg2Type == "proc_name") {
+			ResultTable tempResult = ResultTable();
+			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
+
+			if (!arg2ID) {
+				tempResult.isWholeTrue = 0;
+				SPALog::log("arg2 is not a valid proc id!\n");
+				return tempResult;
+			}
+
+			if (PKB::getPKBInstance()->isCallsValid(arg1ID, arg2ID)) {
+				tempResult.isWholeTrue = 1;
+			}
+			else {
+				tempResult.isWholeTrue = 0;
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "procedure" || "all") {
+			ResultTable tempResult = ResultTable(arg2);
+			vector<int> temp;
+			for (list<int>::iterator i = procedureCalled.begin(); i != procedureCalled.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			return tempResult;
+		}
+		else {
+			SPALog::log("arg2 is not valid!\n");
+			return ResultTable();
+		}
+	}
+	else if (arg1Type == "procedure" || "all") {
+		if (arg2Type == "proc_name") {
+			ResultTable tempResult = ResultTable(arg1);
+			vector<int> temp;
+			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
+
+			if (!arg2ID) {
+				tempResult.isWholeTrue = 0;
+				SPALog::log("arg2 is not a valid proc id!\n");
+				return tempResult;
+			}
+
+			list<int> procedureCalls = PKB::getPKBInstance()->getCallsFirst(arg2ID);
+
+			for (list<int>::iterator i = procedureCalls.begin(); i != procedureCalls.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "procedure" || "all") {
+			ResultTable tempResult = ResultTable(arg1,arg2);
+			vector<int> temp;
+			list<int> procList = PKB::getPKBInstance()->getProcList();
+			for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
+				list<int> procedureCalled = PKB::getPKBInstance()->getCallsSecond(*i);
+				for (list<int>::iterator t = procedureCalled.begin(); t != procedureCalled.end(); t++) {
+					temp.push_back(*i);
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;
+		}
+		else {
+			SPALog::log("arg2 is not valid!\n");
+			return ResultTable();
+		}
+	}
+	else {
+		SPALog::log("arg1 is not valid!\n");
+		return ResultTable();
+	}
+
+}
+
+ResultTable QueryEvaluator::processCallsStar(vector<string> tempString) {
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
+	if (arg1Type == "proc_name") {
+		int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
+
+		if (!arg1ID) {
+			ResultTable tempResult = ResultTable();
+			tempResult.isWholeTrue = 0;
+			SPALog::log("arg1 is not a valid proc id!\n");
+			return tempResult;
+		}
+
+		list<int> procedureCalled = PKB::getPKBInstance()->getCallsStarSecond(arg1ID);
+
+		if (arg2Type == "proc_name") {
+			ResultTable tempResult = ResultTable();
+			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
+
+			if (!arg2ID) {
+				tempResult.isWholeTrue = 0;
+				SPALog::log("arg2 is not a valid proc id!\n");
+				return tempResult;
+			}
+
+			if (PKB::getPKBInstance()->isCallsStarValid(arg1ID, arg2ID)) {
+				tempResult.isWholeTrue = 1;
+			}
+			else {
+				tempResult.isWholeTrue = 0;
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "procedure" || "all") {
+			ResultTable tempResult = ResultTable(arg2);
+			vector<int> temp;
+			for (list<int>::iterator i = procedureCalled.begin(); i != procedureCalled.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			return tempResult;
+		}
+		else {
+			SPALog::log("arg2 is not valid!\n");
+			return ResultTable();
+		}
+	}
+	else if (arg1Type == "procedure" || "all") {
+		if (arg2Type == "proc_name") {
+			ResultTable tempResult = ResultTable(arg1);
+			vector<int> temp;
+			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
+
+			if (!arg2ID) {
+				tempResult.isWholeTrue = 0;
+				SPALog::log("arg2 is not a valid proc id!\n");
+				return tempResult;
+			}
+
+			list<int> procedureCalls = PKB::getPKBInstance()->getCallsStarFirst(arg2ID);
+
+			for (list<int>::iterator i = procedureCalls.begin(); i != procedureCalls.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "procedure" || "all") {
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			vector<int> temp;
+			list<int> procList = PKB::getPKBInstance()->getProcList();
+			for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
+				list<int> procedureCalled = PKB::getPKBInstance()->getCallsStarSecond(*i);
+				for (list<int>::iterator t = procedureCalled.begin(); t != procedureCalled.end(); t++) {
+					temp.push_back(*i);
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			return tempResult;
+		}
+		else {
+			SPALog::log("arg2 is not valid!\n");
+			return ResultTable();
+		}
+	}
+	else {
+		SPALog::log("arg1 is not valid!\n");
+		return ResultTable();
+	}
+
+}
 
 void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	string syn = tempString.at(0);
