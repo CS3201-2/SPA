@@ -25,6 +25,7 @@ public:
 private:
 	string source;
 	
+	void logSourceCode(list<pair<int, string>>);
 	bool syntaxCheck(list<pair<int, string>>&);
 };
 
