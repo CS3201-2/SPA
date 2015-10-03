@@ -1,3 +1,4 @@
+#include "SPALog.h"
 #include "Checker.h"
 
 const regex assignmentRegex("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
@@ -31,11 +32,12 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 	for (list<pair<int, string>>::iterator it = sourceList.begin(); it != sourceList.end(); ++it) {
 		string stmt = (*it).second;
 		int stmtType = getTypeOfStmt(stmt);
-		
+		int stmtNo = (*it).first;
+
 		switch (stmtType) {
 		case assignmentStmt: 
-			if (!popBrackets(brackets, stmt)) { return false; }
-			if (!isAssignmentValid(stmt)) { return false; } // add variable to VarTable
+			if (!popBrackets(brackets, stmt)) { SPALog::log(to_string(stmtNo)); return false; }
+			if (!isAssignmentValid(stmt)) { SPALog::log(to_string(stmtNo)); return false; } // add variable to VarTable
 			break;
 
 		case procDeclarationStmt:
@@ -46,10 +48,12 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 					currProcID = PKB::getPKBInstance()->insertProc(procName);
 				}
 				else {
+					SPALog::log(to_string(stmtNo)); 
 					return false;
 				}
 			}
 			else {
+				SPALog::log(to_string(stmtNo));
 				return false;
 			}
 			//update brackets;
@@ -57,7 +61,7 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 			break;
 
 		case procCallStmt:
-			if (!popBrackets(brackets, stmt)) { return false; }
+			if (!popBrackets(brackets, stmt)) { SPALog::log(to_string(stmtNo)); return false; }
 			procName = getProcName(stmtType, stmt);
 			calledPair = make_pair(currProcID, procName);
 			calledProcList.push_back(calledPair);
@@ -66,6 +70,7 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 
 		case whileStmt: 
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
+				SPALog::log(to_string(stmtNo)); 
 				return false;
 			}
 
@@ -77,9 +82,11 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 				ifStack.push(*it);
 			}
 			else {
+				SPALog::log(to_string(stmtNo)); 
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
+				SPALog::log(to_string(stmtNo)); 
 				return false;
 			}
 			break;
@@ -92,15 +99,18 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 				ifStack.pop();
 			}
 			else {
+				SPALog::log(to_string(stmtNo)); 
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
+				SPALog::log(to_string(stmtNo)); 
 				return false;
 			}
 
 			break;
 
-		case invalidStmt: 
+		case invalidStmt:
+			SPALog::log(to_string(stmtNo));
 			return false; 
 			break;
 		}
@@ -109,21 +119,23 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 	// check matching brackets
 	if (!brackets.empty()) {
 		//cout << "bracket" << endl;
+		SPALog::log("brackets");
 		return false;
 	}
 
 	// check matching if else statement
 	if (!ifStack.empty()) {
 		//cout << "if stack" << endl;
+		SPALog::log("ifElse");
 		return false;
 	}
 
 	//checker gets the callsMap and callsStarMap and validate them
 	DesignExtractor de = DesignExtractor();
 	de.setCalls(calledProcList);
-	if (!isCallValid()) { return false; }
+	if (!isCallValid()) { SPALog::log("invalid calls"); return false; }
 	de.setCallsStar();
-	if (!isCallsStarValid()) { return false; }
+	if (!isCallsStarValid()) { SPALog::log("invalid calls"); return false; }
 	return true;
 }
 

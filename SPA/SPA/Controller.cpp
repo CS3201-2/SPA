@@ -31,14 +31,14 @@ void Controller::processSource() {
 	}
 	else {
 		parser.parseSource(sourceList);
+		DesignExtractor de = DesignExtractor();
+		de.setFollowsStar();
+		de.setParentStar();
+		de.resetModifies();
+		de.resetUses();
 	}
 	cout << "end of checker and parsing" << endl;
 
-	DesignExtractor de = DesignExtractor();
-	de.setFollowsStar();
-	de.setParentStar();
-	de.resetModifies();
-	de.resetUses();
 
 	//for testing
 	/*cout << "parsed source list" << endl;
