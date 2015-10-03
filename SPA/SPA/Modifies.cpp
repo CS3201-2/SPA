@@ -23,6 +23,10 @@ void Modifies::setModifies(int first, list<int> second) {
 	}
 }
 
+void Modifies::resetModifies(int first, list<int> second) {
+	modifiesMap[first] = second;
+}
+
 list<int> Modifies::getModifiesFirst(int second) {
 	list<int> resultList;
 	for (map<int, list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {

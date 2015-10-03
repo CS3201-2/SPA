@@ -20,6 +20,10 @@ void Uses::setUses(int first, list<int> second) {
 	}
 }
 
+void Uses::resetUses(int first, list<int> second) {
+	usesMap[first] = second;
+}
+
 list<int> Uses::getUsesFirst(int second) {
 	list<int> resultList;
 	for (map<int, list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {

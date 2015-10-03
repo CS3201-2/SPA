@@ -23,6 +23,7 @@ public:
 	bool isCallsStarFirstFound(int);
 	void logCallsStar();
 	void sortAndUnifyMap();
+	map<int, list<int>> getCallsStarMap();
 
 private:
 	map<int, list<int>> callsStarMap;
