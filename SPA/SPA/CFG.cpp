@@ -71,6 +71,47 @@ bool CFG::isNextValid(int i, int j)
 	}
 }
 
+list<int> CFG::getNextStarFirst(int i)
+{
+	return traverse(i, _beforeTable);
+}
+
+list<int> CFG::getNextStarSecond(int i)
+{
+	return traverse(i, _nextTable);
+}
+
+bool CFG::isNextStarValid(int i, int j)
+{
+	vector<bool> visit;
+	queue<int> toVisit;
+	list<int> temp = _nextTable[i];
+	visit.resize(_size+1, false);
+	for (auto& x : temp)
+	{
+		toVisit.push(x);
+		visit[x] = true;
+	}
+	while (!toVisit.empty())
+	{
+		int tempIndex = toVisit.front();
+		toVisit.pop();
+		if (tempIndex == j)
+		{
+			return true;
+		}
+		temp = _nextTable[tempIndex];
+		for (auto& x : temp)
+		{
+			if (!visit[x]) {
+				toVisit.push(x);
+				visit[x] = true;
+			}
+		}
+	}
+	return false;
+}
+
 void CFG::printGraph()
 {
 	cout << "size of the array is " << _next.size() << endl;
@@ -231,6 +272,35 @@ int CFG::getType(string str)
 int CFG::countBrace(string str)
 {
 	return std::count(str.begin(), str.end(), '}');
+}
+
+list<int> CFG::traverse(int index, vector<list<int>> table)
+{
+	list<int> buffer;
+	vector<bool> visit;
+	queue<int> toVisit;
+	list<int> temp = table[index];
+	visit.resize(_size+1, false);
+	for (auto& x : temp)
+	{
+		toVisit.push(x);
+		visit[x] = true;
+	}
+	while (!toVisit.empty())
+	{
+		int tempIndex = toVisit.front();
+		toVisit.pop();
+		buffer.push_back(tempIndex);
+		temp = table[tempIndex];
+		for (auto& x : temp)
+		{
+			if (!visit[x]) {
+				toVisit.push(x);
+				visit[x] = true;
+			}
+		}
+	}
+	return buffer;
 }
 
 void CFG::solveCode()

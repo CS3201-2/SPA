@@ -3,6 +3,7 @@
 #include<vector>
 #include<unordered_map>
 #include<stack>
+#include<queue>
 #include<regex>
 #include<algorithm>
 #include<iostream>
@@ -36,6 +37,9 @@ public:
 	list<int> getNextFirst(int);
 	list<int> getNextSecond(int);
 	bool isNextValid(int, int);
+	list<int> getNextStarFirst(int);
+	list<int> getNextStarSecond(int);
+	bool isNextStarValid(int, int);
 	void printGraph();
 	void printNextTable();
 	void printBeforeTable();
@@ -47,6 +51,7 @@ private:
 	int createDummyNode();
 	int getType(string);
 	int countBrace(string);
+	list<int> traverse(int, vector<list<int>>);
 	void solveCode();
 	void solveNode(int,int);
 	void initializeStack();
