@@ -13,7 +13,7 @@ const char SYMBOL_CLOSE_BRACKET = ')';
 const vector<string> KEYWORDS = { "constant", "stmt", "assign", "while", "if",
 "procedure", "call", "prog_line", "select", "modifies", "uses", "parent",
 "parent*", "follows", "follows*", "pattern", "next", "next*", "calls",
-"calls*", "affects", "affects*", "with" };
+"calls*", "affects", "affects*", "with" , "and" };
 
 const string VARTYPE_VARIABLE = "variable";
 const string VARTYPE_STRING = "string";
@@ -30,13 +30,19 @@ const string VARTYPE_PROG_LINE = "prog_line";
 const string VARTYPE_NUMBER = "number";
 const string VARTYPE_ALL = "all";
 
+const string RELTYPE_PATTERN_ASSIGN = "patternAssign";
+const string RELTYPE_PATTERN_WHILE = "procWhile";
+const string RELTYPE_PATTERN_IF = "patternIf";
+const string RELTYPE_PATTERN = "pattern";
+
+const regex variableNameRegex("(^[[:alpha:]])([[:alnum:]]+)*$");
+
 bool QueryValidator::isValidDecAndQuery(string query)
 {
 	vector<string> splitStr = split(trim(query), SYMBOL_SEMICOLON);
 	//cout << "isValidDecAndQuery";
 	if (splitStr.at(0).empty()) {
 		cout << "Invalid Query" << endl;
-		//qt.invalid();
 		return false;
 	}
 
@@ -47,14 +53,12 @@ bool QueryValidator::isValidDecAndQuery(string query)
 	for (i; i < size - 1; i++) {
 		if (!isValidDeclaration(splitStr.at(i))) {
 			cout << "Invalid Query" << endl;
-			//qt.invalid();
 			return false;
 		}
 	}
 
 	if (!isValidQuery(splitStr.at(i))) {
 		cout << "Invalid Query" << endl;
-		//qt.invalid();
 		return false;
 	}
 
@@ -88,8 +92,7 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 		//if (synonyms.at(i)) - check if empty (no variable after type)
 		if (!isValidVariableName(synonyms.at(i)) || isVarNameExists(synonyms.at(i))) {
 			return false;
-		}
-		else {
+		} else {
 			varMap[synonyms.at(i)] = arrDec.at(0);
 			//cout << "dec: " << synonyms.at(i) <<" "<< arrDec.at(0) << endl;
 			qt.insertVariable(synonyms.at(i), arrDec.at(0));
@@ -114,7 +117,7 @@ bool QueryValidator::isValidQuery(string query) {
 	if (!(isVarNameExists(arrClauses.at(0)))) {// || arrClauses.at(0).compare("_") == 0) ) {
 		return false;
 	}
-
+	
 	qt.insertSelect(arrClauses.at(0), getVarType(arrClauses.at(0)));
 
 	bool isFinished = false;
@@ -140,9 +143,10 @@ bool QueryValidator::isValidQuery(string query) {
 		}*/
 	}
 
-	if (arrClauses.at(1).size() > 1 || arrClauses.at(1).compare(" ") != 0) {
-		return false;
-	}
+	//if (arrClauses.at(1).compare(" ") != 0) {
+		//cout << "\n."<< arrClauses.at(1) <<".\n";
+		//return false;
+	//}
 
 	//cout << arrClauses.at(1).size();	
 	return true;
@@ -231,8 +235,7 @@ bool QueryValidator::parseSuchThatArgs(string relType,
 				varTypes.at(i) = VARTYPE_PROG_LINE;
 			}
 
-		}
-		else if (arrVar.at(i).compare("_") == 0) {
+		} else if (arrVar.at(i).compare("_") == 0) {
 			if (!r.isArgValid(relType, i + 1, VARTYPE_ALL)) {
 				return false;
 			} else {
@@ -248,10 +251,10 @@ bool QueryValidator::parseSuchThatArgs(string relType,
 QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) {
 	vector<string> arrWords = split(subquery, SYMBOL_SPACE, 2);
 	//cout << "findPattern" << endl;
-	if (!(stringToLower(arrWords.at(0)).compare("pattern") == 0)) {
+	if (!(stringToLower(arrWords.at(0)).compare(RELTYPE_PATTERN) == 0)) {
 		return NONE;
 	}
-
+	
 	arrWords = split(arrWords.at(1), SYMBOL_OPEN_BRACKET, 2);
 
 	if (isVarNameExists(arrWords.at(0))) {
@@ -262,17 +265,17 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			string relType, syn, synType;
 
 			if (getVarType(arrWords.at(0)).compare(VARTYPE_ASSIGN) == 0) {
-				relType = "patternAssign";
+				relType = RELTYPE_PATTERN_ASSIGN;
 				syn = arrWords.at(0);
 				synType = VARTYPE_ASSIGN;
 
 			} else if (getVarType(arrWords.at(0)).compare(VARTYPE_WHILE) == 0) {
-				relType = "patternWhile";
+				relType = RELTYPE_PATTERN_WHILE;
 				syn = arrWords.at(0);
 				synType = VARTYPE_WHILE;
 
 			} else if (getVarType(arrWords.at(0)).compare(VARTYPE_IF) == 0) {
-				relType = "patternIf";
+				relType = RELTYPE_PATTERN_IF;
 				syn = arrWords.at(0);
 				synType = VARTYPE_IF;
 
@@ -302,13 +305,18 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			if (!parsePatternArg2(relType, arrVar.at(1), varType.at(1))) {
 				return INVALID;
 			}
-
+			
+			if (relType.compare(RELTYPE_PATTERN_IF) == 0) {
+				if (arrVar.at(2).compare("_") != 0) {
+					return INVALID;
+				}
+			}
+			
 			qt.insertPattern(syn, synType, arrVar, varType);
 			cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 			cout << "pattern " << varType.at(0) << " " << varType.at(1) << endl;
 		}
-	}
-	else {
+	} else {
 		return INVALID;
 	}
 	//cout << "pattern " << arrVar.at(0) << " " << value << endl;
@@ -323,32 +331,26 @@ bool QueryValidator::parsePatternArg1(string relType,
 	if (isVarNameExists(arg) && getVarType(arg).compare(VARTYPE_ASSIGN) == 0) {
 		if (!r.isArgValid(relType, 1, getVarType(arg))) {
 			return false;
-		}
-		else {
+		} else {
 			varType = VARTYPE_ASSIGN;
 		}
 
-	}
-	else if (isStringVar(arg)) {
+	} else if (isStringVar(arg)) {
 		if (!r.isArgValid(relType, 1, VARTYPE_STRING)) {
 			return false;
-		}
-		else {
+		} else {
 			arg = arg.substr(1, arg.size() - 2);
 			varType = VARTYPE_STRING;
 		}
 
-	}
-	else if (arg.compare("_") == 0) {
+	} else if (arg.compare("_") == 0) {
 		if (!r.isArgValid(relType, 1, VARTYPE_ALL)) {
 			return false;
-		}
-		else {
+		} else {
 			varType = VARTYPE_ALL;
 		}
 
-	}
-	else {
+	} else {
 		return false;
 	}
 }
@@ -381,37 +383,29 @@ bool QueryValidator::parsePatternArg2(string relType,
 				}
 			}
 		}
-
-	}
-	else if (arg.at(0) == '\"' && arg.at(arg.size() - 1) == '\"') {
+	} else if (arg.at(0) == '\"' && arg.at(arg.size() - 1) == '\"') {
 		arg = arg.substr(1, arg.size() - 2);
 
 		if (isValidVariableName(arg)) {
 			if (!r.isArgValid(relType, 2, VARTYPE_STRING)) {
 				return false;
-			}
-			else {
+			} else {
 				varType = VARTYPE_STRING;
 			}
-		}
-		else if (isInteger(arg)) {
+		} else if (isInteger(arg)) {
 			if (!r.isArgValid(relType, 2, VARTYPE_STRING)) {
 				return false;
-			}
-			else {
+			} else {
 				varType = VARTYPE_STRING;
 			}
 		}
-	}
-	else if (arg.compare("_") == 0) {
+	} else if (arg.compare("_") == 0) {
 		if (!r.isArgValid(relType, 2, VARTYPE_ALL)) {
 			return false;
-		}
-		else {
+		} else {
 			varType = VARTYPE_ALL;
 		}
-	}
-	else {
+	} else {
 		return false;
 	}
 }
@@ -437,19 +431,20 @@ bool QueryValidator::isValidVariableName(string varName) {
 		return false;
 	}
 
-	for (int i = 0; i < varName.length(); i++) {
+	return regex_match(varName, variableNameRegex);
+
+	/*for (int i = 0; i < varName.length(); i++) {
 		if (i == 0) {
 			if (!isalpha(varName.at(i))) {
 				return false;
 			}
-		}
-		else if (!(isalnum(varName.at(i)) || varName.at(i) == '#')) {
+		} else if (!(isalnum(varName.at(i)) || varName.at(i) == '#')) {
 			return false;
 		}
-	}
+	}*/
 
 	//cout << varName << endl;
-	return true;
+	//return true;
 }
 
 //tokenizer
@@ -561,4 +556,3 @@ bool QueryValidator::isPositiveInteger(string str) {
 
 	return (*p == 0);
 }
-
