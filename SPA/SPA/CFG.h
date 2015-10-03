@@ -8,6 +8,7 @@
 #include<algorithm>
 #include<iostream>
 #include<stdexcept>
+#include"SPALog.h"
 #include"CFGNode.h"
 using namespace std;
 #ifndef CFG_H
@@ -43,6 +44,7 @@ public:
 	void printGraph();
 	void printNextTable();
 	void printBeforeTable();
+	void logNext();
 	~CFG();
 private:
 	int findNode(int);
