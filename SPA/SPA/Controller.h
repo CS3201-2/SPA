@@ -21,11 +21,11 @@ public:
 
 	list<string> processQuery(string query);
  
-	void logPKB();
 
 private:
 	string source;
-	
+
+	void logPKB();
 	void logSourceCode(list<pair<int, string>>);
 	bool syntaxCheck(list<pair<int, string>>&);
 };
