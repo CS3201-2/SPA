@@ -140,8 +140,7 @@ bool QueryValidator::isValidQuery(string query) {
 		}*/
 	}
 
-	//cout << arrClauses.at(1).size();
-
+	//cout << arrClauses.at(1).size();	
 	return true;
 }
 
@@ -314,6 +313,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 
 			qt.insertPattern(syn, synType, arrVar, varType);
 			cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+			cout << "pattern " << varType.at(0) << " " << varType.at(1) << endl;
 		}
 	}
 	else {
@@ -387,7 +387,6 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
 				else {
 					varType = VARTYPE_SUBSTRING;
 				}
-
 			}
 		}
 
@@ -413,7 +412,12 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
 		}
 	}
 	else if (arg.compare("_") == 0) {
-		r.isArgValid(relType, 1, VARTYPE_ALL);
+		if (!r.isArgValid(relType, 2, VARTYPE_ALL)) {
+			return INVALID;
+		}
+		else {
+			varType = VARTYPE_ALL;
+		}
 	}
 	else {
 		return INVALID;
@@ -428,18 +432,6 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery)
 		subquery = arrWords.at(2);
 		return VALID;
 	}
-
-
-	//cout << arrWords.at(2);
-	/*if (stringToLower(arrWords.at(0)).compare("such") == 0) {
-	arrWords = split(arrWords.at(1), SYMBOL_SPACE, 2);
-
-	if (!(stringToLower(arrWords.at(0)).compare("that") == 0)) {
-	return false;
-	} else {
-	subquery = arrWords.at(1);
-	}
-	}*/
 
 	return NONE;
 }
