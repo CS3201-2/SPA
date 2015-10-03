@@ -54,7 +54,7 @@ bool CallsStar::isCallsStarFirstFound(int first) {
 
 void CallsStar::logCallsStar() {
 	string str = "callsstar table\n";
-	for (map<int, std::list<int>>::iterator it = callsStarMap.begin(); it != callsStarMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = callsStarMap.begin(); it != callsStarMap.end(); ++it) {
 		str += to_string((*it).first) + ": ";
 		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
 			str += to_string(*listIt) + ", ";
@@ -71,4 +71,8 @@ void CallsStar::sortAndUnifyMap() {
 		(*it).second.sort();
 		(*it).second.unique();
 	}
+}
+
+map<int, list<int>> CallsStar::getCallsStarMap() {
+	return callsStarMap;
 }
