@@ -6,6 +6,7 @@ QueryTree::QueryTree() {
 	qTree.push_back(suchThatTree);
 	qTree.push_back(patternTree);
 	qTree.push_back(selectTree);
+	qTree.push_back(withTree);
 }
 
 //Inserting the particular type of query into its respective tree
@@ -44,6 +45,15 @@ void QueryTree::insertSelect(string var, string varType) {
 	qTree.at(3).push_back(tempVector);
 }
 
+void QueryTree::insertWith(string with1, string with1Type, string with2, string with2Type) {
+	vector<string> tempVector;
+	tempVector.push_back(with1);
+	tempVector.push_back(with1Type);
+	tempVector.push_back(with2);
+	tempVector.push_back(with2Type);
+	qTree.at(4).push_back(tempVector);
+}
+
 //Obtaining the size of the tree of each of the query types
 int QueryTree::getSuchThatSize() {
 	return qTree.at(1).size();
@@ -61,6 +71,10 @@ int QueryTree::getSelectSize() {
 	return qTree.at(3).size();
 }
 
+int QueryTree::getWithSize() {
+	return qTree.at(4).size();
+}
+
 //Obtaining the queries for the respective query types
 vector<string> QueryTree::getSuchThatQuery(int queryPos) {
 	return qTree.at(1).at(queryPos);
@@ -76,5 +90,9 @@ vector<string> QueryTree::getVariableQuery(int queryPos) {
 
 vector<string> QueryTree::getSelectQuery(int queryPos) {
 	return qTree.at(3).at(queryPos);
+}
+
+vector<string> QueryTree::getWithQuery(int queryPos) {
+	return qTree.at(4).at(queryPos);
 }
 
