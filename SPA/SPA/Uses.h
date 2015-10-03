@@ -15,6 +15,7 @@ public:
 	Uses();
 
 	void setUses(int, list<int>); //input parameter to be decided later
+	void resetUses(int, list<int>);
 	list<int> getUsesFirst(int);
 	list<int> getUsesSecond(int);
 	bool isUsesValid(int, int);
