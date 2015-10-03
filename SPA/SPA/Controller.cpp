@@ -39,7 +39,7 @@ void Controller::processSource() {
 	}
 	cout << "end of checker and parsing" << endl;
 
-
+	logPKB();
 	//for testing
 	/*cout << "parsed source list" << endl;
 	for (list<pair<int, string>>::iterator it = sourceList.begin(); it != sourceList.end(); ++it) {
