@@ -1,4 +1,5 @@
 #include "PKB.h"
+#include "DesignExtractor.h"
 #include <string>
 #include <list>
 #include <regex>
@@ -26,9 +27,8 @@ private:
 	bool isSemicolon(char);
 	bool isOperator(char);
 	bool isParenthesis(char);
-	bool isCallValid(list<pair<int, string>>);
+	bool isCallValid();
 	bool isCallsStarValid();
-	void processCallsStar(bool&, list<int>);
 	string getProcName(int, string);
 	int countNumOfLeftBraces(string);
 	int countNumOfRightBraces(string);

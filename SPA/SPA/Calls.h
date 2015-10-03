@@ -1,4 +1,5 @@
 #include "SPALog.h"
+#include "ProcTable.h"
 #include <string>
 #include <map>
 #include <list>
@@ -20,7 +21,7 @@ public:
 	list<int> getCallsFirst(int);
 	list<int> getCallsSecond(int);
 	bool isCallValid(int, int);
-	void logCalls();
+	void logCalls(ProcTable);
 	void sortAndUnifyMap();
 	map<int, list<int>> getCallsMap();
 	

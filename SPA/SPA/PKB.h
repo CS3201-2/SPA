@@ -58,6 +58,7 @@ public:
 	
 	//Modifies
 	void setModifies(int, list<int>); // input parameter to be decided later
+	void resetModifies(int, list<int>);
 	list<int> getModifiesFirst(int);
 	list<int> getModifiesSecond(int);
 	bool isModifiesValid(int, int);
@@ -65,6 +66,7 @@ public:
 
 	//Uses
 	void setUses(int, list<int>); //input parameter to be decided later
+	void resetUses(int, list<int>);
 	list<int> getUsesFirst(int);
 	list<int> getUsesSecond(int);
 	bool isUsesValid(int, int);
@@ -110,9 +112,9 @@ public:
 	list<int> getCallsStarFirst(int);
 	list<int> getCallsStarSecond(int);
 	bool isCallsStarValid(int, int);
-	bool isCallsStarFirstFound(int);
 	void logCallsStar();
 	void sortAndUnifyCallsStarMap();
+	map<int, list<int>> getCallsStarMap();
 
 	//Parent
 	void setParent(int, list<int>); 

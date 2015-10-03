@@ -1,4 +1,6 @@
 #include "SPALog.h"
+#include "ProcTable.h"
+#include "VarTable.h"
 #include <string>
 #include <map>
 #include <list>
@@ -15,10 +17,11 @@ public:
 	Uses();
 
 	void setUses(int, list<int>); //input parameter to be decided later
+	void resetUses(int, list<int>);
 	list<int> getUsesFirst(int);
 	list<int> getUsesSecond(int);
 	bool isUsesValid(int, int);
-	void logUses();
+	void logUses(ProcTable, VarTable);
 	void sortAndUnifyMap();
 
 private:

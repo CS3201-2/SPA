@@ -48,16 +48,12 @@ bool CallsStar::isCallsStarValid(int first, int second) {
 	}
 }
 
-bool CallsStar::isCallsStarFirstFound(int first) {
-	return callsStarMap.find(first) != callsStarMap.end();
-}
-
-void CallsStar::logCallsStar() {
+void CallsStar::logCallsStar(ProcTable procTable) {
 	string str = "callsstar table\n";
-	for (map<int, std::list<int>>::iterator it = callsStarMap.begin(); it != callsStarMap.end(); ++it) {
-		str += to_string((*it).first) + ": ";
+	for (map<int, list<int>>::iterator it = callsStarMap.begin(); it != callsStarMap.end(); ++it) {
+		str += procTable.getProcName((*it).first) + ": ";
 		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += to_string(*listIt) + ", ";
+			str += procTable.getProcName(*listIt) + ", ";
 		}
 		str += "\n";
 	}
@@ -71,4 +67,8 @@ void CallsStar::sortAndUnifyMap() {
 		(*it).second.sort();
 		(*it).second.unique();
 	}
+}
+
+map<int, list<int>> CallsStar::getCallsStarMap() {
+	return callsStarMap;
 }

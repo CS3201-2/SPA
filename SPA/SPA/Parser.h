@@ -38,9 +38,6 @@ private:
 	string getProcNameCallStmt(string);
 	void processPatternStmt(pair<int, string>, int);
 	string getControlVarName(int, string);
-	void processCalledProcList(list<pair<int, pair<int, string>>>);
-	void generateFollowsStar();
-	void generateParentStar();
 };
 
 #endif

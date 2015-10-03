@@ -1,4 +1,6 @@
 #include "SPALog.h"
+#include "ProcTable.h"
+#include "VarTable.h"
 #include <string>
 #include <map>
 #include <list>
@@ -15,10 +17,11 @@ public:
 	Modifies();
     
 	void setModifies(int, list<int>);
+	void resetModifies(int, list<int>);
 	list<int> getModifiesFirst(int);
 	list<int> getModifiesSecond(int);
 	bool isModifiesValid(int, int);
-	void logModifies();
+	void logModifies(ProcTable, VarTable);
 	void sortAndUnifyMap();
 
 private:

@@ -192,6 +192,10 @@ void PKB::setModifies(int first, list<int> second) {
 	getModifies().setModifies(first, second);
 } // input parameter to be decided later
 
+void PKB::resetModifies(int first, list<int> second) {
+	getModifies().resetModifies(first, second);
+}
+
 list<int> PKB::getModifiesFirst(int second) {
 	return getModifies().getModifiesFirst(second);
 }
@@ -205,7 +209,7 @@ bool PKB::isModifiesValid(int first, int second) {
 }
 
 void PKB::logModifies() {
-	getModifies().logModifies();
+	getModifies().logModifies(getProcTable(), getVarTable());
 }
 
 
@@ -213,6 +217,10 @@ void PKB::logModifies() {
 void PKB::setUses(int first, list<int> second) {
 	getUses().setUses(first, second);
 } //input parameter to be decided later
+
+void PKB::resetUses(int first, list<int> second) {
+	getUses().resetUses(first, second);
+}
 
 list<int> PKB::getUsesFirst(int second) {
 	return getUses().getUsesFirst(second);
@@ -227,7 +235,7 @@ bool PKB::isUsesValid(int first, int second) {
 }
 
 void PKB::logUses() {
-	getUses().logUses();
+	getUses().logUses(getProcTable(), getVarTable());
 }
 
 
@@ -334,7 +342,7 @@ bool PKB::isCallsValid(int first, int second) {
 }
 
 void PKB::logCalls() {
-	getCalls().logCalls();
+	getCalls().logCalls(getProcTable());
 }
 
 void PKB::sortAndUnifyCallsMap() {
@@ -363,16 +371,16 @@ bool PKB::isCallsStarValid(int first, int second) {
 	return getCallsStar().isCallsStarValid(first, second);
 }
 
-bool PKB::isCallsStarFirstFound(int first) {
-	return getCallsStar().isCallsStarFirstFound(first);
-}
-
 void PKB::logCallsStar() {
-	getCallsStar().logCallsStar();
+	getCallsStar().logCallsStar(getProcTable());
 }
 
 void PKB::sortAndUnifyCallsStarMap() {
 	getCallsStar().sortAndUnifyMap();
+}
+
+map<int, list<int>> PKB::getCallsStarMap() {
+	return getCallsStar().getCallsStarMap();
 }
 
 
