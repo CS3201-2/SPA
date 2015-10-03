@@ -192,6 +192,10 @@ void PKB::setModifies(int first, list<int> second) {
 	getModifies().setModifies(first, second);
 } // input parameter to be decided later
 
+void PKB::resetModifies(int first, list<int> second) {
+	getModifies().resetModifies(first, second);
+}
+
 list<int> PKB::getModifiesFirst(int second) {
 	return getModifies().getModifiesFirst(second);
 }
@@ -213,6 +217,10 @@ void PKB::logModifies() {
 void PKB::setUses(int first, list<int> second) {
 	getUses().setUses(first, second);
 } //input parameter to be decided later
+
+void PKB::resetUses(int first, list<int> second) {
+	getUses().resetUses(first, second);
+}
 
 list<int> PKB::getUsesFirst(int second) {
 	return getUses().getUsesFirst(second);
@@ -373,6 +381,10 @@ void PKB::logCallsStar() {
 
 void PKB::sortAndUnifyCallsStarMap() {
 	getCallsStar().sortAndUnifyMap();
+}
+
+map<int, list<int>> PKB::getCallsStarMap() {
+	return getCallsStar().getCallsStarMap();
 }
 
 
