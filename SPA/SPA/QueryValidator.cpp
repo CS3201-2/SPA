@@ -384,7 +384,7 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
 			}
 		}
 	} else if (arg.compare("_") == 0) {
-		if (!r.isArgValid(relType, 1, VARTYPE_ALL)) {
+		if (!r.isArgValid(relType, 2, VARTYPE_ALL)) {
 			return INVALID;
 		} else {
 			varType = VARTYPE_ALL;
