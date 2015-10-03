@@ -48,10 +48,6 @@ bool CallsStar::isCallsStarValid(int first, int second) {
 	}
 }
 
-bool CallsStar::isCallsStarFirstFound(int first) {
-	return callsStarMap.find(first) != callsStarMap.end();
-}
-
 void CallsStar::logCallsStar() {
 	string str = "callsstar table\n";
 	for (map<int, list<int>>::iterator it = callsStarMap.begin(); it != callsStarMap.end(); ++it) {

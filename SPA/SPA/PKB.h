@@ -112,7 +112,6 @@ public:
 	list<int> getCallsStarFirst(int);
 	list<int> getCallsStarSecond(int);
 	bool isCallsStarValid(int, int);
-	bool isCallsStarFirstFound(int);
 	void logCallsStar();
 	void sortAndUnifyCallsStarMap();
 	map<int, list<int>> getCallsStarMap();

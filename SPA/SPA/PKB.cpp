@@ -371,10 +371,6 @@ bool PKB::isCallsStarValid(int first, int second) {
 	return getCallsStar().isCallsStarValid(first, second);
 }
 
-bool PKB::isCallsStarFirstFound(int first) {
-	return getCallsStar().isCallsStarFirstFound(first);
-}
-
 void PKB::logCallsStar() {
 	getCallsStar().logCallsStar();
 }
