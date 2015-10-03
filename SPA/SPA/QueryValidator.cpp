@@ -123,13 +123,13 @@ bool QueryValidator::isValidQuery(string query) {
 	while (!isFinished) {
 		retVal = findSuchThatClause(arrClauses.at(1));
 
-		if (checkRetVal(retVal, isFinished) == false) {
+		if (!checkRetVal(retVal, isFinished)) {
 			return false;
 		}
 
 		retVal = findPatternClause(arrClauses.at(1));
 
-		if (checkRetVal(retVal, isFinished) == false) {
+		if (!checkRetVal(retVal, isFinished)) {
 			return false;
 		}
 
@@ -140,6 +140,10 @@ bool QueryValidator::isValidQuery(string query) {
 		}*/
 	}
 
+	if (arrClauses.at(1).size() > 1 || arrClauses.at(1).compare(" ") != 0) {
+		return false;
+	}
+
 	//cout << arrClauses.at(1).size();	
 	return true;
 }
@@ -147,12 +151,10 @@ bool QueryValidator::isValidQuery(string query) {
 bool QueryValidator::checkRetVal(RETURN_TYPE retVal, bool & isFinished) {
 	if (retVal == INVALID) {
 		return false;
-	}
-	else if (retVal == NONE) {
+	} else if (retVal == NONE) {
 		isFinished = true;
 		return true;
-	}
-	else if (retVal == VALID) {
+	} else if (retVal == VALID) {
 		isFinished = false;
 		return true;
 	}
@@ -191,7 +193,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 
 	vector<string> varTypes(arrVar.size());
 	//cout << "\nsuch that: parsing args";
-	if (parseSuchThatArgs(relType, arrVar, varTypes) == INVALID) {
+	if (!parseSuchThatArgs(relType, arrVar, varTypes)) {
 		return INVALID;
 	}
 
@@ -203,49 +205,42 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 	return VALID;
 }
 
-QueryValidator::RETURN_TYPE QueryValidator::parseSuchThatArgs(string relType,
+bool QueryValidator::parseSuchThatArgs(string relType,
 	vector<string>& arrVar, vector<string>& varTypes) {
 
 	for (int i = 0; i < arrVar.size(); i++) {
 		if (isVarNameExists(arrVar.at(i))) {
 			if (!r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)))) {
-				return INVALID;
-			}
-			else {
+				return false;
+			} else {
 				varTypes.at(i) = getVarType(arrVar.at(i));
 			}
 
-		}
-		else if (isStringVar(arrVar.at(i))) {
+		} else if (isStringVar(arrVar.at(i))) {
 			if (!r.isArgValid(relType, i + 1, VARTYPE_STRING)) {
-				return INVALID;
-			}
-			else {
+				return false;
+			} else {
 				arrVar.at(i) = arrVar.at(i).substr(1, arrVar.at(i).size() - 2);
 				varTypes.at(i) = VARTYPE_STRING;
 			}
 
-		}
-		else if (isPositiveInteger(arrVar.at(i))) {
+		} else if (isPositiveInteger(arrVar.at(i))) {
 			if (!r.isArgValid(relType, i + 1, VARTYPE_PROG_LINE)) {
-				return INVALID;
-			}
-			else {
+				return false;
+			} else {
 				varTypes.at(i) = VARTYPE_PROG_LINE;
 			}
 
 		}
 		else if (arrVar.at(i).compare("_") == 0) {
 			if (!r.isArgValid(relType, i + 1, VARTYPE_ALL)) {
-				return INVALID;
-			}
-			else {
+				return false;
+			} else {
 				varTypes.at(i) = VARTYPE_ALL;
 			}
 
-		}
-		else {
-			return INVALID;
+		} else {
+			return false;
 		}
 	}
 }
@@ -271,20 +266,17 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 				syn = arrWords.at(0);
 				synType = VARTYPE_ASSIGN;
 
-			}
-			else if (getVarType(arrWords.at(0)).compare(VARTYPE_WHILE) == 0) {
+			} else if (getVarType(arrWords.at(0)).compare(VARTYPE_WHILE) == 0) {
 				relType = "patternWhile";
 				syn = arrWords.at(0);
 				synType = VARTYPE_WHILE;
 
-			}
-			else if (getVarType(arrWords.at(0)).compare(VARTYPE_IF) == 0) {
+			} else if (getVarType(arrWords.at(0)).compare(VARTYPE_IF) == 0) {
 				relType = "patternIf";
 				syn = arrWords.at(0);
 				synType = VARTYPE_IF;
 
-			}
-			else {
+			} else {
 				return INVALID;
 			}
 
@@ -302,12 +294,12 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 
 			vector<string> varType(arrVar.size());
 			//arg1
-			if (parsePatternArg1(relType, arrVar.at(0), varType.at(0)) == INVALID) {
+			if (!parsePatternArg1(relType, arrVar.at(0), varType.at(0))) {
 				return INVALID;
 			}
 
 			//arg2
-			if (parsePatternArg2(relType, arrVar.at(1), varType.at(1)) == INVALID) {
+			if (!parsePatternArg2(relType, arrVar.at(1), varType.at(1))) {
 				return INVALID;
 			}
 
@@ -325,12 +317,12 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 	return VALID;
 }
 
-QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg1(string relType,
+bool QueryValidator::parsePatternArg1(string relType,
 	string &arg, string &varType) {
 
 	if (isVarNameExists(arg) && getVarType(arg).compare(VARTYPE_ASSIGN) == 0) {
 		if (!r.isArgValid(relType, 1, getVarType(arg))) {
-			return INVALID;
+			return false;
 		}
 		else {
 			varType = VARTYPE_ASSIGN;
@@ -339,7 +331,7 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg1(string relType,
 	}
 	else if (isStringVar(arg)) {
 		if (!r.isArgValid(relType, 1, VARTYPE_STRING)) {
-			return INVALID;
+			return false;
 		}
 		else {
 			arg = arg.substr(1, arg.size() - 2);
@@ -349,7 +341,7 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg1(string relType,
 	}
 	else if (arg.compare("_") == 0) {
 		if (!r.isArgValid(relType, 1, VARTYPE_ALL)) {
-			return INVALID;
+			return false;
 		}
 		else {
 			varType = VARTYPE_ALL;
@@ -357,11 +349,11 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg1(string relType,
 
 	}
 	else {
-		return INVALID;
+		return false;
 	}
 }
 
-QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
+bool QueryValidator::parsePatternArg2(string relType,
 	string &arg, string &varType) {
 
 	//string value;
@@ -373,7 +365,7 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
 
 			if (isValidVariableName(arg)) {
 				if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
-					return INVALID;
+					return false;
 				}
 				else {
 					varType = VARTYPE_SUBSTRING;
@@ -382,7 +374,7 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
 			}
 			else if (isInteger(arg)) {
 				if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
-					return INVALID;
+					return false;
 				}
 				else {
 					varType = VARTYPE_SUBSTRING;
@@ -396,7 +388,7 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
 
 		if (isValidVariableName(arg)) {
 			if (!r.isArgValid(relType, 2, VARTYPE_STRING)) {
-				return INVALID;
+				return false;
 			}
 			else {
 				varType = VARTYPE_STRING;
@@ -404,7 +396,7 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
 		}
 		else if (isInteger(arg)) {
 			if (!r.isArgValid(relType, 2, VARTYPE_STRING)) {
-				return INVALID;
+				return false;
 			}
 			else {
 				varType = VARTYPE_STRING;
@@ -413,14 +405,14 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
 	}
 	else if (arg.compare("_") == 0) {
 		if (!r.isArgValid(relType, 2, VARTYPE_ALL)) {
-			return INVALID;
+			return false;
 		}
 		else {
 			varType = VARTYPE_ALL;
 		}
 	}
 	else {
-		return INVALID;
+		return false;
 	}
 }
 

@@ -20,7 +20,8 @@ int main() {
 		str13 = "while w; Select w Pattern w(\"x\", _ )",
 		str14 = "if If; Select If Pattern If(\"i\", _, _ )",
 		str15 = "assign a1; assign a2; Select a1 such that Follows(a1, a2)",
-		str16 = "assign a; Select a pattern a(\"x\", _)";
+		str16 = "assign a; Select a pattern a(\"x\", _);",
+		str17 = " ";
 	//queries.push_back(str);
 	//queries.push_back(str2);
 	//queries.push_back(str3);
