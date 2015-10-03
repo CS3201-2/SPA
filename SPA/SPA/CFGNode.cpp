@@ -10,6 +10,16 @@ CFGNode::CFGNode(int i, int s, int e)
 	_end = e;
 }
 
+int CFGNode::getStrat()
+{
+	return _start;
+}
+
+int CFGNode::getEnd()
+{
+	return _end;
+}
+
 bool CFGNode::contains(int i)
 {
 	return i>=_start && i<=_end;
