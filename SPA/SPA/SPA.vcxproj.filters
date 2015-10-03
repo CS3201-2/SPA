@@ -101,6 +101,9 @@
     <ClCompile Include="CallsStar.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="DesignExtractor.cpp">
+      <Filter>Source Files\Front-end Parser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTNode.h">
@@ -198,6 +201,9 @@
     </ClInclude>
     <ClInclude Include="CallsStar.h">
       <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignExtractor.h">
+      <Filter>Header Files\Front-end Parser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
