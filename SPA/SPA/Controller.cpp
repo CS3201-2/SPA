@@ -91,6 +91,7 @@ void Controller::logPKB() {
 	PKB::getPKBInstance()->logPattern();
 	PKB::getPKBInstance()->logCalls();
 	PKB::getPKBInstance()->logCallsStar();
+	PKB::getPKBInstance()->logNext();
 
 
 	//change below for testing purpose

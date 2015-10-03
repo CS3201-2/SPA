@@ -449,8 +449,8 @@ bool PKB::isNextvalid(int first, int second) {
 	return cfg.isNextValid(first, second);
 }
 
-void PKB::logAllNext() {
-	
+void PKB::logNext() {
+	return cfg.logNext();
 }
 
 

@@ -138,7 +138,7 @@ public:
 	list<int> getNextFirst(int);
 	list<int> getNextSecond(int);
 	bool isNextvalid(int, int);
-	void logAllNext();
+	void logNext();
 
 	list<int> getNextStarFirst(int);
 	list<int> getNextStarSecond(int);
