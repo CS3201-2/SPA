@@ -2,6 +2,7 @@
 const regex REGEX_WHILE("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
 const regex REGEX_IF("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
 const regex REGEX_PROC("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
+const string EXCEPT_BOUND = "Exception: index out of bound!";
 
 CFG::CFG()
 {
@@ -33,7 +34,7 @@ list<int> CFG::getNextFirst(int i)
 	}
 	else
 	{
-		throw "index out of bound!";
+		throw invalid_argument(EXCEPT_BOUND);
 	}
 }
 
@@ -45,7 +46,7 @@ list<int> CFG::getNextSecond(int i)
 	}
 	else
 	{
-		throw "index out of bound!";
+		throw invalid_argument(EXCEPT_BOUND);
 	}
 }
 
@@ -66,11 +67,11 @@ bool CFG::isNextValid(int i, int j)
 	}
 	else
 	{
-		throw "index out of bound!";
+		throw invalid_argument(EXCEPT_BOUND);
 	}
 }
 
-void CFG::printMap()
+void CFG::printGraph()
 {
 	cout << "size of the array is " << _next.size() << endl;
 	cout << "size of the map is " << _nodeMap.size() << endl;

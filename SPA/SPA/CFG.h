@@ -6,6 +6,7 @@
 #include<regex>
 #include<algorithm>
 #include<iostream>
+#include<stdexcept>
 #include"CFGNode.h"
 using namespace std;
 #ifndef CFG_H
@@ -35,7 +36,7 @@ public:
 	list<int> getNextFirst(int);
 	list<int> getNextSecond(int);
 	bool isNextValid(int, int);
-	void printMap();
+	void printGraph();
 	void printNextTable();
 	void printBeforeTable();
 	~CFG();
