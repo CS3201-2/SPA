@@ -28,11 +28,16 @@ class CFG
 	stack<pair<int,int>> _nodeInOperation;
 	list<int> _statBuffer;
 	int _nodeIndex;
+	int _size;
 public:
 	CFG();
 	void buildGraph(list<pair<int, string>>);
-	list<int> getNext(int);
+	list<int> getNextFirst(int);
+	list<int> getNextSecond(int);
+	bool isNextValid(int, int);
 	void printMap();
+	void printNextTable();
+	void printBeforeTable();
 	~CFG();
 private:
 	int findNode(int);
@@ -45,6 +50,7 @@ private:
 	void solveNode(int,int);
 	void initializeStack();
 	void updateVector(int, int);
+	void updateVector(int, int, vector<list<int>>&);
 	void storeNextTable();
 	void storeNext(int);
 	bool isContainer(string);

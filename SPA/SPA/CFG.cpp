@@ -14,31 +14,59 @@ void CFG::buildGraph(list<pair<int, string>> codeLst)
 	_codeLst = codeLst;
 	_codeIterator = _codeLst.begin();
 	_nodeIndex = 0;
+	_size = 0;
 	initializeStack();
 
 	while (_codeIterator != _codeLst.end())
 	{
-		cout << _codeIterator->second << endl;
 		solveCode();
 		_codeIterator++;
-		cout << " good!" << endl;
 	}
 	storeNextTable();
 }
 
-list<int> CFG::getNext(int i)
+list<int> CFG::getNextFirst(int i)
 {
-	int nodeIndex = findNode(i);
-	CFGNode* node = _nodeMap.at(nodeIndex);
-	if (node->contains(i + 1))
+	if (i <= _size && i >= 1)
 	{
-		list<int> temp = list<int>();
-		temp.push_back(i + 1);
-		return temp;
+		return _beforeTable[i];
 	}
 	else
 	{
-		return _next.at(nodeIndex);
+		throw "index out of bound!";
+	}
+}
+
+list<int> CFG::getNextSecond(int i)
+{
+	if (i <= _size && i >= 1)
+	{
+		return _nextTable[i];
+	}
+	else
+	{
+		throw "index out of bound!";
+	}
+}
+
+bool CFG::isNextValid(int i, int j)
+{
+	if (i <= _size && i >= 1 && 
+		j <= _size && j >= 1)
+	{
+		list<int> temp = getNextSecond(i);
+		for (auto& x : temp)
+		{
+			if (x == j)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	else
+	{
+		throw "index out of bound!";
 	}
 }
 
@@ -56,6 +84,48 @@ void CFG::printMap()
 			cout << " " << *it;
 		}
 		std::cout << endl;
+	}
+}
+
+void CFG::printNextTable()
+{
+	for (int j = 0; j <= _size;j++)
+	{
+		list<int> x = _nextTable[j];
+		if (j != 0)
+		{
+			cout << j << ":";
+			for (auto& y : x)
+			{
+				cout << y << " ";
+			}
+			cout << endl;
+		}
+		else
+		{
+			
+		}
+	}
+}
+
+void CFG::printBeforeTable()
+{
+	for (int j = 0; j <= _size; j++)
+	{
+		list<int> x = _beforeTable[j];
+		if (j != 0)
+		{
+			cout << j << ":";
+			for (auto& y : x)
+			{
+				cout << y << " ";
+			}
+			cout << endl;
+		}
+		else
+		{
+
+		}
 	}
 }
 
@@ -289,10 +359,23 @@ void CFG::updateVector(int position, int value)
 	}
 }
 
+void CFG::updateVector(int position, int value, vector<list<int>>& temp)
+{
+	if (position < 0)
+	{
+		throw "cannot be like this lah!";
+	}
+	else
+	{
+		temp[position].push_back(value);
+	}
+}
+
 void CFG::storeNextTable()
 {
-	_nextTable.reserve(_codeLst.size());
-	int currentStat = -1;
+	list<int> empty;
+	_nextTable.resize(_codeLst.size(), empty);
+	_beforeTable.resize(_codeLst.size(), empty);
 	for (int i = 0; i < _next.size(); i++)
 	{
 		storeNext(i);
@@ -304,38 +387,41 @@ void CFG::storeNext(int index)
 	CFGNode* node = _nodeMap.at(index);
 	int begin = node->getStrat();
 	int end = node->getEnd();
+	int i = 0;
 	list<int> temp;
-	for (int i = begin; i < end; i++)
+	list<int> buffer;
+	if (begin == -1)
+	{
+		return;
+	}
+	for (i = begin; i < end; i++)
 	{
 		temp.push_back(i + 1);
 		_nextTable[i] = temp;
+		_size++;
+		updateVector(i+1, i, _beforeTable);
 		temp.clear();
 	}
 	temp = _next[index];
-	list<int> buffer;
-	if (temp.size() == 1)
+	for (auto& x: temp)
 	{
-		int x = temp.front();
-		if (x == -1)
-		{
-			
-		}
-		else
+		while (x != -1)
 		{
 			CFGNode* tempNode = _nodeMap.at(x);
-			buffer.push_back(tempNode->getStrat());
+			if (tempNode->getStrat() != -1)
+			{
+				buffer.push_back(tempNode->getStrat());
+				updateVector(tempNode->getStrat(), end, _beforeTable);
+				break;
+			}
+			else
+			{
+				x = _next[x].front();
+			}
 		}
 	}
-	else if (temp.size() == 2)
-	{
-		int x = temp.front();
-		CFGNode* tempNode = _nodeMap.at(x);
-		buffer.push_back(tempNode->getStrat());
-		x = temp.back();
-		tempNode = _nodeMap.at(x);
-		buffer.push_back(tempNode->getStrat());
-	}
 	_nextTable[end] = buffer;
+	_size++;
 }
 
 bool CFG::isContainer(string str)
