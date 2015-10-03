@@ -171,6 +171,29 @@ void CFG::printBeforeTable()
 	}
 }
 
+void CFG::logNext()
+{
+	string str = "next table\n";
+	for (int j = 0; j <= _size; j++)
+	{
+		list<int> x = _nextTable[j];
+		if (j != 0)
+		{
+			str += (to_string(j) + ":");
+			for (auto& y : x)
+			{
+				str += (to_string(y) + " ");
+			}
+			str += "\n";
+		}
+		else
+		{
+
+		}
+	}
+	SPALog::log(str);
+}
+
 CFG::~CFG()
 {
 }
