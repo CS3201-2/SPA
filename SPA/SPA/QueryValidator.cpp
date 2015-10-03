@@ -10,10 +10,10 @@ const char SYMBOL_COMMA = ',';
 const char SYMBOL_OPEN_BRACKET = '(';
 const char SYMBOL_CLOSE_BRACKET = ')';
 
-const vector<string> KEYWORDS = { "constant", "stmt", "assign", "while", "if", 
-	"procedure", "call", "prog_line", "select", "modifies", "uses", "parent", 
-	"parent*", "follows", "follows*", "pattern", "next", "next*", "calls", 
-	"calls*", "affects", "affects*", "with" };
+const vector<string> KEYWORDS = { "constant", "stmt", "assign", "while", "if",
+"procedure", "call", "prog_line", "select", "modifies", "uses", "parent",
+"parent*", "follows", "follows*", "pattern", "next", "next*", "calls",
+"calls*", "affects", "affects*", "with" };
 
 const string VARTYPE_VARIABLE = "variable";
 const string VARTYPE_STRING = "string";
@@ -122,7 +122,7 @@ bool QueryValidator::isValidQuery(string query) {
 
 	while (!isFinished) {
 		retVal = findSuchThatClause(arrClauses.at(1));
-		
+
 		if (checkRetVal(retVal, isFinished) == false) {
 			return false;
 		}
@@ -136,21 +136,24 @@ bool QueryValidator::isValidQuery(string query) {
 		/*retVal = findWithClause(arrClauses.at(1));
 
 		if (checkRetVal(retVal, isFinished) == false) {
-			return false;
-		}*/	
+		return false;
+		}*/
 	}
 
-	//cout << arrClauses.at(1).size();	
+	//cout << arrClauses.at(1).size();
+
 	return true;
 }
 
-bool QueryValidator::checkRetVal(RETURN_TYPE retVal, bool & isFinished){
+bool QueryValidator::checkRetVal(RETURN_TYPE retVal, bool & isFinished) {
 	if (retVal == INVALID) {
 		return false;
-	} else if (retVal == NONE) {
+	}
+	else if (retVal == NONE) {
 		isFinished = true;
 		return true;
-	} else if (retVal == VALID) {
+	}
+	else if (retVal == VALID) {
 		isFinished = false;
 		return true;
 	}
@@ -192,7 +195,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 	if (parseSuchThatArgs(relType, arrVar, varTypes) == INVALID) {
 		return INVALID;
 	}
-	
+
 	qt.insertSuchThat(relType, arrVar, varTypes);
 
 	cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
@@ -201,53 +204,51 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 	return VALID;
 }
 
-QueryValidator::RETURN_TYPE QueryValidator::parseSuchThatArgs(string relType, 
-		vector<string>& arrVar, vector<string>& varTypes){
-	
+QueryValidator::RETURN_TYPE QueryValidator::parseSuchThatArgs(string relType,
+	vector<string>& arrVar, vector<string>& varTypes) {
+
 	for (int i = 0; i < arrVar.size(); i++) {
 		if (isVarNameExists(arrVar.at(i))) {
 			if (!r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)))) {
 				return INVALID;
-			} else {
+			}
+			else {
 				varTypes.at(i) = getVarType(arrVar.at(i));
 			}
 
-		} else if (isStringVar(arrVar.at(i))) {
+		}
+		else if (isStringVar(arrVar.at(i))) {
 			if (!r.isArgValid(relType, i + 1, VARTYPE_STRING)) {
 				return INVALID;
-			} else {
+			}
+			else {
 				arrVar.at(i) = arrVar.at(i).substr(1, arrVar.at(i).size() - 2);
 				varTypes.at(i) = VARTYPE_STRING;
 			}
 
-		} else if (isPositiveInteger(arrVar.at(i))) {
+		}
+		else if (isPositiveInteger(arrVar.at(i))) {
 			if (!r.isArgValid(relType, i + 1, VARTYPE_PROG_LINE)) {
 				return INVALID;
-			} else {
+			}
+			else {
 				varTypes.at(i) = VARTYPE_PROG_LINE;
 			}
 
-		} else if (arrVar.at(i).compare("_") == 0) {
+		}
+		else if (arrVar.at(i).compare("_") == 0) {
 			if (!r.isArgValid(relType, i + 1, VARTYPE_ALL)) {
 				return INVALID;
-			} else {
+			}
+			else {
 				varTypes.at(i) = VARTYPE_ALL;
 			}
 
-		} else {
+		}
+		else {
 			return INVALID;
 		}
 	}
-<<<<<<< HEAD
-=======
-
-	qt.insertSuchThat(relType, arrVar, varTypes);
-
-	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
-	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
-	subquery = trim(arrClauses.at(1));
-	return VALID;
->>>>>>> master
 }
 
 QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) {
@@ -258,37 +259,40 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 	}
 
 	arrWords = split(arrWords.at(1), SYMBOL_OPEN_BRACKET, 2);
-	
+
 	if (isVarNameExists(arrWords.at(0))) {
 		if (getVarType(arrWords.at(0)).compare(VARTYPE_ASSIGN) == 0 ||
 			getVarType(arrWords.at(0)).compare(VARTYPE_WHILE) == 0 ||
 			getVarType(arrWords.at(0)).compare(VARTYPE_IF) == 0) {
 
 			string relType, syn, synType;
-			
+
 			if (getVarType(arrWords.at(0)).compare(VARTYPE_ASSIGN) == 0) {
 				relType = "patternAssign";
 				syn = arrWords.at(0);
 				synType = VARTYPE_ASSIGN;
 
-			} else if (getVarType(arrWords.at(0)).compare(VARTYPE_WHILE) == 0) {
+			}
+			else if (getVarType(arrWords.at(0)).compare(VARTYPE_WHILE) == 0) {
 				relType = "patternWhile";
 				syn = arrWords.at(0);
 				synType = VARTYPE_WHILE;
 
-			} else if (getVarType(arrWords.at(0)).compare(VARTYPE_IF) == 0) {
+			}
+			else if (getVarType(arrWords.at(0)).compare(VARTYPE_IF) == 0) {
 				relType = "patternIf";
 				syn = arrWords.at(0);
 				synType = VARTYPE_IF;
 
-			} else {
+			}
+			else {
 				return INVALID;
 			}
-			
+
 			if (arrWords.at(1).find(")") == string::npos) {
 				return INVALID;
 			}
-			
+
 			arrWords = split(arrWords.at(1), SYMBOL_CLOSE_BRACKET, 2);
 
 			vector<string> arrVar = split(arrWords.at(0), SYMBOL_COMMA);
@@ -296,13 +300,13 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			if (!r.isNumOfArgsEqual(relType, arrVar.size())) {
 				return INVALID;
 			}
-			
+
 			vector<string> varType(arrVar.size());
 			//arg1
 			if (parsePatternArg1(relType, arrVar.at(0), varType.at(0)) == INVALID) {
 				return INVALID;
 			}
-			
+
 			//arg2
 			if (parsePatternArg2(relType, arrVar.at(1), varType.at(1)) == INVALID) {
 				return INVALID;
@@ -310,9 +314,9 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 
 			qt.insertPattern(syn, synType, arrVar, varType);
 			cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
-			cout << "pattern " << varType.at(0) << " " << varType.at(1) << endl;
-		} 
-	} else {
+		}
+	}
+	else {
 		return INVALID;
 	}
 	//cout << "pattern " << arrVar.at(0) << " " << value << endl;
@@ -321,39 +325,45 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 	return VALID;
 }
 
-QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg1(string relType, 
-		string &arg, string &varType) {
-	
+QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg1(string relType,
+	string &arg, string &varType) {
+
 	if (isVarNameExists(arg) && getVarType(arg).compare(VARTYPE_ASSIGN) == 0) {
 		if (!r.isArgValid(relType, 1, getVarType(arg))) {
 			return INVALID;
-		} else {
+		}
+		else {
 			varType = VARTYPE_ASSIGN;
 		}
 
-	} else if (isStringVar(arg)) {
+	}
+	else if (isStringVar(arg)) {
 		if (!r.isArgValid(relType, 1, VARTYPE_STRING)) {
 			return INVALID;
-		} else {
+		}
+		else {
 			arg = arg.substr(1, arg.size() - 2);
 			varType = VARTYPE_STRING;
 		}
 
-	} else if (arg.compare("_") == 0) {
+	}
+	else if (arg.compare("_") == 0) {
 		if (!r.isArgValid(relType, 1, VARTYPE_ALL)) {
 			return INVALID;
-		} else {
+		}
+		else {
 			varType = VARTYPE_ALL;
 		}
 
-	} else {
+	}
+	else {
 		return INVALID;
 	}
 }
 
-QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType, 
-		string &arg, string &varType) {
-	
+QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
+	string &arg, string &varType) {
+
 	//string value;
 	if (arg.size() >= 5) {
 		if (arg.at(0) == '_' && arg.at(arg.size() - 1) == '_'  &&
@@ -364,66 +374,50 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
 			if (isValidVariableName(arg)) {
 				if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
 					return INVALID;
-				} else {
+				}
+				else {
 					varType = VARTYPE_SUBSTRING;
 				}
 
-			} else if (isInteger(arg)) {
+			}
+			else if (isInteger(arg)) {
 				if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
 					return INVALID;
-				} else {
+				}
+				else {
 					varType = VARTYPE_SUBSTRING;
 				}
+
 			}
 		}
 
-	} else if (arg.at(0) == '\"' && arg.at(arg.size() - 1) == '\"') {
+	}
+	else if (arg.at(0) == '\"' && arg.at(arg.size() - 1) == '\"') {
 		arg = arg.substr(1, arg.size() - 2);
 
 		if (isValidVariableName(arg)) {
 			if (!r.isArgValid(relType, 2, VARTYPE_STRING)) {
 				return INVALID;
-			} else {
+			}
+			else {
 				varType = VARTYPE_STRING;
 			}
-		} else if (isInteger(arg)) {
+		}
+		else if (isInteger(arg)) {
 			if (!r.isArgValid(relType, 2, VARTYPE_STRING)) {
 				return INVALID;
-			} else {
+			}
+			else {
 				varType = VARTYPE_STRING;
 			}
-<<<<<<< HEAD
 		}
-	} else if (arg.compare("_") == 0) {
-		if (!r.isArgValid(relType, 2, VARTYPE_ALL)) {
-			return INVALID;
-		} else {
-			varType = VARTYPE_ALL;
-=======
-		} 
-	} else if (arg2.compare("_") == 0) {
-		if (!r.isArgValid(relType, 2, "all")) {
-			return INVALID;
-		}
-		else {
-			varType.at(1) = "all";
->>>>>>> master
-		}
-	} else {
+	}
+	else if (arg.compare("_") == 0) {
+		r.isArgValid(relType, 1, VARTYPE_ALL);
+	}
+	else {
 		return INVALID;
 	}
-<<<<<<< HEAD
-=======
-
-	qt.insertPattern(syn, synType, arrVar, varType);
-
-	//or qt.addRel(reltype, arrVar);
-	//cout << "pattern " << arrVar.at(0) << " " << value << endl;
-	//cout << "pattern " << varType.at(0) << " " << varType.at(1) << endl;
-	subquery = trim(arrWords.at(1));
-	
-	return VALID;
->>>>>>> master
 }
 
 QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery) {
@@ -435,10 +429,22 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery)
 		return VALID;
 	}
 
+
+	//cout << arrWords.at(2);
+	/*if (stringToLower(arrWords.at(0)).compare("such") == 0) {
+	arrWords = split(arrWords.at(1), SYMBOL_SPACE, 2);
+
+	if (!(stringToLower(arrWords.at(0)).compare("that") == 0)) {
+	return false;
+	} else {
+	subquery = arrWords.at(1);
+	}
+	}*/
+
 	return NONE;
 }
 
-bool QueryValidator::isValidVariableName(string varName){
+bool QueryValidator::isValidVariableName(string varName) {
 	if (varName.length() == 0) {
 		return false;
 	}
@@ -517,7 +523,7 @@ string QueryValidator::trim(string line) {
 }
 
 /*string QueryValidator::removeSpaces(string line) {
-	return regex_replace(line, regex("[' ']{1,}"), "");
+return regex_replace(line, regex("[' ']{1,}"), "");
 }*/
 
 string QueryValidator::stringToLower(string str) {
@@ -571,3 +577,4 @@ bool QueryValidator::isPositiveInteger(string str) {
 
 	return (*p == 0);
 }
+
