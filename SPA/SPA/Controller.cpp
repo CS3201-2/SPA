@@ -31,15 +31,15 @@ void Controller::processSource() {
 	}
 	else {
 		parser.parseSource(sourceList);
+		DesignExtractor de = DesignExtractor();
+		de.setFollowsStar();
+		de.setParentStar();
+		de.resetModifies();
+		de.resetUses();
 	}
 	cout << "end of checker and parsing" << endl;
 
-	DesignExtractor de = DesignExtractor();
-	de.setFollowsStar();
-	de.setParentStar();
-	de.resetModifies();
-	de.resetUses();
-
+	logPKB();
 	//for testing
 	/*cout << "parsed source list" << endl;
 	for (list<pair<int, string>>::iterator it = sourceList.begin(); it != sourceList.end(); ++it) {
@@ -91,6 +91,7 @@ void Controller::logPKB() {
 	PKB::getPKBInstance()->logPattern();
 	PKB::getPKBInstance()->logCalls();
 	PKB::getPKBInstance()->logCallsStar();
+	PKB::getPKBInstance()->logNext();
 
 
 	//change below for testing purpose
