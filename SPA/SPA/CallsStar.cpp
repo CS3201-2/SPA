@@ -48,12 +48,12 @@ bool CallsStar::isCallsStarValid(int first, int second) {
 	}
 }
 
-void CallsStar::logCallsStar() {
+void CallsStar::logCallsStar(ProcTable procTable) {
 	string str = "callsstar table\n";
 	for (map<int, list<int>>::iterator it = callsStarMap.begin(); it != callsStarMap.end(); ++it) {
-		str += to_string((*it).first) + ": ";
+		str += procTable.getProcName((*it).first) + ": ";
 		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += to_string(*listIt) + ", ";
+			str += procTable.getProcName(*listIt) + ", ";
 		}
 		str += "\n";
 	}

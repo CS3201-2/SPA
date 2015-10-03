@@ -54,12 +54,17 @@ bool Uses::isUsesValid(int first, int second) {
 	}
 }
 
-void Uses::logUses() {
+void Uses::logUses(ProcTable procTable, VarTable varTable) {
 	string str = "uses table\n";
 	for (map<int, list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
-		str += to_string((*it).first) + ": ";
+		if ((*it).first < 0) {
+			str += procTable.getProcName((*it).first) + ": ";
+		}
+		else {
+			str += to_string((*it).first) + ": ";
+		}
 		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += to_string(*listIt) + ", ";
+			str += varTable.getVarName(*listIt) + ", ";
 		}
 		str += "\n";
 	}

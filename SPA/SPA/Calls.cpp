@@ -48,12 +48,12 @@ bool Calls::isCallValid(int first, int second) {
 	}
 }
 
-void Calls::logCalls() {
+void Calls::logCalls(ProcTable procTable) {
 	string str = "calls table\n";
 	for (map<int, std::list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
-		str += to_string((*it).first) + ": ";
+		str += procTable.getProcName((*it).first) + ": ";
 		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += to_string(*listIt) + ", ";
+			str += procTable.getProcName(*listIt) + ", ";
 		}
 		str += "\n";
 	}
