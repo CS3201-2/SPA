@@ -1,10 +1,10 @@
+#include "SPALog.h"
 #include <string>
 #include <map>
 #include <list>
-#include <algorithm>
-#include <iostream>
 
 using namespace std;
+
 
 #ifndef Parent_H
 #define Parent_H
@@ -14,19 +14,16 @@ class Parent
 public:
 	Parent();
 
-	list<int> getChildStmt(int);
+	void setParent(int, list<int>);
+	int getParentFirst(int);
+	list<int> getParentSecond(int);
+	bool isParentValid(int, int);
+	void logParent();
+	map<int, list<int>> getParentMap();
+	void sortAndUnifyMap();
 
-	void setParentStmt(int, int);
-
-	int getParentStmt(int);
-
-	void printParentMap();
-
-	void sortParentMap();
-
-	int getParentMapSize();
 private:
-	map<int, std::list<int>> parentMap;
+	map<int, list<int>> parentMap;
 };
 
 #endif

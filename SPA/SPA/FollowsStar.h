@@ -1,21 +1,28 @@
+#include "SPALog.h"
 #include <map>
 #include <list>
 #include <algorithm>
-#include <iostream>
-#include "Follows.h"
 
 using namespace std;
+
+
+#ifndef FollowsStar_H
+#define FollowsStar_H
 
 class FollowsStar 
 {
 public: 
 	FollowsStar();
-	list<int> getFollowsStarStmt(int);
-	list<int> getIsFollowedStarStmt(int);
-	void createFollowsStarMap();
-	void printFollowsStarMap();
+
+	void setFollowsStar(int, list<int>);
+	list<int> getFollowsStarFirst(int);
+	list<int> getFollowsStarSecond(int);
+	bool isFollowsStarValid(int, int);
+	void logFollowsStar();
+	void sortAndUnifyMap();
 
 private:
-	Follows follows = Follows();
 	map<int, list<int>> followsStarMap;
 };
+
+#endif

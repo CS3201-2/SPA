@@ -2,6 +2,8 @@
 #include <string>
 #include <list>
 #include <stack>
+#include <regex>
+
 
 using namespace std;
 
@@ -13,32 +15,29 @@ class Parser
 public:
 	Parser();
 
-	PKB parseSource(string);
-
-	void trim(string&);
-
-	void addNewLineString(string&);
-
-	void buildSourceCodeList(string, list<std::pair<int, string>>&);
-
-	void processSourceCodeList(list<pair<int, string>>&);
+	list<pair<int, string>> prepareSourceList(string);
+	void parseSource(list<pair<int, string>>);
+	
 
 private:
-	PKB pkb;
-	Modifies& modifies = pkb.getModifies();
-	Uses& uses = pkb.getUses();
-	Follows& follows = pkb.getFollows();
-	Parent& parent = pkb.getParent();
-	void processWhile(list<std::pair<int, string>>::iterator&, list<std::pair<int, string>>&,
-		list<int>&, list<int>&, list<int>&, int, list<stack<string>>&);
+	void trim(string&);
+	void addNewLineString(string&);
+	void buildSourceCodeList(string, list<std::pair<int, string>>&);
+	void processSourceCodeList(list<pair<int, string>>&);
+
+	void processNestedStmt(list<std::pair<int, string>>::iterator&, list<std::pair<int, string>>&,
+		list<int>&, list<int>&, list<int>&, int, list<stack<string>>&, list<pair<int, pair<int, string>>>&);
 	int countNumOfLeftBraces(std::pair<int, string>);
 	int countNumOfRightBraces(std::pair<int, string>);
 	void processAssignment(std::pair<int, string>, list<int>&, list<int>&);
 	bool isVariable(string);
 	bool isSemicolon(char);
 	bool isMathSymbol(char);
-	int getTypeOfStatement(string);
-	string getProcName(string);
+	int getTypeOfStmt(string);
+	string getProcName(int, string);
+	string getProcNameCallStmt(string);
+	void processPatternStmt(pair<int, string>, int);
+	string getControlVarName(int, string);
 };
 
 #endif

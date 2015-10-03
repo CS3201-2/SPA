@@ -195,7 +195,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findSuchThatClause(string &subquery)
 
 	qt.insertSuchThat(relType, arrVar, varTypes);
 
-	cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return VALID;
@@ -304,7 +304,12 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 			}
 		} 
 	} else if (arg2.compare("_") == 0) {
-		r.isArgValid(relType, 1, "all");
+		if (!r.isArgValid(relType, 2, "all")) {
+			return INVALID;
+		}
+		else {
+			varType.at(1) = "all";
+		}
 	} else {
 		return INVALID;
 	}
@@ -313,6 +318,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery){
 
 	//or qt.addRel(reltype, arrVar);
 	//cout << "pattern " << arrVar.at(0) << " " << value << endl;
+	//cout << "pattern " << varType.at(0) << " " << varType.at(1) << endl;
 	subquery = trim(arrWords.at(1));
 	
 	return VALID;

@@ -1,15 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="AST.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="AnotherExpressionTree.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="ASTNode.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
     <ClCompile Include="Follows.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
@@ -42,15 +33,6 @@
     </ClCompile>
     <ClCompile Include="UI.cpp">
       <Filter>Source Files\Front-end Parser</Filter>
-    </ClCompile>
-    <ClCompile Include="Prefix.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="Suffix.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="StackNode.cpp">
-      <Filter>Source Files\PKB</Filter>
     </ClCompile>
     <ClCompile Include="QueryController.cpp">
       <Filter>Source Files\Query Processor</Filter>
@@ -86,14 +68,26 @@
     <ClCompile Include="CFGNode.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="Pattern.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="Calls.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="FollowsStar.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="ParentStar.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="CallsStar.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="DesignExtractor.cpp">
+      <Filter>Source Files\Front-end Parser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ASTNode.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
-    <ClInclude Include="AST.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
     <ClInclude Include="Follows.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
@@ -123,18 +117,6 @@
     </ClInclude>
     <ClInclude Include="Parser.h">
       <Filter>Header Files\Front-end Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="AnotherExpressionTree.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
-    <ClInclude Include="Prefix.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
-    <ClInclude Include="Suffix.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
-    <ClInclude Include="StackNode.h">
-      <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="QueryController.h">
       <Filter>Header Files\Query Processor</Filter>
@@ -168,6 +150,24 @@
     </ClInclude>
     <ClInclude Include="CFGNode.h">
       <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="Pattern.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="Calls.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="FollowsStar.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="ParentStar.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="CallsStar.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignExtractor.h">
+      <Filter>Header Files\Front-end Parser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,22 +1,28 @@
+#include "SPALog.h"
 #include <string>
 #include <list>
-#include <algorithm>
 #include <map>
-#include <iostream>
-#include "Parent.h"
 
 using namespace std;
+
+
+#ifndef ParentStar_H
+#define ParentStar_H
 
 class ParentStar 
 {
 public:
 	ParentStar();
-	list<int> getChildStarStmt(int);
-	list<int> getParentStarStmt(int);
-	void createParentStarMap();
-	void printParentStarMap();
+
+	void setParentStar(int, list<int>);
+	list<int> getParentStarFirst(int);
+	list<int> getParentStarSecond(int);
+	bool isParentStarValid(int, int);
+	void logParentStar();
+	void sortAndUnifyMap();
 
 private:
-	Parent parent = Parent();
 	map<int, list<int>> parentStarMap;
 };
+
+#endif

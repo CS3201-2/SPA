@@ -1,41 +1,51 @@
 #include "Follows.h"
 
+
 Follows::Follows() {
 }
 
-void Follows::setFollowsStmt(int followsFirst, int followsSecond) {
-	followsMap[followsFirst] = followsSecond;
+void Follows::setFollows(int first, int second) {
+	followsMap[first] = second;
 }
 
-int Follows::getFollowsStmt(int stmtLine) {
-	if (followsMap.find(stmtLine) == followsMap.end()) {
-		return -1;
-	}
-	else {
-		return followsMap.at(stmtLine);
-	}
-}
-
-int Follows::getIsFollowedStmt(int stmtLine) {
-	int result = -1;
+int Follows::getFollowsFirst(int second) {
 	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
-		if ((*it).second == stmtLine) {
-			result = (*it).first;
-			break;
+		if ((*it).second == second) {
+			return (*it).first;
 		}
 	}
-	return result;
+
+	return 0;
 }
 
-int Follows::getFollowsMapSize() {
-	return followsMap.size();
-}
-
-void Follows::printFollowsMap() {
-	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
-		cout << (*it).first;
-		cout << ":";
-		cout << (*it).second;
-		cout << endl;
+int Follows::getFollowsSecond(int first) {
+	if (followsMap.find(first) == followsMap.end()) {
+		return 0;
 	}
+	else {
+		return followsMap.at(first);
+	}
+}
+
+bool Follows::isFollowValid(int first, int second) {
+	if (followsMap.find(first) == followsMap.end()) {
+		return false;
+	}
+	else {
+		return followsMap.at(first) == second;
+	}
+}
+
+void Follows::logFollows() {
+	string str = "follows table\n";
+	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
+		str += to_string((*it).first) + ": " + to_string((*it).second) + "\n";
+	}
+	str += "\n";
+
+	SPALog::log(str);
+}
+
+map<int, int> Follows::getFollowsMap() {
+	return followsMap;
 }

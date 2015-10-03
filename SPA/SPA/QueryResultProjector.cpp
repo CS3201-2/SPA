@@ -10,11 +10,10 @@ const int trueTable = 1;
 const int falseTable = 0;
 
 //constructor
-QueryResultProjector::QueryResultProjector(list<ResultTable> resultList, string select, string selectType, PKB myPkb) {
+QueryResultProjector::QueryResultProjector(list<ResultTable> resultList, string select, string selectType) {
 	_resultList = resultList;
 	_isWholeTrue = -1;
 	_select = select;
-	_myPkb = myPkb;
 	_selectType = selectType;
 }
 
@@ -43,7 +42,7 @@ list<string> QueryResultProjector::getResult() {
 				resultStringList.push_back(to_string(*it));
 			}
 			else {
-				string varName = _myPkb.getVarTable().getVarName(*it);
+				string varName = PKB::getPKBInstance()->getVarName(*it);
 				resultStringList.push_back(varName);
 			}
 

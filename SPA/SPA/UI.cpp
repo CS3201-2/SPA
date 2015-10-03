@@ -30,7 +30,10 @@ int main(void) {
 	cout << "Loaded!" << endl;
 	ctr.processSource();
 
-	ctr.testingPKB();
+	// comment this part before pushing
+	ctr.logPKB();
+	
+	//uncomnment this part before pushing
 	
 	cout << "Start Processing PQL" << endl;
 
@@ -49,9 +52,9 @@ int main(void) {
 		for (auto& x : result) {
 			cout << x << endl;
 		}
-		cout << "---------------------------------" <<endl;
 	}
 	a.close();
+	
 	cin.ignore();
 	cin.get();
 

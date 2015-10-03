@@ -4,7 +4,6 @@
 #include <vector>
 #include <iostream>
 #include "PKB.h"
-#include "ASTNode.h"
 #include "QueryTree.h"
 #include "ResultTable.h"
 
@@ -13,20 +12,22 @@ using namespace std;
 #define QueryEvaluator_H
 class QueryEvaluator {
 private:
-	PKB pkb;
 	QueryTree queryTree;
 	list<ResultTable> resultList;
 	bool isInList(list<int>, int);
+	list<int> getList(string listName);
 
 public:
 	ResultTable processModifies(vector<string> tempString);
 	ResultTable processUses(vector<string> tempString);
 	ResultTable processParent(vector<string> tempString);
 	ResultTable processFollows(vector<string> tempString);
-	ResultTable processParentStar(vector<string> tempstring);
-	ResultTable processFollowsStar(vector<string> tempstring);
+	ResultTable processParentStar(vector<string> tempString);
+	ResultTable processFollowsStar(vector<string> tempString);
+	ResultTable processCalls(vector<string> tempString);
+	ResultTable processCallsStar(vector<string> tempString);
 
-	QueryEvaluator( PKB, QueryTree );
+	QueryEvaluator(QueryTree);
 	QueryEvaluator();
 	list<string> evaluate();
 	

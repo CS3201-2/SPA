@@ -8,7 +8,7 @@
 
 using namespace std;
 
-list<string> QueryController::processQueries(string queries, PKB my_pkb) {
+list<string> QueryController::processQueries(string queries) {
 	//list<bool> isValid;
 
 	/*
@@ -31,7 +31,7 @@ list<string> QueryController::processQueries(string queries, PKB my_pkb) {
 	list<string> result;
 	if (qv.isValidDecAndQuery(queries)) {
 		QueryTree qt = qv.getQueryTree();
-		QueryEvaluator qe(my_pkb, qt);
+		QueryEvaluator qe(qt);
 		result = qe.evaluate();
 	} else {
 		result.push_back("Invalid Query");
