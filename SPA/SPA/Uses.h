@@ -1,8 +1,10 @@
+#include "SPALog.h"
 #include <string>
 #include <map>
 #include <list>
 
 using namespace std;
+
 
 #ifndef Uses_H
 #define Uses_H
@@ -12,13 +14,15 @@ class Uses
 public:
 	Uses();
 
-	list<int> get_uses_stmt( int );
+	void setUses(int, list<int>); //input parameter to be decided later
+	list<int> getUsesFirst(int);
+	list<int> getUsesSecond(int);
+	bool isUsesValid(int, int);
+	void logUses();
+	void sortAndUnifyMap();
 
-	void set_uses_stmt( int, int );
-
-	list<int> getUsesVar(int stmt_number);
 private:
-	map<int,std::list<int>> usesMap;
+	map<int, list<int>> usesMap;
 };
 
 #endif

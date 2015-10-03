@@ -1,6 +1,9 @@
 #include "PKB.h"
 #include <string>
 #include <list>
+#include <stack>
+#include <regex>
+
 
 using namespace std;
 
@@ -12,26 +15,32 @@ class Parser
 public:
 	Parser();
 
-	PKB parseSource(string);
-
-	void trim(string& line);
-
-	void addNewLineString(string& content);
-
-	void buildSourceCodeList(string content, list<std::pair<int,string>>& list);
-
-	void processSourceCodeList(list<pair<int, string>>& list);
+	list<pair<int, string>> prepareSourceList(string);
+	void parseSource(list<pair<int, string>>);
+	
 
 private:
-	PKB pkb;
-	void processWhile(list<std::pair<int,string>>::iterator it, list<std::pair<int, string>>& stmtList, list<int>& modifiesList, list<int>& usesList);
-	int countNumOfLeftBraces(std::pair<int, string> pair);
-	int countNumOfRightBraces(std::pair<int, string> pair);
-	void processAssignment(std::pair<int,string> pair, list<int>& modifiesList, list<int>& usesList);
-	bool isVariable(string str);
-	bool isSemicolon(char ch);
-	bool isMathSymbol(char ch);
-	int getTypeOfStatement(std::pair<int, string> pair);
+	void trim(string&);
+	void addNewLineString(string&);
+	void buildSourceCodeList(string, list<std::pair<int, string>>&);
+	void processSourceCodeList(list<pair<int, string>>&);
+
+	void processNestedStmt(list<std::pair<int, string>>::iterator&, list<std::pair<int, string>>&,
+		list<int>&, list<int>&, list<int>&, int, list<stack<string>>&, list<pair<int, pair<int, string>>>&);
+	int countNumOfLeftBraces(std::pair<int, string>);
+	int countNumOfRightBraces(std::pair<int, string>);
+	void processAssignment(std::pair<int, string>, list<int>&, list<int>&);
+	bool isVariable(string);
+	bool isSemicolon(char);
+	bool isMathSymbol(char);
+	int getTypeOfStmt(string);
+	string getProcName(int, string);
+	string getProcNameCallStmt(string);
+	void processPatternStmt(pair<int, string>, int);
+	string getControlVarName(int, string);
+	void processCalledProcList(list<pair<int, pair<int, string>>>);
+	void generateFollowsStar();
+	void generateParentStar();
 };
 
 #endif

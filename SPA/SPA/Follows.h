@@ -1,8 +1,10 @@
+#include "SPALog.h"
 #include <string>
+#include <iostream>
 #include <map>
-#include <list>
 
 using namespace std;
+
 
 #ifndef Follows_H
 #define Follows_H
@@ -12,13 +14,15 @@ class Follows
 public:
 	Follows();
 
-	list<int> getFollowsStmt(int);
-
-	void setFollowsStmt(int, list<int>);
+	void setFollows(int, int);
+	int getFollowsFirst(int);
+	int getFollowsSecond(int);
+	bool isFollowValid(int, int);
+	void logFollows();
+	map<int, int> getFollowsMap();
 
 private:
-	// key is stmt line, value is a list of young brothers.
-	map<int, std::list<int>> followsMap;
+	map<int, int> followsMap;
 };
 
 #endif

@@ -13,7 +13,7 @@ using namespace std;
 class QueryResultProjector
 {
 public:
-	QueryResultProjector(list<ResultTable> resultList, string select, string selectType, PKB myPkb);
+	QueryResultProjector(list<ResultTable> resultList, string select, string selectType);
 	list<string> getResult();
 
 private:
@@ -23,7 +23,6 @@ private:
 	int _isWholeTrue;// -1 doesnt matter, 0 false, 1 true
 	string _select;
 	string _selectType;
-	PKB _myPkb;
 
 	int getIndexOf(vector<string> header, string str);
 	void createResultHeader(vector<string>& resultHeader, vector<string> header);

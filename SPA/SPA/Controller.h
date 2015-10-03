@@ -20,14 +20,13 @@ public:
 
 	list<string> processQuery(string query);
  
+	void logPKB();
+
 private:
 	string source;
-
-	PKB ctrPKB;
 	
-	int syntaxCheck();
-
-	PKB parse();
+	void logSourceCode(list<pair<int, string>>);
+	bool syntaxCheck(list<pair<int, string>>&);
 };
 
 #endif

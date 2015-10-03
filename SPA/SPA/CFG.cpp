@@ -1,31 +1,22 @@
-/*#include "CFG.h"
+#include "CFG.h"
 CFG::CFG()
 {
 }
 
 void CFG::BuildGraph(list<pair<int, string>> codeLst)
 {
-	stack<int> nodeInOperation;
-	int nodeIndex = 0;
-	list<int> statBuffer;
-	int stmtIndex = 0;
-	string stmtString = "";
-	list<pair<int, string>>::iterator it;
-	it = codeLst.begin;
-	while (it != codeLst.end)
+	_next.reserve(codeLst.size());
+	_statBuffer.clear();
+	_codeLst = codeLst;
+	_codeIterator = _codeLst.begin();
+	_nodeIndex = 0;
+	_currentNodeIndex = 0;
+
+	while (_codeIterator != _codeLst.end())
 	{
-		stmtIndex = it->first;
-		stmtString = it->second;
-		if (isIfStmt(stmtString))
-		{
-			createNode(nodeIndex, statBuffer);
-			nodeIndex++;
-			statBuffer.clear();
-			createNode(nodeIndex, stmtIndex);
-			nodeInOperation.push(nodeIndex);
-			nodeInOperation.push(nodeIndex);
-		}
+		solveCode();
 	}
+
 }
 
 list<int> CFG::getNext(int i)
@@ -91,14 +82,41 @@ int CFG::findNode(int i)
 	}
 }
 
-void CFG::createNode(int index, list<int> buffer)
+void CFG::extractBuffer()
 {
-	CFGNode* temp = new CFGNode(index, *buffer.begin, *buffer.end);
-	_nodeMap.insert(pair<int, CFGNode*>(index, temp));
+	if (!_statBuffer.empty())
+	{
+		CFGNode* temp = new CFGNode(_nodeIndex, *(_statBuffer.begin()), *(_statBuffer.end()));
+		_nodeMap.insert(pair<int, CFGNode*>(_nodeIndex, temp));
+		_currentNodeIndex = _nodeIndex;
+	}
 }
 
-void CFG::createNode(int index, int stmtIndex)
+void CFG::solveCode()
 {
-	CFGNode* temp = new CFGNode(index, stmtIndex, stmtIndex);
-	_nodeMap.insert(pair<int, CFGNode*>(index, temp));
-}*/
+	string codeContent = _codeIterator->second;
+	int codeIndex = _codeIterator->first;
+	if (isIfStmt(codeContent))
+	{
+
+	}
+	else if (isWhileStmt(codeContent))
+	{
+
+	}
+	else
+	{
+		_statBuffer.push_back(codeIndex);
+	}
+}
+
+bool CFG::isIfStmt(string)
+{
+	return false;
+}
+
+bool CFG::isWhileStmt(string)
+{
+	return false;
+}
+

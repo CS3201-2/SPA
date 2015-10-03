@@ -1,23 +1,51 @@
 #include "Follows.h"
-#include <map>
-#include <list>
-#include <algorithm>
 
-using namespace std;
 
-// constructor
-Follows::Follows()
-{
+Follows::Follows() {
 }
 
-list<int> Follows::getFollowsStmt(int stmt_line)
-{
-	return followsMap.at(stmt_line);
+void Follows::setFollows(int first, int second) {
+	followsMap[first] = second;
 }
 
-void Follows::setFollowsStmt(int stmt_Line, list<int> stmt_Lines)
-{
-	followsMap[stmt_Line] = stmt_Lines;
+int Follows::getFollowsFirst(int second) {
+	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
+		if ((*it).second == second) {
+			return (*it).first;
+		}
+	}
 
+	return 0;
 }
 
+int Follows::getFollowsSecond(int first) {
+	if (followsMap.find(first) == followsMap.end()) {
+		return 0;
+	}
+	else {
+		return followsMap.at(first);
+	}
+}
+
+bool Follows::isFollowValid(int first, int second) {
+	if (followsMap.find(first) == followsMap.end()) {
+		return false;
+	}
+	else {
+		return followsMap.at(first) == second;
+	}
+}
+
+void Follows::logFollows() {
+	string str = "follows table\n";
+	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
+		str += to_string((*it).first) + ": " + to_string((*it).second) + "\n";
+	}
+	str += "\n";
+
+	SPALog::log(str);
+}
+
+map<int, int> Follows::getFollowsMap() {
+	return followsMap;
+}

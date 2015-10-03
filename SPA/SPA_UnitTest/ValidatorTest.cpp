@@ -1,10 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "..\SPA\QueryValidator.h"
-<<<<<<< HEAD
 #include "..\SPA\PKB.h"
-=======
->>>>>>> master
 //#include <list>
 //#include <string>
 

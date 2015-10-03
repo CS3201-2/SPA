@@ -1,50 +1,74 @@
 #include "Modifies.h"
-#include <map>
-#include <list>
-#include <algorithm>
-#include <iostream>
 
-using namespace std;
 
 // constructor
 Modifies::Modifies()
 {
 }
 
-list<int> Modifies::get_modifies_line( int var_id )
-{
-	if (modifiesMap.find(var_id) == modifiesMap.end()) {
-		return list<int>();
-	} else{
-		return modifiesMap.at(var_id);
+//key is the stmtLine
+//first stmtLine, second varID
+
+//set modifies need to see parser to decided
+void Modifies::setModifies(int first, list<int> second) {
+	if (second.size() != 0) {
+		if (modifiesMap.find(first) == modifiesMap.end()) {
+			modifiesMap[first] = second;
+		}
+		else {
+			list<int> existingModifiesList = modifiesMap.at(first);
+			existingModifiesList.insert(existingModifiesList.end(), second.begin(), second.end());
+			modifiesMap[first] = existingModifiesList;
+		}
 	}
-	
 }
 
-void Modifies::set_modifies_stmt( int var_id, int stmt_number )
-{
-	if (modifiesMap.find(var_id) == modifiesMap.end()) {
-		std::list<int> emptyList;
-		emptyList.push_back(stmt_number);
-		modifiesMap[var_id] = emptyList;
+list<int> Modifies::getModifiesFirst(int second) {
+	list<int> resultList;
+	for (map<int, list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
+		if (find((*it).second.begin(), (*it).second.end(), second) != (*it).second.end()) {
+			resultList.push_back((*it).first);
+		}
+	}
+
+	return resultList;
+}
+
+list<int> Modifies::getModifiesSecond(int first) {
+	if (modifiesMap.find(first) == modifiesMap.end()) {
+		return list<int>();
 	}
 	else {
-		std::list<int> list = modifiesMap.at(var_id);
-
-		if (std::find(list.begin(), list.end(), stmt_number) == list.end()) {
-			list.push_back(stmt_number);
-		}
-		modifiesMap[var_id] = list;
+		return modifiesMap.at(first);
 	}
 }
 
-list<int> Modifies::getModifiesVar(int stmtNumber) {
-	list<int> varList;
-	for (int i = 0; i < modifiesMap.size(); i++) {
-		if (find(modifiesMap[i].begin(), modifiesMap[i].end(), stmtNumber) != modifiesMap[i].end()) {
-			varList.push_back(i);
-		}
+bool Modifies::isModifiesValid(int first, int second) {
+	if (modifiesMap.find(first) == modifiesMap.end()) {
+		return false;
 	}
-	return varList;
+	else {
+		list<int> modifiesList = modifiesMap.at(first);
+		return find(modifiesList.begin(), modifiesList.end(), second) != modifiesList.end();
+	}
 }
 
+void Modifies::logModifies() {
+	string str = "modifies table\n";
+	for (map<int, list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
+		str += to_string((*it).first) + ": ";
+		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
+			str += to_string(*listIt) + ", ";
+		}
+		str += "\n";
+	}
+	str += "\n";
+	SPALog::log(str);
+}
+
+void Modifies::sortAndUnifyMap() {
+	for (map<int, std::list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
+		(*it).second.sort();
+		(*it).second.unique();
+	}
+}

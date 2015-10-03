@@ -238,6 +238,16 @@ QueryValidator::RETURN_TYPE QueryValidator::parseSuchThatArgs(string relType,
 			return INVALID;
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	qt.insertSuchThat(relType, arrVar, varTypes);
+
+	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
+	subquery = trim(arrClauses.at(1));
+	return VALID;
+>>>>>>> master
 }
 
 QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) {
@@ -382,16 +392,38 @@ QueryValidator::RETURN_TYPE QueryValidator::parsePatternArg2(string relType,
 			} else {
 				varType = VARTYPE_STRING;
 			}
+<<<<<<< HEAD
 		}
 	} else if (arg.compare("_") == 0) {
 		if (!r.isArgValid(relType, 2, VARTYPE_ALL)) {
 			return INVALID;
 		} else {
 			varType = VARTYPE_ALL;
+=======
+		} 
+	} else if (arg2.compare("_") == 0) {
+		if (!r.isArgValid(relType, 2, "all")) {
+			return INVALID;
+		}
+		else {
+			varType.at(1) = "all";
+>>>>>>> master
 		}
 	} else {
 		return INVALID;
 	}
+<<<<<<< HEAD
+=======
+
+	qt.insertPattern(syn, synType, arrVar, varType);
+
+	//or qt.addRel(reltype, arrVar);
+	//cout << "pattern " << arrVar.at(0) << " " << value << endl;
+	//cout << "pattern " << varType.at(0) << " " << varType.at(1) << endl;
+	subquery = trim(arrWords.at(1));
+	
+	return VALID;
+>>>>>>> master
 }
 
 QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery) {

@@ -1,7 +1,10 @@
+#include "SPALog.h"
 #include <string>
 #include <map>
+#include <iostream>
 
 using namespace std;
+
 
 #ifndef ProcTable_H
 #define ProcTable_H
@@ -11,15 +14,14 @@ class ProcTable
 public:
 	ProcTable();
 
-	int get_ID(string);
-
-	int insert_Proc(string);
-
-	int get_size();
+	int insertProc(string);
+	int getProcID(string); 
+	string getProcName(int);
+	size_t getProcTableSize();
+	void logProcTable();
 
 private:
-	map<string,int> procTable;
-	
+	map<string, int> procTable;
 };
 
 #endif

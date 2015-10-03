@@ -1,5 +1,7 @@
 #include <string>
 #include <map>
+#include <iostream>
+#include "SPALog.h"
 
 using namespace std;
 
@@ -12,17 +14,14 @@ class VarTable
 public:
 	VarTable();
 
-	int get_ID(string);
-
-	int insert_Var(string);
-
-	int get_size();
-
+	int insertVar(string);
+	int getVarID(string); 	//return 0 for invalid varName input
 	string getVarName(int);
+	size_t getVarTableSize();
+	void logVarTable();
 
-	map<string, int> varTable;
 private:
-
+	map<string, int> varTable;
 };
 
 #endif

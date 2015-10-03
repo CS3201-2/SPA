@@ -13,7 +13,7 @@ class QueryController
 {
 private:
 public:
-	list<string> processQueries(string queries, PKB my_pkb);
+	list<string> processQueries(string queries);
 
 };
 
