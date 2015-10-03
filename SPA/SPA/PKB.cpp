@@ -142,6 +142,10 @@ list<int> PKB::getParentList() {
 	return parentList;
 }
 
+void PKB::buildCFG(list<pair<int, string>> sourceCodeList) {
+	cfg.buildGraph(sourceCodeList);
+}
+
 
 //varTable
 int PKB::insertVar(string varName) {
@@ -430,11 +434,35 @@ bool PKB::isParentStarValid(int first, int second) {
 void PKB::logParentStar() {
 	getParentStar().logParentStar();
 }
-/*
+
+
 //Next
-void setNext(int, int);
-list<int> getNextFirst(int);
-list<int> getNextSecond(int);
-bool isNextvalid(int, int);
-void printAllNext();
-*/
+list<int> PKB::getNextFirst(int second) {
+	return cfg.getNextFirst(second);
+}
+
+list<int> PKB::getNextSecond(int first) {
+	return cfg.getNextSecond(first);
+}
+
+bool PKB::isNextvalid(int first, int second) {
+	return cfg.isNextValid(first, second);
+}
+
+void PKB::logAllNext() {
+	
+}
+
+
+//NextStar
+list<int> PKB::getNextStarFirst(int second) {
+	return cfg.getNextStarFirst(second);
+}
+
+list<int> PKB::getNextStarSecond(int first) {
+	return cfg.getNextStarSecond(first);
+}
+
+bool PKB::isNextStarValid(int first, int second) {
+	return cfg.isNextStarValid(first, second);
+}

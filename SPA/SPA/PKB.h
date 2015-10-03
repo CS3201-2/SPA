@@ -9,6 +9,7 @@
 #include "ProcTable.h"
 #include "VarTable.h"
 #include "Pattern.h"
+#include "CFG.h"
 #include <string>
 #include <list>
 
@@ -38,6 +39,7 @@ public:
 	list<int> getIfList();
 	list<int> getStmtList(); //everything
 	list<int> getParentList(); //while and if list
+	void buildCFG(list<pair<int, string>>);
 
 	//PKB housekeeping function
 	//sort and unify function for Modifies, Uses, FollowsStar, Parent, ParentStar
@@ -132,11 +134,15 @@ public:
 	void logParentStar();
 
 	//Next
-	/*void setNext(int, int);
+
 	list<int> getNextFirst(int);
 	list<int> getNextSecond(int);
 	bool isNextvalid(int, int);
-	void printAllNext();*/
+	void logAllNext();
+
+	list<int> getNextStarFirst(int);
+	list<int> getNextStarSecond(int);
+	bool isNextStarValid(int, int);
 	//new APIs ends
 
 
@@ -154,6 +160,7 @@ private:
 	Pattern pattern;
 	Calls calls;
 	CallsStar callsStar;
+	CFG cfg;
 	list<int> whileStmtList;
 	list<int> assignStmtList;
 	list<int> callStmtList;
