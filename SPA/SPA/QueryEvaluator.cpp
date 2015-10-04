@@ -1050,8 +1050,8 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 			return tempResult;
 		}
 
-		int littleBrother = PKB::getPKBInstance()->getNextSecond(stoi(arg1));
-		if (littleBrother == 0) {
+		list<int> littleBrothers = PKB::getPKBInstance()->getNextSecond(stoi(arg1));
+		if (littleBrothers.size() == 0) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
 			return tempResult;
@@ -1076,11 +1076,14 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 			list<int> targetList = getList(arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
-			if (isInList(targetList, littleBrother)) {
-				temp.push_back(littleBrother);
-				tempResult.addTuple(temp);
-				temp.clear();
+			for (list<int>::iterator t = littleBrothers.begin(); t != littleBrothers.end(); t++) {
+				if (isInList(targetList, *t)) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
 			}
+			
 			return tempResult;
 		}
 
@@ -1095,15 +1098,19 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 				SPALog::log("Next arg2 is not a valid prog_line");
 				return tempResult;
 			}
-			int brother = PKB::getPKBInstance()->getNextFirst(stoi(arg2));
+			list<int> brothers = PKB::getPKBInstance()->getNextFirst(stoi(arg2));
 			vector<int> temp;
-			if (brother != 0 && isInList(arg1List, brother)) {
-				temp.push_back(brother);
-				tempResult.addTuple(temp);
-				temp.clear();
-			}
-			else {
+			if (brothers.size() == 0) {
+				ResultTable tempResult = ResultTable();
 				tempResult.isWholeTrue = 0;
+				return tempResult;
+			}
+			for (list<int>::iterator t = brothers.begin(); t != brothers.end(); t++) {
+				if (isInList(arg1List, *t)) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
 			}
 			return tempResult;
 		}
@@ -1117,13 +1124,16 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 				return tempResult;
 			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
-				int littleBrother = PKB::getPKBInstance()->getNextSecond(*t);
-				if (isInList(arg2List, littleBrother)) {
-					temp.push_back(*t);
-					temp.push_back(littleBrother);
-					tempResult.addTuple(temp);
-					temp.clear();
+				list<int> littleBrothers = PKB::getPKBInstance()->getNextSecond(*t);
+				for (list<int>::iterator i = littleBrothers.begin(); i != littleBrothers.end(); i++) {
+					if (isInList(arg2List, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
 				}
+				
 			}
 			return tempResult;
 		}
