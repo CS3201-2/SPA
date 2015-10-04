@@ -849,9 +849,9 @@ ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
 			ResultTable tempResult = ResultTable();
 			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
 
-			if (!arg2ID) {
+			if (!arg2ID || (arg1 == arg2)) {
 				tempResult.isWholeTrue = 0;
-				SPALog::log("arg2 is not a valid proc id!\n");
+				SPALog::log("arg2 is not a valid proc id or arg1 == arg2!\n");
 				return tempResult;
 			}
 
@@ -902,6 +902,12 @@ ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
 		else if (arg2Type == "procedure" || "all") {
 			ResultTable tempResult = ResultTable(arg1,arg2);
 			vector<int> temp;
+			if (arg1Type != "all" && arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				SPALog::log("Calls invalid arg1 == arg2!\n");
+				return tempResult;
+			}
+
 			list<int> procList = PKB::getPKBInstance()->getProcList();
 			for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
 				list<int> procedureCalled = PKB::getPKBInstance()->getCallsSecond(*i);
@@ -947,9 +953,9 @@ ResultTable QueryEvaluator::processCallsStar(vector<string> tempString) {
 			ResultTable tempResult = ResultTable();
 			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
 
-			if (!arg2ID) {
+			if (!arg2ID || arg1 == arg2) {
 				tempResult.isWholeTrue = 0;
-				SPALog::log("arg2 is not a valid proc id!\n");
+				SPALog::log("arg2 is not a valid proc id! or arg1 == arg2\n");
 				return tempResult;
 			}
 
@@ -1000,6 +1006,12 @@ ResultTable QueryEvaluator::processCallsStar(vector<string> tempString) {
 		else if (arg2Type == "procedure" || "all") {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
+			if (arg1Type != "all" && arg1 == arg2) {
+				tempResult.isWholeTrue = 0;
+				SPALog::log("Calls* invalid arg1 == arg2!\n");
+				return tempResult;
+			}
+
 			list<int> procList = PKB::getPKBInstance()->getProcList();
 			for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
 				list<int> procedureCalled = PKB::getPKBInstance()->getCallsStarSecond(*i);
