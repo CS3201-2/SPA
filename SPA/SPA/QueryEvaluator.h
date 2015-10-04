@@ -30,6 +30,8 @@ private:
 	ResultTable processFollowsStar(vector<string> tempString);
 	ResultTable processCalls(vector<string> tempString);
 	ResultTable processCallsStar(vector<string> tempString);
+	ResultTable processNext(vector<string> tempString);
+	ResultTable processNextStar(vector<string> tempString);
 
 	vector<string> getSelectClause(int index);
 	vector<string> getSuchThatClause(int index);
