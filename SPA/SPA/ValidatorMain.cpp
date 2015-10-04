@@ -1,4 +1,4 @@
-#include "QueryValidator.h"
+/*#include "QueryValidator.h"
 #include "RelationshipTable.h"
 #include <iostream>
 
@@ -45,8 +45,8 @@ int main() {
 
 	for (int i = 0; i < result.size(); i++) {
 		cout << result.at(i)<<"\n";
-	}*/
+	}
 	cin.ignore();
 	cin.get();
 	return 0;
-}
+}*/
