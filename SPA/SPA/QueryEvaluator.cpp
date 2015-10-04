@@ -1282,8 +1282,19 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 		}
 		else {
 			//iter 1 "constant or string" or variable
-			string arg2Trim = arg2.substr(2, arg2.length() - 4);
-			list<int> assignList = PKB::getPKBInstance()->getAssignWithBoth(arg1, arg2Trim);
+			string flag = arg2.substr(0, 1);
+			string arg2Trim;
+			list<int> assignList;
+
+			if (flag == "_") {
+			    arg2Trim = arg2.substr(2, arg2.length() - 4);
+				assignList = PKB::getPKBInstance()->getAssignWithBoth(arg1, arg2Trim);
+			}
+			else {
+				arg2Trim = arg2.substr(1, arg2.length() - 2);
+				assignList = PKB::getPKBInstance()->getAssignWithBothExact(arg1, arg2Trim);
+			}
+			
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
@@ -1309,8 +1320,19 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 		}
 		else {
 			//iter 1 "constant or string" or "variable"
-			string arg2Trim = arg2.substr(2, arg2.length() - 4);
-			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2Trim);
+			string flag = arg2.substr(0, 1);
+			string arg2Trim;
+			list<int> assignList;
+
+			if (flag == "_") {
+				arg2Trim = arg2.substr(2, arg2.length() - 4);
+				assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2Trim);
+			}
+			else {
+				arg2Trim = arg2.substr(1, arg2.length() - 2);
+				assignList = PKB::getPKBInstance()->getAssignWithSecondExact(arg2Trim);
+			}
+
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				list<int> modifiedVarList = PKB::getPKBInstance()->getModifiesSecond(*i);
 				for (list<int>::iterator t = modifiedVarList.begin(); t != modifiedVarList.end(); t++) {
@@ -1337,8 +1359,19 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 		}
 		else {
 			// arg2Type is constant or string or variable
-			string arg2Trim = arg2.substr(2, arg2.length() - 4);
-			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2Trim);
+			string flag = arg2.substr(0, 1);
+			string arg2Trim;
+			list<int> assignList;
+
+			if (flag == "_") {
+				arg2Trim = arg2.substr(2, arg2.length() - 4);
+				assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2Trim);
+			}
+			else {
+				arg2Trim = arg2.substr(1, arg2.length() - 2);
+				assignList = PKB::getPKBInstance()->getAssignWithSecondExact(arg2Trim);
+			}
+
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
