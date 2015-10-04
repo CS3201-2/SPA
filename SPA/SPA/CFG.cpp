@@ -538,3 +538,4 @@ bool CFG::isProc(string str)
 {
 	return regex_match(str, REGEX_PROC);
 }
+
