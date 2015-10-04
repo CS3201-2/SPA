@@ -27,9 +27,8 @@ public:
 	void insertVariable(string variable, string variableType);
 	//For adding variables under the select category
 	void insertSelect(string var, string varType);
-
-	//Method not yet implemented. For accepting relationships under the "with" clause. aka insertWith
-	// and ifPattern type. aka insertIfPattern
+	//For adding variables under the with category
+	void insertWith(string with1, string with1Type, string with2, string with2Type);
 
 	//Getting the number of relationships that fall under the such that clause
 	int getSuchThatSize();
@@ -39,6 +38,8 @@ public:
 	int getVariableSize();
 	//Getting the number of variables under select
 	int getSelectSize();
+	//Getting the number of relationships under the with clause
+	int getWithSize();
 
 	//Obtaining the information of specific relationships that fall under the respective clauses
 	//eg. To see the first relationship under the such that tree, we call getSuchThatQuery(0) and assign it to a vector
@@ -47,4 +48,5 @@ public:
 	vector<string> getPatternQuery(int queryPos);
 	vector<string> getVariableQuery(int queryPos);
 	vector<string> getSelectQuery(int queryPos);
+	vector<string> getWithQuery(int queryPos);
 };

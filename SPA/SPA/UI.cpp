@@ -29,11 +29,6 @@ int main(void) {
 
 	cout << "Loaded!" << endl;
 	ctr.processSource();
-
-	// comment this part before pushing
-	ctr.logPKB();
-	
-	//uncomnment this part before pushing
 	
 	cout << "Start Processing PQL" << endl;
 

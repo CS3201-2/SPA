@@ -23,6 +23,10 @@ void Modifies::setModifies(int first, list<int> second) {
 	}
 }
 
+void Modifies::resetModifies(int first, list<int> second) {
+	modifiesMap[first] = second;
+}
+
 list<int> Modifies::getModifiesFirst(int second) {
 	list<int> resultList;
 	for (map<int, list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
@@ -53,12 +57,17 @@ bool Modifies::isModifiesValid(int first, int second) {
 	}
 }
 
-void Modifies::logModifies() {
+void Modifies::logModifies(ProcTable procTable, VarTable varTable) {
 	string str = "modifies table\n";
 	for (map<int, list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
-		str += to_string((*it).first) + ": ";
+		if ((*it).first < 0) {
+			str += procTable.getProcName((*it).first) + ": ";
+		}
+		else {
+			str += to_string((*it).first) + ": ";
+		}		
 		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += to_string(*listIt) + ", ";
+			str += varTable.getVarName(*listIt) + ", ";
 		}
 		str += "\n";
 	}

@@ -1019,6 +1019,32 @@ ResultTable QueryEvaluator::processCallsStar(vector<string> tempString) {
 }
 
 void QueryEvaluator::processPatternClause(vector<string> tempString) {
+	
+	string synType = tempString.at(1);
+	string arg1 = tempString.at(2);
+	string arg1Type = tempString.at(3);
+	string arg2 = tempString.at(4);
+	string arg2Type = tempString.at(5);
+	
+	string log = "Pattern clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
+	SPALog::log(log);
+
+	if (synType == "assign") {
+		resultList.push_back(processAssignPattern(tempString));
+	}
+	else if (synType == "while") {
+		resultList.push_back(processWhilePattern(tempString));
+	}
+	else if (synType == "if") {
+		resultList.push_back(processIfPattern(tempString));
+	}
+	else {
+
+	}
+	
+}
+
+ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 	string syn = tempString.at(0);
 	string synType = tempString.at(1);
 	string arg1 = tempString.at(2);
@@ -1026,10 +1052,6 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	string arg2 = tempString.at(4);
 	string arg2Type = tempString.at(5);
 
-	string log = "Pattern clause: assign (" + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
-	SPALog::log(log);
-
-	//syn has to be assign in prototype
 	if (arg1Type == "string") {
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
@@ -1051,8 +1073,7 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 				temp.clear();
 			}
 		}
-		resultList.push_back(tempResult);
-		return;
+		return tempResult;
 	}
 	else if (arg1Type == "variable") {
 		ResultTable tempResult = ResultTable(syn, arg1);
@@ -1083,8 +1104,8 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 				}
 			}
 		}
-		resultList.push_back(tempResult);
-		return;
+		
+		return tempResult;
 	}
 	else if (arg1Type == "all") {
 		ResultTable tempResult = ResultTable(syn);
@@ -1107,14 +1128,126 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 				temp.clear();
 			}
 		}
-		resultList.push_back(tempResult);
-		return;
+		return tempResult;
 	}
 	else {
 		SPALog::log("pattern arg1 type wrong");
-		return;
+		return ResultTable();
 	}
-	
+}
+
+ResultTable QueryEvaluator::processWhilePattern(vector<string> tempString) {
+	string syn = tempString.at(0);
+	string synType = tempString.at(1);
+	string arg1 = tempString.at(2);
+	string arg1Type = tempString.at(3);
+	string arg2 = tempString.at(4);
+	string arg2Type = tempString.at(5);
+
+	if (arg1Type == "string") {
+		ResultTable tempResult = ResultTable(syn);
+		vector<int> temp;
+		int arg1ID = PKB::getPKBInstance()->getVarID(arg1);
+		if (!arg1ID) {
+			tempResult.isWholeTrue = 0;
+			SPALog::log("arg1 is not a valid variable!\n");
+			return tempResult;
+		}
+
+		list<int> whileList = PKB::getPKBInstance()->getWhileWithFirstExact(arg1);
+		for (list<int>::iterator i = whileList.begin(); i != whileList.end(); i++) {
+			temp.push_back(*i);
+			tempResult.addTuple(temp);
+			temp.clear();
+		}
+		return tempResult;
+	}
+	else if (arg1Type == "variable") {
+		ResultTable tempResult = ResultTable(syn, arg1);
+		vector<int> temp;
+		list<int> varList = PKB::getPKBInstance()->getVarList();
+		for (list<int>::iterator i = varList.begin(); i != varList.end(); i++) {
+			string varName = PKB::getPKBInstance()->getVarName(*i);
+			list<int> whileList = PKB::getPKBInstance()->getWhileWithFirstExact(varName);
+			for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+				temp.push_back(*t);
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+		}
+		return tempResult;
+	}
+	else {
+	 //arg1Type == all
+		ResultTable tempResult = ResultTable(syn);
+		vector<int> temp;
+		
+		list<int> whileList = PKB::getPKBInstance()->getWhileList();
+		for (list<int>::iterator t = whileList.begin(); t != whileList.end(); t++) {
+			temp.push_back(*t);
+			tempResult.addTuple(temp);
+			temp.clear();
+		}
+		return tempResult;
+	}
+}
+
+ResultTable QueryEvaluator::processIfPattern(vector<string> tempString) {
+	string syn = tempString.at(0);
+	string synType = tempString.at(1);
+	string arg1 = tempString.at(2);
+	string arg1Type = tempString.at(3);
+	string arg2 = tempString.at(4);
+	string arg2Type = tempString.at(5);
+
+	if (arg1Type == "string") {
+		ResultTable tempResult = ResultTable(syn);
+		vector<int> temp;
+		int arg1ID = PKB::getPKBInstance()->getVarID(arg1);
+		if (!arg1ID) {
+			tempResult.isWholeTrue = 0;
+			SPALog::log("arg1 is not a valid variable!\n");
+			return tempResult;
+		}
+
+		list<int> ifList = PKB::getPKBInstance()->getIfWithFirstExact(arg1);
+		for (list<int>::iterator i = ifList.begin(); i != ifList.end(); i++) {
+			temp.push_back(*i);
+			tempResult.addTuple(temp);
+			temp.clear();
+		}
+		return tempResult;
+	}
+	else if (arg1Type == "variable") {
+		ResultTable tempResult = ResultTable(syn, arg1);
+		vector<int> temp;
+		list<int> varList = PKB::getPKBInstance()->getVarList();
+		for (list<int>::iterator i = varList.begin(); i != varList.end(); i++) {
+			string varName = PKB::getPKBInstance()->getVarName(*i);
+			list<int> ifList = PKB::getPKBInstance()->getIfWithFirstExact(varName);
+			for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+				temp.push_back(*t);
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+		}
+		return tempResult;
+	}
+	else {
+		//arg1Type == all
+		ResultTable tempResult = ResultTable(syn);
+		vector<int> temp;
+
+		list<int> ifList = PKB::getPKBInstance()->getIfList();
+		for (list<int>::iterator t = ifList.begin(); t != ifList.end(); t++) {
+			temp.push_back(*t);
+			tempResult.addTuple(temp);
+			temp.clear();
+		}
+		return tempResult;
+	}
 }
 
 void QueryEvaluator::processSelectClause(vector<string> tempString) {

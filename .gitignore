@@ -6,6 +6,7 @@
 *.ilk
 *.lib
 *.log
+*.txt
 SPA/SPA/Debug/
 SPA/SPA_UnitTest/Debug/
 SPA/.vs/
