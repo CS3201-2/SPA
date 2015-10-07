@@ -19,9 +19,11 @@ public:
 	string getVarName(int);
 	size_t getVarTableSize();
 	void logVarTable();
+	void setVarTableReverse();
 
 private:
 	map<string, int> varTable;
+	map<int, string> varTableReverse;
 };
 
 #endif

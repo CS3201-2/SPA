@@ -20,9 +20,11 @@ public:
 	bool isFollowsStarValid(int, int);
 	void logFollowsStar();
 	void sortAndUnifyMap();
+	void setFollowsStarReverse();
 
 private:
 	map<int, list<int>> followsStarMap;
+	map<int, list<int>> followsStarMapReverse;
 };
 
 #endif

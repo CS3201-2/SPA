@@ -24,9 +24,11 @@ public:
 	void logCallsStar(ProcTable procTable);
 	void sortAndUnifyMap();
 	map<int, list<int>> getCallsStarMap();
+	void setCallsStarReverse();
 
 private:
 	map<int, list<int>> callsStarMap;
+	map<int, list<int>> callsStarMapReverse;
 };
 
 #endif

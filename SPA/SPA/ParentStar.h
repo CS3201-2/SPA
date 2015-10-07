@@ -20,9 +20,11 @@ public:
 	bool isParentStarValid(int, int);
 	void logParentStar();
 	void sortAndUnifyMap();
+	void setParentStarReverse();
 
 private:
 	map<int, list<int>> parentStarMap;
+	map<int, list<int>> parentStarMapReverse;
 };
 
 #endif

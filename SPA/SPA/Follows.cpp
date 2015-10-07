@@ -9,13 +9,12 @@ void Follows::setFollows(int first, int second) {
 }
 
 int Follows::getFollowsFirst(int second) {
-	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
-		if ((*it).second == second) {
-			return (*it).first;
-		}
+	if (followsMapReverse.find(second) == followsMapReverse.end()) {
+		return 0;
 	}
-
-	return 0;
+	else {
+		return followsMapReverse.at(second);
+	}
 }
 
 int Follows::getFollowsSecond(int first) {
@@ -43,9 +42,21 @@ void Follows::logFollows() {
 	}
 	str += "\n";
 
+	str += "follows reverse table\n";
+	for (map<int, int>::iterator it = followsMapReverse.begin(); it != followsMapReverse.end(); ++it) {
+		str += to_string((*it).first) + ": " + to_string((*it).second) + "\n";
+	}
+	str += "\n";
+
 	SPALog::log(str);
 }
 
 map<int, int> Follows::getFollowsMap() {
 	return followsMap;
+}
+
+void Follows::setFollowsReverse() {
+	for (map<int, int>::iterator it = followsMap.begin(); it != followsMap.end(); ++it) {
+		followsMapReverse[(*it).second] = (*it).first;
+	}
 }
