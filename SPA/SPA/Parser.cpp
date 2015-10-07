@@ -203,12 +203,9 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::
 	int prevStmtType = invalidStmt;
 	int calledProcID;
 
-	//put control variable into Uses
+	//put control variable into UsesList
 	int controlVarID = PKB::getPKBInstance()->insertVar(getControlVarName(getTypeOfStmt((*it).second), (*it).second));
-	list<int> controlVarList;
-	controlVarList.push_back(controlVarID);
-	PKB::getPKBInstance()->setUses((*it).first, controlVarList);
-	PKB::getPKBInstance()->setUses(currentProcID, controlVarList);
+	usesList.push_back(controlVarID);
 
 	++it;//to skip the starting of this while statement
 	while (!braceList.back().empty()) {

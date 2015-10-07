@@ -19,10 +19,18 @@ private:
 	//bool parseString(string query);
 	bool isValidDeclaration(string declaration);
 	bool isValidQuery(string query);
+	bool checkRetVal(RETURN_TYPE retVal, bool &isFinished);
 	bool isValidVariableName(string varName);
-	RETURN_TYPE findSuchThatClause(string &subquery);
+	
+	RETURN_TYPE findRel(string &subquery);
+	bool parseRel(string &subquery);
+	bool parseRelArgs(string relType, vector<string> &arrVar, vector<string> &varTypes);
+	RETURN_TYPE findAndSuchThat(string &subquery);
+	
 	RETURN_TYPE findPatternClause(string &subquery);
-	RETURN_TYPE findSuchThatString(string &subquery);
+	bool parsePatternType(string word, string &relType, string &syn, string &synType);
+	bool parsePatternArg1(string relType, string &arg, string &varType);
+	bool parsePatternArg2(string relType, string &arg, string &varType);
 	
 	vector<string> split(string str, char c);
 	vector<string> split(string str, char c, int num);

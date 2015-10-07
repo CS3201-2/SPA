@@ -12,24 +12,40 @@ int main() {
 		str5 = "assign a,    c; variable aa;Select a     such that Uses(a, \"x\")", // to check map
 		str6 = "assign   a,   c;Select   a     such that uses  (_, \"x\")", //to check parseQuery(), findSuchThatClause()
 		str7 = "assign   a,   c;Select   a     pattern a (\"a\", _\"x\"_)", //to check parseQuery(), findPattern()
-		str8 = "assign   a,   c;Select   a     pattern a (\"a\", _\"x\"_) such that Uses  (_, \"x\") ", // to check findSuchThatClause() and findPattern()
+		str8 = "assign   a,   c;Select   a     pattern a (\"a\", _\"x\"_) such that Uses  (a, \"x\") pattern a (\"a\", _\"x\"_)", // to check findSuchThatClause() and findPattern()
 		str9 = "assign a; Select a Pattern a(\"x\", \"0\")",
-		str10 = "stmt s; Select s such that Follows(s, 1)",
-		str11 = "stmt s; Select s such that Modifies(s, \"i\")";
-	//queries.push_back(str);
-	//queries.push_back(str2);
-	//queries.push_back(str3);
-	//queries.push_back(str4);
-	//queries.push_back(str8);
+		str10 = "stmt s; Select s such that",
+		str11 = "stmt s; Select s such that Modifies(s, \"i\")",
+		str12 = "stmt s; Select s such that Next(s,s)",
+		str13 = "while w; Select w Pattern w(\"x\", _ )",
+		str14 = "if If1; Select If1 Pattern If1(\"i\", _, _ )",
+		str15 = "assign a1; assign a2; Select a1 such that Follows(a1, a2)",
+		str16 = "assign a; Select a pattern a(\"x\", _)",
+		str17 = " ";
+
 	//cout << str << "\n";
-	//cout << str2 << "\n";
-	//cout << str3 << "\n";
-	//cout << str4 << "\n";
-	//cout << str6 << "\n";
-	q.isValidDecAndQuery(str11);
+
+	q.isValidDecAndQuery(str10);
 
 	//RelationshipTable r;
+	/*string str18 = "Follows(s, 1)";
+	char c = '(';
+	vector<string> result;
+	const char *strChar = str18.c_str();
 
+	do {
+		const char *begin = strChar;
+
+		while (*strChar != c && *strChar) {
+			strChar++;
+		}
+
+		result.push_back(string(begin, strChar));
+	} while (0 != *strChar++);
+
+	for (int i = 0; i < result.size(); i++) {
+		cout << result.at(i)<<"\n";
+	}
 	cin.ignore();
 	cin.get();
 	return 0;

@@ -54,79 +54,85 @@ RelationshipTable::RelationshipTable() {
 	arg1.clear();
 	arg2.clear();
 
-
 	//Pattern-assign
 	arg1 = { "variable", "string", "all" };
-	arg2 = { "variable", "constant", "string", "all" };
+	arg2 = { "substring", "string", "all" };
 	Relationship r7(2, arg1, arg2);
-	relTable["pattern"] = r7;
+	relTable["patternAssign"] = r7;
 	arg1.clear();
 	arg2.clear();
-	/*
+	
 	//Pattern-if
 	arg1 = { "variable", "string", "all" };
 	arg2 = { "all" };
-	Relationship r7(2, arg1, arg2);
-	relTable["pattern"] = r7;
+	Relationship r8(3, arg1, arg2);
+	relTable["patternIf"] = r8;
 	arg1.clear();
 	arg2.clear();
 
 	//Pattern-while
 	arg1 = { "variable", "string", "all" };
 	arg2 = { "all" };
-	Relationship r7(2, arg1, arg2);
-	relTable["pattern"] = r7;
+	Relationship r9(2, arg1, arg2);
+	relTable["patternWhile"] = r9;
 	arg1.clear();
 	arg2.clear();
 
 	//Next
 	arg1 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
 	arg2 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
-	Relationship r7(2, arg1, arg2);
-	relTable["pattern"] = r7;
+	Relationship r10(2, arg1, arg2);
+	relTable["next"] = r10;
 	arg1.clear();
 	arg2.clear();
 
 	//Next*
 	arg1 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
 	arg2 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
-	Relationship r7(2, arg1, arg2);
-	relTable["pattern"] = r7;
+	Relationship r11(2, arg1, arg2);
+	relTable["next*"] = r11;
 	arg1.clear();
 	arg2.clear();
 
 	//Calls
 	arg1 = { "procedure", "proc_name", "all" };
 	arg2 = { "procedure", "proc_name", "all" };
-	Relationship r7(2, arg1, arg2);
-	relTable["pattern"] = r7;
+	Relationship r12(2, arg1, arg2);
+	relTable["calls"] = r12;
 	arg1.clear();
 	arg2.clear();
 
 	//Calls*
 	arg1 = { "procedure", "proc_name", "all" };
 	arg2 = { "procedure", "proc_name", "all" };
-	Relationship r7(2, arg1, arg2);
-	relTable["pattern"] = r7;
+	Relationship r13(2, arg1, arg2);
+	relTable["calls*"] = r13;
 	arg1.clear();
 	arg2.clear();
 
 	//Affects
 	arg1 = { "prog_line", "assign", "all" };
 	arg2 = { "prog_line", "assign", "all" };
-	Relationship r7(2, arg1, arg2);
-	relTable["pattern"] = r7;
+	Relationship r14(2, arg1, arg2);
+	relTable["affects"] = r14;
 	arg1.clear();
 	arg2.clear();
 
 	//Affects*
 	arg1 = { "prog_line", "stmt", "assign", "all" };
 	arg2 = { "prog_line", "stmt", "assign", "all" };
-	Relationship r7(2, arg1, arg2);
-	relTable["pattern"] = r7;
+	Relationship r15(2, arg1, arg2);
+	relTable["affects*"] = r15;
 	arg1.clear();
 	arg2.clear();
-	*/
+
+	//With
+	arg1 = { "procedure", "call", "variable", "constant", "stmt", "number", "proc_name" };
+	arg2 = { "procedure", "call", "variable", "constant", "stmt", "number", "proc_name" };
+	Relationship r16(2, arg1, arg2);
+	relTable["with"] = r16;
+	arg1.clear();
+	arg2.clear();
 }
 
 bool RelationshipTable::hasRelationship(string rel) {
