@@ -165,7 +165,7 @@ list<int> QueryEvaluator::getList(string listName) {
 		return PKB::getPKBInstance()->getProcList();
 	}
 	else if (listName == "constant") {
-		//return PKB::getPKBInstance()->getConstantList();
+		return PKB::getPKBInstance()->getConstantList();
 	}
 	else {
 		list<int> emptyList;
