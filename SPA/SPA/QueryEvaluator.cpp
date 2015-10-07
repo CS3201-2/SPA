@@ -211,7 +211,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if ( arg1Type == "proc_name" ) {
+		else if ( arg1Type == "string" ) {
 			ResultTable tempResult = ResultTable();
 			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
@@ -264,7 +264,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "proc_name") {
+		else if (arg1Type == "string") {
 			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
 				ResultTable tempResult = ResultTable();
@@ -342,7 +342,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "proc_name") {
+		else if (arg1Type == "string") {
 			ResultTable tempResult = ResultTable();
 			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
@@ -394,7 +394,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "proc_name") {
+		else if (arg1Type == "string") {
 			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
 				ResultTable tempResult = ResultTable();
@@ -842,7 +842,7 @@ ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
 	string arg1Type = tempString.at(2);
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
-	if (arg1Type == "proc_name") {
+	if (arg1Type == "string") {
 		int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 
 		if (!arg1ID) {
@@ -854,7 +854,7 @@ ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
 
 		list<int> procedureCalled = PKB::getPKBInstance()->getCallsSecond(arg1ID);
 
-		if (arg2Type == "proc_name") {
+		if (arg2Type == "string") {
 			ResultTable tempResult = ResultTable();
 			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
 
@@ -888,7 +888,7 @@ ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
 		}
 	}
 	else if (arg1Type == "procedure" || "all") {
-		if (arg2Type == "proc_name") {
+		if (arg2Type == "string") {
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
 			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
