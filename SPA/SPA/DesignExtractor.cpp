@@ -4,6 +4,19 @@
 DesignExtractor::DesignExtractor() {
 }
 
+
+void DesignExtractor::setReverseMap() {
+	PKB::getPKBInstance()->setModifiesReverse();
+	PKB::getPKBInstance()->setUsesReverse();
+	PKB::getPKBInstance()->setFollowsReverse();
+	PKB::getPKBInstance()->setFollowsStarReverse();
+	PKB::getPKBInstance()->setParentReverse();
+	PKB::getPKBInstance()->setParentStarReverse();
+	PKB::getPKBInstance()->setCallsReverse();
+	PKB::getPKBInstance()->setCallsStarReverse();
+	PKB::getPKBInstance()->setVarTableReverse();
+	PKB::getPKBInstance()->setProcTableReverse();
+}
 void DesignExtractor::setCalls(list<pair<int, string>> calledProcList) {
 	for (list<pair<int, string>>::iterator it = calledProcList.begin(); it != calledProcList.end(); ++it) {
 		int callFirstID = (*it).first;

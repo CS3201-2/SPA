@@ -23,9 +23,11 @@ public:
 	bool isModifiesValid(int, int);
 	void logModifies(ProcTable, VarTable);
 	void sortAndUnifyMap();
+	void setModifiesReverse();
 
 private:
 	map<int, list<int>> modifiesMap;
+	map<int, list<int>> modifiesMapReverse;
 };
 
 #endif

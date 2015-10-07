@@ -24,6 +24,7 @@ public:
 	void setParentStar();
 	void resetModifies();
 	void resetUses();
+	void setReverseMap();
 };
 
 #endif

@@ -23,9 +23,11 @@ public:
 	bool isUsesValid(int, int);
 	void logUses(ProcTable, VarTable);
 	void sortAndUnifyMap();
+	void setUsesReverse();
 
 private:
 	map<int, list<int>> usesMap;
+	map<int, list<int>> usesMapReverse;
 };
 
 #endif

@@ -24,9 +24,11 @@ public:
 	void logCalls(ProcTable);
 	void sortAndUnifyMap();
 	map<int, list<int>> getCallsMap();
-	
+	void setCallsReverse();
+
 private:
 	map<int, list<int>> callsMap;
+	map<int, list<int>> callsMapReverse;
 };
 
 #endif

@@ -48,5 +48,17 @@ void VarTable::logVarTable() {
 	}
 	str += "\n";
 
+	str += "variable table reverse\n";
+	for (map<int, string>::iterator it = varTableReverse.begin(); it != varTableReverse.end(); ++it) {
+		str += to_string((*it).first) + ": " + (*it).second + "\n";
+	}
+	str += "\n";
+
 	SPALog::log(str);
+}
+
+void VarTable::setVarTableReverse() {
+	for (map<string, int>::iterator it = varTable.begin(); it != varTable.end(); ++it) {
+		varTableReverse[(*it).second] = (*it).first;
+	}
 }

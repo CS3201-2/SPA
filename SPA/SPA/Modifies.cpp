@@ -28,14 +28,12 @@ void Modifies::resetModifies(int first, list<int> second) {
 }
 
 list<int> Modifies::getModifiesFirst(int second) {
-	list<int> resultList;
-	for (map<int, list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
-		if (find((*it).second.begin(), (*it).second.end(), second) != (*it).second.end()) {
-			resultList.push_back((*it).first);
-		}
+	if (modifiesMapReverse.find(second) == modifiesMapReverse.end()) {
+		return list<int>();
 	}
-
-	return resultList;
+	else {
+		return modifiesMapReverse.at(second);
+	}
 }
 
 list<int> Modifies::getModifiesSecond(int first) {
@@ -72,6 +70,23 @@ void Modifies::logModifies(ProcTable procTable, VarTable varTable) {
 		str += "\n";
 	}
 	str += "\n";
+
+	str += "modifies table reverse\n";
+	for (map<int, list<int>>::iterator it = modifiesMapReverse.begin(); it != modifiesMapReverse.end(); ++it) {
+		str += varTable.getVarName((*it).first) + ": ";
+		
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			if (*it2 < 0) {
+				str += procTable.getProcName(*it2) + ", ";
+			}
+			else {
+				str += to_string(*it2) + ", ";
+			}
+		}
+		str += "\n";
+	}
+	str += "\n";
+
 	SPALog::log(str);
 }
 
@@ -79,5 +94,22 @@ void Modifies::sortAndUnifyMap() {
 	for (map<int, std::list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
 		(*it).second.sort();
 		(*it).second.unique();
+	}
+}
+
+void Modifies::setModifiesReverse() {
+	for (map<int, list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			if (modifiesMapReverse.find(*it2) == modifiesMapReverse.end()) {
+				list<int> temp;
+				temp.push_back((*it).first);
+				modifiesMapReverse[*it2] = temp;
+			}
+			else {
+				list<int> temp = modifiesMapReverse.at(*it2);
+				temp.push_back((*it).first);
+				modifiesMapReverse[*it2] = temp;
+			}
+		}
 	}
 }
