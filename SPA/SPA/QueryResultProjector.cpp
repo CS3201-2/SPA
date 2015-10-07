@@ -9,6 +9,11 @@ const int notApplicable = -1;
 const int trueTable = 1;
 const int falseTable = 0;
 
+const string TYPE_VARIABLE = "variable";
+const string TYPE_BOOL = "boolean";
+const string RESULT_TRUE = "true";
+const string RESULT_FALSE = "false";
+
 //constructor
 QueryResultProjector::QueryResultProjector(list<ResultTable> resultList, string select, string selectType) {
 	_resultList = resultList;
@@ -36,18 +41,27 @@ list<string> QueryResultProjector::getResult() {
 			}
 		}
 
-
-		for (list<int>::iterator it = resultList.begin(); it != resultList.end(); ) {
-			if (_selectType != "variable") {
-				resultStringList.push_back(to_string(*it));
+		if (_selectType == TYPE_BOOL) {
+			if (resultList.empty()) {
+				resultStringList.push_back(RESULT_FALSE);
 			}
 			else {
-				string varName = PKB::getPKBInstance()->getVarName(*it);
-				resultStringList.push_back(varName);
+				resultStringList.push_back(RESULT_TRUE);
 			}
-
-			++it;
 		}
+		else {
+			for (list<int>::iterator it = resultList.begin(); it != resultList.end(); ) {
+				if (_selectType == TYPE_VARIABLE) {
+					string varName = PKB::getPKBInstance()->getVarName(*it);
+					resultStringList.push_back(varName);
+				}
+				else {
+					resultStringList.push_back(to_string(*it));
+				}
+				++it;
+			}
+		}
+
 	}
 
 	return resultStringList;
@@ -58,7 +72,7 @@ void QueryResultProjector::mergeTable() {
 	vector<vector<int>> result;
 
 	for (list<ResultTable>::iterator it = _resultList.begin(); it != _resultList.end(); ++it) {
-		if ((*it).getIsWholeTrue() == notApplicable) {
+		if ((*it).getIsWholeTrue() == notApplicable) {//-1
 			//temp data is empty, break immediately
 			if ((*it).getResult().empty()) {
 				resultHeader.clear();
@@ -81,10 +95,10 @@ void QueryResultProjector::mergeTable() {
 				trimResultTable(result, commonPairList, indexToRemove);
 			}
 		}
-		else if ((*it).getIsWholeTrue() == trueTable) {
+		else if ((*it).getIsWholeTrue() == trueTable) {//1
 			continue;
 		}
-		else if ((*it).getIsWholeTrue() == falseTable) {
+		else if ((*it).getIsWholeTrue() == falseTable) {//0
 			_isWholeTrue = 0;
 			resultHeader.clear();
 			result.clear();
