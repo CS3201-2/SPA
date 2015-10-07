@@ -33,6 +33,7 @@ private:
 	bool isVariable(string);
 	bool isSemicolon(char);
 	bool isMathSymbol(char);
+	bool isConstant(string);
 	int getTypeOfStmt(string);
 	string getProcName(int, string);
 	string getProcNameCallStmt(string);

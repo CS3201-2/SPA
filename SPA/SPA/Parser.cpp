@@ -7,6 +7,7 @@ const regex whileRegex("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
 const regex ifRegex("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
 const regex elseRegex("else\\{");
 const regex variableRegex("(^[[:alpha:]])([[:alnum:]]+)*$");
+const regex constantRegex("[[:digit:]] + ");
 const int assignmentStmt = 0;
 const int procDeclarationStmt = 1;
 const int procCallStmt = 2;
@@ -319,6 +320,10 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 					usesList.push_back(varID);
 				}
 			}
+			if (isConstant(variable)) {
+				PKB::getPKBInstance()->addToConstantList(stoi(variable));
+			}
+
 			variable = "";
 		}
 		else {
@@ -420,4 +425,8 @@ string Parser::getProcNameCallStmt(string str) {
 	smatch m;
 	regex_search(str, m, procCallRegex);
 	return m[1];
+}
+
+bool Parser::isConstant(string str) {
+	return regex_match(str, constantRegex);
 }

@@ -83,6 +83,10 @@ void PKB::addAssignToList(int assignStmt) {
 void PKB::addCallToList(int callStmt) {
 	callStmtList.push_back(callStmt);
 }
+
+void PKB::addConstantToList(int constant) {
+	constantList.push_back(constant);
+}
 //Note: might insert duplicate ifStmt
 void PKB::addIfToList(int ifStmt) {
 	ifStmtList.push_back(ifStmt);
@@ -140,6 +144,10 @@ list<int> PKB::getParentList() {
 	parentList.sort();
 	
 	return parentList;
+}
+
+list<int> PKB::getConstantList() {
+	return constantList;
 }
 
 void PKB::buildCFG(list<pair<int, string>> sourceCodeList) {
