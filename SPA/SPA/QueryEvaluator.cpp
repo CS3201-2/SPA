@@ -1620,8 +1620,9 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			list<int> callList = getList("call");
 			for (list<int>::iterator i = callList.begin(); i != callList.end(); i++) {
 				//get call stmt's procedure id
+				int procID = PKB::getPKBInstance()->getCallStmtProc(*i);
+				temp.push_back(procID);
 				temp.push_back(*i);
-				//temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
@@ -1671,8 +1672,9 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			list<int> callList = getList("call");
 			for (list<int>::iterator i = callList.begin(); i != callList.end(); i++) {
 				//get call stmt's procedure id
+				int procID = PKB::getPKBInstance()->getCallStmtProc(*i);
 				temp.push_back(*i);
-				//temp.push_back(*i);
+				temp.push_back(procID);
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
@@ -1687,15 +1689,15 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			vector<int> temp;
 			list<int> callList = getList("call");
 			for (list<int>::iterator i = callList.begin(); i != callList.end(); i++) {
-				//int proc1 = get call stmt's procedure id
+				int proc1 = PKB::getPKBInstance()->getCallStmtProc(*i);
 				for (list<int>::iterator t = callList.begin(); t != callList.end(); t++) {
-					//int proc2 = get call stmt's procedure id
-					/*if (proc1 == proc2) {
+					int proc2 = PKB::getPKBInstance()->getCallStmtProc(*t);
+					if (proc1 == proc2) {
 						temp.push_back(*i);
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
-					}*/
+					}
 				}
 					
 			}
@@ -1707,16 +1709,16 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			list<int> callList = getList("call");
 			list<int> varList = PKB::getPKBInstance()->getVarList();
 			for (list<int>::iterator i = callList.begin(); i != callList.end(); i++) {
-				//int procID = get call stmt's procedure id
-				//string procName = PKB::getPKBInstance()->getProcName(procID);
+				int procID = PKB::getPKBInstance()->getCallStmtProc(*i);
+				string procName = PKB::getPKBInstance()->getProcName(procID);
 				for (list<int>::iterator t = varList.begin(); t != varList.end(); t++) {
 					string varName = PKB::getPKBInstance()->getVarName(*t);
-					/*if (procName == varName) {
-					temp.push_back(*i);
-					temp.push_back(*t);
-					tempResult.addTuple(temp);
-					temp.clear();
-					}*/
+					if (procName == varName) {
+						temp.push_back(*i);
+						temp.push_back(*t);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
 				}
 
 			}
@@ -1727,13 +1729,13 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			vector<int> temp;
 			list<int> callList = getList("call");
 			for (list<int>::iterator i = callList.begin(); i != callList.end(); i++) {
-				/*int procID = get call stmt's procedure id
+				int procID = PKB::getPKBInstance()->getCallStmtProc(*i);
 				string procName = PKB::getPKBInstance()->getProcName(procID);
 				if (procName == arg2) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
-				}*/
+				}
 			}
 			return tempResult;
 		}
@@ -1767,16 +1769,16 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			list<int> callList = getList("call");
 			list<int> varList = PKB::getPKBInstance()->getVarList();
 			for (list<int>::iterator i = callList.begin(); i != callList.end(); i++) {
-				//int procID = get call stmt's procedure id
-				//string procName = PKB::getPKBInstance()->getProcName(procID);
+				int procID = PKB::getPKBInstance()->getCallStmtProc(*i);
+				string procName = PKB::getPKBInstance()->getProcName(procID);
 				for (list<int>::iterator t = varList.begin(); t != varList.end(); t++) {
 					string varName = PKB::getPKBInstance()->getVarName(*t);
-					/*if (procName == varName) {
-					temp.push_back(*t);
-					temp.push_back(*i);
-					tempResult.addTuple(temp);
-					temp.clear();
-					}*/
+					if (procName == varName) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
 				}
 
 			}
@@ -1833,13 +1835,13 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			vector<int> temp;
 			list<int> callList = getList("call");
 			for (list<int>::iterator i = callList.begin(); i != callList.end(); i++) {
-				/*int procID = get call stmt's procedure id
+				int procID = PKB::getPKBInstance()->getCallStmtProc(*i);
 				string procName = PKB::getPKBInstance()->getProcName(procID);
 				if (procName == arg1) {
-				temp.push_back(*i);
-				tempResult.addTuple(temp);
-				temp.clear();
-				}*/
+					temp.push_back(*i);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
 			}
 			return tempResult;
 		}
