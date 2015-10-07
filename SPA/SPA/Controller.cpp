@@ -37,21 +37,14 @@ void Controller::processSource() {
 		de.setParentStar();
 		de.resetModifies();
 		de.resetUses();
+		de.setReverseMap();
+		logPKB();
+
+		parser.buildCFG(sourceList);
+		//logNext put under logPKB later, if there is no bug
+		PKB::getPKBInstance()->logNext();
 	}
 	cout << "end of checker and parsing" << endl;
-
-	logPKB();
-	parser.buildCFG(sourceList);
-	PKB::getPKBInstance()->logNext();
-
-	//for testing
-	/*cout << "parsed source list" << endl;
-	for (list<pair<int, string>>::iterator it = sourceList.begin(); it != sourceList.end(); ++it) {
-		//cout << (*it).first << " : ";
-		cout << (*it).second << endl;
-	}*/
-	//cout << "end of printing" << endl;
-	//for testing ends
 }
 
 void Controller::logSourceCode(list<pair<int, string>> sourceList) {
@@ -84,6 +77,14 @@ void Controller::logPKB() {
 	cout << "logging" << endl;
 	cout << endl;
 
+	PKB::getPKBInstance()->logWhileList();
+	PKB::getPKBInstance()->logAssignList();
+	PKB::getPKBInstance()->logCallList();
+	PKB::getPKBInstance()->logIfList();
+	PKB::getPKBInstance()->logConstantList();
+	PKB::getPKBInstance()->logParentList();
+	PKB::getPKBInstance()->logStmtList();
+	PKB::getPKBInstance()->logCallStmtProcMap();
 	PKB::getPKBInstance()->logVarTable();
 	PKB::getPKBInstance()->logProcTable();
 	PKB::getPKBInstance()->logModifies();

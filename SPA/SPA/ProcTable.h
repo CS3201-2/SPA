@@ -19,9 +19,11 @@ public:
 	string getProcName(int);
 	size_t getProcTableSize();
 	void logProcTable();
+	void setProcTableReverse();
 
 private:
 	map<string, int> procTable;
+	map<int, string> procTableReverse;
 };
 
 #endif

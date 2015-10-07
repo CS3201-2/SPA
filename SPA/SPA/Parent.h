@@ -21,9 +21,11 @@ public:
 	void logParent();
 	map<int, list<int>> getParentMap();
 	void sortAndUnifyMap();
+	void setParentReverse();
 
 private:
 	map<int, list<int>> parentMap;
+	map<int, int> parentMapReverse;
 };
 
 #endif

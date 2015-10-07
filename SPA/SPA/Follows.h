@@ -20,9 +20,11 @@ public:
 	bool isFollowValid(int, int);
 	void logFollows();
 	map<int, int> getFollowsMap();
+	void setFollowsReverse();
 
 private:
 	map<int, int> followsMap;
+	map<int, int> followsMapReverse;
 };
 
 #endif

@@ -25,14 +25,12 @@ void Uses::resetUses(int first, list<int> second) {
 }
 
 list<int> Uses::getUsesFirst(int second) {
-	list<int> resultList;
-	for (map<int, list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
-		if (find((*it).second.begin(), (*it).second.end(), second) != (*it).second.end()) {
-			resultList.push_back((*it).first);
-		}
+	if (usesMapReverse.find(second) == usesMapReverse.end()) {
+		return list<int>();
 	}
-
-	return resultList;
+	else {
+		return usesMapReverse.at(second);
+	}
 }
 
 list<int> Uses::getUsesSecond(int first) {
@@ -70,6 +68,22 @@ void Uses::logUses(ProcTable procTable, VarTable varTable) {
 	}
 	str += "\n";
 
+	str += "uses table reverse\n";
+	for (map<int, list<int>>::iterator it = usesMapReverse.begin(); it != usesMapReverse.end(); ++it) {
+		str += varTable.getVarName((*it).first) + ": ";
+
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			if (*it2 < 0) {
+				str += procTable.getProcName(*it2) + ", ";
+			}
+			else {
+				str += to_string(*it2) + ", ";
+			}
+		}
+		str += "\n";
+	}
+	str += "\n";
+
 	SPALog::log(str);
 }
 
@@ -77,5 +91,22 @@ void Uses::sortAndUnifyMap() {
 	for (map<int, std::list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
 		(*it).second.sort();
 		(*it).second.unique();
+	}
+}
+
+void Uses::setUsesReverse() {
+	for (map<int, list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			if (usesMapReverse.find(*it2) == usesMapReverse.end()) {
+				list<int> temp;
+				temp.push_back((*it).first);
+				usesMapReverse[*it2] = temp;
+			}
+			else {
+				list<int> temp = usesMapReverse.at(*it2);
+				temp.push_back((*it).first);
+				usesMapReverse[*it2] = temp;
+			}
+		}
 	}
 }
