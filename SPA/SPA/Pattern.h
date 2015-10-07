@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <stack>
+#include <algorithm>
 
 using namespace std;
 
@@ -30,6 +31,7 @@ private:
 	int getPriority(string);
 	bool isParenthesis(string);
 	bool isOperator(string);
+	string removeAllSpace(string);
 };
 
 #endif

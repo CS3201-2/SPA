@@ -31,6 +31,8 @@ public:
 	void addAssignToList(int);
 	void addCallToList(int);
 	void addIfToList(int);
+	void addConstantToList(int);
+	void addToCallStmtProcMap(int, int);
 	list<int> getProcList();
 	list<int> getVarList();
 	list<int> getWhileList();
@@ -39,6 +41,8 @@ public:
 	list<int> getIfList();
 	list<int> getStmtList(); //everything
 	list<int> getParentList(); //while and if list
+	list<int> getConstantList();
+	int getCallStmtProc(int);
 	void buildCFG(list<pair<int, string>>);
 
 	//PKB housekeeping function
@@ -165,6 +169,8 @@ private:
 	list<int> assignStmtList;
 	list<int> callStmtList;
 	list<int> ifStmtList;
+	list<int> constantList;
+	map<int, int> callStmtProcMap;
 
 	ProcTable& getProcTable();
 	VarTable& getVarTable();

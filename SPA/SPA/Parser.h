@@ -17,7 +17,7 @@ public:
 
 	list<pair<int, string>> prepareSourceList(string);
 	void parseSource(list<pair<int, string>>);
-	
+	void buildCFG(list<pair<int, string>>);
 
 private:
 	void trim(string&);
@@ -33,6 +33,7 @@ private:
 	bool isVariable(string);
 	bool isSemicolon(char);
 	bool isMathSymbol(char);
+	bool isConstant(string);
 	int getTypeOfStmt(string);
 	string getProcName(int, string);
 	string getProcNameCallStmt(string);

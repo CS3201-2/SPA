@@ -7,6 +7,7 @@ const regex whileRegex("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
 const regex ifRegex("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
 const regex elseRegex("else\\{");
 const regex variableRegex("(^[[:alpha:]])([[:alnum:]]+)*$");
+const regex constantRegex("([[:digit:]]+)$");
 const int assignmentStmt = 0;
 const int procDeclarationStmt = 1;
 const int procCallStmt = 2;
@@ -33,6 +34,9 @@ list<pair<int, string>> Parser::prepareSourceList(string source) {
 void Parser::parseSource(list<pair<int, string>> sourceCodeList) {
 	processSourceCodeList(sourceCodeList);
 	PKB::getPKBInstance()->houseKeeping();
+}
+
+void Parser::buildCFG(list<pair<int, string>> sourceCodeList) {
 	PKB::getPKBInstance()->buildCFG(sourceCodeList);
 }
 
@@ -130,6 +134,7 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 			calledProcID = PKB::getPKBInstance()->getProcID(getProcNameCallStmt(stmt));
 			modifiesList.push_back(calledProcID);
 			usesList.push_back(calledProcID);
+			PKB::getPKBInstance()->addToCallStmtProcMap(stmtNumber, calledProcID);
 			break;
 
 		case whileStmt:
@@ -203,12 +208,9 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::
 	int prevStmtType = invalidStmt;
 	int calledProcID;
 
-	//put control variable into Uses
+	//put control variable into UsesList
 	int controlVarID = PKB::getPKBInstance()->insertVar(getControlVarName(getTypeOfStmt((*it).second), (*it).second));
-	list<int> controlVarList;
-	controlVarList.push_back(controlVarID);
-	PKB::getPKBInstance()->setUses((*it).first, controlVarList);
-	PKB::getPKBInstance()->setUses(currentProcID, controlVarList);
+	usesList.push_back(controlVarID);
 
 	++it;//to skip the starting of this while statement
 	while (!braceList.back().empty()) {
@@ -246,7 +248,8 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::
 			//calledProcList.push_back(temp);
 			calledProcID = PKB::getPKBInstance()->getProcID(getProcNameCallStmt(stmt));
 			tempModifiesList.push_back(calledProcID);
-			tempUsesList.push_back(calledProcID);
+			tempUsesList.push_back(calledProcID);			
+			PKB::getPKBInstance()->addToCallStmtProcMap(stmtNumber, calledProcID);
 			break;
 
 		case whileStmt:
@@ -319,6 +322,10 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 					usesList.push_back(varID);
 				}
 			}
+			if (isConstant(variable)) {
+				PKB::getPKBInstance()->addConstantToList(stoi(variable));
+			}
+
 			variable = "";
 		}
 		else {
@@ -420,4 +427,8 @@ string Parser::getProcNameCallStmt(string str) {
 	smatch m;
 	regex_search(str, m, procCallRegex);
 	return m[1];
+}
+
+bool Parser::isConstant(string str) {
+	return regex_match(str, constantRegex);
 }
