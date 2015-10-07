@@ -33,8 +33,9 @@ list<string> QueryController::processQueries(string queries) {
 		QueryTree qt = qv.getQueryTree();
 		QueryEvaluator qe(qt);
 		result = qe.evaluate();
-	} else {
-		result.push_back("Invalid Query");
+	} 
+	else {
+		//result.push_back("Invalid Query");
 	}
 	return result;
 }

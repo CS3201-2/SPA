@@ -28,6 +28,7 @@ void Controller::processSource() {
 	if (!syntaxCheck(sourceList)) {
 		cout << endl << endl;
 		cout << "syntax wrong!!!" << endl << endl << endl;
+		SPALog::log("syntax wrong!!!");
 	}
 	else {
 		parser.parseSource(sourceList);
@@ -40,6 +41,9 @@ void Controller::processSource() {
 	cout << "end of checker and parsing" << endl;
 
 	logPKB();
+	parser.buildCFG(sourceList);
+	PKB::getPKBInstance()->logNext();
+
 	//for testing
 	/*cout << "parsed source list" << endl;
 	for (list<pair<int, string>>::iterator it = sourceList.begin(); it != sourceList.end(); ++it) {
@@ -91,7 +95,7 @@ void Controller::logPKB() {
 	PKB::getPKBInstance()->logPattern();
 	PKB::getPKBInstance()->logCalls();
 	PKB::getPKBInstance()->logCallsStar();
-	PKB::getPKBInstance()->logNext();
+	//PKB::getPKBInstance()->logNext();
 
 
 	//change below for testing purpose

@@ -17,7 +17,7 @@ public:
 
 	list<pair<int, string>> prepareSourceList(string);
 	void parseSource(list<pair<int, string>>);
-	
+	void buildCFG(list<pair<int, string>>);
 
 private:
 	void trim(string&);

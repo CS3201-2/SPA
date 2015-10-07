@@ -33,6 +33,9 @@ list<pair<int, string>> Parser::prepareSourceList(string source) {
 void Parser::parseSource(list<pair<int, string>> sourceCodeList) {
 	processSourceCodeList(sourceCodeList);
 	PKB::getPKBInstance()->houseKeeping();
+}
+
+void Parser::buildCFG(list<pair<int, string>> sourceCodeList) {
 	PKB::getPKBInstance()->buildCFG(sourceCodeList);
 }
 
