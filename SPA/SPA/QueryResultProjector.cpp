@@ -31,7 +31,7 @@ list<string> QueryResultProjector::getResult() {
 	list<string> resultStringList;
 
 	if (_resultTable.getResult().empty()) {
-		resultStringList.push_back("none");
+		//resultStringList.push_back("none");
 	}
 	else {
 		list<int> resultList;
