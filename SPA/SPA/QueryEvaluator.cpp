@@ -23,7 +23,6 @@ QueryEvaluator::QueryEvaluator() {
 	queryTree = QueryTree();
 }
 
-
 QueryEvaluator::QueryEvaluator(QueryTree qt) {
 	queryTree = qt;
 }
@@ -195,7 +194,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 
 		list<int> modifiesLine = PKB::getPKBInstance()->getModifiesFirst(arg2ID);
 
-		if ( arg1Type == "prog_line" ) {
+		if ( arg1Type == "number" ) {
 			ResultTable tempResult = ResultTable();
 
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
@@ -247,7 +246,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 
 	else if( arg2Type == "variable" || "all") {
 		
-		if (arg1Type == "prog_line") {
+		if (arg1Type == "number") {
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
 				tempResult.isWholeTrue = 0;
@@ -326,7 +325,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 
 		list<int> usesLine = PKB::getPKBInstance()->getUsesFirst(arg2ID);
 
-		if (arg1Type == "prog_line") {
+		if (arg1Type == "number") {
 			ResultTable tempResult = ResultTable();
 
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
@@ -377,7 +376,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 	}
 
 	else if (arg2Type == "variable" || "all") {
-		if (arg1Type == "prog_line") {
+		if (arg1Type == "number") {
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
 				tempResult.isWholeTrue = 0;
@@ -445,7 +444,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 	
 	list<int> parentList = PKB::getPKBInstance()->getParentList();
 
-	if (arg1Type == "prog_line") {
+	if (arg1Type == "number") {
 		bool isNotParrent = !isInList(parentList, stoi(arg1));
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1)) || isNotParrent ) {
 			ResultTable tempResult = ResultTable();
@@ -456,7 +455,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 
 		list<int> childList = PKB::getPKBInstance()->getParentSecond(stoi(arg1));
 
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
@@ -489,7 +488,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 	else {
 		// arg1Type can be while, if, stmt
 		list<int> arg1List = getList(arg1Type);
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
@@ -540,7 +539,7 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
 	
-	if (arg1Type == "prog_line") {
+	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
@@ -554,7 +553,7 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 			tempResult.isWholeTrue = 0;
 			return tempResult;
 		}
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
@@ -586,7 +585,7 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 	else {
 		// arg1 can be while, assign, call, stmt, if
 		list<int> arg1List = getList(arg1Type);
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
@@ -638,7 +637,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 	
 	list<int> parentList = PKB::getPKBInstance()->getParentList();
 	
-	if (arg1Type == "prog_line") {
+	if (arg1Type == "number") {
 		bool isNotParrent = !isInList(parentList, stoi(arg1));
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1)) || isNotParrent) {
 			ResultTable tempResult = ResultTable();
@@ -649,7 +648,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 
 		list<int> childList = PKB::getPKBInstance()->getParentStarSecond(stoi(arg1));
 
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
@@ -682,7 +681,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 	else {
 		// arg1Type can be while, if, stmt
 		list<int> arg1List = getList(arg1Type);
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
@@ -737,7 +736,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
 
-	if (arg1Type == "prog_line") {
+	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
@@ -752,7 +751,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 			SPALog::log("Follows* arg1 does not have little brothers");
 			return tempResult;
 		}
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
@@ -787,7 +786,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 	else {
 		// arg1 can be while, assign, call, stmt, if
 		list<int> arg1List = getList(arg1Type);
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
@@ -1051,7 +1050,7 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
 
-	if (arg1Type == "prog_line") {
+	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
@@ -1065,7 +1064,7 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 			tempResult.isWholeTrue = 0;
 			return tempResult;
 		}
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
@@ -1100,7 +1099,7 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 	else {
 		// arg1 can be while, assign, call, stmt, if
 		list<int> arg1List = getList(arg1Type);
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
@@ -1155,7 +1154,7 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 	string arg2 = tempString.at(3);
 	string arg2Type = tempString.at(4);
 
-	if (arg1Type == "prog_line") {
+	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.isWholeTrue = 0;
@@ -1170,7 +1169,7 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 			SPALog::log("Next* arg1 does not have little brothers");
 			return tempResult;
 		}
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
@@ -1205,7 +1204,7 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 	else {
 		// arg1 can be while, assign, call, stmt, if
 		list<int> arg1List = getList(arg1Type);
-		if (arg2Type == "prog_line") {
+		if (arg2Type == "") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.isWholeTrue = 0;
