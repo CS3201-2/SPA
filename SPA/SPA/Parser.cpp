@@ -134,6 +134,7 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 			calledProcID = PKB::getPKBInstance()->getProcID(getProcNameCallStmt(stmt));
 			modifiesList.push_back(calledProcID);
 			usesList.push_back(calledProcID);
+			PKB::getPKBInstance()->addToCallStmtProcMap(stmtNumber, calledProcID);
 			break;
 
 		case whileStmt:
@@ -247,7 +248,8 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::
 			//calledProcList.push_back(temp);
 			calledProcID = PKB::getPKBInstance()->getProcID(getProcNameCallStmt(stmt));
 			tempModifiesList.push_back(calledProcID);
-			tempUsesList.push_back(calledProcID);
+			tempUsesList.push_back(calledProcID);			
+			PKB::getPKBInstance()->addToCallStmtProcMap(stmtNumber, calledProcID);
 			break;
 
 		case whileStmt:

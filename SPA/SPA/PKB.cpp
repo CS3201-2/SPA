@@ -87,6 +87,11 @@ void PKB::addCallToList(int callStmt) {
 void PKB::addConstantToList(int constant) {
 	constantList.push_back(constant);
 }
+
+void PKB::addToCallStmtProcMap(int stmtNo, int procID) {
+	callStmtProcMap[stmtNo] = procID;
+}
+
 //Note: might insert duplicate ifStmt
 void PKB::addIfToList(int ifStmt) {
 	ifStmtList.push_back(ifStmt);
@@ -148,6 +153,15 @@ list<int> PKB::getParentList() {
 
 list<int> PKB::getConstantList() {
 	return constantList;
+}
+
+int PKB::getCallStmtProc(int stmtNo) {
+	if (callStmtProcMap.find(stmtNo) == callStmtProcMap.end()) {
+		return 0;
+	}
+	else {
+		return callStmtProcMap.at(stmtNo);
+	}
 }
 
 void PKB::buildCFG(list<pair<int, string>> sourceCodeList) {
