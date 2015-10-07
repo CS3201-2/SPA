@@ -7,7 +7,7 @@ const regex whileRegex("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
 const regex ifRegex("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
 const regex elseRegex("else\\{");
 const regex variableRegex("(^[[:alpha:]])([[:alnum:]]+)*$");
-const regex constantRegex("[[:digit:]] + ");
+const regex constantRegex("([[:digit:]]+)$");
 const int assignmentStmt = 0;
 const int procDeclarationStmt = 1;
 const int procCallStmt = 2;
@@ -321,7 +321,7 @@ void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesLi
 				}
 			}
 			if (isConstant(variable)) {
-				PKB::getPKBInstance()->addToConstantList(stoi(variable));
+				PKB::getPKBInstance()->addConstantToList(stoi(variable));
 			}
 
 			variable = "";
