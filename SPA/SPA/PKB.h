@@ -25,10 +25,7 @@ public:
 	
 	//general
 	bool isValidStmtNo(int);
-	void addWhileToList(int);
-	void addAssignToList(int);
-	void addCallToList(int);
-	void addIfToList(int);
+	void addStmtToList(int, int);
 	void addConstantToList(int);
 	void addToCallStmtProcMap(int, int);
 	list<int> getProcList();

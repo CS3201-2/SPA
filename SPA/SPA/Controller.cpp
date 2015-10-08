@@ -1,14 +1,5 @@
 #include "Controller.h"
-#include "Checker.h"
-#include "Parser.h"
-#include "PKB.h"
-#include "QueryController.h"
-#include "SPALog.h"
-#include <iostream>
-#include <string>
-#include <list>
 
-using namespace std;
 
 typedef list<string> StringList;
 Controller::Controller() {

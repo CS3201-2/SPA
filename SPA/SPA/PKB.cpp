@@ -2,6 +2,10 @@
 
 using namespace std;
 
+const int assignmentStmt = 0;
+const int procCallStmt = 2;
+const int whileStmt = 3;
+const int ifStmt = 4;
 
 PKB* PKB::PKBInstance = NULL;
 
@@ -74,16 +78,13 @@ bool PKB::isValidStmtNo(int stmtNo) {
 	return (stmtNo > 0 && (size_t)stmtNo <= totalNoStmt);
 }
 
-void PKB::addWhileToList(int whileStmt) {
-	whileStmtList.push_back(whileStmt);
-}
-
-void PKB::addAssignToList(int assignStmt) {
-	assignStmtList.push_back(assignStmt);
-}
-
-void PKB::addCallToList(int callStmt) {
-	callStmtList.push_back(callStmt);
+void PKB::addStmtToList(int stmtNo, int stmtType) {
+	switch (stmtType) {
+	case assignmentStmt: assignStmtList.push_back(stmtNo); break;
+	case procCallStmt: callStmtList.push_back(stmtNo); break;
+	case whileStmt: whileStmtList.push_back(stmtNo); break;
+	case ifStmt: ifStmtList.push_back(stmtNo); break;
+	}
 }
 
 void PKB::addConstantToList(int constant) {
@@ -92,10 +93,6 @@ void PKB::addConstantToList(int constant) {
 
 void PKB::addToCallStmtProcMap(int stmtNo, int procID) {
 	callStmtProcMap[stmtNo] = procID;
-}
-
-void PKB::addIfToList(int ifStmt) {
-	ifStmtList.push_back(ifStmt);
 }
 
 list<int> PKB::getProcList() {
