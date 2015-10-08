@@ -2,14 +2,9 @@
 
 
 // constructor
-Modifies::Modifies()
-{
+Modifies::Modifies(){
 }
 
-//key is the stmtLine
-//first stmtLine, second varID
-
-//set modifies need to see parser to decided
 void Modifies::setModifies(int first, list<int> second) {
 	if (second.size() != 0) {
 		if (modifiesMap.find(first) == modifiesMap.end()) {
@@ -64,8 +59,8 @@ void Modifies::logModifies(ProcTable procTable, VarTable varTable) {
 		else {
 			str += to_string((*it).first) + ": ";
 		}		
-		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += varTable.getVarName(*listIt) + ", ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += varTable.getVarName(*it2) + ", ";
 		}
 		str += "\n";
 	}
@@ -91,7 +86,7 @@ void Modifies::logModifies(ProcTable procTable, VarTable varTable) {
 }
 
 void Modifies::sortAndUnifyMap() {
-	for (map<int, std::list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = modifiesMap.begin(); it != modifiesMap.end(); ++it) {
 		(*it).second.sort();
 		(*it).second.unique();
 	}

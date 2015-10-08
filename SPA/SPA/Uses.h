@@ -11,8 +11,8 @@ using namespace std;
 #ifndef Uses_H
 #define Uses_H
 
-class Uses
-{
+class Uses{
+
 public:
 	Uses();
 

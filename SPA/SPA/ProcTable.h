@@ -1,7 +1,6 @@
 #include "SPALog.h"
 #include <string>
 #include <map>
-#include <iostream>
 
 using namespace std;
 
@@ -9,8 +8,8 @@ using namespace std;
 #ifndef ProcTable_H
 #define ProcTable_H
 
-class ProcTable
-{
+class ProcTable{
+
 public:
 	ProcTable();
 

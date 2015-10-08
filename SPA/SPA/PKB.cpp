@@ -94,7 +94,6 @@ void PKB::addToCallStmtProcMap(int stmtNo, int procID) {
 	callStmtProcMap[stmtNo] = procID;
 }
 
-//Note: might insert duplicate ifStmt
 void PKB::addIfToList(int ifStmt) {
 	ifStmtList.push_back(ifStmt);
 }

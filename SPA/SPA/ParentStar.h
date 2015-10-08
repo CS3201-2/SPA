@@ -9,8 +9,8 @@ using namespace std;
 #ifndef ParentStar_H
 #define ParentStar_H
 
-class ParentStar 
-{
+class ParentStar {
+
 public:
 	ParentStar();
 

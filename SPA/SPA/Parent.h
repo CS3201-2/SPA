@@ -9,8 +9,8 @@ using namespace std;
 #ifndef Parent_H
 #define Parent_H
 
-class Parent
-{
+class Parent{
+
 public:
 	Parent();
 

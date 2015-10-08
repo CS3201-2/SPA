@@ -10,8 +10,6 @@
 #include "VarTable.h"
 #include "Pattern.h"
 #include "CFG.h"
-#include <string>
-#include <list>
 
 using namespace std;
 
@@ -23,8 +21,8 @@ class PKB
 {
 public:
 	static PKB* getPKBInstance();
-	//PKB() {};
 
+	
 	//general
 	bool isValidStmtNo(int);
 	void addWhileToList(int);
@@ -51,14 +49,13 @@ public:
 	void logParentList();
 	void logStmtList();
 	void logCallStmtProcMap();
-
-
 	void buildCFG(list<pair<int, string>>);
 
 	//PKB housekeeping function
 	//sort and unify function for Modifies, Uses, FollowsStar, Parent, ParentStar
-	//unify ifList
+	//unify ifList and constantList
 	void houseKeeping();
+
 
 	//varTable
 	int insertVar(string);
@@ -67,6 +64,7 @@ public:
 	void logVarTable();
 	void setVarTableReverse();
 
+
 	//procTable
 	int insertProc(string);
 	int getProcID(string); 	//return 0 for invalid procName input
@@ -74,8 +72,9 @@ public:
 	void logProcTable();
 	void setProcTableReverse();
 	
+
 	//Modifies
-	void setModifies(int, list<int>); // input parameter to be decided later
+	void setModifies(int, list<int>);
 	void resetModifies(int, list<int>);
 	list<int> getModifiesFirst(int);
 	list<int> getModifiesSecond(int);
@@ -83,8 +82,9 @@ public:
 	void logModifies();
 	void setModifiesReverse();
 
+
 	//Uses
-	void setUses(int, list<int>); //input parameter to be decided later
+	void setUses(int, list<int>); 
 	void resetUses(int, list<int>);
 	list<int> getUsesFirst(int);
 	list<int> getUsesSecond(int);
@@ -103,6 +103,7 @@ public:
 	list<int> getIfWithFirstExact(string);
 	list<int> getWhileWithFirstExact(string);
 	void logPattern();
+
 
 	//Follows
 	void setFollows(int, int);
@@ -174,8 +175,6 @@ public:
 	list<int> getNextStarFirst(int);
 	list<int> getNextStarSecond(int);
 	bool isNextStarValid(int, int);
-	//new APIs ends
-
 
 private:
 	static PKB* PKBInstance;

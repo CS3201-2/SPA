@@ -39,20 +39,20 @@ bool ParentStar::isParentStarValid(int first, int second) {
 
 void ParentStar::logParentStar() {
 	string str = "parent star\n";
-	for (map<int, std::list<int>>::iterator it = parentStarMap.begin(); it != parentStarMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = parentStarMap.begin(); it != parentStarMap.end(); ++it) {
 		str += to_string((*it).first) + ": ";
-		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += to_string(*listIt) + ", ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += to_string(*it2) + ", ";
 		}
 		str += "\n";
 	}
 	str += "\n";
 
 	str += "parent star Reverse\n";
-	for (map<int, std::list<int>>::iterator it = parentStarMapReverse.begin(); it != parentStarMapReverse.end(); ++it) {
+	for (map<int, list<int>>::iterator it = parentStarMapReverse.begin(); it != parentStarMapReverse.end(); ++it) {
 		str += to_string((*it).first) + ": ";
-		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += to_string(*listIt) + ", ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += to_string(*it2) + ", ";
 		}
 		str += "\n";
 	}
@@ -62,7 +62,7 @@ void ParentStar::logParentStar() {
 }
 
 void ParentStar::sortAndUnifyMap() {
-	for (map<int, std::list<int>>::iterator it = parentStarMap.begin(); it != parentStarMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = parentStarMap.begin(); it != parentStarMap.end(); ++it) {
 		(*it).second.sort();
 		(*it).second.unique();
 	}

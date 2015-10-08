@@ -2,8 +2,7 @@
 
 
 // constructor
-Parent::Parent()
-{
+Parent::Parent(){
 }
 
 void Parent::setParent(int first, list<int> second) {
@@ -47,10 +46,10 @@ bool Parent::isParentValid(int first, int second) {
 
 void Parent::logParent() {
 	string str = "parent table\n";
-	for (map<int, std::list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
 		str += to_string((*it).first) + ": ";
-		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += to_string(*listIt) + ", ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += to_string(*it2) + ", ";
 		}
 		str += "\n";
 	}
@@ -70,7 +69,7 @@ map<int, list<int>> Parent::getParentMap() {
 }
 
 void Parent::sortAndUnifyMap() {
-	for (map<int, std::list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
 		(*it).second.sort();
 		(*it).second.unique();
 	}

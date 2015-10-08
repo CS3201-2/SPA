@@ -9,8 +9,8 @@ using namespace std;
 #ifndef FollowsStar_H
 #define FollowsStar_H
 
-class FollowsStar 
-{
+class FollowsStar {
+
 public: 
 	FollowsStar();
 

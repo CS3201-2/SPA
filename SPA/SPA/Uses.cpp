@@ -2,11 +2,9 @@
 
 
 // constructor
-Uses::Uses()
-{
+Uses::Uses(){
 }
 
-// need to see parser to decide the input
 void Uses::setUses(int first, list<int> second) {
 	if (second.size() != 0) {
 		if (usesMap.find(first) == usesMap.end()) {
@@ -61,8 +59,8 @@ void Uses::logUses(ProcTable procTable, VarTable varTable) {
 		else {
 			str += to_string((*it).first) + ": ";
 		}
-		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += varTable.getVarName(*listIt) + ", ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += varTable.getVarName(*it2) + ", ";
 		}
 		str += "\n";
 	}
@@ -88,7 +86,7 @@ void Uses::logUses(ProcTable procTable, VarTable varTable) {
 }
 
 void Uses::sortAndUnifyMap() {
-	for (map<int, std::list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = usesMap.begin(); it != usesMap.end(); ++it) {
 		(*it).second.sort();
 		(*it).second.unique();
 	}

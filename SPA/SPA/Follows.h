@@ -1,6 +1,5 @@
 #include "SPALog.h"
 #include <string>
-#include <iostream>
 #include <map>
 
 using namespace std;
@@ -9,8 +8,8 @@ using namespace std;
 #ifndef Follows_H
 #define Follows_H
 
-class Follows
-{
+class Follows{
+
 public:
 	Follows();
 

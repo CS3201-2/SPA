@@ -2,8 +2,7 @@
 
 
 // construactor
-VarTable::VarTable(void)
-{
+VarTable::VarTable(void){
 }
 
 int VarTable::insertVar(string varName) {

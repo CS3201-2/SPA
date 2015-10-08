@@ -164,7 +164,7 @@ string Pattern::convertToPostFix(string str) {
 }
 
 int Pattern::getPriority(string str) {
-	if (str == "*" || str == "/") {
+	if (str == "*") {
 		return 2;
 	}
 	else if (str == "+" || str == "-") {

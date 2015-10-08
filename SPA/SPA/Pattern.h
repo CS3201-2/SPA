@@ -11,8 +11,8 @@ using namespace std;
 #ifndef Pattern_H
 #define Pattern_H
 
-class Pattern
-{
+class Pattern{
+
 public:
 	Pattern();
 	void setPattern(int, string, string);

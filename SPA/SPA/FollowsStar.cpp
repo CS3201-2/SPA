@@ -39,20 +39,20 @@ bool FollowsStar::isFollowsStarValid(int first, int second) {
 
 void FollowsStar::logFollowsStar() {
 	string str = "follows star\n";
-	for (map<int, std::list<int>>::iterator it = followsStarMap.begin(); it != followsStarMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = followsStarMap.begin(); it != followsStarMap.end(); ++it) {
 		str += to_string((*it).first) + ": ";
-		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += to_string(*listIt) + ", ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += to_string(*it2) + ", ";
 		}
 		str += "\n";
 	}
 	str += "\n";
 
 	str += "follows star reverse\n";
-	for (map<int, std::list<int>>::iterator it = followsStarMapReverse.begin(); it != followsStarMapReverse.end(); ++it) {
+	for (map<int, list<int>>::iterator it = followsStarMapReverse.begin(); it != followsStarMapReverse.end(); ++it) {
 		str += to_string((*it).first) + ": ";
-		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += to_string(*listIt) + ", ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += to_string(*it2) + ", ";
 		}
 		str += "\n";
 	}

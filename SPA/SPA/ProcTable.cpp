@@ -2,8 +2,7 @@
 
 
 // constructor
-ProcTable::ProcTable(void)
-{
+ProcTable::ProcTable(void){
 }
 
 int ProcTable::insertProc(string procName) {

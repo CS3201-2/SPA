@@ -4,7 +4,6 @@
 #include <map>
 #include <list>
 #include <algorithm>
-#include <iostream>
 
 using namespace std;
 
@@ -12,8 +11,8 @@ using namespace std;
 #ifndef Calls_H
 #define Calls_H
 
-class Calls
-{
+class Calls{
+
 public:
 	Calls();
 
