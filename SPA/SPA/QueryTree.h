@@ -28,7 +28,7 @@ public:
 	//For adding variables under the select category
 	void insertSelect(string var, string varType);
 	//For adding variables under the with category
-	void insertWith(string with1, string with1Type, string with2, string with2Type);
+	void insertWith(string rel, vector<string> arrWith, vector<string> withType);
 
 	//Getting the number of relationships that fall under the such that clause
 	int getSuchThatSize();
