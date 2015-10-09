@@ -17,18 +17,15 @@ void CallsStar::setCallsStar(int first, int second) {
 	}
 }
 
-//Calls (B, 8): B will be returned
 list<int> CallsStar::getCallsStarFirst(int second) {
-	list<int> result;
-	for (map<int, list<int>>::iterator it = callsStarMap.begin(); it != callsStarMap.end(); ++it) {
-		if (find((*it).second.begin(), (*it).second.end(), second) != (*it).second.end()) {
-			result.push_back((*it).first);
-		}
+	if (callsStarMapReverse.find(second) == callsStarMapReverse.end()) {
+		return list<int>();
 	}
-	return result;
+	else {
+		return callsStarMapReverse.at(second);
+	}
 }
 
-//Calls (8, A), A will be returned
 list<int> CallsStar::getCallsStarSecond(int first) {
 	if (callsStarMap.find(first) == callsStarMap.end()) {
 		return list<int>();
@@ -52,13 +49,22 @@ void CallsStar::logCallsStar(ProcTable procTable) {
 	string str = "callsstar table\n";
 	for (map<int, list<int>>::iterator it = callsStarMap.begin(); it != callsStarMap.end(); ++it) {
 		str += procTable.getProcName((*it).first) + ": ";
-		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += procTable.getProcName(*listIt) + ", ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += procTable.getProcName(*it2) + ", ";
 		}
 		str += "\n";
 	}
 	str += "\n";
 
+	str += "callsstar table reverse\n";
+	for (map<int, list<int>>::iterator it = callsStarMapReverse.begin(); it != callsStarMapReverse.end(); ++it) {
+		str += procTable.getProcName((*it).first) + ": ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += procTable.getProcName(*it2) + ", ";
+		}
+		str += "\n";
+	}
+	str += "\n";
 	SPALog::log(str);
 }
 
@@ -71,4 +77,21 @@ void CallsStar::sortAndUnifyMap() {
 
 map<int, list<int>> CallsStar::getCallsStarMap() {
 	return callsStarMap;
+}
+
+void CallsStar::setCallsStarReverse() {
+	for (map<int, list<int>>::iterator it = callsStarMap.begin(); it != callsStarMap.end(); ++it) {
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			if (callsStarMapReverse.find(*it2) == callsStarMapReverse.end()) {
+				list<int> temp;
+				temp.push_back((*it).first);
+				callsStarMapReverse[*it2] = temp;
+			}
+			else {
+				list<int> temp = callsStarMapReverse.at(*it2);
+				temp.push_back((*it).first);
+				callsStarMapReverse[*it2] = temp;
+			}
+		}
+	}
 }

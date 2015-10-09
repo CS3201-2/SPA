@@ -10,8 +10,6 @@
 #include "VarTable.h"
 #include "Pattern.h"
 #include "CFG.h"
-#include <string>
-#include <list>
 
 using namespace std;
 
@@ -23,15 +21,13 @@ class PKB
 {
 public:
 	static PKB* getPKBInstance();
-	//PKB() {};
 
+	
 	//general
 	bool isValidStmtNo(int);
-	void addWhileToList(int);
-	void addAssignToList(int);
-	void addCallToList(int);
-	void addIfToList(int);
+	void addStmtToList(int, int);
 	void addConstantToList(int);
+	void addToCallStmtProcMap(int, int);
 	list<int> getProcList();
 	list<int> getVarList();
 	list<int> getWhileList();
@@ -41,40 +37,58 @@ public:
 	list<int> getStmtList(); //everything
 	list<int> getParentList(); //while and if list
 	list<int> getConstantList();
+	int getCallStmtProc(int);
+	void logWhileList();
+	void logAssignList();
+	void logCallList();
+	void logIfList();
+	void logConstantList();
+	void logParentList();
+	void logStmtList();
+	void logCallStmtProcMap();
 	void buildCFG(list<pair<int, string>>);
 
 	//PKB housekeeping function
 	//sort and unify function for Modifies, Uses, FollowsStar, Parent, ParentStar
-	//unify ifList
+	//unify ifList and constantList
 	void houseKeeping();
+
 
 	//varTable
 	int insertVar(string);
 	int getVarID(string); 	//return 0 for invalid varName input
 	string getVarName(int);
 	void logVarTable();
+	void setVarTableReverse();
+
 
 	//procTable
 	int insertProc(string);
 	int getProcID(string); 	//return 0 for invalid procName input
 	string getProcName(int);
 	void logProcTable();
+	void setProcTableReverse();
 	
+
 	//Modifies
-	void setModifies(int, list<int>); // input parameter to be decided later
+	void setModifies(int, list<int>);
 	void resetModifies(int, list<int>);
 	list<int> getModifiesFirst(int);
 	list<int> getModifiesSecond(int);
 	bool isModifiesValid(int, int);
 	void logModifies();
+	void setModifiesReverse();
+
 
 	//Uses
-	void setUses(int, list<int>); //input parameter to be decided later
+	void setUses(int, list<int>); 
 	void resetUses(int, list<int>);
 	list<int> getUsesFirst(int);
 	list<int> getUsesSecond(int);
 	bool isUsesValid(int, int);
 	void logUses();
+	void setUsesReverse();
+
 
 	//Pattern
 	void setPattern(int, string, string);
@@ -87,6 +101,7 @@ public:
 	list<int> getWhileWithFirstExact(string);
 	void logPattern();
 
+
 	//Follows
 	void setFollows(int, int);
 	int getFollowsFirst(int);
@@ -94,6 +109,8 @@ public:
 	bool isFollowsValid(int, int);
 	void logFollows();
 	map<int, int> getFollowsMap();
+	void setFollowsReverse();
+
 
 	//FollowsStar
 	void setFollowsStar(int, list<int>); 
@@ -101,6 +118,8 @@ public:
 	list<int> getFollowsStarSecond(int);
 	bool isFollowsStarValid(int, int);
 	void logFollowsStar();
+	void setFollowsStarReverse();
+
 
 	//Calls
 	void setCalls(int, int);
@@ -110,6 +129,8 @@ public:
 	void logCalls();
 	void sortAndUnifyCallsMap();
 	map<int, list<int>> getCallsMap();
+	void setCallsReverse();
+
 
 	//CallsStar
 	void setCallsStar(int, int);
@@ -119,6 +140,8 @@ public:
 	void logCallsStar();
 	void sortAndUnifyCallsStarMap();
 	map<int, list<int>> getCallsStarMap();
+	void setCallsStarReverse();
+
 
 	//Parent
 	void setParent(int, list<int>); 
@@ -127,6 +150,8 @@ public:
 	bool isParentValid(int, int);
 	void logParent();
 	map<int, list<int>> getParentMap();
+	void setParentReverse();
+
 
 	//ParentStar
 	void setParentStar(int, list<int>);
@@ -134,19 +159,19 @@ public:
 	list<int> getParentStarSecond(int);
 	bool isParentStarValid(int, int);
 	void logParentStar();
+	void setParentStarReverse();
+
 
 	//Next
-
 	list<int> getNextFirst(int);
 	list<int> getNextSecond(int);
 	bool isNextvalid(int, int);
 	void logNext();
 
+	//Next Star
 	list<int> getNextStarFirst(int);
 	list<int> getNextStarSecond(int);
 	bool isNextStarValid(int, int);
-	//new APIs ends
-
 
 private:
 	static PKB* PKBInstance;
@@ -168,6 +193,7 @@ private:
 	list<int> callStmtList;
 	list<int> ifStmtList;
 	list<int> constantList;
+	map<int, int> callStmtProcMap;
 
 	ProcTable& getProcTable();
 	VarTable& getVarTable();

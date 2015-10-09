@@ -4,7 +4,6 @@
 #include <map>
 #include <list>
 #include <algorithm>
-#include <iostream>
 
 using namespace std;
 
@@ -12,8 +11,8 @@ using namespace std;
 #ifndef CallsStar_H
 #define CallsStar_H
 
-class CallsStar
-{
+class CallsStar{
+
 public:
 	CallsStar();
 
@@ -24,9 +23,11 @@ public:
 	void logCallsStar(ProcTable procTable);
 	void sortAndUnifyMap();
 	map<int, list<int>> getCallsStarMap();
+	void setCallsStarReverse();
 
 private:
 	map<int, list<int>> callsStarMap;
+	map<int, list<int>> callsStarMapReverse;
 };
 
 #endif

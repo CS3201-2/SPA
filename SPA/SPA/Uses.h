@@ -11,8 +11,8 @@ using namespace std;
 #ifndef Uses_H
 #define Uses_H
 
-class Uses
-{
+class Uses{
+
 public:
 	Uses();
 
@@ -23,9 +23,11 @@ public:
 	bool isUsesValid(int, int);
 	void logUses(ProcTable, VarTable);
 	void sortAndUnifyMap();
+	void setUsesReverse();
 
 private:
 	map<int, list<int>> usesMap;
+	map<int, list<int>> usesMapReverse;
 };
 
 #endif

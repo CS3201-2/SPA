@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <stack>
+#include <algorithm>
 
 using namespace std;
 
@@ -10,8 +11,8 @@ using namespace std;
 #ifndef Pattern_H
 #define Pattern_H
 
-class Pattern
-{
+class Pattern{
+
 public:
 	Pattern();
 	void setPattern(int, string, string);
@@ -30,6 +31,7 @@ private:
 	int getPriority(string);
 	bool isParenthesis(string);
 	bool isOperator(string);
+	string removeAllSpace(string);
 };
 
 #endif
