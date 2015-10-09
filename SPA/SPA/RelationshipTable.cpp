@@ -6,8 +6,8 @@ RelationshipTable::RelationshipTable() {
 	vector<string> arg2;
 	
 	//ModifiesS (statements)
-	 arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "proc_name" }; //
-	 arg2 = { "variable", "string", "all" };
+	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "string", "all" }; //
+	arg2 = { "variable", "string", "all" };
 	Relationship r1(2, arg1, arg2);
 	relTable["modifies"] = r1;
 	arg1.clear();
@@ -15,7 +15,7 @@ RelationshipTable::RelationshipTable() {
 	//cout << relTable.find("modifies*")->second.arg1.at(0);
 	
 	//UsesS (statements)
-	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "proc_name" }; //
+	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "string", "all" }; //
 	arg2 = { "variable", "string", "all" };
 	Relationship r2(2, arg1, arg2);
 	relTable["uses"] = r2;
@@ -23,16 +23,16 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Parent
-	arg1 = { "stmt", "prog_line", "while", "if" }; //
-	arg2 = { "stmt", "assign", "prog_line", "while", "if" , "call" }; //
+	arg1 = { "stmt", "prog_line", "while", "if", "all" }; //
+	arg2 = { "stmt", "assign", "prog_line", "while", "if" , "call", "all" }; //
 	Relationship r3(2, arg1, arg2);
 	relTable["parent"] = r3;
 	arg1.clear();
 	arg2.clear();
 
 	//Parent*
-	arg1 = { "stmt", "prog_line", "while", "if" }; //
-	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call" }; //
+	arg1 = { "stmt", "prog_line", "while", "if", "all" }; //
+	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "all" }; //
 	Relationship r4(2, arg1, arg2);
 	relTable["parent*"] = r4;
 	arg1.clear();
@@ -95,16 +95,16 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Calls
-	arg1 = { "procedure", "proc_name", "all" };
-	arg2 = { "procedure", "proc_name", "all" };
+	arg1 = { "procedure", "string", "all" };
+	arg2 = { "procedure", "string", "all" };
 	Relationship r12(2, arg1, arg2);
 	relTable["calls"] = r12;
 	arg1.clear();
 	arg2.clear();
 
 	//Calls*
-	arg1 = { "procedure", "proc_name", "all" };
-	arg2 = { "procedure", "proc_name", "all" };
+	arg1 = { "procedure", "string", "all" };
+	arg2 = { "procedure", "string", "all" };
 	Relationship r13(2, arg1, arg2);
 	relTable["calls*"] = r13;
 	arg1.clear();
@@ -126,11 +126,19 @@ RelationshipTable::RelationshipTable() {
 	arg1.clear();
 	arg2.clear();
 
-	//With
-	arg1 = { "procedure", "call", "variable", "constant", "stmt", "number", "proc_name" };
-	arg2 = { "procedure", "call", "variable", "constant", "stmt", "number", "proc_name" };
+	//WithNumber
+	arg1 = { "constant", "stmt", "assign", "while", "if", "call", "number", "prog_line" };
+	arg2 = { "constant", "stmt", "assign", "while", "if", "call", "number", "prog_line" };
 	Relationship r16(2, arg1, arg2);
-	relTable["with"] = r16;
+	relTable["withNumber"] = r16;
+	arg1.clear();
+	arg2.clear();
+
+	//WithName
+	arg1 = { "procedure", "call", "variable", "string" };
+	arg2 = { "procedure", "call", "variable", "string" };
+	Relationship r17(2, arg1, arg2);
+	relTable["withName"] = r17;
 	arg1.clear();
 	arg2.clear();
 }
