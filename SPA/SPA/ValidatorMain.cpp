@@ -1,4 +1,4 @@
-#include "QueryValidator.h"
+/*#include "QueryValidator.h"
 #include "RelationshipTable.h"
 #include <iostream>
 
@@ -29,27 +29,7 @@ int main() {
 	//cout << str << "\n";
 
 	q.isValidDecAndQuery(str20);
-
-	//RelationshipTable r;
-	/*string str18 = "Follows(s, 1)";
-	char c = '(';
-	vector<string> result;
-	const char *strChar = str18.c_str();
-
-	do {
-		const char *begin = strChar;
-
-		while (*strChar != c && *strChar) {
-			strChar++;
-		}
-
-		result.push_back(string(begin, strChar));
-	} while (0 != *strChar++);
-
-	for (int i = 0; i < result.size(); i++) {
-		cout << result.at(i)<<"\n";
-	}*/
 	cin.ignore();
 	cin.get();
 	return 0;
-}
+}*/

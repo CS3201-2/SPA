@@ -226,15 +226,15 @@ bool QueryValidator::parseRel(string &subquery) {
 	
 	qt.insertSuchThat(relType, arrVar, varTypes);
 	
-	cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
-	cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
+	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return true;
 }
 
 bool QueryValidator::parseRelArgs(string relType,
 	vector<string>& arrVar, vector<string>& varTypes) {
-	cout << "parseRelArgs";
+	//cout << "parseRelArgs";
 	for (int i = 0; i < arrVar.size(); i++) {
 		if (isVarNameExists(arrVar.at(i))) {
 			if (!r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)))) {
@@ -309,7 +309,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			if (!parsePatternType(arrWords.at(0), relType, syn, synType)) {
 				return INVALID;
 			}
-			cout << "parsed patterns";
+			//cout << "parsed patterns";
 			if (arrWords.at(1).find(")") == string::npos) {
 				return INVALID;
 			}
@@ -330,7 +330,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			//arg1 and 2
 			if (!parsePatternArg1(relType, arrVar.at(0), varType.at(0)) || 
 				!parsePatternArg2(relType, arrVar.at(1), varType.at(1))) {
-				cout << "invalid 1st arg\n";
+				//cout << "invalid 1st arg\n";
 				return INVALID;
 			}
 			
@@ -338,14 +338,14 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			/*if (!parsePatternArg2(relType, arrVar.at(1), varType.at(1))) {
 				return INVALID;
 			}*/
-			cout << "parsed 2nd arg\n";
+			//cout << "parsed 2nd arg\n";
 			if (relType.compare(RELTYPE_PATTERN_IF) == 0 && arrVar.at(2).compare("_") != 0) {
 				return INVALID;
 			}
 			
 			qt.insertPattern(syn, synType, arrVar, varType);
-			cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
-			cout << "pattern " << varType.at(0) << " " << varType.at(1) << endl;
+			//cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+			//cout << "pattern " << varType.at(0) << " " << varType.at(1) << endl;
 		}
 	} else {
 		return INVALID;
@@ -494,15 +494,15 @@ QueryValidator::RETURN_TYPE QueryValidator::findWithClause(string &subquery) {
 
 	subquery = arrWords.at(1);
 	
-	cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
-	cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
+	//cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	//qt.insertWith(relType, arrVar, varType);
 	return VALID;
 }
 
 bool QueryValidator::parseWithNumber(string &subquery, string &relType, 
 		vector<string> &arrVar, vector<string> &varTypes) {
-	cout << "parseWithNumber\n";
+	//cout << "parseWithNumber\n";
 	vector<string> arrWords = split(subquery, SYMBOL_EQUALS, 2);
 	//cout << "arrWord.at(1):" << arrWords.at(1) << endl;
 	relType = RELTYPE_WITH_NUMBER;
@@ -577,7 +577,7 @@ bool QueryValidator::parseWithNumber(string &subquery, string &relType,
 
 bool QueryValidator::parseWithName(string &subquery, string &relType, 
 		vector<string> &arrVar, vector<string> &varTypes) {
-	cout << "parseWithName\n";
+	//cout << "parseWithName\n";
 	vector<string> arrWords = split(subquery, SYMBOL_EQUALS, 2);
 	//cout << "arrWord.at(1):" << arrWords.at(1) << endl;
 	relType = RELTYPE_WITH_NAME;
