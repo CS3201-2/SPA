@@ -177,7 +177,7 @@ bool QueryValidator::checkRetVal(RETURN_TYPE retVal, bool &isFinished) {
 
 QueryValidator::RETURN_TYPE QueryValidator::findRel(string &subquery) {
 	//cout << "findRel" << endl;
-	RETURN_TYPE retVal = findAndSuchThat(subquery);
+	RETURN_TYPE retVal = findSuchThatString(subquery);
 	
 	if (retVal == NONE) {
 		return NONE;
@@ -273,29 +273,14 @@ bool QueryValidator::parseRelArgs(string relType,
 	return true;
 }
 
-QueryValidator::RETURN_TYPE QueryValidator::findAndSuchThat(string &subquery) {
-	//cout << "findAndSuchThat\n";
+QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery) {
 	vector<string> arrWords = split(subquery, SYMBOL_SPACE, 3);
-	
-	/*if (stringToLower(arrWords.at(0)).compare("such") == 0 && 
-			stringToLower(arrWords.at(0)).compare("that") == 0 && 
-			arrWords.size() == 3) {
-		subquery = arrWords.at(1);
-		return VALID;
-	}*/
-	
-	if (stringToLower(arrWords.at(0)).compare("and") == 0 && arrWords.size() == 2) {
-		subquery = arrWords.at(1);
-		return VALID;
-	} else if (stringToLower(arrWords.at(0)).compare("such") == 0) {
-		arrWords = split(arrWords.at(1), SYMBOL_SPACE, 2);
+	//cout << "findSuchThatString" << endl;
 
-		if (stringToLower(arrWords.at(0)).compare("that") == 0 && arrWords.size() == 2) {
-			subquery = arrWords.at(1);
-			return VALID;
-		} else {
-			return INVALID;
-		}
+	if (stringToLower(arrWords.at(0)).compare("such") == 0 &&
+		stringToLower(arrWords.at(1)).compare("that") == 0) {
+		subquery = arrWords.at(2);
+		return VALID;
 	}
 
 	return NONE;
@@ -342,7 +327,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			}
 
 			vector<string> varType(arrVar.size());
-			//arg1
+			//arg1 and 2
 			if (!parsePatternArg1(relType, arrVar.at(0), varType.at(0)) || 
 				!parsePatternArg2(relType, arrVar.at(1), varType.at(1))) {
 				cout << "invalid 1st arg\n";
