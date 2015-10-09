@@ -252,10 +252,10 @@ bool QueryValidator::parseRelArgs(string relType,
 			}
 
 		} else if (isPositiveInteger(arrVar.at(i))) {
-			if (!r.isArgValid(relType, i + 1, VARTYPE_PROG_LINE)) {
+			if (!r.isArgValid(relType, i + 1, VARTYPE_NUMBER)) {
 				return false;
 			} else {
-				varTypes.at(i) = VARTYPE_PROG_LINE;
+				varTypes.at(i) = VARTYPE_NUMBER;
 			}
 
 		} else if (arrVar.at(i).compare("_") == 0) {
