@@ -23,11 +23,12 @@ int main() {
 		str16 = "assign a; Select a pattern a(\"x\", _)",
 		str17 = " ",
 		str18 = "assign a; variable v; Select a pattern a(v, _)",
-		str19 = "constant c; stmt s; Select s with s.stmt# = c.value";
+		str19 = "constant c; stmt s; Select s with s.stmt# = c.value",
+		str20 = "procedure p; Select p with p.procName = \"SUN\"";
 
 	//cout << str << "\n";
 
-	q.isValidDecAndQuery(str19);
+	q.isValidDecAndQuery(str20);
 
 	//RelationshipTable r;
 	/*string str18 = "Follows(s, 1)";

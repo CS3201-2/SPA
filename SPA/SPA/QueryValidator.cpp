@@ -219,7 +219,7 @@ bool QueryValidator::parseRel(string &subquery) {
 	}
 	
 	vector<string> varTypes(arrVar.size());
-	//cout << "\nsuch that: parsing args";
+	//cout << "\nsuch that: parsing args"<<arrVar.at(1);
 	if (!parseRelArgs(relType, arrVar, varTypes)) {
 		return false;
 	}
@@ -227,14 +227,14 @@ bool QueryValidator::parseRel(string &subquery) {
 	qt.insertSuchThat(relType, arrVar, varTypes);
 	
 	cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
-	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
+	cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return true;
 }
 
 bool QueryValidator::parseRelArgs(string relType,
 	vector<string>& arrVar, vector<string>& varTypes) {
-	//cout << "parseRelArgs";
+	cout << "parseRelArgs";
 	for (int i = 0; i < arrVar.size(); i++) {
 		if (isVarNameExists(arrVar.at(i))) {
 			if (!r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)))) {
@@ -502,8 +502,8 @@ QueryValidator::RETURN_TYPE QueryValidator::findWithClause(string &subquery) {
 
 bool QueryValidator::parseWithNumber(string &subquery, string &relType, 
 		vector<string> &arrVar, vector<string> &varTypes) {
-
-	vector<string> arrWords = split(subquery, '=', 2);
+	cout << "parseWithNumber\n";
+	vector<string> arrWords = split(subquery, SYMBOL_EQUALS, 2);
 	//cout << "arrWord.at(1):" << arrWords.at(1) << endl;
 	relType = RELTYPE_WITH_NUMBER;
 
@@ -516,6 +516,7 @@ bool QueryValidator::parseWithNumber(string &subquery, string &relType,
 	arrWords.at(1) = query.at(0);
 	//cout << "2nd arg: " << query.at(0) << endl;
 	for (int i = 0; i < arrWords.size(); i++) {
+		
 		if ( isPositiveInteger(arrWords.at(i)) ) {
 			if (r.isArgValid(relType, i + 1, VARTYPE_NUMBER)) {
 				arrVar.at(i) = arrWords.at(i);
@@ -523,6 +524,7 @@ bool QueryValidator::parseWithNumber(string &subquery, string &relType,
 			} else {
 				return false;
 			}
+
 		} else if (isVarNameExists(arrWords.at(i)) && getVarType(arrWords.at(i)).compare(VARTYPE_PROG_LINE) == 0) {
 			if (r.isArgValid(relType, i + 1, VARTYPE_PROG_LINE)) {
 				arrVar.at(i) = arrWords.at(i);
@@ -530,6 +532,7 @@ bool QueryValidator::parseWithNumber(string &subquery, string &relType,
 			} else {
 				return false;
 			}
+
 		} else {
 			vector<string> variable = split(arrWords.at(i), '.');
 
@@ -544,6 +547,7 @@ bool QueryValidator::parseWithNumber(string &subquery, string &relType,
 						} else {
 							return false;
 						}
+
 					} else {
 						if (stringToLower(variable.at(1)).compare("stmt#") == 0) {
 							arrVar.at(i) = variable.at(0);
@@ -552,6 +556,7 @@ bool QueryValidator::parseWithNumber(string &subquery, string &relType,
 							return false;
 						}
 					}	
+
 				} else {
 					return false;
 				}
@@ -572,7 +577,72 @@ bool QueryValidator::parseWithNumber(string &subquery, string &relType,
 
 bool QueryValidator::parseWithName(string &subquery, string &relType, 
 		vector<string> &arrVar, vector<string> &varTypes) {
-	return false;
+	cout << "parseWithName\n";
+	vector<string> arrWords = split(subquery, SYMBOL_EQUALS, 2);
+	//cout << "arrWord.at(1):" << arrWords.at(1) << endl;
+	relType = RELTYPE_WITH_NAME;
+
+	if (!r.isNumOfArgsEqual(relType, arrWords.size())) {
+		return false;
+	}
+
+	vector<string> query = split(arrWords.at(1), SYMBOL_SPACE, 2);
+
+	arrWords.at(1) = query.at(0);
+
+	//cout << arrWords.at(0) << arrWords.at(1)<<endl;
+
+	for (int i = 0; i < arrWords.size(); i++) {
+		
+		if (isStringVar(arrWords.at(i))) {
+			if (r.isArgValid(relType, i + 1, VARTYPE_STRING)) {
+				arrVar.at(i) = arrWords.at(i).substr(1, arrWords.at(i).size() - 2);
+				varTypes.at(i) = VARTYPE_STRING;
+			} else {
+				return false;
+			}
+
+		} else {
+			vector<string> variable = split(arrWords.at(i), '.');
+			
+			if (isVarNameExists(variable.at(0))) {
+				string variabType = getVarType(variable.at(0));
+				
+				if (r.isArgValid(relType, i + 1, variabType)) {
+					if (variabType.compare(VARTYPE_VARIABLE) == 0) {
+						if (stringToLower(variable.at(1)).compare("varname") == 0) {
+							arrVar.at(i) = variable.at(0);
+							varTypes.at(i) = variabType;
+						} else {
+							return false;
+						}
+
+					} else {
+						if (stringToLower(variable.at(1)).compare("procname") == 0) {
+							arrVar.at(i) = variable.at(0);
+							varTypes.at(i) = variabType;
+						} else {
+							return false;
+						}
+					}
+
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+	}
+
+	if (query.size() == 2) {
+		subquery = query.at(1);
+
+	} else {
+		subquery = "";
+	}
+
+	return true;
 }
 
 bool QueryValidator::isValidVariableName(string varName) {
