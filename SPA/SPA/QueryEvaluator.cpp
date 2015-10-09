@@ -1578,10 +1578,10 @@ void QueryEvaluator::processWithClause(vector<string> tempString) {
 	string log = "With clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
 
-	if (synType == "number") {
+	if (synType == "withNumber") {
 		resultList.push_back(processNumberWith(tempString));
 	}
-	else if (synType == "name") {
+	else if (synType == "withName") {
 		resultList.push_back(processNameWith(tempString));
 	}
 	else {
