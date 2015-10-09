@@ -496,7 +496,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findWithClause(string &subquery) {
 	
 	//cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
-	//qt.insertWith(relType, arrVar, varType);
+	qt.insertWith(relType, arrVar, varTypes);
 	return VALID;
 }
 
