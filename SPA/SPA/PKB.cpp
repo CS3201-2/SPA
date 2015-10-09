@@ -67,6 +67,7 @@ void PKB::houseKeeping() {
 	getParent().sortAndUnifyMap();
 	//getFollowsStar().sortAndUnifyMap();
 	//getParentStar().sortAndUnifyMap();
+	ifStmtList.sort();
 	ifStmtList.unique();
 	constantList.sort();
 	constantList.unique();
