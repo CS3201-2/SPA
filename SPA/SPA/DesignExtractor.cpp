@@ -4,6 +4,19 @@
 DesignExtractor::DesignExtractor() {
 }
 
+void DesignExtractor::setReverseMap() {
+	PKB::getPKBInstance()->setModifiesReverse();
+	PKB::getPKBInstance()->setUsesReverse();
+	PKB::getPKBInstance()->setFollowsReverse();
+	PKB::getPKBInstance()->setFollowsStarReverse();
+	PKB::getPKBInstance()->setParentReverse();
+	PKB::getPKBInstance()->setParentStarReverse();
+	PKB::getPKBInstance()->setCallsReverse();
+	PKB::getPKBInstance()->setCallsStarReverse();
+	PKB::getPKBInstance()->setVarTableReverse();
+	PKB::getPKBInstance()->setProcTableReverse();
+}
+
 void DesignExtractor::setCalls(list<pair<int, string>> calledProcList) {
 	for (list<pair<int, string>>::iterator it = calledProcList.begin(); it != calledProcList.end(); ++it) {
 		int callFirstID = (*it).first;
@@ -38,8 +51,8 @@ void DesignExtractor::processCallsStar(bool& isValid, list<int> firstList) {
 	for (list<int>::iterator it = secondList.begin(); it != secondList.end(); ++it) {
 		list<int> tempFirstList = firstList;
 		if (find(tempFirstList.begin(), tempFirstList.end(), *it) == tempFirstList.end()) {
-			for (list<int>::iterator tfit = tempFirstList.begin(); tfit != tempFirstList.end(); ++tfit) {
-				PKB::getPKBInstance()->setCallsStar(*tfit, *it);
+			for (list<int>::iterator it2 = tempFirstList.begin(); it2 != tempFirstList.end(); ++it2) {
+				PKB::getPKBInstance()->setCallsStar(*it2, *it);
 			}
 		}
 		else {
@@ -75,9 +88,9 @@ void DesignExtractor::setParentStar() {
 		int first = (*it).first;
 		list<int> potentialFirstList = (*it).second;
 
-		for (list<int>::iterator sit = potentialFirstList.begin(); sit != potentialFirstList.end(); ++sit) {
-			tempList.push_back(*sit);
-			list<int> secondList = PKB::getPKBInstance()->getParentStarSecond(*sit);
+		for (list<int>::iterator it2 = potentialFirstList.begin(); it2 != potentialFirstList.end(); ++it2) {
+			tempList.push_back(*it2);
+			list<int> secondList = PKB::getPKBInstance()->getParentStarSecond(*it2);
 			tempList.insert(tempList.end(), secondList.begin(), secondList.end());
 		}
 
@@ -85,6 +98,7 @@ void DesignExtractor::setParentStar() {
 		tempList.clear();
 	}
 }
+
 void DesignExtractor::resetModifies() {
 	resetModifiesForProc();
 	resetModifiesForStmt();
@@ -156,7 +170,6 @@ void DesignExtractor::modifyProcModifiesMap(map<int, list<int>>& procModifiesMap
 	}
 }
 
-
 void DesignExtractor::resetModifiesForStmt() {
 	list<int> stmtList = PKB::getPKBInstance()->getStmtList();
 
@@ -200,8 +213,8 @@ void DesignExtractor::resetUsesForProc() {
 		for (map<int, list<int>>::iterator it = procUsesMap.begin(); it != procUsesMap.end(); ++it) {
 			bool isAllPositive = true;
 
-			for (list<int>::iterator lit = (*it).second.begin(); lit != (*it).second.end(); ++lit) {
-				if (*lit < 0) {
+			for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+				if (*it2 < 0) {
 					isAllPositive = false;
 					break;
 				}

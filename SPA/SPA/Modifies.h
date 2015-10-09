@@ -11,8 +11,8 @@ using namespace std;
 #ifndef Modifies_H
 #define Modifies_H
 
-class Modifies
-{
+class Modifies{
+
 public:
 	Modifies();
     
@@ -23,9 +23,11 @@ public:
 	bool isModifiesValid(int, int);
 	void logModifies(ProcTable, VarTable);
 	void sortAndUnifyMap();
+	void setModifiesReverse();
 
 private:
 	map<int, list<int>> modifiesMap;
+	map<int, list<int>> modifiesMapReverse;
 };
 
 #endif

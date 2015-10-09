@@ -1,6 +1,5 @@
 #include "SPALog.h"
 #include <string>
-#include <iostream>
 #include <map>
 
 using namespace std;
@@ -9,8 +8,8 @@ using namespace std;
 #ifndef Follows_H
 #define Follows_H
 
-class Follows
-{
+class Follows{
+
 public:
 	Follows();
 
@@ -20,9 +19,11 @@ public:
 	bool isFollowValid(int, int);
 	void logFollows();
 	map<int, int> getFollowsMap();
+	void setFollowsReverse();
 
 private:
 	map<int, int> followsMap;
+	map<int, int> followsMapReverse;
 };
 
 #endif

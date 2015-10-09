@@ -9,8 +9,8 @@ using namespace std;
 #ifndef Parent_H
 #define Parent_H
 
-class Parent
-{
+class Parent{
+
 public:
 	Parent();
 
@@ -21,9 +21,11 @@ public:
 	void logParent();
 	map<int, list<int>> getParentMap();
 	void sortAndUnifyMap();
+	void setParentReverse();
 
 private:
 	map<int, list<int>> parentMap;
+	map<int, int> parentMapReverse;
 };
 
 #endif

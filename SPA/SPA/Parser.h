@@ -4,40 +4,41 @@
 #include <stack>
 #include <regex>
 
-
 using namespace std;
+
 
 #ifndef Parser_H
 #define Parser_H
 
-class Parser
-{
+class Parser{
+
 public:
 	Parser();
 
 	list<pair<int, string>> prepareSourceList(string);
 	void parseSource(list<pair<int, string>>);
-	
+	void buildCFG(list<pair<int, string>>);
 
 private:
 	void trim(string&);
 	void addNewLineString(string&);
-	void buildSourceCodeList(string, list<std::pair<int, string>>&);
+	void buildSourceCodeList(string, list<pair<int, string>>&);
 	void processSourceCodeList(list<pair<int, string>>&);
 
-	void processNestedStmt(list<std::pair<int, string>>::iterator&, list<std::pair<int, string>>&,
-		list<int>&, list<int>&, list<int>&, int, list<stack<string>>&, list<pair<int, pair<int, string>>>&);
-	int countNumOfLeftBraces(std::pair<int, string>);
-	int countNumOfRightBraces(std::pair<int, string>);
-	void processAssignment(std::pair<int, string>, list<int>&, list<int>&);
+	void processNestedStmt(list<pair<int, string>>::iterator&, list<pair<int, string>>&,
+		list<int>&, list<int>&, list<int>&, int, list<stack<string>>&);
+	int countNumOfLeftBraces(string);
+	int countNumOfRightBraces(string);
+	void processAssignment(string str, list<int>&, list<int>&);
+	void processCallStmt(int, int, string, list<int>&, list<int>&);
 	bool isVariable(string);
 	bool isSemicolon(char);
 	bool isMathSymbol(char);
+	bool isConstant(string);
 	int getTypeOfStmt(string);
-	string getProcName(int, string);
-	string getProcNameCallStmt(string);
-	void processPatternStmt(pair<int, string>, int);
+	void processPatternStmt(int, string, int);
 	string getControlVarName(int, string);
+	string getProcName(int, string);
 };
 
 #endif

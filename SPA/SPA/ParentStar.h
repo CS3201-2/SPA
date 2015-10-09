@@ -9,8 +9,8 @@ using namespace std;
 #ifndef ParentStar_H
 #define ParentStar_H
 
-class ParentStar 
-{
+class ParentStar {
+
 public:
 	ParentStar();
 
@@ -20,9 +20,11 @@ public:
 	bool isParentStarValid(int, int);
 	void logParentStar();
 	void sortAndUnifyMap();
+	void setParentStarReverse();
 
 private:
 	map<int, list<int>> parentStarMap;
+	map<int, list<int>> parentStarMapReverse;
 };
 
 #endif

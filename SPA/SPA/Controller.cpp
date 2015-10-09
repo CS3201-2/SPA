@@ -1,14 +1,5 @@
 #include "Controller.h"
-#include "Checker.h"
-#include "Parser.h"
-#include "PKB.h"
-#include "QueryController.h"
-#include "SPALog.h"
-#include <iostream>
-#include <string>
-#include <list>
 
-using namespace std;
 
 typedef list<string> StringList;
 Controller::Controller() {
@@ -28,6 +19,7 @@ void Controller::processSource() {
 	if (!syntaxCheck(sourceList)) {
 		cout << endl << endl;
 		cout << "syntax wrong!!!" << endl << endl << endl;
+		SPALog::log("syntax wrong!!!");
 	}
 	else {
 		parser.parseSource(sourceList);
@@ -36,18 +28,14 @@ void Controller::processSource() {
 		de.setParentStar();
 		de.resetModifies();
 		de.resetUses();
+		de.setReverseMap();
+		logPKB();
+
+		parser.buildCFG(sourceList);
+		//logNext put under logPKB later, if there is no bug
+		PKB::getPKBInstance()->logNext();
 	}
 	cout << "end of checker and parsing" << endl;
-
-	logPKB();
-	//for testing
-	/*cout << "parsed source list" << endl;
-	for (list<pair<int, string>>::iterator it = sourceList.begin(); it != sourceList.end(); ++it) {
-		//cout << (*it).first << " : ";
-		cout << (*it).second << endl;
-	}*/
-	//cout << "end of printing" << endl;
-	//for testing ends
 }
 
 void Controller::logSourceCode(list<pair<int, string>> sourceList) {
@@ -80,6 +68,14 @@ void Controller::logPKB() {
 	cout << "logging" << endl;
 	cout << endl;
 
+	PKB::getPKBInstance()->logWhileList();
+	PKB::getPKBInstance()->logAssignList();
+	PKB::getPKBInstance()->logCallList();
+	PKB::getPKBInstance()->logIfList();
+	PKB::getPKBInstance()->logConstantList();
+	PKB::getPKBInstance()->logParentList();
+	PKB::getPKBInstance()->logStmtList();
+	PKB::getPKBInstance()->logCallStmtProcMap();
 	PKB::getPKBInstance()->logVarTable();
 	PKB::getPKBInstance()->logProcTable();
 	PKB::getPKBInstance()->logModifies();
@@ -91,7 +87,7 @@ void Controller::logPKB() {
 	PKB::getPKBInstance()->logPattern();
 	PKB::getPKBInstance()->logCalls();
 	PKB::getPKBInstance()->logCallsStar();
-	PKB::getPKBInstance()->logNext();
+	//PKB::getPKBInstance()->logNext();
 
 
 	//change below for testing purpose

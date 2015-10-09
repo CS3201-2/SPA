@@ -30,15 +30,22 @@ private:
 	ResultTable processFollowsStar(vector<string> tempString);
 	ResultTable processCalls(vector<string> tempString);
 	ResultTable processCallsStar(vector<string> tempString);
+	ResultTable processNext(vector<string> tempString);
+	ResultTable processNextStar(vector<string> tempString);
 
 	vector<string> getSelectClause(int index);
+	vector<string> getWithClause(int index);
 	vector<string> getSuchThatClause(int index);
 	vector<string> getPatternClause(int index);
 	vector<string> getVarDeclaration(int index);
 
 	void processSuchThatClause(vector<string> tempString);
 	void processPatternClause(vector<string> tempString);
+	void processWithClause(vector<string> tempString);
 	void processSelectClause(vector<string> tempString);
+
+	ResultTable processNumberWith(vector<string> tempString);
+	ResultTable processNameWith(vector<string> tempString);
 
 	ResultTable processAssignPattern(vector<string> tempString);
 	ResultTable processWhilePattern(vector<string> tempString);

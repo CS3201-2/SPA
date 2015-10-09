@@ -2,6 +2,10 @@
 
 using namespace std;
 
+const int assignmentStmt = 0;
+const int procCallStmt = 2;
+const int whileStmt = 3;
+const int ifStmt = 4;
 
 PKB* PKB::PKBInstance = NULL;
 
@@ -60,10 +64,13 @@ Pattern& PKB::getPattern() {
 void PKB::houseKeeping() {
 	getModifies().sortAndUnifyMap();
 	getUses().sortAndUnifyMap();
-	//getParent().sortAndUnifyMap();
+	getParent().sortAndUnifyMap();
 	//getFollowsStar().sortAndUnifyMap();
 	//getParentStar().sortAndUnifyMap();
+	ifStmtList.sort();
 	ifStmtList.unique();
+	constantList.sort();
+	constantList.unique();
 }
 
 //general
@@ -72,20 +79,21 @@ bool PKB::isValidStmtNo(int stmtNo) {
 	return (stmtNo > 0 && (size_t)stmtNo <= totalNoStmt);
 }
 
-void PKB::addWhileToList(int whileStmt) {
-	whileStmtList.push_back(whileStmt);
+void PKB::addStmtToList(int stmtNo, int stmtType) {
+	switch (stmtType) {
+	case assignmentStmt: assignStmtList.push_back(stmtNo); break;
+	case procCallStmt: callStmtList.push_back(stmtNo); break;
+	case whileStmt: whileStmtList.push_back(stmtNo); break;
+	case ifStmt: ifStmtList.push_back(stmtNo); break;
+	}
 }
 
-void PKB::addAssignToList(int assignStmt) {
-	assignStmtList.push_back(assignStmt);
+void PKB::addConstantToList(int constant) {
+	constantList.push_back(constant);
 }
 
-void PKB::addCallToList(int callStmt) {
-	callStmtList.push_back(callStmt);
-}
-//Note: might insert duplicate ifStmt
-void PKB::addIfToList(int ifStmt) {
-	ifStmtList.push_back(ifStmt);
+void PKB::addToCallStmtProcMap(int stmtNo, int procID) {
+	callStmtProcMap[stmtNo] = procID;
 }
 
 list<int> PKB::getProcList() {
@@ -136,10 +144,97 @@ list<int> PKB::getStmtList() {
 
 list<int> PKB::getParentList() {
 	list<int> parentList = whileStmtList;
-	parentList.insert(parentList.end(), whileStmtList.begin(), whileStmtList.end());
+	parentList.insert(parentList.end(), ifStmtList.begin(), ifStmtList.end());
 	parentList.sort();
 	
 	return parentList;
+}
+
+list<int> PKB::getConstantList() {
+	return constantList;
+}
+
+int PKB::getCallStmtProc(int stmtNo) {
+	if (callStmtProcMap.find(stmtNo) == callStmtProcMap.end()) {
+		return 0;
+	}
+	else {
+		return callStmtProcMap.at(stmtNo);
+	}
+}
+
+void PKB::logWhileList() {
+	string str = "while list\n";
+	for (list<int>::iterator it = whileStmtList.begin(); it != whileStmtList.end(); ++it) {
+		str += to_string(*it) + ", ";
+	}
+	str += "\n";
+	SPALog::log(str);
+}
+
+void PKB::logAssignList() {
+	string str = "assign list\n";
+	for (list<int>::iterator it = assignStmtList.begin(); it != assignStmtList.end(); ++it) {
+		str += to_string(*it) + ", ";
+	}
+	str += "\n";
+	SPALog::log(str);
+}
+
+void PKB::logCallList() {
+	string str = "call list\n";
+	for (list<int>::iterator it = callStmtList.begin(); it != callStmtList.end(); ++it) {
+		str += to_string(*it) + ", ";
+	}
+	str += "\n";
+	SPALog::log(str);
+}
+
+void PKB::logIfList() {
+	string str = "if list\n";
+	for (list<int>::iterator it = ifStmtList.begin(); it != ifStmtList.end(); ++it) {
+		str += to_string(*it) + ", ";
+	}
+	str += "\n";
+	SPALog::log(str);
+}
+
+void PKB::logConstantList() {
+	string str = "constant list\n";
+	for (list<int>::iterator it = constantList.begin(); it != constantList.end(); ++it) {
+		str += to_string(*it) + ", ";
+	}
+	str += "\n";
+	SPALog::log(str);
+}
+
+void PKB::logParentList() {
+	string str = "parent list\n";
+	list<int> parentList = getParentList();
+	for (list<int>::iterator it = parentList.begin(); it != parentList.end(); ++it) {
+		str += to_string(*it) + ", ";
+	}
+	str += "\n";
+	SPALog::log(str);
+}
+
+void PKB::logStmtList() {
+	string str = "stmt list\n";
+	list<int> stmtList = getStmtList();
+	for (list<int>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
+		str += to_string(*it) + ", ";
+	}
+	str += "\n";
+	SPALog::log(str);
+}
+
+void PKB::logCallStmtProcMap() {
+	string str = "call stmt map\n";
+	ProcTable pt = getProcTable();
+	for (map<int, int>::iterator it = callStmtProcMap.begin(); it != callStmtProcMap.end(); ++it) {
+		str += to_string((*it).first) + ": " + pt.getProcName((*it).second) + "\n";
+	}
+	SPALog::log(str);
 }
 
 void PKB::buildCFG(list<pair<int, string>> sourceCodeList) {
@@ -168,6 +263,10 @@ size_t PKB::getVarTableSize() {
 	return getVarTable().getVarTableSize();
 }
 
+void PKB::setVarTableReverse() {
+	getVarTable().setVarTableReverse();
+}
+
 
 //procTable
 int PKB::insertProc(string procName) {
@@ -188,6 +287,10 @@ void PKB::logProcTable() {
 
 size_t PKB::getProcTableSize() {
 	return getProcTable().getProcTableSize();
+}
+
+void PKB::setProcTableReverse() {
+	getProcTable().setProcTableReverse();
 }
 
 
@@ -216,6 +319,10 @@ void PKB::logModifies() {
 	getModifies().logModifies(getProcTable(), getVarTable());
 }
 
+void PKB::setModifiesReverse() {
+	getModifies().setModifiesReverse();
+}
+
 
 //Uses
 void PKB::setUses(int first, list<int> second) {
@@ -240,6 +347,10 @@ bool PKB::isUsesValid(int first, int second) {
 
 void PKB::logUses() {
 	getUses().logUses(getProcTable(), getVarTable());
+}
+
+void PKB::setUsesReverse() {
+	getUses().setUsesReverse();
 }
 
 
@@ -305,6 +416,10 @@ map<int, int> PKB::getFollowsMap() {
 	return getFollows().getFollowsMap();
 }
 
+void PKB::setFollowsReverse() {
+	getFollows().setFollowsReverse();
+}
+
 
 //FollowsStar
 void PKB::setFollowsStar(int first, list<int> second) {
@@ -325,6 +440,10 @@ bool PKB::isFollowsStarValid(int first, int second) {
 
 void PKB::logFollowsStar() {
 	getFollowsStar().logFollowsStar();
+}
+
+void PKB::setFollowsStarReverse() {
+	getFollowsStar().setFollowsStarReverse();
 }
 
 
@@ -357,6 +476,10 @@ map<int, list<int>> PKB::getCallsMap() {
 	return getCalls().getCallsMap();
 }
 
+void PKB::setCallsReverse() {
+	getCalls().setCallsReverse();
+}
+
 
 //CallsStar
 void PKB::setCallsStar(int first, int second) {
@@ -387,6 +510,10 @@ map<int, list<int>> PKB::getCallsStarMap() {
 	return getCallsStar().getCallsStarMap();
 }
 
+void PKB::setCallsStarReverse() {
+	getCallsStar().setCallsStarReverse();
+}
+
 
 //Parent
 void PKB::setParent(int first, list<int> second) {
@@ -413,6 +540,10 @@ map<int, list<int>> PKB::getParentMap() {
 	return getParent().getParentMap();
 }
 
+void PKB::setParentReverse() {
+	getParent().setParentReverse();
+}
+
 
 //ParentStar
 void PKB::setParentStar(int first, list<int> second) {
@@ -433,6 +564,10 @@ bool PKB::isParentStarValid(int first, int second) {
 
 void PKB::logParentStar() {
 	getParentStar().logParentStar();
+}
+
+void PKB::setParentStarReverse() {
+	getParentStar().setParentStarReverse();
 }
 
 

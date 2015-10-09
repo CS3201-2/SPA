@@ -7,6 +7,7 @@ using namespace std;
 #define DesignExtractor_H
 
 class DesignExtractor {
+
 private:
 	void processCallsStar(bool&, list<int>);
 	void resetModifiesForProc();
@@ -24,6 +25,7 @@ public:
 	void setParentStar();
 	void resetModifies();
 	void resetUses();
+	void setReverseMap();
 };
 
 #endif

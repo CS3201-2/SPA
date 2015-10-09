@@ -2,8 +2,7 @@
 
 
 // constructor
-Parent::Parent()
-{
+Parent::Parent(){
 }
 
 void Parent::setParent(int first, list<int> second) {
@@ -18,13 +17,12 @@ void Parent::setParent(int first, list<int> second) {
 }
 
 int Parent::getParentFirst(int second) {
-	for (map<int, list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
-		if (find((*it).second.begin(), (*it).second.end(), second) != (*it).second.end()) {
-			return (*it).first;
-		}
+	if (parentMapReverse.find(second) == parentMapReverse.end()) {
+		return 0;
 	}
-
-	return 0;
+	else {
+		return parentMapReverse.at(second);
+	}
 }
 
 list<int> Parent::getParentSecond(int first) {
@@ -48,12 +46,18 @@ bool Parent::isParentValid(int first, int second) {
 
 void Parent::logParent() {
 	string str = "parent table\n";
-	for (map<int, std::list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
 		str += to_string((*it).first) + ": ";
-		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += to_string(*listIt) + ", ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += to_string(*it2) + ", ";
 		}
 		str += "\n";
+	}
+	str += "\n";
+
+	str += "parent table reverse\n";
+	for (map<int, int>::iterator it = parentMapReverse.begin(); it != parentMapReverse.end(); ++it) {
+		str += to_string((*it).first) + ": " + to_string((*it).second) + "\n";
 	}
 	str += "\n";
 
@@ -65,8 +69,16 @@ map<int, list<int>> Parent::getParentMap() {
 }
 
 void Parent::sortAndUnifyMap() {
-	for (map<int, std::list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
 		(*it).second.sort();
 		(*it).second.unique();
+	}
+}
+
+void Parent::setParentReverse() {
+	for (map<int, list<int>>::iterator it = parentMap.begin(); it != parentMap.end(); ++it) {
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			parentMapReverse[*it2] = (*it).first;
+		}
 	}
 }

@@ -1,6 +1,5 @@
 #include <string>
 #include <map>
-#include <iostream>
 #include "SPALog.h"
 
 using namespace std;
@@ -9,8 +8,8 @@ using namespace std;
 #ifndef VarTable_H
 #define VarTable_H
 
-class VarTable
-{
+class VarTable{
+
 public:
 	VarTable();
 
@@ -19,9 +18,11 @@ public:
 	string getVarName(int);
 	size_t getVarTableSize();
 	void logVarTable();
+	void setVarTableReverse();
 
 private:
 	map<string, int> varTable;
+	map<int, string> varTableReverse;
 };
 
 #endif
