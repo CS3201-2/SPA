@@ -24,10 +24,10 @@ void QueryTree::insertPattern(string syn, string synType, vector<string> arrPtrn
 	vector<string> tempVector;
 	tempVector.push_back(syn);
 	tempVector.push_back(synType);
-	tempVector.push_back(arrPtrn.at(0));
-	tempVector.push_back(ptrnType.at(0));
-	tempVector.push_back(arrPtrn.at(1));
-	tempVector.push_back(ptrnType.at(1));
+	for (int i = 0; i < arrPtrn.size(); i++) {
+		tempVector.push_back(arrPtrn.at(i));
+		tempVector.push_back(ptrnType.at(i));
+	}
 	qTree.at(2).push_back(tempVector);
 }
 
