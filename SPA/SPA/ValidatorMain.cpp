@@ -21,31 +21,14 @@ int main() {
 		str14 = "if If1; Select If1 Pattern If1(\"i\", _, _ )",
 		str15 = "assign a1; assign a2; Select a1 such that Follows(a1, a2)",
 		str16 = "assign a; Select a pattern a(\"x\", _)",
-		str17 = " ";
+		str17 = " ",
+		str18 = "assign a; variable v; Select a pattern a(v, _)",
+		str19 = "constant c; stmt s; Select s with s.stmt# = c.value",
+		str20 = "procedure p; Select p with p.procName = \"SUN\"";
 
 	//cout << str << "\n";
 
-	q.isValidDecAndQuery(str10);
-
-	//RelationshipTable r;
-	/*string str18 = "Follows(s, 1)";
-	char c = '(';
-	vector<string> result;
-	const char *strChar = str18.c_str();
-
-	do {
-		const char *begin = strChar;
-
-		while (*strChar != c && *strChar) {
-			strChar++;
-		}
-
-		result.push_back(string(begin, strChar));
-	} while (0 != *strChar++);
-
-	for (int i = 0; i < result.size(); i++) {
-		cout << result.at(i)<<"\n";
-	}
+	q.isValidDecAndQuery(str20);
 	cin.ignore();
 	cin.get();
 	return 0;
