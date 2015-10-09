@@ -6,7 +6,7 @@ RelationshipTable::RelationshipTable() {
 	vector<string> arg2;
 	
 	//ModifiesS (statements)
-	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "string", "all" }; //
+	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "string", "number", "all" }; //
 	arg2 = { "variable", "string", "all" };
 	Relationship r1(2, arg1, arg2);
 	relTable["modifies"] = r1;
@@ -15,7 +15,7 @@ RelationshipTable::RelationshipTable() {
 	//cout << relTable.find("modifies*")->second.arg1.at(0);
 	
 	//UsesS (statements)
-	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "string", "all" }; //
+	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "string", "number", "all" }; //
 	arg2 = { "variable", "string", "all" };
 	Relationship r2(2, arg1, arg2);
 	relTable["uses"] = r2;
@@ -23,32 +23,32 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Parent
-	arg1 = { "stmt", "prog_line", "while", "if", "all" }; //
-	arg2 = { "stmt", "assign", "prog_line", "while", "if" , "call", "all" }; //
+	arg1 = { "stmt", "prog_line", "while", "if", "number", "all" }; //
+	arg2 = { "stmt", "assign", "prog_line", "while", "if" , "call", "number", "all" }; //
 	Relationship r3(2, arg1, arg2);
 	relTable["parent"] = r3;
 	arg1.clear();
 	arg2.clear();
 
 	//Parent*
-	arg1 = { "stmt", "prog_line", "while", "if", "all" }; //
-	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "all" }; //
+	arg1 = { "stmt", "prog_line", "while", "if", "number", "all" }; //
+	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; //
 	Relationship r4(2, arg1, arg2);
 	relTable["parent*"] = r4;
 	arg1.clear();
 	arg2.clear();
 
 	//Follows
-	arg1 = { "stmt", "assign", "prog_line", "while", "if", "call", "all" }; //
-	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "all" }; //
+	arg1 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; //
+	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; //
 	Relationship r5(2, arg1, arg2);
 	relTable["follows"] = r5;
 	arg1.clear();
 	arg2.clear();
 
 	//Follows*
-	arg1 = { "stmt", "assign", "prog_line", "while", "if", "call", "all" };
-	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "all" };
+	arg1 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" };
+	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" };
 	Relationship r6(2, arg1, arg2);
 	relTable["follows*"] = r6;
 	arg1.clear();
@@ -79,16 +79,16 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Next
-	arg1 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
-	arg2 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
+	arg1 = { "stmt", "assign", "while", "if", "call", "prog_line", "number", "all" };
+	arg2 = { "stmt", "assign", "while", "if", "call", "prog_line", "number", "all" };
 	Relationship r10(2, arg1, arg2);
 	relTable["next"] = r10;
 	arg1.clear();
 	arg2.clear();
 
 	//Next*
-	arg1 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
-	arg2 = { "stmt", "assign", "while", "if", "call", "prog_line", "all" };
+	arg1 = { "stmt", "assign", "while", "if", "call", "prog_line", "number", "all" };
+	arg2 = { "stmt", "assign", "while", "if", "call", "prog_line", "number", "all" };
 	Relationship r11(2, arg1, arg2);
 	relTable["next*"] = r11;
 	arg1.clear();
@@ -111,16 +111,16 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Affects
-	arg1 = { "prog_line", "assign", "all" };
-	arg2 = { "prog_line", "assign", "all" };
+	arg1 = { "prog_line", "assign", "number", "all" };
+	arg2 = { "prog_line", "assign", "number", "all" };
 	Relationship r14(2, arg1, arg2);
 	relTable["affects"] = r14;
 	arg1.clear();
 	arg2.clear();
 
 	//Affects*
-	arg1 = { "prog_line", "stmt", "assign", "all" };
-	arg2 = { "prog_line", "stmt", "assign", "all" };
+	arg1 = { "prog_line", "stmt", "assign", "number", "all" };
+	arg2 = { "prog_line", "stmt", "assign", "number", "all" };
 	Relationship r15(2, arg1, arg2);
 	relTable["affects*"] = r15;
 	arg1.clear();

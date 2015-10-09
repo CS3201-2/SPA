@@ -252,10 +252,10 @@ bool QueryValidator::parseRelArgs(string relType,
 			}
 
 		} else if (isPositiveInteger(arrVar.at(i))) {
-			if (!r.isArgValid(relType, i + 1, VARTYPE_PROG_LINE)) {
+			if (!r.isArgValid(relType, i + 1, VARTYPE_NUMBER)) {
 				return false;
 			} else {
-				varTypes.at(i) = VARTYPE_PROG_LINE;
+				varTypes.at(i) = VARTYPE_NUMBER;
 			}
 
 		} else if (arrVar.at(i).compare("_") == 0) {
@@ -496,7 +496,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findWithClause(string &subquery) {
 	
 	//cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
-	//qt.insertWith(relType, arrVar, varType);
+	qt.insertWith(relType, arrVar, varTypes);
 	return VALID;
 }
 
