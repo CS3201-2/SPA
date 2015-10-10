@@ -158,7 +158,7 @@ list<int> QueryEvaluator::getList(string listName) {
 	else if (listName == "call") {
 		return PKB::getPKBInstance()->getCallList();
 	}
-	else if (listName == "stmt" || "all" || "prog_line") {
+	else if (listName == "stmt" || listName == "all" || listName == "prog_line") {
 		return PKB::getPKBInstance()->getStmtList();
 	}
 	else if (listName == "procedure") {
@@ -283,7 +283,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 		}
 		else {
 			//procedue, while, assign, if, call, stmt, prog_line
-			list<int> targetList = getList(arg1);
+			list<int> targetList = getList(arg1Type);
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
@@ -413,7 +413,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 		}
 		else {
 
-			list<int> targetList = getList(arg1);
+			list<int> targetList = getList(arg1Type);
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
