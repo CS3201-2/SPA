@@ -24,10 +24,10 @@ void QueryTree::insertPattern(string syn, string synType, vector<string> arrPtrn
 	vector<string> tempVector;
 	tempVector.push_back(syn);
 	tempVector.push_back(synType);
-	tempVector.push_back(arrPtrn.at(0));
-	tempVector.push_back(ptrnType.at(0));
-	tempVector.push_back(arrPtrn.at(1));
-	tempVector.push_back(ptrnType.at(1));
+	for (int i = 0; i < arrPtrn.size(); i++) {
+		tempVector.push_back(arrPtrn.at(i));
+		tempVector.push_back(ptrnType.at(i));
+	}
 	qTree.at(2).push_back(tempVector);
 }
 
@@ -45,12 +45,13 @@ void QueryTree::insertSelect(string var, string varType) {
 	qTree.at(3).push_back(tempVector);
 }
 
-void QueryTree::insertWith(string with1, string with1Type, string with2, string with2Type) {
+void QueryTree::insertWith(string rel, vector<string> arrWith, vector<string> withType) {
 	vector<string> tempVector;
-	tempVector.push_back(with1);
-	tempVector.push_back(with1Type);
-	tempVector.push_back(with2);
-	tempVector.push_back(with2Type);
+	tempVector.push_back(rel);
+	for (int i = 0; i < arrWith.size(); i++) {
+		tempVector.push_back(arrWith.at(i));
+		tempVector.push_back(withType.at(i));
+	}
 	qTree.at(4).push_back(tempVector);
 }
 
