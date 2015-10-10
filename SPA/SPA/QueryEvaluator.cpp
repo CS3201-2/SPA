@@ -158,7 +158,7 @@ list<int> QueryEvaluator::getList(string listName) {
 	else if (listName == "call") {
 		return PKB::getPKBInstance()->getCallList();
 	}
-	else if (listName == "stmt" || "all" || "prog_line") {
+	else if (listName == "stmt" || listName == "all" || listName == "prog_line") {
 		return PKB::getPKBInstance()->getStmtList();
 	}
 	else if (listName == "procedure") {
