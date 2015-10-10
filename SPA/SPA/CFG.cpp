@@ -10,7 +10,7 @@ CFG::CFG()
 
 void CFG::buildGraph(list<pair<int, string>> codeLst)
 {
-	_next.reserve(codeLst.size());
+	_next.resize(codeLst.size(), list<int>());
 	_statBuffer.clear();
 	_codeLst = codeLst;
 	_codeIterator = _codeLst.begin();
@@ -438,18 +438,12 @@ void CFG::updateVector(int position, int value)
 	{
 
 	}
-	else if (position < _next.size())
+	else
 	{
-		if (value != _next[position].front())
+		if (_next[position].empty() || value != _next[position].front())
 		{
 			_next[position].push_back(value);
 		}
-	}
-	else
-	{
-		list<int> lst = list<int>();
-		lst.push_back(value);
-		_next.push_back(lst);
 	}
 }
 
@@ -472,7 +466,13 @@ void CFG::storeNextTable()
 	_beforeTable.resize(_codeLst.size(), empty);
 	for (int i = 0; i < _next.size(); i++)
 	{
-		storeNext(i);
+		try {
+			storeNext(i);
+		}
+		catch (exception e)
+		{
+			break;
+		}
 	}
 }
 
