@@ -21,6 +21,16 @@ Parser::Parser() {
 }
 
 list<pair<int, string>> Parser::prepareSourceList(string source) {
+	addNewLineBeforeKeywords(source, " call ");
+	addNewLineBeforeKeywords(source, "\tcall ");
+	addNewLineBeforeKeywords(source, " procedure ");
+	addNewLineBeforeKeywords(source, "\tprocedure ");
+	addNewLineBeforeKeywords(source, " while ");
+	addNewLineBeforeKeywords(source, "\twhile ");
+	addNewLineBeforeKeywords(source, " if ");
+	addNewLineBeforeKeywords(source, "\tif ");
+	addNewLineBeforeKeywords(source, "else{");
+	
 	trim(source);
 	addNewLineString(source);
 	list<pair<int, string>> sourceCodeList;
@@ -38,6 +48,14 @@ void Parser::buildCFG(list<pair<int, string>> sourceCodeList) {
 	PKB::getPKBInstance()->buildCFG(sourceCodeList);
 }
 
+void Parser::addNewLineBeforeKeywords(string& source, string keywords) {
+	size_t found = source.find(keywords);
+	while (found != string::npos) {
+		source.insert(found, "@");
+		found = source.find(keywords, found + 2);
+	}
+}
+
 void Parser::trim(string& line) {
 	line.erase(remove_if(line.begin(), line.end(), isspace), line.end());
 }
@@ -48,13 +66,17 @@ void Parser::addNewLineString(string &content) {
 	while (index != string::npos) {
 		index++;
 		while (index != content.size() && content.at(index) == '}') index++;
-		content.insert(index, (size_t)1, '@');
+		if (index < content.size() && content.at(index) != '@') {
+			content.insert(index, (size_t)1, '@');
+		}
 		index = content.find(';', index);
 	}
 	index = content.find('{');
 	while (index != string::npos) {
 		index++;
-		content.insert(index, (size_t)1, '@');
+		if (index < content.size() && content.at(index) != '@') {
+			content.insert(index, (size_t)1, '@');
+		}
 		index = content.find('{', index);
 	}
 	

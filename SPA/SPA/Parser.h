@@ -21,6 +21,7 @@ public:
 
 private:
 	void trim(string&);
+	void addNewLineBeforeKeywords(string&, string);
 	void addNewLineString(string&);
 	void buildSourceCodeList(string, list<pair<int, string>>&);
 	void processSourceCodeList(list<pair<int, string>>&);
