@@ -1,13 +1,6 @@
 #include "SPALog.h"
 #include "Checker.h"
 
-const regex assignmentRegex("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
-const regex procDeclarationRegex("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
-const regex procCallRegex("call(([[:alpha:]])([[:alnum:]]+)*);\\}*");
-const regex whileRegex("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
-const regex ifRegex("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
-const regex elseRegex("else\\{");
-const regex variableRegex("(^[[:alpha:]])([[:alnum:]]+)*$");
 const int assignmentStmt = 0;
 const int procDeclarationStmt = 1;
 const int procCallStmt = 2;
@@ -36,9 +29,16 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 
 		switch (stmtType) {
 		case assignmentStmt: 
-			if (!popBrackets(brackets, stmt)) { SPALog::log(to_string(stmtNo)); return false; }
-			if (!isAssignmentValid(stmt)) { SPALog::log(to_string(stmtNo)); return false; } // add variable to VarTable
+			if (!popBrackets(brackets, stmt)) {
+				SPALog::log("miss match of {}");
+				return false;
+			}
+			if (!isAssignmentValid(stmt)) {
+				SPALog::log("invalid assign: " + stmt);
+				return false;
+			}
 			break;
+
 
 		case procDeclarationStmt:
 			// update current procedure
@@ -48,48 +48,68 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 					currProcID = PKB::getPKBInstance()->insertProc(procName);
 				}
 				else {
-					SPALog::log(to_string(stmtNo)); 
+					SPALog::log("there is already a procedure with this name" + procName); 
+					return false;
+				}
+
+				if (!isValidName(procName)) {
+					SPALog::log("invalid procName: " + stmt);
 					return false;
 				}
 			}
 			else {
-				SPALog::log(to_string(stmtNo));
+				SPALog::log("extra {" + stmt);
 				return false;
 			}
-			//update brackets;
+
 			brackets.push(1);
 			break;
 
-		case procCallStmt:
-			if (!popBrackets(brackets, stmt)) { SPALog::log(to_string(stmtNo)); return false; }
-			procName = getProcName(stmtType, stmt);
-			calledPair = make_pair(currProcID, procName);
-			calledProcList.push_back(calledPair);
-			//add procedure into ProcTable
-			break;
 
-		case whileStmt: 
-			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
-				SPALog::log(to_string(stmtNo)); 
+		case procCallStmt:
+			if (!popBrackets(brackets, stmt)) {
+				SPALog::log("missing { before" + stmt); 
 				return false;
 			}
-
+			procName = getProcName(stmtType, stmt);
+			if (!isValidName(procName)) {
+				SPALog::log("invalid procName: " + stmt);
+				return false;
+			}
+			calledPair = make_pair(currProcID, procName);
+			calledProcList.push_back(calledPair);
 			break;
 
-		case ifStmt: 
+
+		case whileStmt: 
+			if (!isValidName(getControlVarName(stmtType, stmt))) {
+				SPALog::log("invalid control variable: "+ stmt);
+				return false;
+			}
+			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
+				return false;
+			}
+			break;
+
+
+		case ifStmt:
+			if (!isValidName(getControlVarName(stmtType, stmt))) {
+				SPALog::log("invalid control variable: " + stmt);
+				return false;
+			}
 			// update if stack if it is empty, or it means if without else
 			if (ifStack.empty()) {
 				ifStack.push(*it);
 			}
 			else {
-				SPALog::log(to_string(stmtNo)); 
+				SPALog::log("an if without else before: " + stmt); 
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
-				SPALog::log(to_string(stmtNo)); 
 				return false;
 			}
 			break;
+
 
 		case elseStmt: 
 			//pop only when there is one in the if stack, or it might means else without if
@@ -99,18 +119,18 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 				ifStack.pop();
 			}
 			else {
-				SPALog::log(to_string(stmtNo)); 
+				SPALog::log("no if before this else"); 
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
 				SPALog::log(to_string(stmtNo)); 
 				return false;
 			}
-
 			break;
 
-		case invalidStmt:
-			SPALog::log(to_string(stmtNo));
+
+		default:
+			SPALog::log("invalid stmt: " + stmt);
 			return false; 
 			break;
 		}
@@ -118,24 +138,30 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 
 	// check matching brackets
 	if (!brackets.empty()) {
-		//cout << "bracket" << endl;
-		SPALog::log("brackets");
+		SPALog::log("additional {");
 		return false;
 	}
 
 	// check matching if else statement
 	if (!ifStack.empty()) {
 		//cout << "if stack" << endl;
-		SPALog::log("ifElse");
+		SPALog::log("extrax if stmt");
 		return false;
 	}
 
 	//checker gets the callsMap and callsStarMap and validate them
 	DesignExtractor de = DesignExtractor();
 	de.setCalls(calledProcList);
-	if (!isCallValid()) { SPALog::log("invalid calls"); return false; }
+	if (!isCallValid()) {
+		SPALog::log("calls itself directly or call non-exist proc"); 
+		return false;
+	}
+	
 	de.setCallsStar();
-	if (!isCallsStarValid()) { SPALog::log("invalid calls"); return false; }
+	if (!isCallsStarValid()) { 
+		SPALog::log("calls itself indirectly"); 
+		return false; 
+	}
 	return true;
 }
 
@@ -167,16 +193,30 @@ bool Checker::isCallsStarValid() {
 	return true;
 }
 
-string Checker::getProcName(int stmtType, string str) {
-	smatch m;
-	if (stmtType == procDeclarationStmt) {
-		regex_search(str, m, procDeclarationRegex);
+string Checker::getProcName(int stmtType, string stmt) {
+	size_t i;
+	if (stmtType == procCallStmt) {
+		i = stmt.find(";");
+		return stmt.substr(4, i - 4);
 	}
 	else {
-		regex_search(str, m, procCallRegex);
+		i = stmt.find("{");
+		return stmt.substr(9, i - 9);
 	}
-	return m[1];
 }
+
+string Checker::getControlVarName(int stmtType, string stmt) {
+	size_t i;
+	if (stmtType == whileStmt) {
+		i = stmt.find("{");
+		return stmt.substr(5, i - 5);
+	}
+	else {
+		i = stmt.find("{");
+		return stmt.substr(2, i - 6);
+	}
+}
+
 
 bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair<int, string>>& sourceList,
 	stack<int>& brackets, list<pair<int, string>>& calledProcList, int currProcID, list<stack<int>>& bracketList) {
@@ -192,7 +232,6 @@ bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair
 
 	++it; //to skip the starting of this nested statement
 	while (!bracketList.back().empty()) {
-
 		for (int i = 0; i < countNumOfLeftBraces((*it).second); ++i) {
 			for (list<stack<int>>::iterator iter = bracketList.begin(); iter != bracketList.end(); ++iter) {
 				if (!(*iter).empty()) {
@@ -208,34 +247,60 @@ bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair
 			}
 		}
 
+		int stmtNo = (*it).first;
 		string stmt = (*it).second;
 		int stmtType = getTypeOfStmt(stmt);
 
 		switch (stmtType) {
 		case assignmentStmt:
-			if (!popBrackets(brackets, stmt)) { return false; }
-			if (!isAssignmentValid(stmt)) { return false; } // add variable to VarTable
+			if (!popBrackets(brackets, stmt)) { 
+				SPALog::log("miss match of {}"); 
+				return false; 
+			}
+			if (!isAssignmentValid(stmt)) { 
+				SPALog::log("invalid assign at" + stmtNo); 
+				return false;
+			}
 			break;
 
+
 		case procCallStmt:
-			if (!popBrackets(brackets, stmt)) { return false; }
+			if (!popBrackets(brackets, stmt)) { 
+				SPALog::log("missing { before" + stmt);
+				return false;
+			}
+			if (!isValidName(procName)) {
+				SPALog::log("invalid procName: " + stmt);
+				return false;
+			}
 			procName = getProcName(stmtType, stmt);
 			calledPair = make_pair(currProcID, procName);
 			calledProcList.push_back(calledPair);
 			break;
 
+
 		case whileStmt:
+			if (!isValidName(getControlVarName(stmtType, stmt))) {
+				SPALog::log("invalid control variable: " + stmt);
+				return false;
+			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
 				return false;
 			}
 			break;
 
+
 		case ifStmt:
+			if (!isValidName(getControlVarName(stmtType, stmt))) {
+				SPALog::log("invalid control variable: " + stmt);
+				return false;
+			}
 			// update if stack if it is empty, or it means if without else
 			if (ifStack.empty()) {
 				ifStack.push(*it);
 			}
 			else {
+				SPALog::log("an if without else before " + stmt);
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
@@ -251,6 +316,7 @@ bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair
 				ifStack.pop();
 			}
 			else {
+				SPALog::log("no if before this else");
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
@@ -258,7 +324,8 @@ bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair
 			}
 			break;
 
-		case invalidStmt:
+		default:
+			SPALog::log("invalid stmt: " + stmt);
 			return false;
 			break;
 		}
@@ -271,116 +338,65 @@ bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair
 
 	// check matching if else statement
 	if (!ifStack.empty()) {
+		SPALog::log("extra if");
 		return false;
 	}
 
 	return true;
 }
 
-int Checker::getTypeOfStmt(string str) {
-	if (regex_match(str, assignmentRegex)) {
-		return assignmentStmt;
-	}
-	else if (regex_match(str, procDeclarationRegex)) {
-		return procDeclarationStmt;
-	}
-	else if (regex_match(str, procCallRegex)) {
-		return procCallStmt;
-	}
-	else if (regex_match(str, whileRegex)) {
-		return whileStmt;
-	}
-	else if (regex_match(str, ifRegex)) {
-		return ifStmt;
-	}
-	else if (regex_match(str, elseRegex)) {
-		return elseStmt;
-	}
-	else {
-		return invalidStmt;
-	}
-}
 
-bool Checker::isAssignmentValid(string str) {
-	smatch m;
-	regex_search(str, m, assignmentRegex);
-	string LHS = m[1];
-	string RHS = m[4];
-
-	if (!regex_match(LHS, variableRegex)) {
+bool Checker::isAssignmentValid(string assignStmt) {
+	vector<string> tokens = parseExpression(assignStmt);
+	string LHS = tokens.at(0);
+	
+	if (!isValidName(LHS)) {
+		SPALog::log("LHS of expression is not a variable: "+ assignmentStmt);
 		return false;
 	}
 
-	string variable;
-	char prevChar = *(RHS.begin());
-
-	for (string::iterator it = RHS.begin(); it != RHS.end(); ++it) {
-		if (isParenthesis(*it) || isOperator(*it)) {
-			if (variable != "") {
-				if (!isConstant(variable) && !isVariable(variable)) {
-					return false;
-				}
-			}
-			else {
-				if (isOperator(*it) && isOperator(prevChar)) {
-					return false;
-				}
-			}
-			variable = "";
-		}
-		else {
-			variable += *it;
-		}
-		prevChar = *it;
+	if (isOperator(tokens.at(2))) {
+		SPALog::log("expression starts with an operator: " + assignmentStmt);
+		return false;
 	}
 
-	if (variable != "") {
-		if (!isConstant(variable) && !isVariable(variable)) {
+	string prevToken = "dummy";
+	for (int i = 2; i < tokens.size(); ++i) {
+		if (!isOperator(tokens.at(i)) && !isValidName(tokens.at(i)) && 
+			!isParenthesis(tokens.at(i)) && !isConstant(tokens.at(i))) {
+			SPALog::log("most probably, this case is invalid variable name at RHS of expression: "
+				+ assignmentStmt);
 			return false;
 		}
+
+		if (isOperator(prevToken) && isOperator(tokens.at(i))) {
+			SPALog::log("two consecutive operators in an assignment: " + assignmentStmt);
+			return false;
+		}
+		prevToken = tokens.at(i);
 	}
-	else {
-		if (isOperator(prevChar)) {
-			return false;
-		}
+
+	if (countNumOfLeftParenthesis(assignStmt) != countNumOfRightParenthesis(assignStmt)) {
+		SPALog::log("unmatch of ()" + assignmentStmt);
+		return false;
 	}
 
 	return true;
 }
 
-bool Checker::isConstant(string str) {
-	size_t found = str.find_first_not_of("1234567890");
-	return (found == string::npos);
+int Checker::countNumOfLeftBraces(string stmt) {
+	return count(stmt.begin(), stmt.end(), '{');
 }
 
-bool Checker::isSemicolon(char ch) {
-	return ch == ';';
+int Checker::countNumOfRightBraces(string stmt) {
+	return count(stmt.begin(), stmt.end(), '}');
 }
 
-bool Checker::isParenthesis(char ch) {
-	return ch == '(' || ch == ')';
+int Checker::countNumOfLeftParenthesis(string stmt) {
+	return count(stmt.begin(), stmt.end(), '(');
 }
-
-//test whether a char is + - * /
-bool Checker::isOperator(char ch) {
-	switch (ch) {
-	case '+': case'-': case'*':
-		return true;
-	default:
-		return false;
-	}
-}
-
-bool Checker::isVariable(string str) {
-	return regex_match(str, variableRegex);
-}
-
-int Checker::countNumOfLeftBraces(string str) {
-	return count(str.begin(), str.end(), '{');
-}
-
-int Checker::countNumOfRightBraces(string str) {
-	return count(str.begin(), str.end(), '}');
+int Checker::countNumOfRightParenthesis(string stmt) {
+	return count(stmt.begin(), stmt.end(), ')');
 }
 
 bool Checker::popBrackets(stack<int>& brackets, string stmt) {
@@ -393,4 +409,134 @@ bool Checker::popBrackets(stack<int>& brackets, string stmt) {
 		}
 	}
 	return true;
+}
+
+int Checker::getTypeOfStmt(string str) {
+	size_t i, j;
+
+	if (count(str.begin(), str.end(), '=') == 1) {
+		i = str.find(";");
+		j = str.find("=");
+		if (isValidName(str.substr(0, j))
+			&& isAllClosingBraces(str.substr(i + 1))) {
+			return assignmentStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 9) == "procedure") {
+		i = str.find("{");
+		if (isValidName(str.substr(9, i - 9))) {
+			return procDeclarationStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 4) == "call") {
+		i = str.find(";");
+		if (isValidName(str.substr(4, i - 4)) &&
+			isAllClosingBraces(str.substr(i + 1))) {
+			return procCallStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 5) == "while") {
+		i = str.find("{");
+		if (isValidName(str.substr(5, i - 5))) {
+			return whileStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 2) == "if") {
+		i = str.find("{");
+		if (str.substr(i - 4, 4) == "then" && isValidName(str.substr(2, i - 6))) {
+			return ifStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str == "else{") {
+		return elseStmt;
+	}
+
+	return invalidStmt;
+}
+
+bool Checker::isConstant(string str) {
+	for (char& c : str) {
+		if (!isdigit(c)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool Checker::isValidName(string str) {
+	if (!isalpha(str.at(0))) {
+		return false;
+	}
+
+	for (char& c : str) {
+		if (!isalnum(c)) {
+			return false;
+		}
+	}
+
+	if (str == "if" || str == "else" || str == "while" || 
+		str == "procedure" || str == "then" || str == "call") {
+		return false;
+	}
+
+	return true;
+}
+
+bool Checker::isAllClosingBraces(string str) {
+	if (!str.empty()) {
+		return str.find_first_not_of("}") == string::npos;
+	}
+
+	return true;
+}
+
+vector<string> Checker::parseExpression(string expression) {
+	size_t found = expression.find_first_of("(=+-*);");
+	vector<string> result;
+	string temp;
+
+	while (found != string::npos) {
+		temp = expression.substr(0, found);
+		if (temp != "") {
+			result.push_back(temp);
+		}
+
+		temp = expression.at(found);
+		if (temp != ";") {
+			result.push_back(temp);
+		}
+
+		expression = expression.substr(found + 1);
+		found = expression.find_first_of("=+-*();");
+	}
+
+	return result;
+}
+
+bool Checker::isParenthesis(string str) {
+	return str == "(" || str == ")";
+}
+
+bool Checker::isOperator(string str) {
+	return str == "+" || str == "-" || str == "*";
 }
