@@ -2,7 +2,6 @@
 #include <string>
 #include <list>
 #include <stack>
-#include <regex>
 
 using namespace std;
 
@@ -32,14 +31,15 @@ private:
 	int countNumOfRightBraces(string);
 	void processAssignment(string str, list<int>&, list<int>&);
 	void processCallStmt(int, int, string, list<int>&, list<int>&);
-	bool isVariable(string);
-	bool isSemicolon(char);
-	bool isMathSymbol(char);
-	bool isConstant(string);
 	int getTypeOfStmt(string);
 	void processPatternStmt(int, string, int);
 	string getControlVarName(int, string);
 	string getProcName(int, string);
+	
+	list<string> parseExpression(string);
+	bool isValidName(string);
+	bool isConstant(string);
+	bool isAllClosingBraces(string);
 };
 
 #endif
