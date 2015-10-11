@@ -669,6 +669,99 @@ namespace UnitTest
 			Assert::IsTrue(expected_4 == result_4);
 		}
 
+		TEST_METHOD(evaluateFollows) {
+			/*
+			Select s such that Follows(1, s) Expected: 2
+			Select s such that Follows(6, s) Expected:
+			Select w such that Follows(w, _) Expected: 3
+			Select ifs such that Follows( ifs , 10) Expected:7
+			Select s such that Follows(w, s) Expected:7 
+			*/
+
+			//Select s such that Follows(1, s) Expected: 2
+			QueryTree qt;
+			vector<string> arg;
+			vector<string> argType;
+			arg.push_back("1");
+			arg.push_back("s");
+			argType.push_back("number");
+			argType.push_back("stmt");
+			qt.insertSuchThat("follows", arg, argType);
+
+			qt.insertSelect("s", "stmt");
+			QueryEvaluator qe = (qt);
+			list<string> result = qe.evaluate();
+			list<string> expected;
+			expected.push_back("2");
+			Assert::IsTrue(expected == result);
+
+			//Select s such that Follows(6, s) Expected:
+			QueryTree qt_1;
+			vector<string> arg_1;
+			vector<string> argType_1;
+			arg_1.push_back("6");
+			arg_1.push_back("s");
+			argType_1.push_back("number");
+			argType_1.push_back("stmt");
+			qt_1.insertSuchThat("follows", arg_1, argType_1);
+
+			qt_1.insertSelect("s", "stmt");
+			QueryEvaluator qe_1 = (qt_1);
+			list<string> result_1 = qe_1.evaluate();
+			list<string> expected_1;
+			Assert::IsTrue(expected_1 == result_1);
+
+			//Select w such that Follows(w, _) Expected: 3
+			QueryTree qt_2;
+			vector<string> arg_2;
+			vector<string> argType_2;
+			arg_2.push_back("w");
+			arg_2.push_back("_");
+			argType_2.push_back("while");
+			argType_2.push_back("all");
+			qt_2.insertSuchThat("follows", arg_2, argType_2);
+
+			qt_2.insertSelect("w", "while");
+			QueryEvaluator qe_2 = (qt_2);
+			list<string> result_2 = qe_2.evaluate();
+			list<string> expected_2;
+			expected_2.push_back("3");
+			Assert::IsTrue(expected_2 == result_2);
+
+			//Select ifs such that Follows( ifs , 10) Expected:7
+			QueryTree qt_3;
+			vector<string> arg_3;
+			vector<string> argType_3;
+			arg_3.push_back("ifs");
+			arg_3.push_back("10");
+			argType_3.push_back("if");
+			argType_3.push_back("number");
+			qt_3.insertSuchThat("follows", arg_3, argType_3);
+
+			qt_3.insertSelect("ifs", "if");
+			QueryEvaluator qe_3 = (qt_3);
+			list<string> result_3 = qe_3.evaluate();
+			list<string> expected_3;
+			expected_3.push_back("7");
+			Assert::IsTrue(expected_3 == result_3);
+
+			//Select s such that Follows(w, s) Expected: 7
+			QueryTree qt_4;
+			vector<string> arg_4;
+			vector<string> argType_4;
+			arg_4.push_back("w");
+			arg_4.push_back("s");
+			argType_4.push_back("while");
+			argType_4.push_back("stmt");
+			qt_4.insertSuchThat("follows", arg_4, argType_4);
+
+			qt_4.insertSelect("s", "stmt");
+			QueryEvaluator qe_4 = (qt_4);
+			list<string> result_4 = qe_4.evaluate();
+			list<string> expected_4;
+			expected_4.push_back("7");
+			Assert::IsTrue(expected_4 == result_4);
+		}
 		
 	};
 }
