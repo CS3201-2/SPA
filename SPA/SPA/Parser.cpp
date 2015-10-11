@@ -267,18 +267,20 @@ void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& u
 
 	for (string::iterator it = str.begin(); it != str.end(); ++it) {
 		if (isMathSymbol(*it) || isSemicolon(*it)) {
-			if (isVariable(variable)) {
-				int varID = PKB::getPKBInstance()->insertVar(variable);
-				
-				if (modifiesList.empty()) {
-					modifiesList.push_back(varID);
+			if (variable != "") {
+				if (isVariable(variable)) {
+					int varID = PKB::getPKBInstance()->insertVar(variable);
+
+					if (modifiesList.empty()) {
+						modifiesList.push_back(varID);
+					}
+					else {
+						usesList.push_back(varID);
+					}
 				}
-				else {
-					usesList.push_back(varID);
+				if (isConstant(variable)) {
+					PKB::getPKBInstance()->addConstantToList(stoi(variable));
 				}
-			}
-			if (isConstant(variable)) {
-				PKB::getPKBInstance()->addConstantToList(stoi(variable));
 			}
 
 			variable = "";
@@ -300,7 +302,7 @@ bool Parser::isSemicolon(char ch) {
 //test whether a char is + - *
 bool Parser::isMathSymbol(char ch) {
 	switch (ch) {
-	case '+': case'-': case'*': case'=':
+	case '+': case'-': case'*': case'=': case'(':case')':
 		return true;
 	default:
 		return false;
