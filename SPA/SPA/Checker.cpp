@@ -10,7 +10,6 @@ const int elseStmt = 5;
 const int invalidStmt = 6;
 
 Checker::Checker() {
-
 }
 
 bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
@@ -144,7 +143,6 @@ bool Checker::isSyntaxCorrect(list<pair<int, string>>& sourceList) {
 
 	// check matching if else statement
 	if (!ifStack.empty()) {
-		//cout << "if stack" << endl;
 		SPALog::log("extrax if stmt");
 		return false;
 	}

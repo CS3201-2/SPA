@@ -108,22 +108,11 @@ string Pattern::convertToPostFix(string str) {
 	string variable = "";
 	string result = "";
 
-	for (string::iterator it = str.begin(); it != str.end(); ++it) {
-		string temp(1, *it);
-		if (isParenthesis(temp) || isOperator(temp)) {
-			if (variable != "") {
-				tokenList.push_back(variable);
-			}
-			variable = "";
+	tokenList = parseExpression(str);
 
-			tokenList.push_back(temp);
-		}
-		else {
-			variable += temp;
-		}
-	}
-	if (variable != "") {
-		tokenList.push_back(variable);
+	if (tokenList.size() == 1) {
+		result = "." + tokenList.front() + ".";
+		return result;
 	}
 
 	for (list<string>::iterator iter = tokenList.begin(); iter != tokenList.end(); ++iter) {
@@ -158,6 +147,34 @@ string Pattern::convertToPostFix(string str) {
 
 	for (list<string>::iterator i = postfixList.begin(); i != postfixList.end(); ++i) {
 		result += *i;
+	}
+
+	return result;
+}
+
+list<string> Pattern::parseExpression(string expression) {
+	size_t found = expression.find_first_of("(=+-*)");
+	list<string> result;
+	string temp;
+
+	if (found == string::npos) {
+		result.push_back(expression);
+		return result;
+	}
+
+	while (found != string::npos) {
+		temp = expression.substr(0, found);
+		if (temp != "") {
+			result.push_back(temp);
+		}
+
+		temp = expression.at(found);
+		if (temp != ";") {
+			result.push_back(temp);
+		}
+
+		expression = expression.substr(found + 1);
+		found = expression.find_first_of("=+-*()");
 	}
 
 	return result;
@@ -204,3 +221,4 @@ string Pattern::removeAllSpace(string str) {
 
 	return result;
 }
+
