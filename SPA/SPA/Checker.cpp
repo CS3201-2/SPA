@@ -312,6 +312,7 @@ bool Checker::isAssignmentValid(string str) {
 	}
 
 	string variable;
+	char prevChar = *(RHS.begin());
 
 	for (string::iterator it = RHS.begin(); it != RHS.end(); ++it) {
 		if (isParenthesis(*it) || isOperator(*it)) {
@@ -321,13 +322,16 @@ bool Checker::isAssignmentValid(string str) {
 				}
 			}
 			else {
-				return false;
+				if (isOperator(*it) && isOperator(prevChar)) {
+					return false;
+				}
 			}
 			variable = "";
 		}
 		else {
 			variable += *it;
 		}
+		prevChar = *it;
 	}
 
 	if (variable != "") {
@@ -336,7 +340,9 @@ bool Checker::isAssignmentValid(string str) {
 		}
 	}
 	else {
-		return false;
+		if (isOperator(prevChar)) {
+			return false;
+		}
 	}
 
 	return true;
