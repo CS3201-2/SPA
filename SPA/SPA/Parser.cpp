@@ -143,7 +143,7 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 		
 		//follows
 		if (prevStmtType != procDeclarationStmt && stmtType != procDeclarationStmt 
-			&& prevStmtNo != stmtNo) {
+			&& prevStmtNo != stmtNo && prevStmtType != invalidStmt) {
 			PKB::getPKBInstance()->setFollows(prevStmtNo, stmtNo);
 		}
 		prevStmtNo = stmtNo;
@@ -241,7 +241,7 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair<
 
 		//follows
 		if (prevStmtType != procDeclarationStmt && stmtType != procDeclarationStmt 
-			&& prevStmtNo != stmtNo) {
+			&& prevStmtNo != stmtNo && prevStmtType != invalidStmt) {
 			PKB::getPKBInstance()->setFollows(prevStmtNo, stmtNo);
 		}
 		prevStmtNo = stmtNo;
