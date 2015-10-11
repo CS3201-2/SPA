@@ -229,6 +229,28 @@ namespace UnitTest
 				de.setParentStar();
 				de.setReverseMap();
 
+				//next and nextStar
+				list<pair<int, string>> sourceList;
+				pair<int, string> temp;
+				temp.first = -1; temp.second = "procedureSecond{"; sourceList.push_back(temp);
+				temp.first = 1; temp.second = "x=0;"; sourceList.push_back(temp);
+				temp.first = 2; temp.second = "i=5;"; sourceList.push_back(temp);
+				temp.first = 3; temp.second = "whilei{"; sourceList.push_back(temp);
+				temp.first = 4; temp.second = "x=x+2*y;"; sourceList.push_back(temp);
+				temp.first = 5; temp.second = "callThird;"; sourceList.push_back(temp);
+				temp.first = 6; temp.second = "i=i-1;}"; sourceList.push_back(temp);
+				temp.first = 7; temp.second = "ifxthen{"; sourceList.push_back(temp);
+				temp.first = 8; temp.second = "x=x+1;}"; sourceList.push_back(temp);
+				temp.first = -1; temp.second = "else{"; sourceList.push_back(temp);
+				temp.first = 9; temp.second = "z=1;}"; sourceList.push_back(temp);
+				temp.first = 10; temp.second = "z=z+x+i;"; sourceList.push_back(temp);
+				temp.first = 11; temp.second = "y=z+2;"; sourceList.push_back(temp);
+				temp.first = 12; temp.second = "x=x*y+z;}"; sourceList.push_back(temp);
+				temp.first = -1; temp.second = "procedureThird{"; sourceList.push_back(temp);
+				temp.first = 13; temp.second = "z=5;"; sourceList.push_back(temp);
+				temp.first = 14; temp.second = "v=z;}"; sourceList.push_back(temp);
+
+				PKB::getPKBInstance()->buildCFG(sourceList);
 			
 		}
 
@@ -755,6 +777,101 @@ namespace UnitTest
 			qt_4.insertSuchThat("follows", arg_4, argType_4);
 
 			qt_4.insertSelect("s", "stmt");
+			QueryEvaluator qe_4 = (qt_4);
+			list<string> result_4 = qe_4.evaluate();
+			list<string> expected_4;
+			expected_4.push_back("7");
+			Assert::IsTrue(expected_4 == result_4);
+		}
+
+		TEST_METHOD(evaluateNext) {
+			/*
+			Select s such that Next(3, s) Expected: 4,7
+			Select s such that Next(100, s) Expected:
+			Select w such that Next(w, _) Expected: 3
+			Select s such that Next( c , s) Expected:6
+			Select ifs such that Next(_, ifs) Expected:7
+			*/
+
+			//Select s such that Next(3, s) Expected: 4,7
+			QueryTree qt;
+			vector<string> arg;
+			vector<string> argType;
+			arg.push_back("3");
+			arg.push_back("s");
+			argType.push_back("number");
+			argType.push_back("stmt");
+			qt.insertSuchThat("next", arg, argType);
+
+			qt.insertSelect("s", "stmt");
+			QueryEvaluator qe = (qt);
+			list<string> result = qe.evaluate();
+			list<string> expected;
+			expected.push_back("4");
+			expected.push_back("7");
+			Assert::IsTrue(expected == result);
+
+			//Select s such that Next(100, s) Expected:
+			QueryTree qt_1;
+			vector<string> arg_1;
+			vector<string> argType_1;
+			arg_1.push_back("100");
+			arg_1.push_back("s");
+			argType_1.push_back("number");
+			argType_1.push_back("stmt");
+			qt_1.insertSuchThat("next", arg_1, argType_1);
+
+			qt_1.insertSelect("s", "stmt");
+			QueryEvaluator qe_1 = (qt_1);
+			list<string> result_1 = qe_1.evaluate();
+			list<string> expected_1;
+			Assert::IsTrue(expected_1 == result_1);
+
+			//Select w such that Next(w, _) Expected: 3
+			QueryTree qt_2;
+			vector<string> arg_2;
+			vector<string> argType_2;
+			arg_2.push_back("w");
+			arg_2.push_back("_");
+			argType_2.push_back("while");
+			argType_2.push_back("all");
+			qt_2.insertSuchThat("next", arg_2, argType_2);
+
+			qt_2.insertSelect("w", "while");
+			QueryEvaluator qe_2 = (qt_2);
+			list<string> result_2 = qe_2.evaluate();
+			list<string> expected_2;
+			expected_2.push_back("3");
+			Assert::IsTrue(expected_2 == result_2);
+
+			//Select s such that Next( c , s) Expected:6
+			QueryTree qt_3;
+			vector<string> arg_3;
+			vector<string> argType_3;
+			arg_3.push_back("c");
+			arg_3.push_back("s");
+			argType_3.push_back("call");
+			argType_3.push_back("stmt");
+			qt_3.insertSuchThat("next", arg_3, argType_3);
+
+			qt_3.insertSelect("s", "stmt");
+			QueryEvaluator qe_3 = (qt_3);
+			list<string> result_3 = qe_3.evaluate();
+			list<string> expected_3;
+			expected_3.push_back("6");
+			Assert::IsTrue(expected_3 == result_3);
+
+			//Select ifs such that Next(_, ifs) Expected:7
+			QueryTree qt_4;
+			vector<string> arg_4;
+			vector<string> argType_4;
+			arg_4.push_back("_");
+			arg_4.push_back("ifs");
+			argType_4.push_back("all");
+			argType_4.push_back("if");
+			qt_4.insertSuchThat("next", arg_4, argType_4);
+
+			qt_4.insertSelect("ifs", "if");
 			QueryEvaluator qe_4 = (qt_4);
 			list<string> result_4 = qe_4.evaluate();
 			list<string> expected_4;
