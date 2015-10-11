@@ -183,7 +183,6 @@ namespace UnitTest
 				varList.clear();
 
 				//Follows
-				PKB::getPKBInstance()->setFollows(-1, 9);
 				PKB::getPKBInstance()->setFollows(1, 2);
 				PKB::getPKBInstance()->setFollows(2, 3);
 				PKB::getPKBInstance()->setFollows(3, 7);
