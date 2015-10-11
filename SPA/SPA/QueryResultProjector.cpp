@@ -10,6 +10,7 @@ const int trueTable = 1;
 const int falseTable = 0;
 
 const string TYPE_VARIABLE = "variable";
+const string TYPE_PROCEDURE = "procedure";
 const string TYPE_BOOL = "boolean";
 const string RESULT_TRUE = "true";
 const string RESULT_FALSE = "false";
@@ -54,6 +55,10 @@ list<string> QueryResultProjector::getResult() {
 				if (_selectType == TYPE_VARIABLE) {
 					string varName = PKB::getPKBInstance()->getVarName(*it);
 					resultStringList.push_back(varName);
+				}
+				else if (_selectType == TYPE_PROCEDURE) {
+					string procName = PKB::getPKBInstance()->getProcName(*it);
+					resultStringList.push_back(procName);
 				}
 				else {
 					resultStringList.push_back(to_string(*it));
