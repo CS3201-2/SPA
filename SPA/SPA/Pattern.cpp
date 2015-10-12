@@ -177,6 +177,10 @@ list<string> Pattern::parseExpression(string expression) {
 		found = expression.find_first_of("=+-*()");
 	}
 
+	if (!expression.empty()) {
+		result.push_back(expression);
+	}
+
 	return result;
 }
 
