@@ -267,11 +267,11 @@ bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair
 				SPALog::log("missing { before" + stmt);
 				return false;
 			}
+			procName = getProcName(stmtType, stmt);
 			if (!isValidName(procName)) {
 				SPALog::log("invalid procName: " + stmt);
 				return false;
 			}
-			procName = getProcName(stmtType, stmt);
 			calledPair = make_pair(currProcID, procName);
 			calledProcList.push_back(calledPair);
 			break;
