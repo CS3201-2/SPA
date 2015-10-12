@@ -12,7 +12,7 @@ namespace UnitTest
 	{
 	public:
 
-		TEST_METHOD_INITIALIZE(buidPKB) {
+		TEST_METHOD_INITIALIZE(buildPKB) {
 				PKB::getPKBInstance()->addStmtToList(3, 3);
 				//assignList
 				PKB::getPKBInstance()->addStmtToList(1, 0);
@@ -879,5 +879,226 @@ namespace UnitTest
 			Assert::IsTrue(expected_4 == result_4);
 		}
 		
+		TEST_METHOD(evaluateCalls) {
+			/*
+			Select p such that Calls("Second", p) Expected: Third
+			Select p1 such that Calls(p1, p2) Expected: Second
+			Select p such that Calls(_, "Third") Expected: Second Third
+			Select p such that Calls("First", _) Expected:
+			Select p such that Calls(_, "Second") Expected:
+			Select p such that Calls(p, p) Expected:
+			*/
+
+			//Select p such that Calls("Second", p) Expected: Third
+			QueryTree qt;
+			vector<string> arg;
+			vector<string> argType;
+			arg.push_back("Second");
+			arg.push_back("p");
+			argType.push_back("string");
+			argType.push_back("procedure");
+			qt.insertSuchThat("calls", arg, argType);
+
+			qt.insertSelect("p", "procedure");
+			QueryEvaluator qe = (qt);
+			list<string> result = qe.evaluate();
+			list<string> expected;
+			expected.push_back("Third");
+			Assert::IsTrue(expected == result);
+
+			//Select p1 such that Calls(p1, p2) Expected: Second
+			QueryTree qt_1;
+			vector<string> arg_1;
+			vector<string> argType_1;
+			arg_1.push_back("p1");
+			arg_1.push_back("p2");
+			argType_1.push_back("procedure");
+			argType_1.push_back("procedure");
+			qt_1.insertSuchThat("calls", arg_1, argType_1);
+
+			qt_1.insertSelect("p1", "procedure");
+			QueryEvaluator qe_1 = (qt_1);
+			list<string> result_1 = qe_1.evaluate();
+			list<string> expected_1;
+			expected_1.push_back("Second");
+			Assert::IsTrue(expected_1 == result_1);
+
+			//Select p such that Calls(_, "Third") Expected: Second, Third
+			QueryTree qt_2;
+			vector<string> arg_2;
+			vector<string> argType_2;
+			arg_2.push_back("_");
+			arg_2.push_back("Third");
+			argType_2.push_back("all");
+			argType_2.push_back("string");
+			qt_2.insertSuchThat("calls", arg_2, argType_2);
+
+			qt_2.insertSelect("p", "procedure");
+			QueryEvaluator qe_2 = (qt_2);
+			list<string> result_2 = qe_2.evaluate();
+			list<string> expected_2;
+			expected_2.push_back("Second");
+			expected_2.push_back("Third");
+			Assert::IsTrue(expected_2 == result_2);
+
+			//Select p such that Calls("First", _) Expected:
+			QueryTree qt_3;
+			vector<string> arg_3;
+			vector<string> argType_3;
+			arg_3.push_back("First");
+			arg_3.push_back("_");
+			argType_3.push_back("string");
+			argType_3.push_back("all");
+			qt_3.insertSuchThat("calls", arg_3, argType_3);
+
+			qt_3.insertSelect("p", "procedure");
+			QueryEvaluator qe_3 = (qt_3);
+			list<string> result_3 = qe_3.evaluate();
+			list<string> expected_3;
+			Assert::IsTrue(expected_3 == result_3);
+
+			//Select p such that Calls(_, "Second") Expected:
+			QueryTree qt_4;
+			vector<string> arg_4;
+			vector<string> argType_4;
+			arg_4.push_back("_");
+			arg_4.push_back("Second");
+			argType_4.push_back("all");
+			argType_4.push_back("string");
+			qt_4.insertSuchThat("calls", arg_4, argType_4);
+
+			qt_4.insertSelect("p", "procedure");
+			QueryEvaluator qe_4 = (qt_4);
+			list<string> result_4 = qe_4.evaluate();
+			list<string> expected_4;
+			Assert::IsTrue(expected_4 == result_4);
+
+			//Select p such that Calls(p, p) Expected:
+			QueryTree qt_5;
+			vector<string> arg_5;
+			vector<string> argType_5;
+			arg_5.push_back("p");
+			arg_5.push_back("p");
+			argType_5.push_back("procedure");
+			argType_5.push_back("procedure");
+			qt_5.insertSuchThat("calls", arg_5, argType_5);
+
+			qt_5.insertSelect("p", "procedure");
+			QueryEvaluator qe_5 = (qt_5);
+			list<string> result_5 = qe_5.evaluate();
+			list<string> expected_5;
+			Assert::IsTrue(expected_5 == result_5);
+		}
+
+		TEST_METHOD(evaluateCallsStar) {
+			/*
+			Select p such that Calls*("Second", p) Expected: Third
+			Select p1 such that Calls*(p1, p2) Expected: Second
+			Select p such that Calls*(_, "Third") Expected: Second Third
+			Select p such that Calls*("First", _) Expected:
+			Select p such that Calls*(_, "Second") Expected:
+			Select p such that Calls*(p, p) Expected:
+			*/
+
+			//Select p such that Calls*("Second", p) Expected: Third
+			QueryTree qt;
+			vector<string> arg;
+			vector<string> argType;
+			arg.push_back("Second");
+			arg.push_back("p");
+			argType.push_back("string");
+			argType.push_back("procedure");
+			qt.insertSuchThat("calls*", arg, argType);
+
+			qt.insertSelect("p", "procedure");
+			QueryEvaluator qe = (qt);
+			list<string> result = qe.evaluate();
+			list<string> expected;
+			expected.push_back("Third");
+			Assert::IsTrue(expected == result);
+
+			//Select p1 such that Calls*(p1, p2) Expected: Second
+			QueryTree qt_1;
+			vector<string> arg_1;
+			vector<string> argType_1;
+			arg_1.push_back("p1");
+			arg_1.push_back("p2");
+			argType_1.push_back("procedure");
+			argType_1.push_back("procedure");
+			qt_1.insertSuchThat("calls*", arg_1, argType_1);
+
+			qt_1.insertSelect("p1", "procedure");
+			QueryEvaluator qe_1 = (qt_1);
+			list<string> result_1 = qe_1.evaluate();
+			list<string> expected_1;
+			expected_1.push_back("Second");
+			Assert::IsTrue(expected_1 == result_1);
+
+			//Select p such that Calls*(_, "Third") Expected: Second, Third
+			QueryTree qt_2;
+			vector<string> arg_2;
+			vector<string> argType_2;
+			arg_2.push_back("_");
+			arg_2.push_back("Third");
+			argType_2.push_back("all");
+			argType_2.push_back("string");
+			qt_2.insertSuchThat("calls*", arg_2, argType_2);
+
+			qt_2.insertSelect("p", "procedure");
+			QueryEvaluator qe_2 = (qt_2);
+			list<string> result_2 = qe_2.evaluate();
+			list<string> expected_2;
+			expected_2.push_back("Second");
+			expected_2.push_back("Third");
+			Assert::IsTrue(expected_2 == result_2);
+
+			//Select p such that Calls*("First", _) Expected:
+			QueryTree qt_3;
+			vector<string> arg_3;
+			vector<string> argType_3;
+			arg_3.push_back("First");
+			arg_3.push_back("_");
+			argType_3.push_back("string");
+			argType_3.push_back("all");
+			qt_3.insertSuchThat("calls*", arg_3, argType_3);
+
+			qt_3.insertSelect("p", "procedure");
+			QueryEvaluator qe_3 = (qt_3);
+			list<string> result_3 = qe_3.evaluate();
+			list<string> expected_3;
+			Assert::IsTrue(expected_3 == result_3);
+
+			//Select p such that Calls*(_, "Second") Expected:
+			QueryTree qt_4;
+			vector<string> arg_4;
+			vector<string> argType_4;
+			arg_4.push_back("_");
+			arg_4.push_back("Second");
+			argType_4.push_back("all");
+			argType_4.push_back("string");
+			qt_4.insertSuchThat("calls*", arg_4, argType_4);
+
+			qt_4.insertSelect("p", "procedure");
+			QueryEvaluator qe_4 = (qt_4);
+			list<string> result_4 = qe_4.evaluate();
+			list<string> expected_4;
+			Assert::IsTrue(expected_4 == result_4);
+
+			//Select p such that Calls*(p, p) Expected:
+			QueryTree qt_5;
+			vector<string> arg_5;
+			vector<string> argType_5;
+			arg_5.push_back("p");
+			arg_5.push_back("p");
+			argType_5.push_back("procedure");
+			argType_5.push_back("procedure");
+			qt_5.insertSuchThat("calls*", arg_5, argType_5);
+
+			qt_5.insertSelect("p", "procedure");
+			QueryEvaluator qe_5 = (qt_5);
+			list<string> result_5 = qe_5.evaluate();
+			list<string> expected_5;
+			Assert::IsTrue(expected_5 == result_5);
+		}
 	};
 }

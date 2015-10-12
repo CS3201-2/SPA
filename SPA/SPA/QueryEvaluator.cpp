@@ -124,7 +124,7 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	else if (relationship == "calls") {
 		resultList.push_back(processCalls(tempString));
 	}
-	else if (relationship == "call*") {
+	else if (relationship == "calls*") {
 		resultList.push_back(processCallsStar(tempString));
 	}
 	else if (relationship == "next") {
