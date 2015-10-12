@@ -22,7 +22,8 @@ list<pair<int, string>> Parser::prepareSourceList(string source) {
 	addNewLineBeforeKeywords(source, " if ");
 	addNewLineBeforeKeywords(source, "\tif ");
 	addNewLineBeforeKeywords(source, "else{");
-	
+	addNewLineBeforeKeywords(source, "else {");
+
 	trim(source);
 	addNewLineString(source);
 	list<pair<int, string>> sourceCodeList;
