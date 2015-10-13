@@ -292,6 +292,10 @@ namespace UnitTest {
 			PKB::getPKBInstance()->houseKeeping();
 		}
 
+		TEST_METHOD_CLEANUP(clean) {
+			PKB::DestroyInstance();
+		}
+
 		TEST_METHOD(testAllGetListFunctions) {
 			//test getList functions
 			list<int> actual, expected;
@@ -736,6 +740,5 @@ namespace UnitTest {
 		TEST_METHOD(testPatternFunctions) {
 
 		}
-
 	};
 }
