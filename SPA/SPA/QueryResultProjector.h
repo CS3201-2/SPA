@@ -20,6 +20,7 @@ private:
 	list<ResultTable> _resultList;
 	ResultTable _resultTable;
 	void mergeTable();
+	void mergeTableNew();
 	int _isWholeTrue;// -1 doesnt matter, 0 false, 1 true
 	string _select;
 	string _selectType;
@@ -31,6 +32,7 @@ private:
 	vector<int> getIndexToRemove(list<std::pair<int, int>> commonPairList);
 	void trimResultTable(vector<vector<int>>& result, list<std::pair<int, int>> commonPairList, vector<int> indexToRemove);
 	void trimResultHeader(vector<string>& resultHeader, vector<int> indexToRemove);
+	bool filter(list<ResultTable>&);
 };
 
 #endif
