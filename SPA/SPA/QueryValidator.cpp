@@ -31,6 +31,7 @@ const string VARTYPE_CALL = "call";
 const string VARTYPE_PROG_LINE = "prog_line";
 const string VARTYPE_NUMBER = "number";
 const string VARTYPE_ALL = "all";
+const string VARTYPE_BOOLEAN = "boolean";
 
 const string RELTYPE_PATTERN = "pattern";
 const string RELTYPE_PATTERN_ASSIGN = "patternAssign";
@@ -123,12 +124,16 @@ bool QueryValidator::isValidQuery(string query) {
 
 	arrClauses = split(arrClauses.at(1), SYMBOL_SPACE, 2);
 
-	if (!isVarNameExists(arrClauses.at(0)) || arrClauses.size() != 2) {// || arrClauses.at(0).compare("_") == 0) ) {
+	if ((!isVarNameExists(arrClauses.at(0)) && stringToLower(arrClauses.at(0)).compare(VARTYPE_BOOLEAN) != 0) || 
+		arrClauses.size() != 2) {// || arrClauses.at(0).compare("_") == 0) ) {
 		return false;
 	}
 	
-	qt.insertSelect(arrClauses.at(0), getVarType(arrClauses.at(0)));
-
+	if (isVarNameExists(arrClauses.at(0))) {
+		qt.insertSelect(arrClauses.at(0), getVarType(arrClauses.at(0)));
+	} else {
+		qt.insertSelect("", VARTYPE_BOOLEAN);
+	}
 	bool isFinished = false;
 	RETURN_TYPE retVal;
 
