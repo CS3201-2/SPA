@@ -119,6 +119,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Affact.cpp" />
     <ClCompile Include="Calls.cpp" />
     <ClCompile Include="CallsStar.cpp" />
     <ClCompile Include="CFG.cpp" />
@@ -144,12 +145,14 @@
     <ClCompile Include="RelationshipTable.cpp" />
     <ClCompile Include="ResultTable.cpp" />
     <ClCompile Include="SPALog.cpp" />
+    <ClCompile Include="Statement.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Uses.cpp" />
     <ClCompile Include="ValidatorMain.cpp" />
     <ClCompile Include="VarTable.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Affact.h" />
     <ClInclude Include="Calls.h" />
     <ClInclude Include="CallsStar.h" />
     <ClInclude Include="CFG.h" />
@@ -159,6 +162,7 @@
     <ClInclude Include="DesignExtractor.h" />
     <ClInclude Include="Follows.h" />
     <ClInclude Include="FollowsStar.h" />
+    <ClInclude Include="StatementType.h" />
     <ClInclude Include="Parent.h" />
     <ClInclude Include="Modifies.h" />
     <ClInclude Include="ParentStar.h" />
@@ -175,6 +179,7 @@
     <ClInclude Include="RelationshipTable.h" />
     <ClInclude Include="ResultTable.h" />
     <ClInclude Include="SPALog.h" />
+    <ClInclude Include="Statement.h" />
     <ClInclude Include="Uses.h" />
     <ClInclude Include="VarTable.h" />
   </ItemGroup>
