@@ -1,4 +1,4 @@
-#include "QueryValidator.h"
+/*#include "QueryValidator.h"
 #include "RelationshipTable.h"
 #include <iostream>
 
@@ -32,9 +32,9 @@ int main() {
 	//q.isValidDecAndQuery(str21);
 	//cout << q.isValidExpression("x23*123-7y")<<endl; //0
 	//cout << q.isValidExpression("123+-x23*123") << endl; //0
-	cout << q.isValidExpression("(x+123+y)") << endl; //1
+	//cout << q.isValidExpression("(x+123+y)") << endl; //1
 	//cout << q.isValidExpression("x23**123") << endl; //0
 	cin.ignore();
 	cin.get();
 	return 0;
-}
+}*/

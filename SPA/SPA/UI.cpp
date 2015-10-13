@@ -1,4 +1,4 @@
-/*#include <iostream>
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <list>
@@ -54,4 +54,4 @@ int main(void) {
 	cin.get();
 
 	return 0;
-}*/
+}
