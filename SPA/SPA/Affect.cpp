@@ -1,4 +1,4 @@
-#include "Affact.h"
+#include "Affect.h"
 
 
 
@@ -7,7 +7,7 @@ Affect::Affect()
 	PKB* _pkb = PKB::getPKBInstance();
 }
 
-bool Affact::isAffectValid(int first, int second)
+bool Affect::isAffectValid(int first, int second)
 {
 
 	return false;

@@ -21,7 +21,7 @@ class PKB
 {
 public:
 	static PKB* getPKBInstance();
-
+	static void DestroyInstance();
 	
 	//general
 	bool isValidStmtNo(int);
