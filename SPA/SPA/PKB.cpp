@@ -17,6 +17,11 @@ PKB* PKB::getPKBInstance() {
 	return PKBInstance;
 }
 
+void PKB::DestroyInstance() {
+	delete PKBInstance;
+	PKBInstance = 0;
+}
+
 ProcTable& PKB::getProcTable() {
 	return procTable;
 }

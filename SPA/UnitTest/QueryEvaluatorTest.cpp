@@ -256,6 +256,7 @@ namespace UnitTest
 
 		TEST_METHOD_CLEANUP(clearup) {
 			SPALog::log("One evaluate test complete!\n\n");
+			PKB::DestroyInstance();
 		}
 
 		TEST_METHOD(evaluateModifies)

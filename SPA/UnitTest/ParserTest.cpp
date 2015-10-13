@@ -8,7 +8,7 @@ namespace UnitTest {
 	TEST_CLASS(parserTest)
 	{
 	public:
-		TEST_METHOD(testPrepareSourceList) {
+		TEST_METHOD_INITIALIZE(testPrepareSourceList) {
 			string str;
 			str = "procedure First{\n";
 			str += "  x=  2;\n";
