@@ -415,56 +415,36 @@ bool QueryValidator::parsePatternArg1(string relType, string &arg, string &varTy
 bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varType) {
 
 	//string value;
-	if (arg.size() >= 5) {
+	if (arg.compare("_") == 0) {
+		/*if (!r.isArgValid(relType, 2, VARTYPE_ALL)) {
+		return false;
+		} else {*/
+		varType = VARTYPE_ALL;
+		//}
+	} else if (arg.size() >= 5) {
 		if (arg.at(0) == '_' && arg.at(arg.size() - 1) == '_'  &&
 			arg.at(1) == '\"' && arg.at(arg.size() - 2) == '\"') {
 
 			arg = arg.substr(2, arg.size() - 4);
 
 			if (isValidExpression(arg)) {
-				varType = VARTYPE_SUBSTRING;
+				if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
+					return false;
+				} else {
+					varType = VARTYPE_SUBSTRING;
+				}
 			}
-			
-			/*if (isValidVariableName(arg)) {
-				if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
-					return false;
-				} else {
-					varType = VARTYPE_SUBSTRING;
-				}
-
-			} else if (isInteger(arg)) {
-				if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
-					return false;
-				} else {
-					varType = VARTYPE_SUBSTRING;
-				}
-			}*/
 		}
 	} else if (arg.at(0) == '\"' && arg.at(arg.size() - 1) == '\"') {
 		arg = arg.substr(1, arg.size() - 2);
 
 		if (isValidExpression(arg)) {
-			varType = VARTYPE_SUBSTRING;
+			if (!r.isArgValid(relType, 2, VARTYPE_STRING)) {
+				return false;
+			} else {
+				varType = VARTYPE_STRING;
+			}
 		}
-		/*if (isValidVariableName(arg)) {
-			if (!r.isArgValid(relType, 2, VARTYPE_STRING)) {
-				return false;
-			} else {
-				varType = VARTYPE_STRING;
-			}
-		} else if (isInteger(arg)) {
-			if (!r.isArgValid(relType, 2, VARTYPE_STRING)) {
-				return false;
-			} else {
-				varType = VARTYPE_STRING;
-			}
-		}*/
-	} else if (arg.compare("_") == 0) {
-		/*if (!r.isArgValid(relType, 2, VARTYPE_ALL)) {
-			return false;
-		} else {*/
-			varType = VARTYPE_ALL;
-		//}
 	} else {
 		return false;
 	}
