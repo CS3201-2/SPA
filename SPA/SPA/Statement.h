@@ -16,6 +16,10 @@ public:
 	int getNumber();
 	string getContent();
 	StatementType getType();
+	void setNumber(int);
+	void setContent(string);
+	void setType(StatementType);
+	bool isEqual(Statement);
 	~Statement();
 };
 #endif
