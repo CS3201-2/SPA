@@ -292,10 +292,10 @@ namespace UnitTest {
 			PKB::getPKBInstance()->houseKeeping();
 		}
 
-		TEST_METHOD(testAllGetList) {
+		TEST_METHOD(testAllGetListFunctions) {
 			//test getList functions
-			list<int> test, expected;
-			test = PKB::getPKBInstance()->getAssignList();
+			list<int> actual, expected;
+			actual = PKB::getPKBInstance()->getAssignList();
 			expected.push_back(1);
 			expected.push_back(2);
 			expected.push_back(4);
@@ -309,42 +309,42 @@ namespace UnitTest {
 			expected.push_back(15);
 			expected.push_back(16);
 			expected.push_back(17);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 			
-			test = PKB::getPKBInstance()->getProcList();
+			actual = PKB::getPKBInstance()->getProcList();
 			expected.clear();
 			expected.push_back(-1);
 			expected.push_back(-2);
 			expected.push_back(-3);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 
 			
-			test = PKB::getPKBInstance()->getVarList();
+			actual = PKB::getPKBInstance()->getVarList();
 			expected.clear();
 			expected.push_back(1);
 			expected.push_back(2);
 			expected.push_back(3);
 			expected.push_back(4);
 			expected.push_back(5);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 
-			test = PKB::getPKBInstance()->getWhileList();
+			actual = PKB::getPKBInstance()->getWhileList();
 			expected.clear();
 			expected.push_back(6);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 
-			test = PKB::getPKBInstance()->getCallList();
+			actual = PKB::getPKBInstance()->getCallList();
 			expected.clear();
 			expected.push_back(3);
 			expected.push_back(8);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 
-			test = PKB::getPKBInstance()->getIfList();
+			actual = PKB::getPKBInstance()->getIfList();
 			expected.clear();
 			expected.push_back(10);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 
-			test = PKB::getPKBInstance()->getStmtList();
+			actual = PKB::getPKBInstance()->getStmtList();
 			expected.clear();
 			expected.push_back(1);
 			expected.push_back(2);
@@ -363,110 +363,377 @@ namespace UnitTest {
 			expected.push_back(15);
 			expected.push_back(16);
 			expected.push_back(17);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 
-			test = PKB::getPKBInstance()->getParentList();
+			actual = PKB::getPKBInstance()->getParentList();
 			expected.clear();
 			expected.push_back(6);
 			expected.push_back(10);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 			
-			test = PKB::getPKBInstance()->getConstantList();
+			actual = PKB::getPKBInstance()->getConstantList();
 			expected.clear();
 			expected.push_back(0);
 			expected.push_back(1);
 			expected.push_back(2);
 			expected.push_back(3);
 			expected.push_back(5);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 
 			Assert::IsTrue(PKB::getPKBInstance()->getCallStmtProc(3) == -2);
 			Assert::IsTrue(PKB::getPKBInstance()->getCallStmtProc(4) == 0);
 		}
 
-		TEST_METHOD(testVarTable) {
+		TEST_METHOD(testVarTableFunctions) {
 			Assert::IsTrue(PKB::getPKBInstance()->getVarID("x") == 1);
 			Assert::IsTrue(PKB::getPKBInstance()->getVarID("y") == 4);
 			Assert::IsTrue(PKB::getPKBInstance()->getVarID("xy") == 0);
 			Assert::IsTrue(PKB::getPKBInstance()->getVarName(3) == "i");
 		}
 
-		TEST_METHOD(testProcTable) {
+		TEST_METHOD(testProcTableFunctions) {
 			Assert::IsTrue(PKB::getPKBInstance()->getProcID("Third") == -3);
 			Assert::IsTrue(PKB::getPKBInstance()->getProcID("Fourth") == 0);
 			Assert::IsTrue(PKB::getPKBInstance()->getProcName(-1) == "First");
 		}
 
-		TEST_METHOD(testModifies) {
-			list<int> test, expected;
+		TEST_METHOD(testModifiesFunctions) {
+			list<int> actual, expected;
 
 			Assert::IsTrue(PKB::getPKBInstance()->getModifiesFirst(50) == list<int>());
 
-			test = PKB::getPKBInstance()->getModifiesFirst(3);
+			//test getModifiesFirst
+			actual = PKB::getPKBInstance()->getModifiesFirst(3);
 			expected.push_back(-2);
 			expected.push_back(-1);
 			expected.push_back(3);
 			expected.push_back(5);
 			expected.push_back(6);
 			expected.push_back(9);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 
+			actual = PKB::getPKBInstance()->getModifiesFirst(1);
+			expected.clear();
+			expected.push_back(-2);
+			expected.push_back(-1);
+			expected.push_back(1);
+			expected.push_back(3);
+			expected.push_back(4);
+			expected.push_back(6);
+			expected.push_back(7);
+			expected.push_back(10);
+			expected.push_back(11);
+			expected.push_back(15);
+			Assert::IsTrue(actual == expected);
+
+
+			//test getModifiesSecond
 			Assert::IsTrue(PKB::getPKBInstance()->getModifiesSecond(18) == list<int>());
 			
-			test = PKB::getPKBInstance()->getModifiesSecond(10);
+			actual = PKB::getPKBInstance()->getModifiesSecond(10);
 			expected.clear();
 			expected.push_back(1);
 			expected.push_back(2);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 
+			actual = PKB::getPKBInstance()->getModifiesSecond(6);
+			expected.clear();
+			expected.push_back(1);
+			expected.push_back(2);
+			expected.push_back(3);
+			expected.push_back(5);
+			Assert::IsTrue(actual == expected);
+
+
+			//test isModifiesValid
 			Assert::IsFalse(PKB::getPKBInstance()->isModifiesValid(6, 7));
+			Assert::IsFalse(PKB::getPKBInstance()->isModifiesValid(19, 7));
 			Assert::IsTrue(PKB::getPKBInstance()->isModifiesValid(6, 5));
+			Assert::IsTrue(PKB::getPKBInstance()->isModifiesValid(15, 1));
 		}
 
-		TEST_METHOD(testUses) {
-			list<int> test, expected;
-
+		TEST_METHOD(testUsesFunctions) {
+			list<int> actual, expected;
+				
+			//test getUsesFirst
 			Assert::IsTrue(PKB::getPKBInstance()->getUsesFirst(5) == list<int>());
 		
-			test = PKB::getPKBInstance()->getUsesFirst(3);
+			actual = PKB::getPKBInstance()->getUsesFirst(3);
 			expected.push_back(-2);
 			expected.push_back(-1);
 			expected.push_back(3);
 			expected.push_back(6);
 			expected.push_back(9);
 			expected.push_back(13);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 
+			actual = PKB::getPKBInstance()->getUsesFirst(4);
+			expected.clear();
+			expected.push_back(-2);
+			expected.push_back(-1);
+			expected.push_back(3);
+			expected.push_back(6);
+			expected.push_back(7);
+			expected.push_back(15);
+			Assert::IsTrue(actual == expected);
+
+
+			//test getUsesSecond
 			Assert::IsTrue(PKB::getPKBInstance()->getUsesSecond(16) == list<int>());
 
-			test = PKB::getPKBInstance()->getUsesSecond(17);
+			actual = PKB::getPKBInstance()->getUsesSecond(17);
 			expected.clear();
 			expected.push_back(2);
-			Assert::IsTrue(test == expected);
+			Assert::IsTrue(actual == expected);
 
+			actual = PKB::getPKBInstance()->getUsesSecond(6);
+			expected.clear();
+			expected.push_back(1);
+			expected.push_back(2);
+			expected.push_back(3);
+			expected.push_back(4);
+			Assert::IsTrue(actual == expected);
+
+
+			//test isUsesValid
 			Assert::IsTrue(PKB::getPKBInstance()->isUsesValid(-3, 2));
 			Assert::IsFalse(PKB::getPKBInstance()->isUsesValid(9, 4));
+			Assert::IsFalse(PKB::getPKBInstance()->isUsesValid(19, 4));
+			Assert::IsTrue(PKB::getPKBInstance()->isUsesValid(13, 3));
 		}
 
-		TEST_METHOD(testFollows) {
+		TEST_METHOD(testFollowsFunctions) {
+			int actual, expected;
 
-		}
-		TEST_METHOD(testFollowsStar) {
+			//test getFollowsFirst
+			actual = PKB::getPKBInstance()->getFollowsFirst(3);
+			expected = 2;
+			Assert::IsTrue(actual == expected);
 
-		}
-		TEST_METHOD(testParent) {
+			actual = PKB::getPKBInstance()->getFollowsFirst(10);
+			expected = 6;
+			Assert::IsTrue(actual == expected);
 
-		}
-		TEST_METHOD(testParentStar) {
+			Assert::IsTrue(PKB::getPKBInstance()->getFollowsFirst(7) == 0);
+		
+			
+			//test getFollowsSecond
+			actual = PKB::getPKBInstance()->getFollowsSecond(4);
+			expected = 5;
+			Assert::IsTrue(actual == expected);
 
-		}
-		TEST_METHOD(testCalls) {
+			actual = PKB::getPKBInstance()->getFollowsSecond(6);
+			expected = 10;
+			Assert::IsTrue(actual == expected);
 
+			Assert::IsTrue(PKB::getPKBInstance()->getFollowsSecond(18) == 0);
+		
+			
+			//test isFollowsValid
+			Assert::IsTrue(PKB::getPKBInstance()->isFollowsValid(2, 3));
+			Assert::IsTrue(PKB::getPKBInstance()->isFollowsValid(10, 13));
+			Assert::IsFalse(PKB::getPKBInstance()->isFollowsValid(13, 10));
+			Assert::IsFalse(PKB::getPKBInstance()->isFollowsValid(17, 2));
 		}
-		TEST_METHOD(testCallsStar) {
 
+		TEST_METHOD(testFollowsStarFunctions) {
+			list<int> actual, expected;
+
+			//test getFollowsStarFirst
+			actual = PKB::getPKBInstance()->getFollowsStarFirst(10);
+			expected.push_back(4);
+			expected.push_back(5);
+			expected.push_back(6);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getFollowsStarFirst(6);
+			expected.clear();
+			expected.push_back(4);
+			expected.push_back(5);
+			Assert::IsTrue(actual == expected);
+
+			Assert::IsTrue(PKB::getPKBInstance()->getFollowsStarFirst(16) == list<int>());
+		
+			
+			//test getFollowsStarSecond
+			actual = PKB::getPKBInstance()->getFollowsStarSecond(10);
+			expected.clear();
+			expected.push_back(13);
+			expected.push_back(14);
+			expected.push_back(15);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getFollowsStarSecond(4);
+			expected.clear();
+			expected.push_back(5);
+			expected.push_back(6);
+			expected.push_back(10);
+			expected.push_back(13);
+			expected.push_back(14);
+			expected.push_back(15);
+			Assert::IsTrue(actual == expected);
+
+			Assert::IsTrue(PKB::getPKBInstance()->getFollowsStarSecond(3) == list<int>());
+		
+			
+			//test isFollowsStarValid
+			Assert::IsTrue(PKB::getPKBInstance()->isFollowsStarValid(4, 15));
+			Assert::IsTrue(PKB::getPKBInstance()->isFollowsStarValid(6, 14));
+			Assert::IsFalse(PKB::getPKBInstance()->isFollowsStarValid(8, 10));
+			Assert::IsFalse(PKB::getPKBInstance()->isFollowsStarValid(19, 10));
 		}
-		TEST_METHOD(testPattern) {
+
+		TEST_METHOD(testParentFunctions) {
+			list<int> actualList, expectedList;
+			int actualInt, expectedInt;
+
+			//test getParentFirst
+			actualInt = PKB::getPKBInstance()->getParentFirst(9);
+			expectedInt = 6;
+			Assert::IsTrue(actualInt == expectedInt);
+
+			actualInt = PKB::getPKBInstance()->getParentFirst(12);
+			expectedInt = 10;
+			Assert::IsTrue(actualInt == expectedInt);
+
+			Assert::IsTrue(PKB::getPKBInstance()->getParentFirst(13) == 0);
+		
+			
+			//test getParentSecond
+			actualList = PKB::getPKBInstance()->getParentSecond(6);
+			expectedList.push_back(7);
+			expectedList.push_back(8);
+			expectedList.push_back(9);
+			Assert::IsTrue(actualList == expectedList);
+
+			actualList = PKB::getPKBInstance()->getParentSecond(10);
+			expectedList.clear();
+			expectedList.push_back(11);
+			expectedList.push_back(12);
+			Assert::IsTrue(actualList == expectedList);
+
+			Assert::IsTrue(PKB::getPKBInstance()->getParentSecond(11) == list<int>());
+		
+			
+			//test isParentValid
+			Assert::IsTrue(PKB::getPKBInstance()->isParentValid(6, 9));
+			Assert::IsTrue(PKB::getPKBInstance()->isParentValid(10, 12));
+			Assert::IsFalse(PKB::getPKBInstance()->isParentValid(6, 10));
+			Assert::IsFalse(PKB::getPKBInstance()->isParentValid(20, 10));
+		}
+
+		TEST_METHOD(testParentStarFunctions) {
+			list<int> actual, expected;
+
+			//test getParentStarFirst
+			actual = PKB::getPKBInstance()->getParentStarFirst(9);
+			expected.push_back(6);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getParentStarFirst(12);
+			expected.clear();
+			expected.push_back(10);
+			Assert::IsTrue(actual == expected);
+
+			Assert::IsTrue(PKB::getPKBInstance()->getParentStarFirst(13) == list<int>());
+
+
+			//test getParentStarSecond
+			actual = PKB::getPKBInstance()->getParentStarSecond(6);
+			expected.clear();
+			expected.push_back(7);
+			expected.push_back(8);
+			expected.push_back(9);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getParentStarSecond(10);
+			expected.clear();
+			expected.push_back(11);
+			expected.push_back(12);
+			Assert::IsTrue(actual == expected);
+
+			Assert::IsTrue(PKB::getPKBInstance()->getParentStarSecond(11) == list<int>());
+
+
+			//test isParentStarValid
+			Assert::IsTrue(PKB::getPKBInstance()->isParentStarValid(6, 9));
+			Assert::IsTrue(PKB::getPKBInstance()->isParentStarValid(10, 11));
+			Assert::IsFalse(PKB::getPKBInstance()->isParentStarValid(10, 13));
+			Assert::IsFalse(PKB::getPKBInstance()->isParentStarValid(20, 23));
+		}
+
+		TEST_METHOD(testCallsFunctions) {
+			list<int> actual, expected;
+
+			//test getCallsFirst
+			actual = PKB::getPKBInstance()->getCallsFirst(-3);
+			expected.push_back(-2);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getCallsFirst(-2);
+			expected.clear();
+			expected.push_back(-1);
+			Assert::IsTrue(actual == expected);
+
+			Assert::IsTrue(PKB::getPKBInstance()->getCallsFirst(-1) == list<int>());
+		
+			
+			//test getCallsSecond
+			actual = PKB::getPKBInstance()->getCallsSecond(-1);
+			expected.clear();
+			expected.push_back(-2);
+			Assert::IsTrue(actual == expected);
+
+			Assert::IsTrue(PKB::getPKBInstance()->getCallsSecond(-3) == list<int>());
+
+
+			//test isCallsValid
+			Assert::IsTrue(PKB::getPKBInstance()->isCallsValid(-1, -2));
+			Assert::IsTrue(PKB::getPKBInstance()->isCallsValid(-2, -3));
+			Assert::IsFalse(PKB::getPKBInstance()->isCallsValid(-2, -1));
+			Assert::IsFalse(PKB::getPKBInstance()->isCallsValid(-4, -1));
+		}
+
+		TEST_METHOD(testCallsStarFunctions) {
+			list<int> actual, expected;
+
+			//test getCallsStarFirst
+			actual = PKB::getPKBInstance()->getCallsStarFirst(-3);
+			expected.push_back(-2);
+			expected.push_back(-1);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getCallsStarFirst(-2);
+			expected.clear();
+			expected.push_back(-1);
+			Assert::IsTrue(actual == expected);
+
+			Assert::IsTrue(PKB::getPKBInstance()->getCallsStarFirst(-1) == list<int>());
+
+
+			//test getCallsStarSecond
+			actual = PKB::getPKBInstance()->getCallsStarSecond(-1);
+			expected.clear();
+			expected.push_back(-3);
+			expected.push_back(-2);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getCallsStarSecond(-2);
+			expected.clear();
+			expected.push_back(-3);
+			Assert::IsTrue(actual == expected);
+
+			Assert::IsTrue(PKB::getPKBInstance()->getCallsStarSecond(-3) == list<int>());
+
+
+			//test isCallsStarValid
+			Assert::IsTrue(PKB::getPKBInstance()->isCallsStarValid(-1, -2));
+			Assert::IsTrue(PKB::getPKBInstance()->isCallsStarValid(-1, -3));
+			Assert::IsFalse(PKB::getPKBInstance()->isCallsStarValid(-2, -1));
+			Assert::IsFalse(PKB::getPKBInstance()->isCallsStarValid(-4, -2));
+		}
+
+		TEST_METHOD(testPatternFunctions) {
 
 		}
 

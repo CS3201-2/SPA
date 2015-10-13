@@ -34,7 +34,7 @@ namespace UnitTest {
 			str += "v = z; }\n";
 
 			Parser parser = Parser();
-			list<pair<int, string>> testList = parser.prepareSourceList(str);
+			list<pair<int, string>> actualList = parser.prepareSourceList(str);
 			
 			list<pair<int, string>> expectedList;
 			pair<int, string> temp;			
@@ -60,7 +60,7 @@ namespace UnitTest {
 			temp.first = 16; temp.second = "z=5;"; expectedList.push_back(temp);
 			temp.first = 17; temp.second = "v=z;}"; expectedList.push_back(temp);
 
-			Assert::IsTrue(testList == expectedList);
+			Assert::IsTrue(actualList == expectedList);
 		}
 	};
 }
