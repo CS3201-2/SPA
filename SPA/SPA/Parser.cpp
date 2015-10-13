@@ -1,18 +1,11 @@
 #include "Parser.h"
 
-const int assignmentStmt = 0;
-const int procDeclarationStmt = 1;
-const int procCallStmt = 2;
-const int whileStmt = 3;
-const int ifStmt = 4;
-const int elseStmt = 5;
-const int invalidStmt = 6;
 
 // constructor
 Parser::Parser() {
 }
 
-list<pair<int, string>> Parser::prepareSourceList(string source) {
+list<Statement> Parser::prepareSourceList(string source) {
 	addNewLineBeforeKeywords(source, " call ");
 	addNewLineBeforeKeywords(source, "\tcall ");
 	addNewLineBeforeKeywords(source, " procedure ");
@@ -26,18 +19,18 @@ list<pair<int, string>> Parser::prepareSourceList(string source) {
 
 	trim(source);
 	addNewLineString(source);
-	list<pair<int, string>> sourceCodeList;
+	list<Statement> sourceCodeList;
 	buildSourceCodeList(source, sourceCodeList);
 
 	return sourceCodeList;
 }
 
-void Parser::parseSource(list<pair<int, string>> sourceCodeList) {
+void Parser::parseSource(list<Statement> sourceCodeList) {
 	processSourceCodeList(sourceCodeList);
 	PKB::getPKBInstance()->houseKeeping();
 }
 
-void Parser::buildCFG(list<pair<int, string>> sourceCodeList) {
+void Parser::buildCFG(list<Statement> sourceCodeList) {
 	PKB::getPKBInstance()->buildCFG(sourceCodeList);
 }
 
@@ -78,46 +71,47 @@ void Parser::addNewLineString(string &content) {
 	}
 }
 
-void Parser::buildSourceCodeList(string content, list<pair<int, string>>& list) {
+void Parser::buildSourceCodeList(string content, list<Statement>& list) {
 	size_t tail = content.find('@');
 	size_t head = 0;
 	size_t length;
 	int count = 1;
-	string line;
 
 	while (tail != string::npos) {
 		length = tail - head;
-		line = content.substr(head, length);
-		pair<int, string> pair;
+		string stmtContent = content.substr(head, length);
+		StatementType stmtType = getTypeOfStmt(stmtContent);
+		int stmtNo;
 
-		if (getTypeOfStmt(line) == procDeclarationStmt ||
-			getTypeOfStmt(line) == elseStmt || getTypeOfStmt(line) == invalidStmt) {
-			pair.first = -1;
+		if (stmtType == procDeclarationStmt || stmtType == elseStmt 
+			|| stmtType == invalidStmt) {
+			stmtNo = -1;
 		}
 		else {
-			pair.first = count;
+			stmtNo = count;
 			count++;
 		}
-		pair.second = line;
-		list.push_back(pair);
+
+		Statement stmt = Statement(stmtNo, stmtContent, stmtType);
+		list.push_back(stmt);
 		head = tail + 1;
 		tail = content.find('@', head);
 	}
 }
 
-void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
+void Parser::processSourceCodeList(list<Statement> stmtList) {
 	list<int> modifiesList;
 	list<int> usesList;
 	list<int> childrenList;
 	int currentProcID;
 	list<stack<string>> bracesList;
 	int prevStmtNo = -1;
-	int prevStmtType = invalidStmt;
+	StatementType prevStmtType = StatementType::invalidStmt;
 
-	for (list<pair<int, string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
-		int stmtNo = (*it).first;
-		string stmt = (*it).second;
-		int stmtType = getTypeOfStmt(stmt);
+	for (list<Statement>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
+		int stmtNo = (*it).getNumber();
+		string stmtContent = (*it).getContent();
+		StatementType stmtType = (*it).getType();
 		modifiesList.clear();
 		usesList.clear();
 		childrenList.clear();
@@ -125,25 +119,25 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 
 		switch (stmtType) {
 		case assignmentStmt:
-			processAssignment(stmt, modifiesList, usesList);
-			processPatternStmt(stmtNo, stmt, stmtType);
+			processAssignment(stmtContent, modifiesList, usesList);
+			processPatternStmt(stmtNo, stmtContent, stmtType);
 			break;
 
 		case procDeclarationStmt:
-			currentProcID = PKB::getPKBInstance()->getProcID(getProcName(stmtType, stmt));
+			currentProcID = PKB::getPKBInstance()->getProcID(getProcName(stmtType, stmtContent));
 			break;
 
 		case procCallStmt: 
-			processCallStmt(stmtNo, stmtType, stmt, modifiesList, usesList);
+			processCallStmt(stmtNo, stmtType, stmtContent, modifiesList, usesList);
 			break;
 
 		case whileStmt:
-			processPatternStmt(stmtNo, stmt, stmtType);
+			processPatternStmt(stmtNo, stmtContent, stmtType);
 			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcID, bracesList);
 			break;
 
 		case ifStmt: 
-			processPatternStmt(stmtNo, stmt, stmtType);
+			processPatternStmt(stmtNo, stmtContent, stmtType);
 			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcID, bracesList);
 			break;
 		default: break;//should never reach this part
@@ -180,7 +174,7 @@ int Parser::countNumOfRightBraces(string str) {
 	return count(str.begin(), str.end(), '}');
 }
 
-void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair<int, string>>& stmtList,
+void Parser::processNestedStmt(list<Statement>::iterator& it, list<Statement> stmtList,
 	list<int>& modifiesList, list<int>& usesList, list<int>& childrenList, int currentProcID,
 	list<stack<string>>& braceList) {
 	stack <string> braces;
@@ -191,30 +185,30 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair<
 	list<int> tempUsesList;
 	list<int> tempChildrenList;
 	int prevStmtNo = -1;
-	int prevStmtType = invalidStmt;
+	StatementType prevStmtType = StatementType::invalidStmt;
 
 	//put control variable into UsesList
-	int controlVarID = PKB::getPKBInstance()->insertVar(getControlVarName(getTypeOfStmt((*it).second), (*it).second));
+	int controlVarID = PKB::getPKBInstance()->insertVar(getControlVarName((*it).getType(), (*it).getContent()));
 	usesList.push_back(controlVarID);
 
 	++it;//to skip the starting of this while/if statement
 	while (!braceList.back().empty()) {
-		int stmtNo = (*it).first;
-		string stmt = (*it).second;
-		int stmtType = getTypeOfStmt(stmt);
+		int stmtNo = (*it).getNumber();
+		string stmtContent = (*it).getContent();
+		StatementType stmtType = (*it).getType();
 		tempModifiesList.clear();
 		tempUsesList.clear();
 		tempChildrenList.clear();
 		PKB::getPKBInstance()->addStmtToList(stmtNo, stmtType);
 
-		for (int i = 0; i < countNumOfLeftBraces(stmt); ++i) {
+		for (int i = 0; i < countNumOfLeftBraces(stmtContent); ++i) {
 			for (list<stack<string>>::iterator iter = braceList.begin(); iter != braceList.end(); ++iter) {
 				if (!(*iter).empty()) {
 					(*iter).push("{");
 				}
 			}
 		}
-		for (int i = 0; i < countNumOfRightBraces(stmt); ++i) {
+		for (int i = 0; i < countNumOfRightBraces(stmtContent); ++i) {
 			for (list<stack<string>>::iterator iter1 = braceList.begin(); iter1 != braceList.end(); ++iter1) {
 				if (!(*iter1).empty()) {
 					(*iter1).pop();
@@ -224,21 +218,21 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair<
 
 		switch (stmtType) {
 		case assignmentStmt:
-			processAssignment(stmt, tempModifiesList, tempUsesList);
-			processPatternStmt(stmtNo, stmt, stmtType);
+			processAssignment(stmtContent, tempModifiesList, tempUsesList);
+			processPatternStmt(stmtNo, stmtContent, stmtType);
 			break;
 
 		case procCallStmt: 
-			processCallStmt(stmtNo, stmtType, stmt, tempModifiesList, tempUsesList);
+			processCallStmt(stmtNo, stmtType, stmtContent, tempModifiesList, tempUsesList);
 			break;
 
 		case whileStmt:
-			processPatternStmt(stmtNo, stmt, stmtType);
+			processPatternStmt(stmtNo, stmtContent, stmtType);
 			processNestedStmt(it, stmtList, tempModifiesList, tempUsesList, tempChildrenList, currentProcID, braceList);
 			break;
 
 		case ifStmt:
-			processPatternStmt(stmtNo, stmt, stmtType);
+			processPatternStmt(stmtNo, stmtContent, stmtType);
 			processNestedStmt(it, stmtList, tempModifiesList, tempUsesList, tempChildrenList, currentProcID, braceList);
 			break;
 		}
@@ -316,56 +310,58 @@ list<string> Parser::parseExpression(string expression) {
 	return result;
 }
 
-void Parser::processPatternStmt(int stmtNo, string stmt, int stmtType) {
+void Parser::processPatternStmt(int stmtNo, string stmtContent, StatementType stmtType) {
 	string controlVar;
 	if (stmtType == assignmentStmt) {
-		size_t i = stmt.find("=");
-		size_t j = stmt.find(";");
-		PKB::getPKBInstance()->setPattern(stmtNo, stmt.substr(0, i), stmt.substr(i + 1, j - i - i));
+		size_t i = stmtContent.find("=");
+		size_t j = stmtContent.find(";");
+		PKB::getPKBInstance()->setPattern(stmtNo, stmtContent.substr(0, i), stmtContent.substr(i + 1, j - i - i));
 	}
 	else if(stmtType == whileStmt) {
-		controlVar = getControlVarName(stmtType, stmt);
+		controlVar = getControlVarName(stmtType, stmtContent);
 		PKB::getPKBInstance()->setPattern(stmtNo, controlVar, "_while_");
 	}
 	else if (stmtType == ifStmt) {
-		controlVar = getControlVarName(stmtType, stmt);
+		controlVar = getControlVarName(stmtType, stmtContent);
 		PKB::getPKBInstance()->setPattern(stmtNo, controlVar, "_if_");
 	}
 }
 
-void Parser::processCallStmt(int stmtNo, int stmtType, string stmt,
+void Parser::processCallStmt(int stmtNo, StatementType stmtType, string stmtContent,
 	list<int>& modifiesList, list<int>& usesLise) {
-	int calledProcID = PKB::getPKBInstance()->getProcID(getProcName(stmtType, stmt));
+	int calledProcID = PKB::getPKBInstance()->getProcID(getProcName(stmtType, stmtContent));
 	modifiesList.push_back(calledProcID);
 	usesLise.push_back(calledProcID);
 	PKB::getPKBInstance()->addToCallStmtProcMap(stmtNo, calledProcID);
 }
 
-string Parser::getControlVarName(int stmtType, string stmt) {
+string Parser::getControlVarName(StatementType stmtType, string stmtContent) {
 	size_t i;
 	if (stmtType == whileStmt) {
-		i = stmt.find("{");
-		return stmt.substr(5, i - 5);
+		i = stmtContent.find("{");
+		return stmtContent.substr(5, i - 5);
 	}
+	//indicate it is an ifStmt
 	else {
-		i = stmt.find("{");
-		return stmt.substr(2, i - 6);
+		i = stmtContent.find("{");
+		return stmtContent.substr(2, i - 6);
 	}
 }
 
-string Parser::getProcName(int stmtType, string stmt) {
+string Parser::getProcName(StatementType stmtType, string stmtContent) {
 	size_t i;
 	if (stmtType == procCallStmt) {
-		i = stmt.find(";");
-		return stmt.substr(4, i - 4);
+		i = stmtContent.find(";");
+		return stmtContent.substr(4, i - 4);
 	}
+	//indicate it is a procDeclarationStmt
 	else {
-		i = stmt.find("{");
-		return stmt.substr(9, i - 9);
+		i = stmtContent.find("{");
+		return stmtContent.substr(9, i - 9);
 	}
 }
 
-int Parser::getTypeOfStmt(string str) {
+StatementType Parser::getTypeOfStmt(string str) {
 	size_t i, j;
 
 	if (count(str.begin(), str.end(), '=') == 1) {
@@ -373,20 +369,20 @@ int Parser::getTypeOfStmt(string str) {
 		j = str.find("=");
 		if (isValidName(str.substr(0, j))
 			&& isAllClosingBraces(str.substr(i + 1))) {
-			return assignmentStmt;
+			return StatementType::assignmentStmt;
 		}
 		else {
-			return invalidStmt;
+			return StatementType::invalidStmt;
 		}
 	}
 
 	if (str.substr(0, 9) == "procedure") {
 		i = str.find("{");
 		if (isValidName(str.substr(9, i - 9))) {
-			return procDeclarationStmt;
+			return StatementType::procDeclarationStmt;
 		}
 		else {
-			return invalidStmt;
+			return StatementType::invalidStmt;
 		}
 	}
 
@@ -394,38 +390,38 @@ int Parser::getTypeOfStmt(string str) {
 		i = str.find(";");
 		if (isValidName(str.substr(4, i - 4)) &&
 			isAllClosingBraces(str.substr(i + 1))) {
-			return procCallStmt;
+			return StatementType::procCallStmt;
 		}
 		else {
-			return invalidStmt;
+			return StatementType::invalidStmt;
 		}
 	}
 
 	if (str.substr(0, 5) == "while") {
 		i = str.find("{");
 		if (isValidName(str.substr(5, i - 5))) {
-			return whileStmt;
+			return StatementType::whileStmt;
 		}
 		else {
-			return invalidStmt;
+			return StatementType::invalidStmt;
 		}
 	}
 
 	if (str.substr(0, 2) == "if") {
 		i = str.find("{");
 		if (str.substr(i - 4, 4) == "then" && isValidName(str.substr(2, i - 6))) {
-			return ifStmt;
+			return StatementType::ifStmt;
 		}
 		else {
-			return invalidStmt;
+			return StatementType::invalidStmt;
 		}
 	}
 
 	if (str == "else{") {
-		return elseStmt;
+		return StatementType::elseStmt;
 	}
 
-	return invalidStmt;
+	return StatementType::invalidStmt;
 }
 
 bool Parser::isConstant(string str) {

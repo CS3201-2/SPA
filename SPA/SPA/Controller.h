@@ -4,6 +4,7 @@
 #include "PKB.h"
 #include "QueryController.h"
 #include "SPALog.h"
+#include "Statement.h"
 #include <string>
 #include <list>
 
@@ -25,8 +26,8 @@ private:
 	string source;
 
 	void logPKB();
-	void logSourceCode(list<pair<int, string>>);
-	bool syntaxCheck(list<pair<int, string>>&);
+	void logSourceCode(list<Statement>);
+	bool syntaxCheck(list<Statement>&);
 };
 
 #endif

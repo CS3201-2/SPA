@@ -2,10 +2,6 @@
 
 using namespace std;
 
-const int assignmentStmt = 0;
-const int procCallStmt = 2;
-const int whileStmt = 3;
-const int ifStmt = 4;
 
 PKB* PKB::PKBInstance = NULL;
 
@@ -84,7 +80,7 @@ bool PKB::isValidStmtNo(int stmtNo) {
 	return (stmtNo > 0 && (size_t)stmtNo <= totalNoStmt);
 }
 
-void PKB::addStmtToList(int stmtNo, int stmtType) {
+void PKB::addStmtToList(int stmtNo, StatementType stmtType) {
 	switch (stmtType) {
 	case assignmentStmt: assignStmtList.push_back(stmtNo); break;
 	case procCallStmt: callStmtList.push_back(stmtNo); break;
@@ -242,8 +238,10 @@ void PKB::logCallStmtProcMap() {
 	SPALog::log(str);
 }
 
-void PKB::buildCFG(list<pair<int, string>> sourceCodeList) {
-	cfg.buildGraph(sourceCodeList);
+void PKB::buildCFG(list<Statement> sourceCodeList) {
+	//cfg.buildGraph(sourceCodeList);
+	list<pair<int, string>> temp;
+	cfg.buildGraph(temp);
 }
 
 

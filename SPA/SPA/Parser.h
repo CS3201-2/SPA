@@ -1,4 +1,6 @@
 #include "PKB.h"
+#include "Statement.h"
+#include "StatementType.h"
 #include <string>
 #include <list>
 #include <stack>
@@ -14,27 +16,26 @@ class Parser{
 public:
 	Parser();
 
-	list<pair<int, string>> prepareSourceList(string);
-	void parseSource(list<pair<int, string>>);
-	void buildCFG(list<pair<int, string>>);
+	list<Statement> prepareSourceList(string);
+	void parseSource(list<Statement>);
+	void buildCFG(list<Statement>);
 
 private:
 	void trim(string&);
 	void addNewLineBeforeKeywords(string&, string);
 	void addNewLineString(string&);
-	void buildSourceCodeList(string, list<pair<int, string>>&);
-	void processSourceCodeList(list<pair<int, string>>&);
-
-	void processNestedStmt(list<pair<int, string>>::iterator&, list<pair<int, string>>&,
+	void buildSourceCodeList(string, list<Statement>&);
+	void processSourceCodeList(list<Statement>);
+	void processNestedStmt(list<Statement>::iterator&, list<Statement>,
 		list<int>&, list<int>&, list<int>&, int, list<stack<string>>&);
 	int countNumOfLeftBraces(string);
 	int countNumOfRightBraces(string);
 	void processAssignment(string str, list<int>&, list<int>&);
-	void processCallStmt(int, int, string, list<int>&, list<int>&);
-	int getTypeOfStmt(string);
-	void processPatternStmt(int, string, int);
-	string getControlVarName(int, string);
-	string getProcName(int, string);
+	void processCallStmt(int, StatementType, string, list<int>&, list<int>&);
+	StatementType getTypeOfStmt(string);
+	void processPatternStmt(int, string, StatementType);
+	string getControlVarName(StatementType, string);
+	string getProcName(StatementType, string);
 	
 	list<string> parseExpression(string);
 	bool isValidName(string);
