@@ -159,6 +159,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ParserTest.cpp" />
+    <ClCompile Include="PKBTest.cpp" />
+    <ClCompile Include="QueryEvaluatorTest.cpp" />
     <ClCompile Include="QueryTreeTest1.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

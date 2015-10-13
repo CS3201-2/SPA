@@ -32,6 +32,8 @@ private:
 	bool isParenthesis(string);
 	bool isOperator(string);
 	string removeAllSpace(string);
+	list<string> parseExpression(string);
+
 };
 
 #endif

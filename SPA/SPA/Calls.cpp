@@ -18,7 +18,7 @@ void Calls::setCalls(int first, int second) {
 }
 
 list<int> Calls::getCallsFirst(int second) {
-	if (callsMapReverse.find(second) == callsMap.end()) {
+	if (callsMapReverse.find(second) == callsMapReverse.end()) {
 		return list<int>();
 	}
 	else {
