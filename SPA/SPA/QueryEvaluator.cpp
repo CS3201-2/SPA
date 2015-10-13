@@ -124,7 +124,7 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	else if (relationship == "calls") {
 		resultList.push_back(processCalls(tempString));
 	}
-	else if (relationship == "call*") {
+	else if (relationship == "calls*") {
 		resultList.push_back(processCallsStar(tempString));
 	}
 	else if (relationship == "next") {
@@ -158,7 +158,7 @@ list<int> QueryEvaluator::getList(string listName) {
 	else if (listName == "call") {
 		return PKB::getPKBInstance()->getCallList();
 	}
-	else if (listName == "stmt" || "all" || "prog_line") {
+	else if (listName == "stmt" || listName == "all" || listName == "prog_line") {
 		return PKB::getPKBInstance()->getStmtList();
 	}
 	else if (listName == "procedure") {
@@ -283,7 +283,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 		}
 		else {
 			//procedue, while, assign, if, call, stmt, prog_line
-			list<int> targetList = getList(arg1);
+			list<int> targetList = getList(arg1Type);
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
@@ -413,7 +413,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 		}
 		else {
 
-			list<int> targetList = getList(arg1);
+			list<int> targetList = getList(arg1Type);
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
@@ -1578,10 +1578,10 @@ void QueryEvaluator::processWithClause(vector<string> tempString) {
 	string log = "With clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
 
-	if (synType == "number") {
+	if (synType == "withNumber") {
 		resultList.push_back(processNumberWith(tempString));
 	}
-	else if (synType == "name") {
+	else if (synType == "withName") {
 		resultList.push_back(processNameWith(tempString));
 	}
 	else {

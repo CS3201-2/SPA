@@ -1,13 +1,5 @@
 #include "Parser.h"
 
-
-const regex assignmentRegex("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
-const regex procDeclarationRegex("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
-const regex procCallRegex("call(([[:alpha:]])([[:alnum:]]+)*);\\}*");
-const regex whileRegex("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
-const regex ifRegex("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
-const regex elseRegex("else\\{");
-const regex variableRegex("(^[[:alpha:]])([[:alnum:]]+)*$");
 const int assignmentStmt = 0;
 const int procDeclarationStmt = 1;
 const int procCallStmt = 2;
@@ -21,6 +13,17 @@ Parser::Parser() {
 }
 
 list<pair<int, string>> Parser::prepareSourceList(string source) {
+	addNewLineBeforeKeywords(source, " call ");
+	addNewLineBeforeKeywords(source, "\tcall ");
+	addNewLineBeforeKeywords(source, " procedure ");
+	addNewLineBeforeKeywords(source, "\tprocedure ");
+	addNewLineBeforeKeywords(source, " while ");
+	addNewLineBeforeKeywords(source, "\twhile ");
+	addNewLineBeforeKeywords(source, " if ");
+	addNewLineBeforeKeywords(source, "\tif ");
+	addNewLineBeforeKeywords(source, "else{");
+	addNewLineBeforeKeywords(source, "else {");
+
 	trim(source);
 	addNewLineString(source);
 	list<pair<int, string>> sourceCodeList;
@@ -38,6 +41,14 @@ void Parser::buildCFG(list<pair<int, string>> sourceCodeList) {
 	PKB::getPKBInstance()->buildCFG(sourceCodeList);
 }
 
+void Parser::addNewLineBeforeKeywords(string& source, string keywords) {
+	size_t found = source.find(keywords);
+	while (found != string::npos) {
+		source.insert(found, "@");
+		found = source.find(keywords, found + 2);
+	}
+}
+
 void Parser::trim(string& line) {
 	line.erase(remove_if(line.begin(), line.end(), isspace), line.end());
 }
@@ -48,13 +59,17 @@ void Parser::addNewLineString(string &content) {
 	while (index != string::npos) {
 		index++;
 		while (index != content.size() && content.at(index) == '}') index++;
-		content.insert(index, (size_t)1, '@');
+		if (index < content.size() && content.at(index) != '@') {
+			content.insert(index, (size_t)1, '@');
+		}
 		index = content.find(';', index);
 	}
 	index = content.find('{');
 	while (index != string::npos) {
 		index++;
-		content.insert(index, (size_t)1, '@');
+		if (index < content.size() && content.at(index) != '@') {
+			content.insert(index, (size_t)1, '@');
+		}
 		index = content.find('{', index);
 	}
 	
@@ -75,7 +90,8 @@ void Parser::buildSourceCodeList(string content, list<pair<int, string>>& list) 
 		line = content.substr(head, length);
 		pair<int, string> pair;
 
-		if (regex_match(line, procDeclarationRegex) || regex_match(line, elseRegex)) {
+		if (getTypeOfStmt(line) == procDeclarationStmt ||
+			getTypeOfStmt(line) == elseStmt || getTypeOfStmt(line) == invalidStmt) {
 			pair.first = -1;
 		}
 		else {
@@ -143,7 +159,7 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 		
 		//follows
 		if (prevStmtType != procDeclarationStmt && stmtType != procDeclarationStmt 
-			&& prevStmtNo != stmtNo) {
+			&& prevStmtNo != stmtNo && prevStmtType != invalidStmt) {
 			PKB::getPKBInstance()->setFollows(prevStmtNo, stmtNo);
 		}
 		prevStmtNo = stmtNo;
@@ -241,7 +257,7 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair<
 
 		//follows
 		if (prevStmtType != procDeclarationStmt && stmtType != procDeclarationStmt 
-			&& prevStmtNo != stmtNo) {
+			&& prevStmtNo != stmtNo && prevStmtType != invalidStmt) {
 			PKB::getPKBInstance()->setFollows(prevStmtNo, stmtNo);
 		}
 		prevStmtNo = stmtNo;
@@ -263,81 +279,49 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair<
 }
 
 void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& usesList) {
-	string variable = "";
+	list<string> varList = parseExpression(str);
+	
+	for (list<string>::iterator it = varList.begin(); it != varList.end(); ++it) {
+		if (isValidName(*it)) {
+			int varID = PKB::getPKBInstance()->insertVar(*it);
 
-	for (string::iterator it = str.begin(); it != str.end(); ++it) {
-		if (isMathSymbol(*it) || isSemicolon(*it)) {
-			if (isVariable(variable)) {
-				int varID = PKB::getPKBInstance()->insertVar(variable);
-				
-				if (modifiesList.empty()) {
-					modifiesList.push_back(varID);
-				}
-				else {
-					usesList.push_back(varID);
-				}
+			if (modifiesList.empty()) {
+				modifiesList.push_back(varID);
 			}
-			if (isConstant(variable)) {
-				PKB::getPKBInstance()->addConstantToList(stoi(variable));
+			else {
+				usesList.push_back(varID);
 			}
-
-			variable = "";
 		}
-		else {
-			variable += *it;
+		else if(isConstant(*it)) {
+			PKB::getPKBInstance()->addConstantToList(stoi(*it));
 		}
 	}
 }
 
-bool Parser::isVariable(string str) {
-	return regex_match(str, variableRegex);
-}
+list<string> Parser::parseExpression(string expression) {
+	size_t found = expression.find_first_of("(=+-*);");
+	list<string> result;
+	string temp;
 
-bool Parser::isSemicolon(char ch) {
-	return ch == ';';
-}
+	while (found != string::npos) {
+		temp = expression.substr(0, found);
+		if (temp != "") {
+			result.push_back(temp);
+		}
 
-//test whether a char is + - *
-bool Parser::isMathSymbol(char ch) {
-	switch (ch) {
-	case '+': case'-': case'*': case'=':
-		return true;
-	default:
-		return false;
+		expression = expression.substr(found + 1);
+		found = expression.find_first_of("=+-*();");
 	}
-}
 
-int Parser::getTypeOfStmt(string str) {
-	if (regex_match(str, assignmentRegex)) {
-		return assignmentStmt;
-	}
-	else if (regex_match(str, procDeclarationRegex)) {
-		return procDeclarationStmt;
-	}
-	else if (regex_match(str, procCallRegex)) {
-		return procCallStmt;
-	}
-	else if (regex_match(str, whileRegex)) {
-		return whileStmt;
-	}
-	else if (regex_match(str, ifRegex)) {
-		return ifStmt;
-	}
-	else if (regex_match(str, elseRegex)) {
-		return elseStmt;
-	}
-	else {
-		return invalidStmt;
-	}
+	return result;
 }
 
 void Parser::processPatternStmt(int stmtNo, string stmt, int stmtType) {
-	smatch m;
 	string controlVar;
 	if (stmtType == assignmentStmt) {
-		regex_search(stmt, m, assignmentRegex);
-		//1 is the LHS of assignment, 4 is the RHS of assignment
-		PKB::getPKBInstance()->setPattern(stmtNo, m[1], m[4]);
+		size_t i = stmt.find("=");
+		size_t j = stmt.find(";");
+		PKB::getPKBInstance()->setPattern(stmtNo, stmt.substr(0, i), stmt.substr(i + 1, j - i - i));
 	}
 	else if(stmtType == whileStmt) {
 		controlVar = getControlVarName(stmtType, stmt);
@@ -358,30 +342,119 @@ void Parser::processCallStmt(int stmtNo, int stmtType, string stmt,
 }
 
 string Parser::getControlVarName(int stmtType, string stmt) {
-	smatch m;
+	size_t i;
 	if (stmtType == whileStmt) {
-		regex_search(stmt, m, whileRegex);
-		return m[1];
+		i = stmt.find("{");
+		return stmt.substr(5, i - 5);
 	}
 	else {
-		regex_search(stmt, m, ifRegex);
-		return m[1];
+		i = stmt.find("{");
+		return stmt.substr(2, i - 6);
 	}
 }
 
-string Parser::getProcName(int stmtType, string str) {
-	smatch m;
+string Parser::getProcName(int stmtType, string stmt) {
+	size_t i;
 	if (stmtType == procCallStmt) {
-		regex_search(str, m, procCallRegex);
-		return m[1];
+		i = stmt.find(";");
+		return stmt.substr(4, i - 4);
 	}
 	else {
-		regex_search(str, m, procDeclarationRegex);
-		return m[1];
+		i = stmt.find("{");
+		return stmt.substr(9, i - 9);
 	}
+}
+
+int Parser::getTypeOfStmt(string str) {
+	size_t i, j;
+
+	if (count(str.begin(), str.end(), '=') == 1) {
+		i = str.find(";");
+		j = str.find("=");
+		if (isValidName(str.substr(0, j))
+			&& isAllClosingBraces(str.substr(i + 1))) {
+			return assignmentStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 9) == "procedure") {
+		i = str.find("{");
+		if (isValidName(str.substr(9, i - 9))) {
+			return procDeclarationStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 4) == "call") {
+		i = str.find(";");
+		if (isValidName(str.substr(4, i - 4)) &&
+			isAllClosingBraces(str.substr(i + 1))) {
+			return procCallStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 5) == "while") {
+		i = str.find("{");
+		if (isValidName(str.substr(5, i - 5))) {
+			return whileStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 2) == "if") {
+		i = str.find("{");
+		if (str.substr(i - 4, 4) == "then" && isValidName(str.substr(2, i - 6))) {
+			return ifStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str == "else{") {
+		return elseStmt;
+	}
+
+	return invalidStmt;
 }
 
 bool Parser::isConstant(string str) {
-	size_t found = str.find_first_not_of("1234567890");
-	return (found == string::npos);
+	for (char& c : str) {
+		if (!isdigit(c)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool Parser::isValidName(string str) {
+	if (!isalpha(str.at(0))) {
+		return false;
+	}
+
+	for (char& c : str) {
+		if (!isalnum(c)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool Parser::isAllClosingBraces(string str) {
+	if (!str.empty()) {
+		return str.find_first_not_of("}") == string::npos;
+	}
+
+	return true;
 }
