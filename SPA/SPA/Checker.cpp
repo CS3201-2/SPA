@@ -353,7 +353,7 @@ bool Checker::isAssignmentValid(string assignStmt) {
 		return false;
 	}
 
-	if (isOperator(tokens.at(2))) {
+	if (isOperator(tokens.at(2)) || isOperator(tokens.back())) {
 		SPALog::log("expression starts with an operator: " + assignmentStmt);
 		return false;
 	}
