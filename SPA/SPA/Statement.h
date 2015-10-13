@@ -12,8 +12,8 @@ class Statement
 	StatementType _stmtType;
 public:
 	Statement();
-	Statement(int,string,StatementType);
-	int getIndex();
+	Statement(int, string, StatementType);
+	int getNumber();
 	string getContent();
 	StatementType getType();
 	~Statement();

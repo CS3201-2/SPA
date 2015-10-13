@@ -13,7 +13,7 @@ Statement::Statement(int i, string c, StatementType t)
 	_stmtType = t;
 }
 
-int Statement::getIndex()
+int Statement::getNumber()
 {
 	return _stmtNumber;
 }
