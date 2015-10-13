@@ -2,8 +2,7 @@
 
 
 // constructor
-ProcTable::ProcTable(void)
-{
+ProcTable::ProcTable(void){
 }
 
 int ProcTable::insertProc(string procName) {
@@ -48,5 +47,17 @@ void ProcTable::logProcTable() {
 	}
 	str += "\n";
 
+	str += "procedure table reverse\n";
+	for (map<int, string>::iterator it = procTableReverse.begin(); it != procTableReverse.end(); ++it) {
+		str += to_string((*it).first) + ": " + (*it).second + "\n";
+	}
+	str += "\n";
+
 	SPALog::log(str);
+}
+
+void ProcTable::setProcTableReverse() {
+	for (map<string, int>::iterator it = procTable.begin(); it != procTable.end(); ++it) {
+		procTableReverse[(*it).second] = (*it).first;
+	}
 }

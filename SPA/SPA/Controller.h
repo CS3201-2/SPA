@@ -1,26 +1,26 @@
 #include "DesignExtractor.h"
+#include "Checker.h"
+#include "Parser.h"
+#include "PKB.h"
+#include "QueryController.h"
+#include "SPALog.h"
 #include <string>
 #include <list>
 
 using namespace std;
 
+
 #ifndef Controller_H
 #define Controller_H
 
-class Controller
-{
+class Controller{
+
 public:
 	Controller();
-
-	void intializeCode( string );
-
-	//void display( void );
-
+	void intializeCode(string);
 	void processSource();
-
-	list<string> processQuery(string query);
+	list<string> processQuery(string);
  
-
 private:
 	string source;
 

@@ -1,15 +1,13 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "..\SPA\QueryValidator.h"
-#include "..\SPA\PKB.h"
-//#include <list>
-//#include <string>
+#include "QueryValidator.h"
+
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace SPA_UnitTest
+namespace UnitTest
 {
-	TEST_CLASS(testQueryValidator)
+	TEST_CLASS(queryValidatorTest)
 	{
 	public:
 

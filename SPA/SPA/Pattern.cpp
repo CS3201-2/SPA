@@ -14,7 +14,8 @@ void Pattern::setPattern(int stmtNo, string first, string second) {
 
 list<int> Pattern::getAssignWithFirstExact(string first) {
 	list<int> result;
-	string firstPostFix = convertToPostFix(first);
+	string trimmedFirst = removeAllSpace(first);
+	string firstPostFix = convertToPostFix(trimmedFirst);
 	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
 		if ((*it).second.first == firstPostFix && 
 			((*it).second.second != "_if_" || (*it).second.second != "_while_")) {
@@ -26,7 +27,8 @@ list<int> Pattern::getAssignWithFirstExact(string first) {
 
 list<int> Pattern::getAssignWithSecondExact(string second) {
 	list<int> result;
-	string secondPostFix = convertToPostFix(second);
+	string trimmedSecond = removeAllSpace(second);
+	string secondPostFix = convertToPostFix(trimmedSecond);
 	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
 		if ((*it).second.second == secondPostFix) {
 			result.push_back((*it).first);
@@ -36,8 +38,9 @@ list<int> Pattern::getAssignWithSecondExact(string second) {
 }
 
 list<int> Pattern::getAssignWithSecond(string second) {
-	list<int> result;
-	string secondPostFix = convertToPostFix(second);
+	list<int> result;	
+	string trimmedSecond = removeAllSpace(second);
+	string secondPostFix = convertToPostFix(trimmedSecond);
 	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
 		if (((*it).second.second).find(secondPostFix) != string::npos) {
 			result.push_back((*it).first);
@@ -48,8 +51,10 @@ list<int> Pattern::getAssignWithSecond(string second) {
 
 list<int> Pattern::getAssignWithBothExact(string first, string second) {
 	list<int> result;
-	string firstPostFix = convertToPostFix(first);
-	string secondPostFix = convertToPostFix(second);
+	string trimmedFirst = removeAllSpace(first);
+	string trimmedSecond = removeAllSpace(second);
+	string firstPostFix = convertToPostFix(trimmedFirst);
+	string secondPostFix = convertToPostFix(trimmedSecond);
 	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
 		if ((*it).second.first == firstPostFix && (*it).second.second == secondPostFix) {
 			result.push_back((*it).first);
@@ -60,8 +65,10 @@ list<int> Pattern::getAssignWithBothExact(string first, string second) {
 
 list<int> Pattern::getAssignWithBoth(string first, string second) {
 	list<int> result;
-	string firstPostFix = convertToPostFix(first);
-	string secondPostFix = convertToPostFix(second);
+	string trimmedFirst = removeAllSpace(first);
+	string trimmedSecond = removeAllSpace(second);
+	string firstPostFix = convertToPostFix(trimmedFirst);
+	string secondPostFix = convertToPostFix(trimmedSecond);
 	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
 		if ((*it).second.first == firstPostFix && ((*it).second.second).find(secondPostFix) != string::npos) {
 			result.push_back((*it).first);
@@ -72,7 +79,8 @@ list<int> Pattern::getAssignWithBoth(string first, string second) {
 
 list<int> Pattern::getIfWithFirstExact(string first) {
 	list<int> result;
-	string firstPostFix = convertToPostFix(first);
+	string trimmedFirst = removeAllSpace(first);
+	string firstPostFix = convertToPostFix(trimmedFirst);
 	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
 		if ((*it).second.first == firstPostFix && (*it).second.second == "._if_.") {
 			result.push_back((*it).first);
@@ -83,7 +91,8 @@ list<int> Pattern::getIfWithFirstExact(string first) {
 
 list<int> Pattern::getWhileWithFisrtExact(string first) {
 	list<int> result;
-	string firstPostFix = convertToPostFix(first);
+	string trimmedFirst = removeAllSpace(first);
+	string firstPostFix = convertToPostFix(trimmedFirst);
 	for (map<int, pair<string, string>>::iterator it = patternMap.begin(); it != patternMap.end(); ++it) {
 		if ((*it).second.first == firstPostFix && (*it).second.second == "._while_.") {
 			result.push_back((*it).first);
@@ -99,22 +108,11 @@ string Pattern::convertToPostFix(string str) {
 	string variable = "";
 	string result = "";
 
-	for (string::iterator it = str.begin(); it != str.end(); ++it) {
-		string temp(1, *it);
-		if (isParenthesis(temp) || isOperator(temp)) {
-			if (variable != "") {
-				tokenList.push_back(variable);
-			}
-			variable = "";
+	tokenList = parseExpression(str);
 
-			tokenList.push_back(temp);
-		}
-		else {
-			variable += temp;
-		}
-	}
-	if (variable != "") {
-		tokenList.push_back(variable);
+	if (tokenList.size() == 1) {
+		result = "." + tokenList.front() + ".";
+		return result;
 	}
 
 	for (list<string>::iterator iter = tokenList.begin(); iter != tokenList.end(); ++iter) {
@@ -154,8 +152,40 @@ string Pattern::convertToPostFix(string str) {
 	return result;
 }
 
+list<string> Pattern::parseExpression(string expression) {
+	size_t found = expression.find_first_of("(=+-*)");
+	list<string> result;
+	string temp;
+
+	if (found == string::npos) {
+		result.push_back(expression);
+		return result;
+	}
+
+	while (found != string::npos) {
+		temp = expression.substr(0, found);
+		if (temp != "") {
+			result.push_back(temp);
+		}
+
+		temp = expression.at(found);
+		if (temp != ";") {
+			result.push_back(temp);
+		}
+
+		expression = expression.substr(found + 1);
+		found = expression.find_first_of("=+-*()");
+	}
+
+	if (!expression.empty()) {
+		result.push_back(expression);
+	}
+
+	return result;
+}
+
 int Pattern::getPriority(string str) {
-	if (str == "*" || str == "/") {
+	if (str == "*") {
 		return 2;
 	}
 	else if (str == "+" || str == "-") {
@@ -184,3 +214,15 @@ void Pattern::logPattern() {
 
 	SPALog::log(str);
 }
+
+string Pattern::removeAllSpace(string str) {
+	string result;
+	for (string::iterator it = str.begin(); it != str.end(); ++it) {
+		if (*it != ' ') {
+			result += *it;
+		}
+	}
+
+	return result;
+}
+

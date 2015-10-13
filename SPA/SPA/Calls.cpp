@@ -17,18 +17,15 @@ void Calls::setCalls(int first, int second) {
 	}
 }
 
-//Calls (B, 8): B will be returned
 list<int> Calls::getCallsFirst(int second) {
-	list<int> result;
-	for (map<int, list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
-		if (find((*it).second.begin(), (*it).second.end(), second) != (*it).second.end()) {
-			result.push_back((*it).first);
-		}
+	if (callsMapReverse.find(second) == callsMapReverse.end()) {
+		return list<int>();
 	}
-	return result;
+	else {
+		return callsMapReverse.at(second);
+	}
 }
 
-//Calls (8, A), A will be returned
 list<int> Calls::getCallsSecond(int first) {
 	if (callsMap.find(first) == callsMap.end()) {
 		return list<int>();
@@ -50,10 +47,20 @@ bool Calls::isCallValid(int first, int second) {
 
 void Calls::logCalls(ProcTable procTable) {
 	string str = "calls table\n";
-	for (map<int, std::list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
+	for (map<int, list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
 		str += procTable.getProcName((*it).first) + ": ";
-		for (list<int>::iterator listIt = (*it).second.begin(); listIt != (*it).second.end(); ++listIt) {
-			str += procTable.getProcName(*listIt) + ", ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += procTable.getProcName(*it2) + ", ";
+		}
+		str += "\n";
+	}
+	str += "\n";
+
+	str += "calls table reverse\n";
+	for (map<int, list<int>>::iterator it = callsMapReverse.begin(); it != callsMapReverse.end(); ++it) {
+		str += procTable.getProcName((*it).first) + ": ";
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			str += procTable.getProcName(*it2) + ", ";
 		}
 		str += "\n";
 	}
@@ -70,5 +77,22 @@ void Calls::sortAndUnifyMap() {
 	for (map<int, std::list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
 		(*it).second.sort();
 		(*it).second.unique();
+	}
+}
+
+void Calls::setCallsReverse() {
+	for (map<int, list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
+		for (list<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2) {
+			if (callsMapReverse.find(*it2) == callsMapReverse.end()) {
+				list<int> temp;
+				temp.push_back((*it).first);
+				callsMapReverse[*it2] = temp;
+			}
+			else {
+				list<int> temp = callsMapReverse.at(*it2);
+				temp.push_back((*it).first);
+				callsMapReverse[*it2] = temp;
+			}
+		}
 	}
 }

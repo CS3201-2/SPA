@@ -1,12 +1,5 @@
 #include "Parser.h"
 
-const regex assignmentRegex("(([[:alpha:]])([[:alnum:]]+)*)=(.*);\\}*");
-const regex procDeclarationRegex("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
-const regex procCallRegex("call(([[:alpha:]])([[:alnum:]]+)*);\\}*");
-const regex whileRegex("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
-const regex ifRegex("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
-const regex elseRegex("else\\{");
-const regex variableRegex("(^[[:alpha:]])([[:alnum:]]+)*$");
 const int assignmentStmt = 0;
 const int procDeclarationStmt = 1;
 const int procCallStmt = 2;
@@ -16,12 +9,21 @@ const int elseStmt = 5;
 const int invalidStmt = 6;
 
 // constructor
-Parser::Parser()
-{
-
+Parser::Parser() {
 }
 
 list<pair<int, string>> Parser::prepareSourceList(string source) {
+	addNewLineBeforeKeywords(source, " call ");
+	addNewLineBeforeKeywords(source, "\tcall ");
+	addNewLineBeforeKeywords(source, " procedure ");
+	addNewLineBeforeKeywords(source, "\tprocedure ");
+	addNewLineBeforeKeywords(source, " while ");
+	addNewLineBeforeKeywords(source, "\twhile ");
+	addNewLineBeforeKeywords(source, " if ");
+	addNewLineBeforeKeywords(source, "\tif ");
+	addNewLineBeforeKeywords(source, "else{");
+	addNewLineBeforeKeywords(source, "else {");
+
 	trim(source);
 	addNewLineString(source);
 	list<pair<int, string>> sourceCodeList;
@@ -39,25 +41,35 @@ void Parser::buildCFG(list<pair<int, string>> sourceCodeList) {
 	PKB::getPKBInstance()->buildCFG(sourceCodeList);
 }
 
+void Parser::addNewLineBeforeKeywords(string& source, string keywords) {
+	size_t found = source.find(keywords);
+	while (found != string::npos) {
+		source.insert(found, "@");
+		found = source.find(keywords, found + 2);
+	}
+}
+
 void Parser::trim(string& line) {
-	line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
+	line.erase(remove_if(line.begin(), line.end(), isspace), line.end());
 }
 
 void Parser::addNewLineString(string &content) {
-	string::iterator itr;
-
 	size_t index = content.find(';');
 
-	while (index != std::string::npos) {
+	while (index != string::npos) {
 		index++;
 		while (index != content.size() && content.at(index) == '}') index++;
-		content.insert(index, (size_t)1, '@');
+		if (index < content.size() && content.at(index) != '@') {
+			content.insert(index, (size_t)1, '@');
+		}
 		index = content.find(';', index);
 	}
 	index = content.find('{');
-	while (index != std::string::npos) {
+	while (index != string::npos) {
 		index++;
-		content.insert(index, (size_t)1, '@');
+		if (index < content.size() && content.at(index) != '@') {
+			content.insert(index, (size_t)1, '@');
+		}
 		index = content.find('{', index);
 	}
 	
@@ -66,19 +78,20 @@ void Parser::addNewLineString(string &content) {
 	}
 }
 
-void Parser::buildSourceCodeList(string content, list<std::pair<int, string>>& list) {
+void Parser::buildSourceCodeList(string content, list<pair<int, string>>& list) {
 	size_t tail = content.find('@');
 	size_t head = 0;
 	size_t length;
 	int count = 1;
 	string line;
 
-	while (tail != std::string::npos) {
+	while (tail != string::npos) {
 		length = tail - head;
 		line = content.substr(head, length);
-		std::pair<int, string> pair;
+		pair<int, string> pair;
 
-		if (regex_match(line, procDeclarationRegex) || regex_match(line, elseRegex)) {
+		if (getTypeOfStmt(line) == procDeclarationStmt ||
+			getTypeOfStmt(line) == elseStmt || getTypeOfStmt(line) == invalidStmt) {
 			pair.first = -1;
 		}
 		else {
@@ -96,130 +109,112 @@ void Parser::processSourceCodeList(list<pair<int, string>>& stmtList) {
 	list<int> modifiesList;
 	list<int> usesList;
 	list<int> childrenList;
-	//int1 is the currentProcID, pair is the *it
-	pair<int, pair<int, string>> temp;
-	list<pair<int, pair<int, string>>> calledProcList;
 	int currentProcID;
-	int calledProcID;
 	list<stack<string>> bracesList;
-	int prevStmtLine = -1;
+	int prevStmtNo = -1;
 	int prevStmtType = invalidStmt;
 
-	for (list<std::pair<int, string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
-		int stmtNumber = (*it).first;
+	for (list<pair<int, string>>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
+		int stmtNo = (*it).first;
 		string stmt = (*it).second;
 		int stmtType = getTypeOfStmt(stmt);
+		modifiesList.clear();
+		usesList.clear();
+		childrenList.clear();
+		PKB::getPKBInstance()->addStmtToList(stmtNo, stmtType);
 
 		switch (stmtType) {
 		case assignmentStmt:
-			PKB::getPKBInstance()->addAssignToList(stmtNumber);
-			processAssignment(*it, modifiesList, usesList);
-			processPatternStmt(*it, stmtType);
+			processAssignment(stmt, modifiesList, usesList);
+			processPatternStmt(stmtNo, stmt, stmtType);
 			break;
 
 		case procDeclarationStmt:
-			//PKB::getPKBInstance()->insertProc(getProcName(stmtType, (*it).second));
-			currentProcID = PKB::getPKBInstance()->insertProc(getProcName(stmtType, (*it).second));
-			modifiesList.clear();
-			usesList.clear();
+			currentProcID = PKB::getPKBInstance()->getProcID(getProcName(stmtType, stmt));
 			break;
 
 		case procCallStmt: 
-			PKB::getPKBInstance()->addCallToList(stmtNumber);
-			temp = make_pair(currentProcID, *it);
-			//calledProcList.push_back(temp);
-			modifiesList.clear();
-			usesList.clear();
-			calledProcID = PKB::getPKBInstance()->getProcID(getProcNameCallStmt(stmt));
-			modifiesList.push_back(calledProcID);
-			usesList.push_back(calledProcID);
+			processCallStmt(stmtNo, stmtType, stmt, modifiesList, usesList);
 			break;
 
 		case whileStmt:
-			PKB::getPKBInstance()->addWhileToList(stmtNumber);
-			processPatternStmt(*it, stmtType);
-			//push control variable to useslist
-			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcID, bracesList, calledProcList);
+			processPatternStmt(stmtNo, stmt, stmtType);
+			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcID, bracesList);
 			break;
 
 		case ifStmt: 
-			PKB::getPKBInstance()->addIfToList(stmtNumber);
-			processPatternStmt(*it, stmtType);
-			//push control variable to useslist
-			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcID, bracesList, calledProcList);
+			processPatternStmt(stmtNo, stmt, stmtType);
+			processNestedStmt(it, stmtList, modifiesList, usesList, childrenList, currentProcID, bracesList);
 			break;
-
-		case invalidStmt: break;//for invalid statement
-		default: break;
+		default: break;//should never reach this part
 		}
 
 		//modifies
-		PKB::getPKBInstance()->setModifies(stmtNumber, modifiesList);
+		PKB::getPKBInstance()->setModifies(stmtNo, modifiesList);
 		PKB::getPKBInstance()->setModifies(currentProcID, modifiesList);
 		
 		//uses
-		PKB::getPKBInstance()->setUses(stmtNumber, usesList);
+		PKB::getPKBInstance()->setUses(stmtNo, usesList);
 		PKB::getPKBInstance()->setUses(currentProcID, usesList);
 		
 		//follows
-		if ((prevStmtType != procDeclarationStmt && prevStmtType != elseStmt && prevStmtType != invalidStmt)
-			&& stmtType != procDeclarationStmt && prevStmtLine != stmtNumber) {
-			PKB::getPKBInstance()->setFollows(prevStmtLine, stmtNumber);
+		if (prevStmtType != procDeclarationStmt && stmtType != procDeclarationStmt 
+			&& prevStmtNo != stmtNo && prevStmtType != invalidStmt) {
+			PKB::getPKBInstance()->setFollows(prevStmtNo, stmtNo);
 		}
-		prevStmtLine = stmtNumber;
+		prevStmtNo = stmtNo;
 		prevStmtType = stmtType;
+		
 		//parent
 		if (stmtType == whileStmt || stmtType == ifStmt) {
-			PKB::getPKBInstance()->setParent(stmtNumber, childrenList);
+			PKB::getPKBInstance()->setParent(stmtNo, childrenList);
 		}
-		//process call stmt for modifies, uses, call
-		//processCalledProcList(calledProcList);
 	}
 }
 
-int Parser::countNumOfLeftBraces(std::pair<int,string> pair) {
-	string str = pair.second;
+int Parser::countNumOfLeftBraces(string str) {
 	return count(str.begin(), str.end(), '{');
 }
 
-int Parser::countNumOfRightBraces(std::pair<int, string> pair) {
-	string str = pair.second;
+int Parser::countNumOfRightBraces(string str) {
 	return count(str.begin(), str.end(), '}');
 }
 
-void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::pair<int, string>>& stmtList,
+void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair<int, string>>& stmtList,
 	list<int>& modifiesList, list<int>& usesList, list<int>& childrenList, int currentProcID,
-	list<stack<string>>& braceList, list<pair<int,pair<int, string>>>& calledProcList) {
+	list<stack<string>>& braceList) {
 	stack <string> braces;
 	braces.push("{");
 	braceList.push_back(braces);
 
-	modifiesList.clear();
-	usesList.clear();
-	childrenList.clear();
-
 	list<int> tempModifiesList;
 	list<int> tempUsesList;
 	list<int> tempChildrenList;
-	pair<int, pair<int, string>> temp;
-	int prevStmtLine = -1;
+	int prevStmtNo = -1;
 	int prevStmtType = invalidStmt;
-	int calledProcID;
 
 	//put control variable into UsesList
 	int controlVarID = PKB::getPKBInstance()->insertVar(getControlVarName(getTypeOfStmt((*it).second), (*it).second));
 	usesList.push_back(controlVarID);
 
-	++it;//to skip the starting of this while statement
+	++it;//to skip the starting of this while/if statement
 	while (!braceList.back().empty()) {
-		for (int i = 0; i < countNumOfLeftBraces(*it); ++i) {
+		int stmtNo = (*it).first;
+		string stmt = (*it).second;
+		int stmtType = getTypeOfStmt(stmt);
+		tempModifiesList.clear();
+		tempUsesList.clear();
+		tempChildrenList.clear();
+		PKB::getPKBInstance()->addStmtToList(stmtNo, stmtType);
+
+		for (int i = 0; i < countNumOfLeftBraces(stmt); ++i) {
 			for (list<stack<string>>::iterator iter = braceList.begin(); iter != braceList.end(); ++iter) {
 				if (!(*iter).empty()) {
 					(*iter).push("{");
 				}
 			}
 		}
-		for (int i = 0; i < countNumOfRightBraces(*it); ++i) {
+		for (int i = 0; i < countNumOfRightBraces(stmt); ++i) {
 			for (list<stack<string>>::iterator iter1 = braceList.begin(); iter1 != braceList.end(); ++iter1) {
 				if (!(*iter1).empty()) {
 					(*iter1).pop();
@@ -227,69 +222,54 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::
 			}
 		}
 
-		int stmtNumber = (*it).first;
-		string stmt = (*it).second;
-		int stmtType = getTypeOfStmt(stmt);
-
 		switch (stmtType) {
 		case assignmentStmt:
-			PKB::getPKBInstance()->addAssignToList(stmtNumber);
-			processAssignment(*it, tempModifiesList, tempUsesList);
-			processPatternStmt(*it, stmtType);
+			processAssignment(stmt, tempModifiesList, tempUsesList);
+			processPatternStmt(stmtNo, stmt, stmtType);
 			break;
 
 		case procCallStmt: 
-			PKB::getPKBInstance()->addCallToList(stmtNumber);
-			tempModifiesList.clear();
-			tempUsesList.clear();
-			//temp = make_pair(currentProcID, *it);
-			//calledProcList.push_back(temp);
-			calledProcID = PKB::getPKBInstance()->getProcID(getProcNameCallStmt(stmt));
-			tempModifiesList.push_back(calledProcID);
-			tempUsesList.push_back(calledProcID);
+			processCallStmt(stmtNo, stmtType, stmt, tempModifiesList, tempUsesList);
 			break;
 
 		case whileStmt:
-			PKB::getPKBInstance()->addWhileToList(stmtNumber);
-			processPatternStmt(*it, stmtType);
-			processNestedStmt(it, stmtList, tempModifiesList, tempUsesList, tempChildrenList, currentProcID, braceList, calledProcList);
+			processPatternStmt(stmtNo, stmt, stmtType);
+			processNestedStmt(it, stmtList, tempModifiesList, tempUsesList, tempChildrenList, currentProcID, braceList);
 			break;
 
 		case ifStmt:
-			PKB::getPKBInstance()->addIfToList(stmtNumber);
-			processPatternStmt(*it, stmtType);
-			processNestedStmt(it, stmtList, tempModifiesList, tempUsesList, tempChildrenList, currentProcID, braceList, calledProcList);
-			break;//for if
-
-		case invalidStmt: break;//for invalid statement
+			processPatternStmt(stmtNo, stmt, stmtType);
+			processNestedStmt(it, stmtList, tempModifiesList, tempUsesList, tempChildrenList, currentProcID, braceList);
+			break;
 		}
-		if (stmtNumber != -1) {
-			childrenList.push_back(stmtNumber);
+
+		if (stmtNo != -1) {
+			childrenList.push_back(stmtNo);
 		}
 
 		//modifies
-		PKB::getPKBInstance()->setModifies(stmtNumber, tempModifiesList);
+		PKB::getPKBInstance()->setModifies(stmtNo, tempModifiesList);
 		PKB::getPKBInstance()->setModifies(currentProcID, tempModifiesList);
 		
 		//uses
-		PKB::getPKBInstance()->setUses(stmtNumber, tempUsesList);
+		PKB::getPKBInstance()->setUses(stmtNo, tempUsesList);
 		PKB::getPKBInstance()->setUses(currentProcID, tempUsesList);
 
 		//follows
-		if ((prevStmtType != procDeclarationStmt && prevStmtType != elseStmt && prevStmtType != invalidStmt)
-			&& stmtType != procDeclarationStmt && prevStmtLine != stmtNumber) {
-			PKB::getPKBInstance()->setFollows(prevStmtLine, stmtNumber);
+		if (prevStmtType != procDeclarationStmt && stmtType != procDeclarationStmt 
+			&& prevStmtNo != stmtNo && prevStmtType != invalidStmt) {
+			PKB::getPKBInstance()->setFollows(prevStmtNo, stmtNo);
 		}
-		prevStmtLine = stmtNumber;
+		prevStmtNo = stmtNo;
 		prevStmtType = stmtType;
 
 		//parent
 		if (stmtType == whileStmt || stmtType == ifStmt) {
-			PKB::getPKBInstance()->setParent(stmtNumber, tempChildrenList);
+			PKB::getPKBInstance()->setParent(stmtNo, tempChildrenList);
 		}
 
-		modifiesList.splice(modifiesList.end(), tempModifiesList);
-		usesList.splice(usesList.end(), tempUsesList);
+		modifiesList.insert(modifiesList.end(), tempModifiesList.begin(), tempModifiesList.end());
+		usesList.insert(usesList.end(), tempUsesList.begin(), tempUsesList.end());
 
 		if (!braceList.back().empty()) {
 			++it;
@@ -298,126 +278,183 @@ void Parser::processNestedStmt(list<pair<int, string>>::iterator& it, list<std::
 	braceList.pop_back();
 }
 
-void Parser::processAssignment(std::pair<int,string> pair, list<int>& modifiesList, list<int>& usesList) {
-	string str = pair.second;
-	int stmtNumber = pair.first;
-	string::iterator it;
-	string variable = "";
+void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& usesList) {
+	list<string> varList = parseExpression(str);
+	
+	for (list<string>::iterator it = varList.begin(); it != varList.end(); ++it) {
+		if (isValidName(*it)) {
+			int varID = PKB::getPKBInstance()->insertVar(*it);
 
-	modifiesList.clear();
-	usesList.clear();
-
-	for (it = str.begin(); it != str.end(); ++it) {
-		if (isMathSymbol(*it) || isSemicolon(*it)) {
-			if (isVariable(variable)) {
-				int varID = PKB::getPKBInstance()->insertVar(variable);
-				
-				if (modifiesList.empty()) {
-					modifiesList.push_back(varID);
-				}
-				else {
-					usesList.push_back(varID);
-				}
+			if (modifiesList.empty()) {
+				modifiesList.push_back(varID);
 			}
-			variable = "";
+			else {
+				usesList.push_back(varID);
+			}
 		}
-		else {
-			variable += *it;
+		else if(isConstant(*it)) {
+			PKB::getPKBInstance()->addConstantToList(stoi(*it));
 		}
 	}
 }
 
-bool Parser::isVariable(string str) {
-	return regex_match(str, variableRegex);
+list<string> Parser::parseExpression(string expression) {
+	size_t found = expression.find_first_of("(=+-*);");
+	list<string> result;
+	string temp;
+
+	while (found != string::npos) {
+		temp = expression.substr(0, found);
+		if (temp != "") {
+			result.push_back(temp);
+		}
+
+		expression = expression.substr(found + 1);
+		found = expression.find_first_of("=+-*();");
+	}
+
+	return result;
 }
 
-bool Parser::isSemicolon(char ch) {
-	if (ch == ';') {
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
-//test whether a char is + - * /
-bool Parser::isMathSymbol(char ch) {
-	switch (ch) {
-	case '+': case'-': case'*': case'=':
-		return true;
-	default:
-		return false;
-	}
-}
-
-string Parser::getProcName(int stmtType, string str) {
-	smatch m;
-	if (stmtType == procDeclarationStmt) {
-		regex_search(str, m, procDeclarationRegex);
-	}
-	else {
-		regex_search(str, m, procCallRegex);
-	}
-	return m[1];
-}
-
-int Parser::getTypeOfStmt(string str) {
-	if (regex_match(str, assignmentRegex)) {
-		return assignmentStmt;
-	}
-	else if (regex_match(str, procDeclarationRegex)) {
-		return procDeclarationStmt;
-	}
-	else if (regex_match(str, procCallRegex)) {
-		return procCallStmt;
-	}
-	else if (regex_match(str, whileRegex)) {
-		return whileStmt;
-	}
-	else if (regex_match(str, ifRegex)) {
-		return ifStmt;
-	}
-	else if (regex_match(str, elseRegex)) {
-		return elseStmt;
-	}
-	else {
-		return invalidStmt;
-	}
-}
-
-void Parser::processPatternStmt(pair<int, string> stmt, int stmtType) {
-	//currently it is only for assignment
-	smatch m;
+void Parser::processPatternStmt(int stmtNo, string stmt, int stmtType) {
 	string controlVar;
 	if (stmtType == assignmentStmt) {
-		regex_search(stmt.second, m, assignmentRegex);
-		//1 is the LHS of assignment, 4 is the RHS of assignment
-		PKB::getPKBInstance()->setPattern(stmt.first, m[1], m[4]);
+		size_t i = stmt.find("=");
+		size_t j = stmt.find(";");
+		PKB::getPKBInstance()->setPattern(stmtNo, stmt.substr(0, i), stmt.substr(i + 1, j - i - i));
 	}
 	else if(stmtType == whileStmt) {
-		controlVar = getControlVarName(stmtType, stmt.second);
-		PKB::getPKBInstance()->setPattern(stmt.first, controlVar, "_while_");
+		controlVar = getControlVarName(stmtType, stmt);
+		PKB::getPKBInstance()->setPattern(stmtNo, controlVar, "_while_");
 	}
 	else if (stmtType == ifStmt) {
-		controlVar = getControlVarName(stmtType, stmt.second);
-		PKB::getPKBInstance()->setPattern(stmt.first, controlVar, "_if_");
+		controlVar = getControlVarName(stmtType, stmt);
+		PKB::getPKBInstance()->setPattern(stmtNo, controlVar, "_if_");
 	}
+}
+
+void Parser::processCallStmt(int stmtNo, int stmtType, string stmt,
+	list<int>& modifiesList, list<int>& usesLise) {
+	int calledProcID = PKB::getPKBInstance()->getProcID(getProcName(stmtType, stmt));
+	modifiesList.push_back(calledProcID);
+	usesLise.push_back(calledProcID);
+	PKB::getPKBInstance()->addToCallStmtProcMap(stmtNo, calledProcID);
 }
 
 string Parser::getControlVarName(int stmtType, string stmt) {
-	smatch m;
+	size_t i;
 	if (stmtType == whileStmt) {
-		regex_search(stmt, m, whileRegex);
-		return m[1];
+		i = stmt.find("{");
+		return stmt.substr(5, i - 5);
 	}
 	else {
-		regex_search(stmt, m, ifRegex);
-		return m[1];
+		i = stmt.find("{");
+		return stmt.substr(2, i - 6);
 	}
 }
 
-string Parser::getProcNameCallStmt(string str) {
-	smatch m;
-	regex_search(str, m, procCallRegex);
-	return m[1];
+string Parser::getProcName(int stmtType, string stmt) {
+	size_t i;
+	if (stmtType == procCallStmt) {
+		i = stmt.find(";");
+		return stmt.substr(4, i - 4);
+	}
+	else {
+		i = stmt.find("{");
+		return stmt.substr(9, i - 9);
+	}
+}
+
+int Parser::getTypeOfStmt(string str) {
+	size_t i, j;
+
+	if (count(str.begin(), str.end(), '=') == 1) {
+		i = str.find(";");
+		j = str.find("=");
+		if (isValidName(str.substr(0, j))
+			&& isAllClosingBraces(str.substr(i + 1))) {
+			return assignmentStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 9) == "procedure") {
+		i = str.find("{");
+		if (isValidName(str.substr(9, i - 9))) {
+			return procDeclarationStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 4) == "call") {
+		i = str.find(";");
+		if (isValidName(str.substr(4, i - 4)) &&
+			isAllClosingBraces(str.substr(i + 1))) {
+			return procCallStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 5) == "while") {
+		i = str.find("{");
+		if (isValidName(str.substr(5, i - 5))) {
+			return whileStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str.substr(0, 2) == "if") {
+		i = str.find("{");
+		if (str.substr(i - 4, 4) == "then" && isValidName(str.substr(2, i - 6))) {
+			return ifStmt;
+		}
+		else {
+			return invalidStmt;
+		}
+	}
+
+	if (str == "else{") {
+		return elseStmt;
+	}
+
+	return invalidStmt;
+}
+
+bool Parser::isConstant(string str) {
+	for (char& c : str) {
+		if (!isdigit(c)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool Parser::isValidName(string str) {
+	if (!isalpha(str.at(0))) {
+		return false;
+	}
+
+	for (char& c : str) {
+		if (!isalnum(c)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool Parser::isAllClosingBraces(string str) {
+	if (!str.empty()) {
+		return str.find_first_not_of("}") == string::npos;
+	}
+
+	return true;
 }

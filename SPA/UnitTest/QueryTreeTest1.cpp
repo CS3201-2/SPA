@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "..\SPA\QueryTree.h"
+#include "QueryTree.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace QueryTreeTest
+namespace UnitTest
 {
-	TEST_CLASS(testQueryTree) 
+	TEST_CLASS(queryTreeTest) 
 	{
 	public:
 
