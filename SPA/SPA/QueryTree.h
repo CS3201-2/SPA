@@ -13,6 +13,7 @@ private:
 	vector<vector<string>> withTree;
 	vector<vector<string>> variableTree;
 	vector<vector<string>> selectTree;
+	vector<vector<string>> suchThatConstTree;
 
 public:
 	QueryTree();
@@ -32,6 +33,8 @@ public:
 
 	//Getting the number of relationships that fall under the such that clause
 	int getSuchThatSize();
+	//Getting the relationships that are under the such that clause but are constants
+	int getSuchThatConstSize();
 	//Getting the number of relationships that are of Pattern types
 	int getPatternSize();
 	//Getting the number of variables
@@ -45,6 +48,7 @@ public:
 	//eg. To see the first relationship under the such that tree, we call getSuchThatQuery(0) and assign it to a vector
 	//to read the information
 	vector<string> getSuchThatQuery(int queryPos);
+	vector<string> getSuchThatConstQuery(int queryPos);
 	vector<string> getPatternQuery(int queryPos);
 	vector<string> getVariableQuery(int queryPos);
 	vector<string> getSelectQuery(int queryPos);
