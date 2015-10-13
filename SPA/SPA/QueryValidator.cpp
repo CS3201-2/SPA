@@ -5,7 +5,7 @@
 const char SYMBOL_SEMICOLON = ';';
 const char SYMBOL_SPACE = ' ';
 const char SYMBOL_COMMA = ',';
-//const char SYMBOL_UNDERSCORE = '-';
+//const char SYMBOL_UNDERSCORE = '_';
 //const char SYMBOL_QUOTE = '\"';
 const char SYMBOL_OPEN_BRACKET = '(';
 const char SYMBOL_CLOSE_BRACKET = ')';
@@ -13,9 +13,9 @@ const char SYMBOL_EQUALS = '=';
 const char SYMBOL_FULL_STOP = '.';
 
 const vector<string> KEYWORDS = { "constant", "stmt", "assign", "while", "if",
-"procedure", "call", "prog_line", "select", "modifies", "uses", "parent",
-"parent*", "follows", "follows*", "pattern", "next", "next*", "calls",
-"calls*", "affects", "affects*", "with", "and", "such", "that" };
+	"procedure", "call", "prog_line", "select", "modifies", "uses", "parent",
+	"parent*", "follows", "follows*", "pattern", "next", "next*", "calls",
+	"calls*", "affects", "affects*", "with", "and", "such", "that" };
 
 const string VARTYPE_VARIABLE = "variable";
 const string VARTYPE_STRING = "string";
@@ -381,8 +381,7 @@ bool QueryValidator::parsePatternType(string word, string &relType, string &syn,
  return true;
 }
 
-bool QueryValidator::parsePatternArg1(string relType, string &arg,
-	string &varType) {
+bool QueryValidator::parsePatternArg1(string relType, string &arg, string &varType) {
 
 	if (isVarNameExists(arg) && getVarType(arg).compare(VARTYPE_VARIABLE) == 0) {
 		if (!r.isArgValid(relType, 1, getVarType(arg))) {
@@ -413,8 +412,7 @@ bool QueryValidator::parsePatternArg1(string relType, string &arg,
 	return true;
 }
 
-bool QueryValidator::parsePatternArg2(string relType,
-	string &arg, string &varType) {
+bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varType) {
 
 	//string value;
 	if (arg.size() >= 5) {
@@ -741,6 +739,16 @@ bool QueryValidator::isVarNameExists(string varName) {
 	}
 
 	return true;
+}
+
+bool QueryValidator::isValidExp(string exp)
+{
+	//cout << "exp = " << exp<<endl;
+	//regex a("(^[[:alpha:]])([[:alnum:]]+)*$");
+	const regex a("(([[:alpha:]])([[:alnum:]]+)*)(.*)\\}*");
+	//regex a("^( ( ([[:alpha:]])([[:alnum:]]*) | [[:digit:]]+) ( (\+ | - | \*) ( ([[:alpha:]])([[:alnum:]]*) | [[:digit:]]+) )* )$");
+	//regex a("^( ([[:alpha:]])([[:alnum:]]+)* )$");
+	return regex_match(exp, a);
 }
 
 string QueryValidator::getVarType(string varName) {

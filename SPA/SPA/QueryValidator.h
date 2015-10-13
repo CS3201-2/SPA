@@ -42,6 +42,7 @@ private:
 	//string QueryValidator::removeSpaces(string line);
 	string stringToLower(string str);
 	bool isVarNameExists(string varName);
+	
 	string getVarType(string varName);
 	bool isStringVar(string str);
 	bool isInteger(string str);
@@ -50,5 +51,6 @@ public:
 	//void areValidQueries(list<string> queries);
 	bool isValidDecAndQuery(string query);
 	QueryTree getQueryTree(); 
+	bool isValidExp(string exp);
 };
 #pragma once
