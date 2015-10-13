@@ -443,8 +443,9 @@ bool Checker::isAllClosingBraces(string str) {
 	return true;
 }
 
+//input will not have ;
 vector<string> Checker::parseExpression(string expression) {
-	size_t found = expression.find_first_of("(=+-*);");
+	size_t found = expression.find_first_of("(=+-*)");
 	vector<string> result;
 	string temp;
 
@@ -455,12 +456,9 @@ vector<string> Checker::parseExpression(string expression) {
 		}
 
 		temp = expression.at(found);
-		if (temp != ";") {
-			result.push_back(temp);
-		}
 
 		expression = expression.substr(found + 1);
-		found = expression.find_first_of("=+-*();");
+		found = expression.find_first_of("=+-*()");
 	}
 
 	if (!expression.empty()) {

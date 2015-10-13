@@ -292,6 +292,7 @@ void Parser::processAssignment(string str, list<int>& modifiesList, list<int>& u
 	}
 }
 
+//input has ;, but it does not matter, cause only variables are returned
 list<string> Parser::parseExpression(string expression) {
 	size_t found = expression.find_first_of("(=+-*);");
 	list<string> result;

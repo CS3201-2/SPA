@@ -152,6 +152,7 @@ string Pattern::convertToPostFix(string str) {
 	return result;
 }
 
+//input will not have ;
 list<string> Pattern::parseExpression(string expression) {
 	size_t found = expression.find_first_of("(=+-*)");
 	list<string> result;
@@ -169,9 +170,6 @@ list<string> Pattern::parseExpression(string expression) {
 		}
 
 		temp = expression.at(found);
-		if (temp != ";") {
-			result.push_back(temp);
-		}
 
 		expression = expression.substr(found + 1);
 		found = expression.find_first_of("=+-*()");
