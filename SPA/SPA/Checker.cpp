@@ -456,6 +456,7 @@ vector<string> Checker::parseExpression(string expression) {
 		}
 
 		temp = expression.at(found);
+		result.push_back(temp);
 
 		expression = expression.substr(found + 1);
 		found = expression.find_first_of("=+-*()");
