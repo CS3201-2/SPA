@@ -8,7 +8,7 @@ CFG::CFG()
 {
 }
 
-void CFG::buildGraph(list<pair<int, string>> codeLst)
+void CFG::buildGraph(list<Statement> codeLst)
 {
 	_next.resize(codeLst.size(), list<int>());
 	_statBuffer.clear();
@@ -198,49 +198,6 @@ CFG::~CFG()
 {
 }
 
-int CFG::findNode(int i)
-{
-	int begin = 0;
-	int end = _nodeMap.size()-1;
-	int mid = (begin + end) / 2;
-	CFGNode* currentNode = NULL;
-	if (i < begin || i > end)//i is illegal
-	{
-		return -1;
-	}
-	while (begin < end)
-	{
-		currentNode = _nodeMap.at(mid);
-		if (currentNode->contains(i))//find the node
-		{
-			return mid;
-		}
-		else if (currentNode->isLargerThan(i))//go to left part
-		{
-			end = mid - 1;
-			mid = (begin + end) / 2;
-		}
-		else if (currentNode->isSmallerThan(i))//go to right part
-		{
-			begin = mid + 1;
-			mid = (begin + end) / 2;
-		}
-		else//cannot be like this
-		{
-			throw "Something wrong here--->CFG findNode() 1";
-		}
-	}
-	currentNode = _nodeMap.at(mid);
-	if (currentNode->contains(i))//find the node
-	{
-		return mid;
-	}
-	else
-	{
-		throw "Something wrong here--->CFG findNode() 2";
-	}
-}
-
 int CFG::extractBuffer()
 {
 	CFGNode* temp = NULL;
@@ -276,13 +233,13 @@ int CFG::createDummyNode()
 	return _nodeIndex - 1;
 }
 
-int CFG::getType(string str)
+int CFG::getType(Statement s)
 {
-	if (isIfStmt(str))
+	if (isIfStmt(s))
 	{
 		return TYPE_THEN;
 	}
-	else if (isWhileStmt(str))
+	else if (isWhileStmt(s))
 	{
 		return TYPE_WHILE;
 	}
@@ -328,9 +285,9 @@ list<int> CFG::traverse(int index, vector<list<int>> table)
 
 void CFG::solveCode()
 {
-	string codeContent = _codeIterator->second;
-	int codeIndex = _codeIterator->first;
-	if (isContainer(codeContent))
+	string codeContent = _codeIterator->getContent();
+	int codeIndex = _codeIterator->getNumber();
+	if (isContainer(*_codeIterator))
 	{
 		int tempNodeIndex = extractBuffer();
 		int tempContainerNodeIndex = createContainerNode(codeIndex);
@@ -338,9 +295,9 @@ void CFG::solveCode()
 		{
 			solveNode(tempNodeIndex, 0);
 		}
-		solveNode(tempContainerNodeIndex, getType(codeContent));
+		solveNode(tempContainerNodeIndex, getType(*_codeIterator));
 	}
-	else if (isProc(codeContent))
+	else if (isProc(*_codeIterator))
 	{
 		initializeStack();
 		_statBuffer.clear();
@@ -518,24 +475,23 @@ void CFG::storeNext(int index)
 	_size++;
 }
 
-bool CFG::isContainer(string str)
+bool CFG::isContainer(Statement s)
 {
-	return isIfStmt(str) || isWhileStmt(str);
+	return s.getType()==ifStmt || s.getType()==whileStmt;
 }
 
-bool CFG::isIfStmt(string str)
+bool CFG::isIfStmt(Statement s)
 {
-	bool result = regex_match(str, REGEX_IF);
-	return result;
+	return s.getType() == ifStmt;
 }
 
-bool CFG::isWhileStmt(string str)
+bool CFG::isWhileStmt(Statement s)
 {
-	return regex_match(str, REGEX_WHILE);;
+	return s.getType() == whileStmt;
 }
 
-bool CFG::isProc(string str)
+bool CFG::isProc(Statement s)
 {
-	return regex_match(str, REGEX_PROC);
+	return s.getType() == procDeclarationStmt;
 }
 

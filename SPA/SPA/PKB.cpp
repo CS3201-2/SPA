@@ -239,9 +239,7 @@ void PKB::logCallStmtProcMap() {
 }
 
 void PKB::buildCFG(list<Statement> sourceCodeList) {
-	//cfg.buildGraph(sourceCodeList);
-	list<pair<int, string>> temp;
-	cfg.buildGraph(temp);
+	cfg.buildGraph(sourceCodeList);
 }
 
 
