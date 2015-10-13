@@ -345,16 +345,20 @@ bool Checker::processNestedStmt(list<pair<int, string>>::iterator& it, list<pair
 
 
 bool Checker::isAssignmentValid(string assignStmt) {
-	vector<string> tokens = parseExpression(assignStmt);
+	//trim assignment up to ;
+	size_t t = assignStmt.find(";");
+	string trimmedStmt = assignStmt.substr(0, t);
+
+	vector<string> tokens = parseExpression(trimmedStmt);
 	string LHS = tokens.at(0);
 	
 	if (!isValidName(LHS)) {
-		SPALog::log("LHS of expression is not a variable: "+ assignmentStmt);
+		SPALog::log("LHS of expression is not a variable: "+ assignStmt);
 		return false;
 	}
 
 	if (isOperator(tokens.at(2)) || isOperator(tokens.back())) {
-		SPALog::log("expression starts with an operator: " + assignmentStmt);
+		SPALog::log("expression starts or ends with an operator: " + assignStmt);
 		return false;
 	}
 
@@ -363,19 +367,19 @@ bool Checker::isAssignmentValid(string assignStmt) {
 		if (!isOperator(tokens.at(i)) && !isValidName(tokens.at(i)) && 
 			!isParenthesis(tokens.at(i)) && !isConstant(tokens.at(i))) {
 			SPALog::log("most probably, this case is invalid variable name at RHS of expression: "
-				+ assignmentStmt);
+				+ assignStmt + "\nvariable name is " + tokens.at(i));
 			return false;
 		}
 
 		if (isOperator(prevToken) && isOperator(tokens.at(i))) {
-			SPALog::log("two consecutive operators in an assignment: " + assignmentStmt);
+			SPALog::log("two consecutive operators in an assignment: " + assignStmt);
 			return false;
 		}
 		prevToken = tokens.at(i);
 	}
 
 	if (countNumOfLeftParenthesis(assignStmt) != countNumOfRightParenthesis(assignStmt)) {
-		SPALog::log("unmatch of ()" + assignmentStmt);
+		SPALog::log("unmatch of (): " + assignStmt);
 		return false;
 	}
 
