@@ -384,26 +384,26 @@ bool QueryValidator::parsePatternType(string word, string &relType, string &syn,
 bool QueryValidator::parsePatternArg1(string relType, string &arg, string &varType) {
 
 	if (isVarNameExists(arg) && getVarType(arg).compare(VARTYPE_VARIABLE) == 0) {
-		if (!r.isArgValid(relType, 1, getVarType(arg))) {
+		/*if (!r.isArgValid(relType, 1, getVarType(arg))) {
 			return false;
-		} else {
+		} else {*/
 			varType = VARTYPE_VARIABLE;
-		}
+		//}
 
 	} else if (isStringVar(arg)) {
-		if (!r.isArgValid(relType, 1, VARTYPE_STRING)) {
+		/*if (!r.isArgValid(relType, 1, VARTYPE_STRING)) {
 			return false;
-		} else {
+		} else {*/
 			arg = arg.substr(1, arg.size() - 2);
 			varType = VARTYPE_STRING;
-		}
+		//}
 
 	} else if (arg.compare("_") == 0) {
-		if (!r.isArgValid(relType, 1, VARTYPE_ALL)) {
+		/*if (!r.isArgValid(relType, 1, VARTYPE_ALL)) {
 			return false;
-		} else {
+		} else {*/
 			varType = VARTYPE_ALL;
-		}
+		//}
 
 	} else {
 		return false;
@@ -421,7 +421,11 @@ bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varTy
 
 			arg = arg.substr(2, arg.size() - 4);
 
-			if (isValidVariableName(arg)) {
+			if (isValidExpression(arg)) {
+				varType = VARTYPE_SUBSTRING;
+			}
+			
+			/*if (isValidVariableName(arg)) {
 				if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
 					return false;
 				} else {
@@ -434,12 +438,15 @@ bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varTy
 				} else {
 					varType = VARTYPE_SUBSTRING;
 				}
-			}
+			}*/
 		}
 	} else if (arg.at(0) == '\"' && arg.at(arg.size() - 1) == '\"') {
 		arg = arg.substr(1, arg.size() - 2);
 
-		if (isValidVariableName(arg)) {
+		if (isValidExpression(arg)) {
+			varType = VARTYPE_SUBSTRING;
+		}
+		/*if (isValidVariableName(arg)) {
 			if (!r.isArgValid(relType, 2, VARTYPE_STRING)) {
 				return false;
 			} else {
@@ -451,13 +458,13 @@ bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varTy
 			} else {
 				varType = VARTYPE_STRING;
 			}
-		}
+		}*/
 	} else if (arg.compare("_") == 0) {
-		if (!r.isArgValid(relType, 2, VARTYPE_ALL)) {
+		/*if (!r.isArgValid(relType, 2, VARTYPE_ALL)) {
 			return false;
-		} else {
+		} else {*/
 			varType = VARTYPE_ALL;
-		}
+		//}
 	} else {
 		return false;
 	}
@@ -741,7 +748,7 @@ bool QueryValidator::isVarNameExists(string varName) {
 	return true;
 }
 
-bool QueryValidator::isValidExp(string exp)
+/*bool QueryValidator::isValidExp(string exp)
 {
 	//cout << "exp = " << exp<<endl;
 	//regex a("(^[[:alpha:]])([[:alnum:]]+)*$");
@@ -749,7 +756,7 @@ bool QueryValidator::isValidExp(string exp)
 	//regex a("^( ( ([[:alpha:]])([[:alnum:]]*) | [[:digit:]]+) ( (\+ | - | \*) ( ([[:alpha:]])([[:alnum:]]*) | [[:digit:]]+) )* )$");
 	//regex a("^( ([[:alpha:]])([[:alnum:]]+)* )$");
 	return regex_match(exp, a);
-}
+}*/
 
 string QueryValidator::getVarType(string varName) {
 	return varMap.find(varName)->second;
@@ -786,4 +793,83 @@ bool QueryValidator::isPositiveInteger(string str) {
 	strtol(str.c_str(), &p, 10);
 
 	return (*p == 0);
+}
+
+vector<string> QueryValidator::parseExpression(string expression) {
+	size_t found = expression.find_first_of("(+-*);");
+	vector<string> result;
+	string temp;
+
+	while (found != string::npos) {
+		temp = expression.substr(0, found);
+		
+		if (temp != "") {
+			result.push_back(temp);
+		}
+		//cout << temp;
+		temp = expression.at(found);
+		//if (temp != ";") {
+			result.push_back(temp);
+		//}
+		//cout << temp;
+		expression = expression.substr(found + 1);
+		found = expression.find_first_of("+-*();");
+	}
+
+	//cout << expression<<endl;
+	if (!expression.empty()) {
+		result.push_back(expression);
+	}
+
+	/*for (int i = 0; i < result.size(); i++) {
+		cout << result.at(i)<<endl;
+	}*/
+	return result;
+}
+
+bool QueryValidator::isValidExpression(string expression) {
+	vector<string> tokens = parseExpression(expression);
+
+	if (isOperator(tokens.at(0))) {
+		//cout << "beg with op";
+		return false;
+	}
+
+	string prevToken = "dummy";
+	for (int i = 0; i < tokens.size(); i++) {
+		if (!isOperator(tokens.at(i)) && !isValidVariableName(tokens.at(i)) &&
+			!isParenthesis(tokens.at(i)) && !isPositiveInteger(tokens.at(i))) {
+			//cout << "invalid char";
+			return false;
+		}
+
+		if (isOperator(prevToken) && isOperator(tokens.at(i))) {
+			//cout << "2 ops";
+			return false;
+		}
+		prevToken = tokens.at(i);
+	}
+
+	if (countNumOfLeftParenthesis(expression) != countNumOfRightParenthesis(expression)) {
+		//cout << "unamatched ()";
+		return false;
+	}
+
+	return true;
+}
+
+bool QueryValidator::isOperator(string str) {
+	return str == "+" || str == "-" || str == "*";
+}
+
+bool QueryValidator::isParenthesis(string str) {
+	return str == "(" || str == ")";
+}
+
+int QueryValidator::countNumOfLeftParenthesis(string stmt) {
+	return count(stmt.begin(), stmt.end(), '(');
+}
+
+int QueryValidator::countNumOfRightParenthesis(string stmt) {
+	return count(stmt.begin(), stmt.end(), ')');
 }

@@ -47,10 +47,17 @@ private:
 	bool isStringVar(string str);
 	bool isInteger(string str);
 	bool isPositiveInteger(string str);
+	vector<string> parseExpression(string expression);
+	
+	bool isOperator(string str);
+	bool isParenthesis(string str); 
+	int countNumOfLeftParenthesis(string stmt);
+	int countNumOfRightParenthesis(string stmt);
+
 public:
 	//void areValidQueries(list<string> queries);
 	bool isValidDecAndQuery(string query);
 	QueryTree getQueryTree(); 
-	bool isValidExp(string exp);
+	bool isValidExpression(string expression);
 };
 #pragma once

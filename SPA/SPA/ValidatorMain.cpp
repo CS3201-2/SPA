@@ -1,4 +1,4 @@
-/*#include "QueryValidator.h"
+#include "QueryValidator.h"
 #include "RelationshipTable.h"
 #include <iostream>
 
@@ -24,12 +24,17 @@ int main() {
 		str17 = " ",
 		str18 = "assign a; variable v; Select a pattern a(v, _)",
 		str19 = "constant c; stmt s; Select s with s.stmt# = c.value",
-		str20 = "procedure p; Select p with p.procName = \"SUN\"";
+		str20 = "procedure 1p; Select 1p with 1p.procName = \"SUN\"",
+		str21 = "while w; assign a; Select w such that Follows(w, a)";
 
 	//cout << str << "\n";
 
-	q.isValidDecAndQuery(str20);
+	//q.isValidDecAndQuery(str21);
+	//cout << q.isValidExpression("x23*123-7y")<<endl; //0
+	//cout << q.isValidExpression("123+-x23*123") << endl; //0
+	cout << q.isValidExpression("(x+123+y)") << endl; //1
+	//cout << q.isValidExpression("x23**123") << endl; //0
 	cin.ignore();
 	cin.get();
 	return 0;
-}*/
+}
