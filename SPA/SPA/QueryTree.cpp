@@ -15,26 +15,22 @@ QueryTree::QueryTree() {
 void QueryTree::insertSuchThat(string rel, vector<string> arrVar, vector<string> arrType) {
 	vector<string> tempVector;
 	vector<string> tempConstVector;
-	int i = 0;
-	while (i < arrVar.size()) {
-		if ((arrType.at(i) == "string" || arrType.at(i) == "number") && (arrType.at(i + 1) == "string" || arrType.at(i + 1) == "number")) {
-			tempConstVector.push_back(rel);
-			tempConstVector.push_back(arrVar.at(i));
-			tempConstVector.push_back(arrType.at(i));
-			tempConstVector.push_back(arrVar.at(i+1));
-			tempConstVector.push_back(arrType.at(i+1));
-		}
-		else {
-			tempVector.push_back(rel);
-			tempVector.push_back(arrVar.at(i));
-			tempVector.push_back(arrType.at(i));
-			tempVector.push_back(arrVar.at(i+1));
-			tempVector.push_back(arrType.at(i+1));
-		}
-		i = i + 2;
+	if ((arrType.at(0) == "string" || arrType.at(0) == "number") && (arrType.at(1) == "string" || arrType.at(1) == "number")) {
+		tempConstVector.push_back(rel);
+		tempConstVector.push_back(arrVar.at(0));
+		tempConstVector.push_back(arrType.at(0));
+		tempConstVector.push_back(arrVar.at(1));
+		tempConstVector.push_back(arrType.at(1));
+		qTree.at(5).push_back(tempConstVector);
 	}
-	qTree.at(1).push_back(tempVector);
-	qTree.at(5).push_back(tempConstVector);
+	else {
+		tempVector.push_back(rel);
+		tempVector.push_back(arrVar.at(0));
+		tempVector.push_back(arrType.at(0));
+		tempVector.push_back(arrVar.at(1));
+		tempVector.push_back(arrType.at(1));
+		qTree.at(1).push_back(tempVector);
+	}
 }
 
 void QueryTree::insertPattern(string syn, string synType, vector<string> arrPtrn, vector<string> ptrnType) {
@@ -65,20 +61,22 @@ void QueryTree::insertSelect(string var, string varType) {
 void QueryTree::insertWith(string rel, vector<string> arrWith, vector<string> withType) {
 	vector<string> tempVector;
 	vector<string> tempConstVector;
-	for (int i = 0; i < arrWith.size(); i++) {
-		if (withType.at(i) == "string" || withType.at(i) == "number") {
-			tempConstVector.push_back(rel);
-			tempConstVector.push_back(arrWith.at(i));
-			tempConstVector.push_back(withType.at(i));
-		}
-		else {
-			tempVector.push_back(rel);
-			tempVector.push_back(arrWith.at(i));
-			tempVector.push_back(withType.at(i));
-		}
+	if ((withType.at(0) == "string" || withType.at(0) == "number") && (withType.at(1) == "string" || withType.at(1) == "number")) {
+		tempConstVector.push_back(rel);
+		tempConstVector.push_back(arrWith.at(0));
+		tempConstVector.push_back(withType.at(0));
+		tempConstVector.push_back(arrWith.at(1));
+		tempConstVector.push_back(withType.at(1));
+		qTree.at(6).push_back(tempConstVector);
 	}
-	qTree.at(4).push_back(tempVector);
-	qTree.at(6).push_back(tempConstVector);
+	else {
+		tempVector.push_back(rel);
+		tempVector.push_back(arrWith.at(0));
+		tempVector.push_back(withType.at(0));
+		tempVector.push_back(arrWith.at(1));
+		tempVector.push_back(withType.at(1));
+		qTree.at(4).push_back(tempVector);
+	}
 }
 
 //Obtaining the size of the tree of each of the query types

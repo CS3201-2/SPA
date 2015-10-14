@@ -20,6 +20,7 @@ private:
 	QueryTree queryTree;
 	list<ResultTable> resultList;
 	bool isInList(list<int>, int);
+	bool isResultEmpty(ResultTable tempResult);
 	list<int> getList(string listName);
 
 	ResultTable processModifies(vector<string> tempString);
@@ -35,14 +36,18 @@ private:
 
 	vector<string> getSelectClause(int index);
 	vector<string> getWithClause(int index);
+	vector<string> getWithConstClause(int index);
 	vector<string> getSuchThatClause(int index);
+	vector<string> getSuchThatConstClause(int index);
 	vector<string> getPatternClause(int index);
 	vector<string> getVarDeclaration(int index);
 
-	void processSuchThatClause(vector<string> tempString);
-	void processPatternClause(vector<string> tempString);
-	void processWithClause(vector<string> tempString);
-	void processSelectClause(vector<string> tempString);
+	bool processSuchThatClause(vector<string> tempString);
+	bool processSuchThatConstClause(vector<string> tempString);
+	bool processPatternClause(vector<string> tempString);
+	bool processWithClause(vector<string> tempString);
+	bool processWithConstClause(vector<string> tempString);
+	bool processSelectClause(vector<string> tempString);
 
 	ResultTable processNumberWith(vector<string> tempString);
 	ResultTable processNameWith(vector<string> tempString);

@@ -13,23 +13,23 @@ namespace UnitTest
 	public:
 
 		TEST_METHOD_INITIALIZE(buildPKB) {
-				PKB::getPKBInstance()->addStmtToList(3, 3);
+				PKB::getPKBInstance()->addStmtToList(3, whileStmt);
 				//assignList
-				PKB::getPKBInstance()->addStmtToList(1, 0);
-				PKB::getPKBInstance()->addStmtToList(2, 0);
-				PKB::getPKBInstance()->addStmtToList(4, 0);
-				PKB::getPKBInstance()->addStmtToList(6, 0);
-				PKB::getPKBInstance()->addStmtToList(8, 0);
-				PKB::getPKBInstance()->addStmtToList(9, 0);
-				PKB::getPKBInstance()->addStmtToList(10, 0);
-				PKB::getPKBInstance()->addStmtToList(11, 0);
-				PKB::getPKBInstance()->addStmtToList(12, 0);
-				PKB::getPKBInstance()->addStmtToList(13, 0);
-				PKB::getPKBInstance()->addStmtToList(14, 0);
+				PKB::getPKBInstance()->addStmtToList(1, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(2, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(4, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(6, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(8, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(9, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(10, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(11, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(12, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(13, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(14, assignmentStmt);
 				//callList
-				PKB::getPKBInstance()->addStmtToList(5, 2);
+				PKB::getPKBInstance()->addStmtToList(5, procCallStmt);
 				//ifList
-				PKB::getPKBInstance()->addStmtToList(7, 4);
+				PKB::getPKBInstance()->addStmtToList(7, ifStmt);
 				//constantList
 				PKB::getPKBInstance()->addConstantToList(0);
 				PKB::getPKBInstance()->addConstantToList(1);
@@ -230,25 +230,25 @@ namespace UnitTest
 				de.setReverseMap();
 
 				//next and nextStar
-				list<pair<int, string>> sourceList;
-				pair<int, string> temp;
-				temp.first = -1; temp.second = "procedureSecond{"; sourceList.push_back(temp);
-				temp.first = 1; temp.second = "x=0;"; sourceList.push_back(temp);
-				temp.first = 2; temp.second = "i=5;"; sourceList.push_back(temp);
-				temp.first = 3; temp.second = "whilei{"; sourceList.push_back(temp);
-				temp.first = 4; temp.second = "x=x+2*y;"; sourceList.push_back(temp);
-				temp.first = 5; temp.second = "callThird;"; sourceList.push_back(temp);
-				temp.first = 6; temp.second = "i=i-1;}"; sourceList.push_back(temp);
-				temp.first = 7; temp.second = "ifxthen{"; sourceList.push_back(temp);
-				temp.first = 8; temp.second = "x=x+1;}"; sourceList.push_back(temp);
-				temp.first = -1; temp.second = "else{"; sourceList.push_back(temp);
-				temp.first = 9; temp.second = "z=1;}"; sourceList.push_back(temp);
-				temp.first = 10; temp.second = "z=z+x+i;"; sourceList.push_back(temp);
-				temp.first = 11; temp.second = "y=z+2;"; sourceList.push_back(temp);
-				temp.first = 12; temp.second = "x=x*y+z;}"; sourceList.push_back(temp);
-				temp.first = -1; temp.second = "procedureThird{"; sourceList.push_back(temp);
-				temp.first = 13; temp.second = "z=5;"; sourceList.push_back(temp);
-				temp.first = 14; temp.second = "v=z;}"; sourceList.push_back(temp);
+				list<Statement> sourceList;
+				Statement temp= Statement();
+				temp.setNumber(-1); temp.setContent("procedureSecond{"); temp.setType(procDeclarationStmt); sourceList.push_back(temp);
+				temp.setNumber(1); temp.setContent("x=0;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(2); temp.setContent("i=5;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(3); temp.setContent("whilei{"); temp.setType(whileStmt); sourceList.push_back(temp);
+				temp.setNumber(4); temp.setContent("x=x+2*y;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(5); temp.setContent("callThird;"); temp.setType(procCallStmt); sourceList.push_back(temp);
+				temp.setNumber(6); temp.setContent("i=i-1;}"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(7); temp.setContent("ifxthen{"); temp.setType(ifStmt); sourceList.push_back(temp);
+				temp.setNumber(8); temp.setContent("x=x+1;}"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(-1); temp.setContent("else{"); temp.setType(elseStmt); sourceList.push_back(temp);
+				temp.setNumber(9); temp.setContent("z=1;}"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(10); temp.setContent("z=z+x+i;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(11); temp.setContent("y=z+2;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(12); temp.setContent("x=x*y+z;}"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(-1); temp.setContent("procedureThird{"); temp.setType(procDeclarationStmt); sourceList.push_back(temp);
+				temp.setNumber(13); temp.setContent("z=5;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(14); temp.setContent("v=z;}"); temp.setType(assignmentStmt); sourceList.push_back(temp);
 
 				PKB::getPKBInstance()->buildCFG(sourceList);
 			
@@ -285,6 +285,7 @@ namespace UnitTest
 			qt.insertSuchThat("modifies", arg, argType);
 
 			qt.insertSelect("s", "stmt");
+
 			QueryEvaluator qe = (qt);
 			list<string> result = qe.evaluate();
 			list<string> expected;
