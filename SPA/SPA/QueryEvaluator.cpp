@@ -75,9 +75,9 @@ list<string> QueryEvaluator::evaluate() {
 	string str;
 	str = "splited table\n";
 	for (auto& x : resultList) {
-		for (int i = 0; i < x.result.size(); ++i) {
-			for (int j = 0; j < x.result[i].size(); ++j) {
-				str += to_string(x.result[i][j]) + ", ";
+		for (int i = 0; i < x.getResult().size(); ++i) {
+			for (int j = 0; j < x.getResult()[i].size(); ++j) {
+				str += to_string(x.getResult()[i][j]) + ", ";
 			}
 			str += "\n";
 		}
