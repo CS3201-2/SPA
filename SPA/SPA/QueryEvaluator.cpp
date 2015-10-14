@@ -31,6 +31,8 @@ list<string> QueryEvaluator::evaluate() {
 	// first get selecet query, for iteration 1, only select first clause. hard code here
 	vector<string> select = getSelectClause(0);
 	int index;
+	string log = "Constant such that size is " + to_string(queryTree.getSuchThatConstSize());
+	SPALog::log(log);
 	for (index = 0; index < queryTree.getSuchThatConstSize(); index++) {
 		if (!processSuchThatConstClause(getSuchThatConstClause(index))) {
 			list<string> empty;
@@ -1717,6 +1719,38 @@ bool QueryEvaluator::processWithClause(vector<string> tempString) {
 	}
 	resultList.push_back(tempResult);
 	return true;
+}
+
+bool QueryEvaluator::processWithConstClause(vector<string> tempString) {
+	string synType = tempString.at(1);
+	string arg1 = tempString.at(2);
+	string arg1Type = tempString.at(3);
+	string arg2 = tempString.at(4);
+	string arg2Type = tempString.at(5);
+
+	string log = "With constant clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
+	SPALog::log(log);
+
+	ResultTable tempResult;
+
+	if (synType == "withNumber") {
+		tempResult = processNumberWith(tempString);
+	}
+	else if (synType == "withName") {
+		tempResult = processNameWith(tempString);
+	}
+	else {
+		SPALog::log("Wrong with type!");
+		return false;
+	}
+
+	if (tempResult.isWholeTrue == 0) {
+		return false;
+	}
+	else {
+		return true;
+	}
+	
 }
 
 ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
