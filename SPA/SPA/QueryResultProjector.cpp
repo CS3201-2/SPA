@@ -15,12 +15,17 @@ QueryResultProjector::QueryResultProjector(list<ResultTable> resultList, string 
 }
 
 list<string> QueryResultProjector::getResult() {
+	list<string> resultStringList;
+
+	if(_resultList.empty() && _selectType == TYPE_BOOL) {
+		resultStringList.push_back(RESULT_TRUE);
+		return resultStringList;
+	}
+	
 	mergeTable();
 
 	int index = getIndexOf(_resultTable.getHeader(), _select);
 	string result = "";
-
-	list<string> resultStringList;
 
 	if (!_resultTable.getResult().empty()) {
 		list<int> resultList;
@@ -56,6 +61,7 @@ list<string> QueryResultProjector::getResult() {
 			}
 		}
 	}
+
 	return resultStringList;
 }
 
@@ -79,7 +85,7 @@ void QueryResultProjector::mergeTable() {
 		else {
 			createResultHeader(resultHeader, (*it).getHeader());
 			createResultTable(result, (*it).getResult());
-			list<std::pair<int, int>> commonPairList = getCommonPair(resultHeader);
+			list<pair<int, int>> commonPairList = getCommonPair(resultHeader);
 			vector<int> indexToRemove = getIndexToRemove(commonPairList);
 			trimResultHeader(resultHeader, indexToRemove);
 			trimResultTable(result, commonPairList, indexToRemove);
@@ -111,8 +117,8 @@ void QueryResultProjector::createResultTable(vector<vector<int>>& result, vector
 	result = newResultTable;
 }
 
-list<std::pair<int, int>> QueryResultProjector::getCommonPair(vector<string> header) {
-	list<std::pair<int, int>> commonPairList;
+list<pair<int, int>> QueryResultProjector::getCommonPair(vector<string> header) {
+	list<pair<int, int>> commonPairList;
 	for (vector<string>::size_type i = 0; i < header.size(); ++i) {
 		for (vector<string>::size_type j = i + 1; j < header.size(); ++j) {
 			if (header[i] == header[j]) {
@@ -124,9 +130,9 @@ list<std::pair<int, int>> QueryResultProjector::getCommonPair(vector<string> hea
 	return commonPairList;
 }
 
-vector<int> QueryResultProjector::getIndexToRemove(list<std::pair<int, int>> commonPairList) {
+vector<int> QueryResultProjector::getIndexToRemove(list<pair<int, int>> commonPairList) {
 	vector<int> indexToRemove;
-	for (list<std::pair<int, int>>::iterator lstIt = commonPairList.begin(); lstIt != commonPairList.end(); ++lstIt) {
+	for (list<pair<int, int>>::iterator lstIt = commonPairList.begin(); lstIt != commonPairList.end(); ++lstIt) {
 		indexToRemove.push_back(max((*lstIt).first, (*lstIt).second));
 	}
 	sort(indexToRemove.begin(), indexToRemove.end());
@@ -134,11 +140,11 @@ vector<int> QueryResultProjector::getIndexToRemove(list<std::pair<int, int>> com
 	return indexToRemove;
 }
 
-void QueryResultProjector::trimResultTable(vector<vector<int>>& result, list<std::pair<int, int>> commonPairList, vector<int> indexToRemove) {
+void QueryResultProjector::trimResultTable(vector<vector<int>>& result, list<pair<int, int>> commonPairList, vector<int> indexToRemove) {
 	for (vector<vector<int>>::iterator tableIt = result.begin(); tableIt != result.end(); ) {
 		bool isEntryToBeRemoved = false;
 
-		for (list<std::pair<int, int>>::iterator lstIt = commonPairList.begin(); lstIt != commonPairList.end(); ++lstIt) {
+		for (list<pair<int, int>>::iterator lstIt = commonPairList.begin(); lstIt != commonPairList.end(); ++lstIt) {
 			if ((*tableIt)[(*lstIt).first] != (*tableIt)[(*lstIt).second]) {
 				isEntryToBeRemoved = true;
 				break;
