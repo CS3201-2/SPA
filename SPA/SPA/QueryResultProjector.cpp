@@ -1,13 +1,4 @@
 #include "QueryResultProjector.h"
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <list>
-#include "PKB.h"
-
-const int notApplicable = -1;
-const int trueTable = 1;
-const int falseTable = 0;
 
 const string TYPE_VARIABLE = "variable";
 const string TYPE_PROCEDURE = "procedure";
@@ -31,10 +22,7 @@ list<string> QueryResultProjector::getResult() {
 
 	list<string> resultStringList;
 
-	if (_resultTable.getResult().empty()) {
-		//resultStringList.push_back("none");
-	}
-	else {
+	if (!_resultTable.getResult().empty()) {
 		list<int> resultList;
 		for (vector<vector<string>>::size_type i = 0; i < _resultTable.getResult().size(); ++i) {
 			if (find(resultList.begin(), resultList.end(), _resultTable.getResult()[i][index]) == resultList.end()) {
@@ -50,6 +38,7 @@ list<string> QueryResultProjector::getResult() {
 				resultStringList.push_back(RESULT_TRUE);
 			}
 		}
+
 		else {
 			for (list<int>::iterator it = resultList.begin(); it != resultList.end(); ) {
 				if (_selectType == TYPE_VARIABLE) {
@@ -74,37 +63,26 @@ void QueryResultProjector::mergeTable() {
 	vector<string> resultHeader;
 	vector<vector<int>> result;
 	for (list<ResultTable>::iterator it = _resultList.begin(); it != _resultList.end(); ++it) {
-		if ((*it).getIsWholeTrue() == notApplicable) {//-1
-			//temp data is empty, break immediately
-			if ((*it).getResult().empty()) {
-				resultHeader.clear();
-				result.clear();
-				_resultTable = ResultTable(_isWholeTrue, resultHeader, result);
-				return;
-			}
-
-			//the resultHeader and result is initialy empty
-			if (resultHeader.empty() && result.empty()) {
-				resultHeader = (*it).getHeader();
-				result = (*it).getResult();
-			}
-			else {
-				createResultHeader(resultHeader, (*it).getHeader());
-				createResultTable(result, (*it).getResult());
-				list<std::pair<int, int>> commonPairList = getCommonPair(resultHeader);
-				vector<int> indexToRemove = getIndexToRemove(commonPairList);
-				trimResultHeader(resultHeader, indexToRemove);
-				trimResultTable(result, commonPairList, indexToRemove);
-			}
-		}
-		else if ((*it).getIsWholeTrue() == trueTable) {//1
-			continue;
-		}
-		else if ((*it).getIsWholeTrue() == falseTable) {//0
-			_isWholeTrue = 0;
+		//temp data is empty, break immediately
+		if ((*it).getResult().empty()) {
 			resultHeader.clear();
 			result.clear();
-			break;
+			_resultTable = ResultTable(_isWholeTrue, resultHeader, result);
+			return;
+		}
+
+		//the resultHeader and result is initialy empty
+		if (resultHeader.empty() && result.empty()) {
+			resultHeader = (*it).getHeader();
+			result = (*it).getResult();
+		}
+		else {
+			createResultHeader(resultHeader, (*it).getHeader());
+			createResultTable(result, (*it).getResult());
+			list<std::pair<int, int>> commonPairList = getCommonPair(resultHeader);
+			vector<int> indexToRemove = getIndexToRemove(commonPairList);
+			trimResultHeader(resultHeader, indexToRemove);
+			trimResultTable(result, commonPairList, indexToRemove);
 		}
 	}
 

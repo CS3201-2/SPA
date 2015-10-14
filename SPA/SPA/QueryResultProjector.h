@@ -13,7 +13,7 @@ using namespace std;
 class QueryResultProjector
 {
 public:
-	QueryResultProjector(list<ResultTable> resultList, string select, string selectType);
+	QueryResultProjector(list<ResultTable> resultList, string select, string selectType);//"boolean", 
 	list<string> getResult();
 
 private:
