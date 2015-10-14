@@ -31,17 +31,42 @@ list<string> QueryEvaluator::evaluate() {
 	// first get selecet query, for iteration 1, only select first clause. hard code here
 	vector<string> select = getSelectClause(0);
 	int index;
+	for (index = 0; index < queryTree.getSuchThatConstSize(); index++) {
+		if (!processSuchThatConstClause(getSuchThatConstClause(index))) {
+			list<string> empty;
+			return empty;
+		}
+	}
+	for (index = 0; index < queryTree.getWithConstSize(); index++) {
+		if (!processWithConstClause(getWithConstClause(index))) {
+			list<string> empty;
+			return empty;
+		}
+	}
+
 	for (index = 0; index < queryTree.getSuchThatSize(); index++) {
-		processSuchThatClause(getSuchThatClause(index));
+		if (!processSuchThatClause(getSuchThatClause(index))) {
+			list<string> empty;
+			return empty;
+		}
 	}
 	for (index = 0; index < queryTree.getPatternSize(); index++) {
-		processPatternClause(getPatternClause(index));
+		if (!processPatternClause(getPatternClause(index))) {
+			list<string> empty;
+			return empty;
+		}
 	}
 	for (index = 0; index < queryTree.getWithSize(); index++) {
-		processWithClause(getWithClause(index));
+		if (!processWithClause(getWithClause(index))) {
+			list<string> empty;
+			return empty;
+		}
 	}
 	for (index = 0; index < queryTree.getSelectSize(); index++) {
-		processSelectClause(getSelectClause(index));
+		if (!processSelectClause(getSelectClause(index))) {
+			list<string> empty;
+			return empty;
+		}
 	}
 
 	//logging should be removed before final submission
@@ -76,6 +101,12 @@ vector<string> QueryEvaluator::getSuchThatClause(int index) {
 	return tempVector;
 }
 
+vector<string> QueryEvaluator::getSuchThatConstClause(int index) {
+	vector<string> tempVector;
+	tempVector = queryTree.getSuchThatConstQuery(index);
+	return tempVector;
+}
+
 vector<string> QueryEvaluator::getPatternClause(int index) {
 	vector<string> tempVector;
 	tempVector = queryTree.getPatternQuery(index);
@@ -93,8 +124,15 @@ vector<string> QueryEvaluator::getWithClause(int index) {
 	tempVector = queryTree.getWithQuery(index);
 	return tempVector;
 }
+
+vector<string> QueryEvaluator::getWithConstClause(int index) {
+	vector<string> tempVector;
+	tempVector = queryTree.getWithConstQuery(index);
+	return tempVector;
+}
+
 //Process Clause
-void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
+bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	string relationship = tempString.at(0);
 	string arg1 = tempString.at(1);
 	string arg1Type = tempString.at(2);
@@ -103,38 +141,99 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	string log = "Such that clause: " + relationship + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
 
+	ResultTable tempResult;
+
 	if (relationship == "modifies") {
-		resultList.push_back(processModifies(tempString));
+		tempResult = processModifies(tempString);
 	}
 	else if (relationship == "uses") {
-		resultList.push_back(processUses(tempString));
+		tempResult = processUses(tempString);
 	}
 	else if (relationship == "parent") {
-		resultList.push_back(processParent(tempString));
+		tempResult = processParent(tempString);
 	}
 	else if (relationship == "follows") {
-		resultList.push_back(processFollows(tempString));
+		tempResult = processFollows(tempString);
 	}
 	else if (relationship == "parent*") {
-		resultList.push_back(processParentStar(tempString));
+		tempResult = processParentStar(tempString);
 	}
 	else if (relationship == "follows*") {
-		resultList.push_back(processFollowsStar(tempString));
+		tempResult = processFollowsStar(tempString);
 	}
 	else if (relationship == "calls") {
-		resultList.push_back(processCalls(tempString));
+		tempResult = processCalls(tempString);
 	}
 	else if (relationship == "calls*") {
-		resultList.push_back(processCallsStar(tempString));
+		tempResult = processCallsStar(tempString);
 	}
 	else if (relationship == "next") {
-		resultList.push_back(processNext(tempString));
+		tempResult = processNext(tempString);
 	}
 	else if (relationship == "next*") {
-		resultList.push_back(processNextStar(tempString));
+		tempResult = processNextStar(tempString);
 	}
 	else {
+		SPALog::log("Wrong relationship!");
+		return false;
+	}
+	if (isResultEmpty(tempResult)) {
+		return false;
+	}
+	resultList.push_back(tempResult);
+	return true;
+}
 
+bool QueryEvaluator::processSuchThatConstClause(vector<string> tempString) {
+	string relationship = tempString.at(0);
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
+	string log = "Such that const clause: " + relationship + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
+	SPALog::log(log);
+
+	ResultTable tempResult;
+
+	if (relationship == "modifies") {
+		tempResult = processModifies(tempString);
+	}
+	else if (relationship == "uses") {
+		tempResult = processUses(tempString);
+	}
+	else if (relationship == "parent") {
+		tempResult = processParent(tempString);
+	}
+	else if (relationship == "follows") {
+		tempResult = processFollows(tempString);
+	}
+	else if (relationship == "parent*") {
+		tempResult = processParentStar(tempString);
+	}
+	else if (relationship == "follows*") {
+		tempResult = processFollowsStar(tempString);
+	}
+	else if (relationship == "calls") {
+		tempResult = processCalls(tempString);
+	}
+	else if (relationship == "calls*") {
+		tempResult = processCallsStar(tempString);
+	}
+	else if (relationship == "next") {
+		tempResult = processNext(tempString);
+	}
+	else if (relationship == "next*") {
+		tempResult = processNextStar(tempString);
+	}
+	else {
+		SPALog::log("Wrong relationship!");
+		return false;
+	}
+	if (tempResult.isWholeTrue==0) {
+		return false;
+	}
+	else { 
+		return true;
 	}
 }
 
@@ -143,6 +242,10 @@ bool QueryEvaluator::isInList(list<int> list, int number) {
 		return true;
 	}
 	return false;
+}
+
+bool QueryEvaluator::isResultEmpty(ResultTable tempResult) {
+	return tempResult.getResult().empty();
 }
 
 list<int> QueryEvaluator::getList(string listName) {
@@ -228,7 +331,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			return tempResult;
 		}
 		else {
-			// arg2 is procedure, stmt, while, assign, if, call, prog_line
+			// arg1 is procedure, stmt, while, assign, if, call, prog_line
 			list<int> targetList = getList(arg1Type);
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
@@ -1253,7 +1356,7 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 	}
 }
 
-void QueryEvaluator::processPatternClause(vector<string> tempString) {
+bool QueryEvaluator::processPatternClause(vector<string> tempString) {
 	
 	string synType = tempString.at(1);
 	string arg1 = tempString.at(2);
@@ -1264,18 +1367,27 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	string log = "Pattern clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
 
+	ResultTable tempResult;
+
 	if (synType == "assign") {
-		resultList.push_back(processAssignPattern(tempString));
+		tempResult = processAssignPattern(tempString);
 	}
 	else if (synType == "while") {
-		resultList.push_back(processWhilePattern(tempString));
+		tempResult = processWhilePattern(tempString);
 	}
 	else if (synType == "if") {
-		resultList.push_back(processIfPattern(tempString));
+		tempResult = processIfPattern(tempString);
 	}
 	else {
-
+		SPALog::log("Wrong pattern!");
+		return false;
 	}
+
+	if (isResultEmpty(tempResult)) {
+		return false;
+	}
+	resultList.push_back(tempResult);
+	return true;
 	
 }
 
@@ -1518,7 +1630,7 @@ ResultTable QueryEvaluator::processIfPattern(vector<string> tempString) {
 	}
 }
 
-void QueryEvaluator::processSelectClause(vector<string> tempString) {
+bool QueryEvaluator::processSelectClause(vector<string> tempString) {
 	string syn = tempString.at(0);
 	string synType = tempString.at(1);
 	string log = "Select clause: select " + syn + ":" + synType +"\n";
@@ -1533,8 +1645,11 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 			tempResult.addTuple(temp);
 			temp.clear();
 		}
+		if (isResultEmpty(tempResult)) {
+			return false;
+		}
 		resultList.push_back(tempResult);
-		return;
+		return true;
 	}
 	else if (synType == "procedure") {
 		ResultTable tempResult = ResultTable(syn);
@@ -1545,14 +1660,17 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 			tempResult.addTuple(temp);
 			temp.clear();
 		}
+		if (isResultEmpty(tempResult)) {
+			return false;
+		}
 		resultList.push_back(tempResult);
-		return;
+		return true;
 	}
 	else if (synType == "boolean") {
-		ResultTable tempResult = ResultTable(syn);
-		tempResult.isWholeTrue = 1;
-		resultList.push_back(tempResult);
-		return;
+		//ResultTable tempResult = ResultTable(syn);
+		//tempResult.isWholeTrue = 1;
+		//resultList.push_back(tempResult);
+		return true;
 	}
 	else {
 		list<int> targetList = getList(synType);
@@ -1563,12 +1681,15 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 			tempResult.addTuple(temp);
 			temp.clear();
 		}
+		if (isResultEmpty(tempResult)) {
+			return false;
+		}
 		resultList.push_back(tempResult);
-		return;
+		return true;
 	}
 }
 
-void QueryEvaluator::processWithClause(vector<string> tempString) {
+bool QueryEvaluator::processWithClause(vector<string> tempString) {
 	string synType = tempString.at(1);
 	string arg1 = tempString.at(2);
 	string arg1Type = tempString.at(3);
@@ -1578,15 +1699,24 @@ void QueryEvaluator::processWithClause(vector<string> tempString) {
 	string log = "With clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
 
+	ResultTable tempResult;
+
 	if (synType == "withNumber") {
-		resultList.push_back(processNumberWith(tempString));
+		tempResult = processNumberWith(tempString);
 	}
 	else if (synType == "withName") {
-		resultList.push_back(processNameWith(tempString));
+		tempResult = processNameWith(tempString);
 	}
 	else {
-
+		SPALog::log("Wrong with type!");
+		return false;
 	}
+
+	if (isResultEmpty(tempResult)) {
+		return false;
+	}
+	resultList.push_back(tempResult);
+	return true;
 }
 
 ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
