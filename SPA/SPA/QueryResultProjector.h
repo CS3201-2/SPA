@@ -10,14 +10,14 @@ using namespace std;
 #ifndef QueryResultProjector_H
 #define QueryResultProjector_H
 
-class QueryResultProjector
-{
+class QueryResultProjector {
+
 public:
-	QueryResultProjector(list<ResultTable> resultList, string select, string selectType);
+	QueryResultProjector(vector<ResultTable> tempTables, string select, string selectType);
 	list<string> getResult();
 
 private:
-	list<ResultTable> _resultList;
+	vector<ResultTable> _tempTables;
 	ResultTable _resultTable;
 	void mergeTable();
 	int _isWholeTrue;// -1 doesnt matter, 0 false, 1 true

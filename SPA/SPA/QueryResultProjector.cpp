@@ -7,8 +7,8 @@ const string RESULT_TRUE = "true";
 const string RESULT_FALSE = "false";
 
 //constructor
-QueryResultProjector::QueryResultProjector(list<ResultTable> resultList, string select, string selectType) {
-	_resultList = resultList;
+QueryResultProjector::QueryResultProjector(vector<ResultTable> tempTables, string select, string selectType) {
+	_tempTables = tempTables;
 	_isWholeTrue = -1;
 	_select = select;
 	_selectType = selectType;
@@ -17,7 +17,7 @@ QueryResultProjector::QueryResultProjector(list<ResultTable> resultList, string 
 list<string> QueryResultProjector::getResult() {
 	list<string> resultStringList;
 
-	if(_resultList.empty() && _selectType == TYPE_BOOL) {
+	if(_tempTables.empty() && _selectType == TYPE_BOOL) {
 		resultStringList.push_back(RESULT_TRUE);
 		return resultStringList;
 	}
@@ -68,7 +68,7 @@ list<string> QueryResultProjector::getResult() {
 void QueryResultProjector::mergeTable() {
 	vector<string> resultHeader;
 	vector<vector<int>> result;
-	for (list<ResultTable>::iterator it = _resultList.begin(); it != _resultList.end(); ++it) {
+	for (vector<ResultTable>::iterator it = _tempTables.begin(); it != _tempTables.end(); ++it) {
 		//temp data is empty, break immediately
 		if ((*it).getResult().empty()) {
 			resultHeader.clear();
