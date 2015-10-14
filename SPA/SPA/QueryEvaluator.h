@@ -18,7 +18,7 @@ public:
 
 private:
 	QueryTree queryTree;
-	list<ResultTable> resultList;
+	vector<ResultTable> resultList;
 	bool isInList(list<int>, int);
 	bool isResultEmpty(ResultTable tempResult);
 	list<int> getList(string listName);

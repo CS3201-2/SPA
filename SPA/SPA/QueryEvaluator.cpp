@@ -36,12 +36,18 @@ list<string> QueryEvaluator::evaluate() {
 	for (index = 0; index < queryTree.getSuchThatConstSize(); index++) {
 		if (!processSuchThatConstClause(getSuchThatConstClause(index))) {
 			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
 			return empty;
 		}
 	}
 	for (index = 0; index < queryTree.getWithConstSize(); index++) {
 		if (!processWithConstClause(getWithConstClause(index))) {
 			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
 			return empty;
 		}
 	}
@@ -49,24 +55,36 @@ list<string> QueryEvaluator::evaluate() {
 	for (index = 0; index < queryTree.getSuchThatSize(); index++) {
 		if (!processSuchThatClause(getSuchThatClause(index))) {
 			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
 			return empty;
 		}
 	}
 	for (index = 0; index < queryTree.getPatternSize(); index++) {
 		if (!processPatternClause(getPatternClause(index))) {
 			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
 			return empty;
 		}
 	}
 	for (index = 0; index < queryTree.getWithSize(); index++) {
 		if (!processWithClause(getWithClause(index))) {
 			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
 			return empty;
 		}
 	}
 	for (index = 0; index < queryTree.getSelectSize(); index++) {
 		if (!processSelectClause(getSelectClause(index))) {
 			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
 			return empty;
 		}
 	}
