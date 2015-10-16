@@ -31,6 +31,9 @@ const string VARTYPE_CALL = "call";
 const string VARTYPE_PROG_LINE = "prog_line";
 const string VARTYPE_NUMBER = "number";
 const string VARTYPE_ALL = "all";
+const string VARTYPE_BOOLEAN = "boolean";
+
+const string RELTYPE_SUCH_THAT = "such that";
 
 const string RELTYPE_PATTERN = "pattern";
 const string RELTYPE_PATTERN_ASSIGN = "patternAssign";
@@ -41,6 +44,8 @@ const string RELTYPE_WITH = "with";
 const string RELTYPE_WITH_NUMBER = "withNumber";
 const string RELTYPE_WITH_NAME = "withName";
 
+const string RELTYPE_AND = "and";
+
 const regex variableNameRegex("(^[[:alpha:]])([[:alnum:]]+)*$");
 
 bool QueryValidator::isValidDecAndQuery(string query)
@@ -48,18 +53,18 @@ bool QueryValidator::isValidDecAndQuery(string query)
 	vector<string> splitStr = split(trim(query), SYMBOL_SEMICOLON);
 	//cout << "isValidDecAndQuery";
 	//if (splitStr.at(0).empty()) {
-	if (splitStr.size() < 2) {
+	/*if (splitStr.size() < 2) {
 		cout << "Invalid Query" << endl;
 		return false;
-	}
+	}*/
 
 	int size = splitStr.size();
 	//cout << size;
-	int i = 0;
+	int i;
 	//declaration clauses
-	for (i; i < size - 1; i++) {
+	for (i = 0; i < size - 1; i++) {
 		if (!isValidDeclaration(splitStr.at(i))) {
-			cout << "Invalid Query" << endl;
+			cout << "Invalid Query Declaration" << endl;
 			return false;
 		}
 	}
@@ -123,32 +128,61 @@ bool QueryValidator::isValidQuery(string query) {
 
 	arrClauses = split(arrClauses.at(1), SYMBOL_SPACE, 2);
 
-	if (!isVarNameExists(arrClauses.at(0)) || arrClauses.size() != 2) {// || arrClauses.at(0).compare("_") == 0) ) {
+	if ((!isVarNameExists(arrClauses.at(0)) && stringToLower(arrClauses.at(0)).compare(VARTYPE_BOOLEAN) != 0) || 
+		arrClauses.size() != 2) {// || arrClauses.at(0).compare("_") == 0) ) {
 		return false;
 	}
 	
-	qt.insertSelect(arrClauses.at(0), getVarType(arrClauses.at(0)));
+	if (isVarNameExists(arrClauses.at(0))) {
+		qt.insertSelect(arrClauses.at(0), getVarType(arrClauses.at(0)));
+	} else {
+		qt.insertSelect("", VARTYPE_BOOLEAN);
+	}
 
 	bool isFinished = false;
 	RETURN_TYPE retVal;
+	string prevClause = "", curClause = "";
 
 	while (!isFinished) {
 		retVal = findRel(arrClauses.at(1));
-
-		if (!checkRetVal(retVal, isFinished)) {
+		curClause = RELTYPE_SUCH_THAT;
+		if (!checkRetVal(retVal, isFinished, prevClause, curClause)) {
 			return false;
 		}
 
 		retVal = findPatternClause(arrClauses.at(1));
-
-		if (!checkRetVal(retVal, isFinished)) {
+		curClause = RELTYPE_PATTERN;
+		if (!checkRetVal(retVal, isFinished, prevClause, curClause)) {
 			return false;
 		}
 
 		retVal = findWithClause(arrClauses.at(1));
+		curClause = RELTYPE_WITH;
+		if (checkRetVal(retVal, isFinished, prevClause, curClause) == false) {
+			return false;
+		}
 
-		if (checkRetVal(retVal, isFinished) == false) {
-		return false;
+		if (findAndClause(arrClauses.at(1), prevClause)) {
+			if (prevClause.compare(RELTYPE_SUCH_THAT) == 0) {
+				retVal = findRel(arrClauses.at(1));
+				curClause = RELTYPE_SUCH_THAT;
+				if (!checkRetVal(retVal, isFinished, prevClause, curClause)) {
+					return false;
+				}
+			} else if (prevClause.compare(RELTYPE_PATTERN) == 0) {
+				retVal = findPatternClause(arrClauses.at(1));
+				curClause = RELTYPE_PATTERN;
+				if (!checkRetVal(retVal, isFinished, prevClause, curClause)) {
+					return false;
+				}
+			} else if (prevClause.compare(RELTYPE_WITH) == 0) {
+				retVal = findWithClause(arrClauses.at(1));
+				curClause = RELTYPE_WITH;
+				if (checkRetVal(retVal, isFinished, prevClause, curClause) == false) {
+					return false;
+				}
+			}
+
 		}
 	}
 
@@ -161,7 +195,21 @@ bool QueryValidator::isValidQuery(string query) {
 	return true;
 }
 
-bool QueryValidator::checkRetVal(RETURN_TYPE retVal, bool &isFinished) {
+
+
+/*QueryValidator::RETURN_TYPE QueryValidator::getClauseType(string &query) {
+	if (findSuchThatString(query)) {
+		findRel(query);
+	} else if (findPatternString(query)) {
+		findPatternClause(query);
+	} else if () {
+
+	}
+
+	return RETURN_TYPE();
+}*/
+
+bool QueryValidator::checkRetVal(RETURN_TYPE retVal, bool &isFinished, string &prevClause, string curClause) {
 	if (retVal == INVALID) {
 		return false;
 	} else if (retVal == NONE) {
@@ -169,21 +217,35 @@ bool QueryValidator::checkRetVal(RETURN_TYPE retVal, bool &isFinished) {
 		return true;
 	} else if (retVal == VALID) {
 		isFinished = false;
+		prevClause = curClause;
 		return true;
 	}
 
 	return false;
 }
 
+bool QueryValidator::findAndClause(string &subquery, string prevQuery) {
+	vector<string> arrWords = split(subquery, SYMBOL_SPACE, 2);
+
+	if (arrWords.at(0).compare(RELTYPE_AND) == 0 && arrWords.size() == 2) {
+		subquery = prevQuery + " " + arrWords.at(1);
+		return true;
+	} 
+
+	return false;
+}
+
 QueryValidator::RETURN_TYPE QueryValidator::findRel(string &subquery) {
 	//cout << "findRel" << endl;
-	RETURN_TYPE retVal = findSuchThatString(subquery);
+	if (!findSuchThatString(subquery)) {
+		return NONE;
+	}
 	
-	if (retVal == NONE) {
+	/*if (retVal == NONE) {
 		return NONE;
 	} else if (retVal == INVALID) {
 		return INVALID;
-	}
+	}*/
 	
 	if (!parseRel(subquery)) {
 		return INVALID;
@@ -226,7 +288,7 @@ bool QueryValidator::parseRel(string &subquery) {
 	
 	qt.insertSuchThat(relType, arrVar, varTypes);
 	
-	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return true;
@@ -273,17 +335,18 @@ bool QueryValidator::parseRelArgs(string relType,
 	return true;
 }
 
-QueryValidator::RETURN_TYPE QueryValidator::findSuchThatString(string &subquery) {
+bool QueryValidator::findSuchThatString(string &subquery) {
 	vector<string> arrWords = split(subquery, SYMBOL_SPACE, 3);
 	//cout << "findSuchThatString" << endl;
 
 	if (stringToLower(arrWords.at(0)).compare("such") == 0 &&
-		stringToLower(arrWords.at(1)).compare("that") == 0) {
+		stringToLower(arrWords.at(1)).compare("that") == 0 &&
+		arrWords.size() == 3) {
 		subquery = arrWords.at(2);
-		return VALID;
+		return true;
 	}
 
-	return NONE;
+	return false;
 }
 
 QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) {
@@ -344,7 +407,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			}
 			
 			qt.insertPattern(syn, synType, arrVar, varType);
-			//cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+			cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 			//cout << "pattern " << varType.at(0) << " " << varType.at(1) << endl;
 		}
 	} else {
@@ -479,7 +542,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findWithClause(string &subquery) {
 
 	subquery = arrWords.at(1);
 	
-	//cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	qt.insertWith(relType, arrVar, varTypes);
 	return VALID;
