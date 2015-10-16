@@ -19,13 +19,13 @@ private:
 	//bool parseString(string query);
 	bool isValidDeclaration(string declaration);
 	bool isValidQuery(string query);
-	bool checkRetVal(RETURN_TYPE retVal, bool &isFinished);
-	bool isValidVariableName(string varName);
+	bool checkRetVal(RETURN_TYPE retVal, bool &isFinished, string &prevClause, string curClause);
+	bool findAndClause(string &subquery, string prevClause);
 	
 	RETURN_TYPE findRel(string &subquery);
 	bool parseRel(string &subquery);
 	bool parseRelArgs(string relType, vector<string> &arrVar, vector<string> &varTypes);
-	RETURN_TYPE findSuchThatString(string &subquery);
+	bool findSuchThatString(string &subquery);
 	
 	RETURN_TYPE findPatternClause(string &subquery);
 	bool parsePatternType(string word, string &relType, string &syn, string &synType);
@@ -43,6 +43,7 @@ private:
 	string stringToLower(string str);
 	bool isVarNameExists(string varName);
 	
+	bool isValidVariableName(string varName);
 	string getVarType(string varName);
 	bool isStringVar(string str);
 	bool isInteger(string str);
