@@ -1,13 +1,4 @@
 #include "QueryResultProjector.h"
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <list>
-#include "PKB.h"
-
-const int notApplicable = -1;
-const int trueTable = 1;
-const int falseTable = 0;
 
 const string TYPE_VARIABLE = "variable";
 const string TYPE_PROCEDURE = "procedure";
@@ -16,25 +7,27 @@ const string RESULT_TRUE = "true";
 const string RESULT_FALSE = "false";
 
 //constructor
-QueryResultProjector::QueryResultProjector(list<ResultTable> resultList, string select, string selectType) {
-	_resultList = resultList;
+QueryResultProjector::QueryResultProjector(vector<ResultTable> tempTables, string select, string selectType) {
+	_tempTables = tempTables;
 	_isWholeTrue = -1;
 	_select = select;
 	_selectType = selectType;
 }
 
 list<string> QueryResultProjector::getResult() {
+	list<string> resultStringList;
+
+	if(_tempTables.empty() && _selectType == TYPE_BOOL) {
+		resultStringList.push_back(RESULT_TRUE);
+		return resultStringList;
+	}
+	
 	mergeTable();
 
 	int index = getIndexOf(_resultTable.getHeader(), _select);
 	string result = "";
 
-	list<string> resultStringList;
-
-	if (_resultTable.getResult().empty()) {
-		//resultStringList.push_back("none");
-	}
-	else {
+	if (!_resultTable.getResult().empty()) {
 		list<int> resultList;
 		for (vector<vector<string>>::size_type i = 0; i < _resultTable.getResult().size(); ++i) {
 			if (find(resultList.begin(), resultList.end(), _resultTable.getResult()[i][index]) == resultList.end()) {
@@ -50,6 +43,7 @@ list<string> QueryResultProjector::getResult() {
 				resultStringList.push_back(RESULT_TRUE);
 			}
 		}
+
 		else {
 			for (list<int>::iterator it = resultList.begin(); it != resultList.end(); ) {
 				if (_selectType == TYPE_VARIABLE) {
@@ -67,44 +61,34 @@ list<string> QueryResultProjector::getResult() {
 			}
 		}
 	}
+
 	return resultStringList;
 }
 
 void QueryResultProjector::mergeTable() {
 	vector<string> resultHeader;
 	vector<vector<int>> result;
-	for (list<ResultTable>::iterator it = _resultList.begin(); it != _resultList.end(); ++it) {
-		if ((*it).getIsWholeTrue() == notApplicable) {//-1
-			//temp data is empty, break immediately
-			if ((*it).getResult().empty()) {
-				resultHeader.clear();
-				result.clear();
-				_resultTable = ResultTable(_isWholeTrue, resultHeader, result);
-				return;
-			}
-
-			//the resultHeader and result is initialy empty
-			if (resultHeader.empty() && result.empty()) {
-				resultHeader = (*it).getHeader();
-				result = (*it).getResult();
-			}
-			else {
-				createResultHeader(resultHeader, (*it).getHeader());
-				createResultTable(result, (*it).getResult());
-				list<std::pair<int, int>> commonPairList = getCommonPair(resultHeader);
-				vector<int> indexToRemove = getIndexToRemove(commonPairList);
-				trimResultHeader(resultHeader, indexToRemove);
-				trimResultTable(result, commonPairList, indexToRemove);
-			}
-		}
-		else if ((*it).getIsWholeTrue() == trueTable) {//1
-			continue;
-		}
-		else if ((*it).getIsWholeTrue() == falseTable) {//0
-			_isWholeTrue = 0;
+	for (vector<ResultTable>::iterator it = _tempTables.begin(); it != _tempTables.end(); ++it) {
+		//temp data is empty, break immediately
+		if ((*it).getResult().empty()) {
 			resultHeader.clear();
 			result.clear();
-			break;
+			_resultTable = ResultTable(_isWholeTrue, resultHeader, result);
+			return;
+		}
+
+		//the resultHeader and result is initialy empty
+		if (resultHeader.empty() && result.empty()) {
+			resultHeader = (*it).getHeader();
+			result = (*it).getResult();
+		}
+		else {
+			createResultHeader(resultHeader, (*it).getHeader());
+			createResultTable(result, (*it).getResult());
+			list<pair<int, int>> commonPairList = getCommonPair(resultHeader);
+			vector<int> indexToRemove = getIndexToRemove(commonPairList);
+			trimResultHeader(resultHeader, indexToRemove);
+			trimResultTable(result, commonPairList, indexToRemove);
 		}
 	}
 
@@ -133,8 +117,8 @@ void QueryResultProjector::createResultTable(vector<vector<int>>& result, vector
 	result = newResultTable;
 }
 
-list<std::pair<int, int>> QueryResultProjector::getCommonPair(vector<string> header) {
-	list<std::pair<int, int>> commonPairList;
+list<pair<int, int>> QueryResultProjector::getCommonPair(vector<string> header) {
+	list<pair<int, int>> commonPairList;
 	for (vector<string>::size_type i = 0; i < header.size(); ++i) {
 		for (vector<string>::size_type j = i + 1; j < header.size(); ++j) {
 			if (header[i] == header[j]) {
@@ -146,9 +130,9 @@ list<std::pair<int, int>> QueryResultProjector::getCommonPair(vector<string> hea
 	return commonPairList;
 }
 
-vector<int> QueryResultProjector::getIndexToRemove(list<std::pair<int, int>> commonPairList) {
+vector<int> QueryResultProjector::getIndexToRemove(list<pair<int, int>> commonPairList) {
 	vector<int> indexToRemove;
-	for (list<std::pair<int, int>>::iterator lstIt = commonPairList.begin(); lstIt != commonPairList.end(); ++lstIt) {
+	for (list<pair<int, int>>::iterator lstIt = commonPairList.begin(); lstIt != commonPairList.end(); ++lstIt) {
 		indexToRemove.push_back(max((*lstIt).first, (*lstIt).second));
 	}
 	sort(indexToRemove.begin(), indexToRemove.end());
@@ -156,11 +140,11 @@ vector<int> QueryResultProjector::getIndexToRemove(list<std::pair<int, int>> com
 	return indexToRemove;
 }
 
-void QueryResultProjector::trimResultTable(vector<vector<int>>& result, list<std::pair<int, int>> commonPairList, vector<int> indexToRemove) {
+void QueryResultProjector::trimResultTable(vector<vector<int>>& result, list<pair<int, int>> commonPairList, vector<int> indexToRemove) {
 	for (vector<vector<int>>::iterator tableIt = result.begin(); tableIt != result.end(); ) {
 		bool isEntryToBeRemoved = false;
 
-		for (list<std::pair<int, int>>::iterator lstIt = commonPairList.begin(); lstIt != commonPairList.end(); ++lstIt) {
+		for (list<pair<int, int>>::iterator lstIt = commonPairList.begin(); lstIt != commonPairList.end(); ++lstIt) {
 			if ((*tableIt)[(*lstIt).first] != (*tableIt)[(*lstIt).second]) {
 				isEntryToBeRemoved = true;
 				break;

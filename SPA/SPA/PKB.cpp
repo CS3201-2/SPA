@@ -68,6 +68,7 @@ void PKB::houseKeeping() {
 	getParent().sortAndUnifyMap();
 	//getFollowsStar().sortAndUnifyMap();
 	//getParentStar().sortAndUnifyMap();
+	getPattern().sortAndUnifyMap();
 	ifStmtList.sort();
 	ifStmtList.unique();
 	constantList.sort();
@@ -385,6 +386,10 @@ list<int> PKB::getIfWithFirstExact(string first) {
 }
 list<int> PKB::getWhileWithFirstExact(string first) {
 	return getPattern().getWhileWithFisrtExact(first);
+}
+
+void PKB::sortAndUnifyMap() {
+	getPattern().sortAndUnifyMap();
 }
 
 void PKB::logPattern() {

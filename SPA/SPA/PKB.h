@@ -102,6 +102,7 @@ public:
 	list<int> getAssignWithBothExact(string, string);  //pattern a ("x", "x")
 	list<int> getIfWithFirstExact(string);
 	list<int> getWhileWithFirstExact(string);
+	void sortAndUnifyMap();
 	void logPattern();
 
 
