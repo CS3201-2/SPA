@@ -1,5 +1,8 @@
-//to use a enum please include this header file
-enum StatementType
-{
-	//please key in the type you need here
+#ifndef STATEMENTTYPE_H
+#define STATEMENTTYPE_H
+
+enum StatementType {
+	assignmentStmt, procDeclarationStmt, procCallStmt, whileStmt, ifStmt,
+	elseStmt, invalidStmt,
 };
+#endif

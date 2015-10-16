@@ -12,7 +12,7 @@ void Controller::intializeCode(string code) {
 void Controller::processSource() {
 	Parser parser;
 
-	list<pair<int, string>> sourceList = parser.prepareSourceList(source);
+	list<Statement> sourceList = parser.prepareSourceList(source);
 
 	logSourceCode(sourceList);
 
@@ -38,27 +38,27 @@ void Controller::processSource() {
 	cout << "end of checker and parsing" << endl;
 }
 
-void Controller::logSourceCode(list<pair<int, string>> sourceList) {
+void Controller::logSourceCode(list<Statement> sourceList) {
 	string str;
 	for (auto& x : sourceList) {
-		if (x.first < 0) {
-			str += to_string(x.first) + " : " + x.second + "\n";
+		if (x.getNumber() < 0) {
+			str += to_string(x.getNumber()) + " : " + x.getContent() + "\n";
 		}
-		else if (x.first < 10) {
-			str += to_string(x.first) + "  : " + x.second + "\n";
+		else if (x.getNumber() < 10) {
+			str += to_string(x.getNumber()) + "  : " + x.getContent() + "\n";
 		}
-		else if (x.first < 100){
-			str += to_string(x.first) + " : " + x.second + "\n";
+		else if (x.getNumber() < 100){
+			str += to_string(x.getNumber()) + " : " + x.getContent() + "\n";
 		}
 		else {
-			str += to_string(x.first) + ": " + x.second + "\n";
+			str += to_string(x.getNumber()) + ": " + x.getContent() + "\n";
 		}
 	}
 
 	SPALog::log(str);
 }
 
-bool Controller::syntaxCheck(list<pair<int, string>>& sourceList) {
+bool Controller::syntaxCheck(list<Statement>& sourceList) {
 	Checker checker;
 	return checker.isSyntaxCorrect(sourceList);
 }

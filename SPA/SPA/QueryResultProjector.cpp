@@ -112,23 +112,7 @@ void QueryResultProjector::mergeTable() {
 	//make the resultTable object
 }
 
-void QueryResultProjector::mergeTableNew() {
-	vector<string> resultHeader;
-	vector<vector<int>> result;
-	list<ResultTable> tempList = _resultList;
-	bool flag = filter(tempList);//filter out all 0 and 1, and return true if contains 0
-	if (flag) {
-		_isWholeTrue = 0;
-		resultHeader.clear();
-		result.clear();
-	}
-	else {
-		for (auto& x : tempList) {
 
-		}
-	}
-	_resultTable = ResultTable(_isWholeTrue, resultHeader, result);
-}
 
 void QueryResultProjector::createResultHeader(vector<string>& resultHeader, vector<string> header) {
 	resultHeader.insert(resultHeader.end(), header.begin(), header.end());
@@ -214,7 +198,3 @@ int QueryResultProjector::getIndexOf(vector<string> header, string str) {
 	}
 }
 
-bool filter(list<ResultTable>& temp)
-{
-
-}

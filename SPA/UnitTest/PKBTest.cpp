@@ -13,23 +13,23 @@ namespace UnitTest {
 			DesignExtractor de = DesignExtractor();
 
 			//set stmt list
-			PKB::getPKBInstance()->addStmtToList(1, 0);
-			PKB::getPKBInstance()->addStmtToList(2, 0);
-			PKB::getPKBInstance()->addStmtToList(3, 2);
-			PKB::getPKBInstance()->addStmtToList(4, 0);
-			PKB::getPKBInstance()->addStmtToList(5, 0);
-			PKB::getPKBInstance()->addStmtToList(6, 3);
-			PKB::getPKBInstance()->addStmtToList(7, 0);
-			PKB::getPKBInstance()->addStmtToList(8, 2);
-			PKB::getPKBInstance()->addStmtToList(9, 0);
-			PKB::getPKBInstance()->addStmtToList(10, 4);
-			PKB::getPKBInstance()->addStmtToList(11, 0);
-			PKB::getPKBInstance()->addStmtToList(12, 0);
-			PKB::getPKBInstance()->addStmtToList(13, 0);
-			PKB::getPKBInstance()->addStmtToList(14, 0);
-			PKB::getPKBInstance()->addStmtToList(15, 0);
-			PKB::getPKBInstance()->addStmtToList(16, 0);
-			PKB::getPKBInstance()->addStmtToList(17, 0);
+			PKB::getPKBInstance()->addStmtToList(1, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(2, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(3, procCallStmt);
+			PKB::getPKBInstance()->addStmtToList(4, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(5, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(6, whileStmt);
+			PKB::getPKBInstance()->addStmtToList(7, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(8, procCallStmt);
+			PKB::getPKBInstance()->addStmtToList(9, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(10, ifStmt);
+			PKB::getPKBInstance()->addStmtToList(11, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(12, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(13, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(14, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(15, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(16, assignmentStmt);
+			PKB::getPKBInstance()->addStmtToList(17, assignmentStmt);
 			
 			//set constant list
 			PKB::getPKBInstance()->addConstantToList(2);

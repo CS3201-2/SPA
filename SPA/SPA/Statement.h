@@ -12,10 +12,14 @@ class Statement
 	StatementType _stmtType;
 public:
 	Statement();
-	Statement(int,string,StatementType);
-	int getIndex();
+	Statement(int, string, StatementType);
+	int getNumber();
 	string getContent();
 	StatementType getType();
+	void setNumber(int);
+	void setContent(string);
+	void setType(StatementType);
+	bool isEqual(Statement);
 	~Statement();
 };
 #endif

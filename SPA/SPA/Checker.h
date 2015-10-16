@@ -1,5 +1,7 @@
 #include "PKB.h"
 #include "DesignExtractor.h"
+#include "Statement.h"
+#include "StatementType.h"
 #include <string>
 #include <list>
 #include <stack>
@@ -16,23 +18,22 @@ class Checker {
 public:
 	Checker();
 
-	bool isSyntaxCorrect(list<pair<int, string>>&);
+	bool isSyntaxCorrect(list<Statement>&);
 
 private:
-	bool processNestedStmt(list<pair<int, string>>::iterator&, list<pair<int, string>>&,
+	bool processNestedStmt(list<Statement>::iterator&, list<Statement>&,
 		stack<int>&, list<pair<int, string>>&, int, list<stack<int>>&);
 	bool isAssignmentValid(string);
 	bool isCallValid();
 	bool isCallsStarValid();
-	string getProcName(int, string);
-	string getControlVarName(int, string);
+	string getProcName(StatementType, string);
+	string getControlVarName(StatementType, string);
 	int countNumOfLeftBraces(string);
 	int countNumOfRightBraces(string);
 	int countNumOfLeftParenthesis(string);
 	int countNumOfRightParenthesis(string);
 	bool popBrackets(stack<int>&, string);
 
-	int getTypeOfStmt(string);
 	bool isOperator(string);
 	bool isParenthesis(string);
 	bool isValidName(string);

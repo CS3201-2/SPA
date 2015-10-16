@@ -10,6 +10,9 @@
 #include "VarTable.h"
 #include "Pattern.h"
 #include "CFG.h"
+#include "Statement.h"
+#include "StatementType.h"
+
 
 using namespace std;
 
@@ -25,7 +28,7 @@ public:
 	
 	//general
 	bool isValidStmtNo(int);
-	void addStmtToList(int, int);
+	void addStmtToList(int, StatementType);
 	void addConstantToList(int);
 	void addToCallStmtProcMap(int, int);
 	list<int> getProcList();
@@ -46,7 +49,7 @@ public:
 	void logParentList();
 	void logStmtList();
 	void logCallStmtProcMap();
-	void buildCFG(list<pair<int, string>>);
+	void buildCFG(list<Statement>);
 
 	//PKB housekeeping function
 	//sort and unify function for Modifies, Uses, FollowsStar, Parent, ParentStar
