@@ -269,16 +269,16 @@ namespace UnitTest {
 			PKB::getPKBInstance()->setPattern(4, "x", "0");
 			PKB::getPKBInstance()->setPattern(5, "i", "5");
 			PKB::getPKBInstance()->setPattern(6, "i", "_while_");
-			PKB::getPKBInstance()->setPattern(7, "x", "x+2*y");
-			PKB::getPKBInstance()->setPattern(8, "i", "i-1");
-			PKB::getPKBInstance()->setPattern(9, "x", "_if_");
-			PKB::getPKBInstance()->setPattern(10, "x", "x+1");
-			PKB::getPKBInstance()->setPattern(11, "z", "1");
-			PKB::getPKBInstance()->setPattern(10, "z", "z+x+i");
-			PKB::getPKBInstance()->setPattern(11, "y", "z+2");
-			PKB::getPKBInstance()->setPattern(12, "x", "x*y+z");
-			PKB::getPKBInstance()->setPattern(13, "z", "5");
-			PKB::getPKBInstance()->setPattern(14, "v", "z");
+			PKB::getPKBInstance()->setPattern(7, "x", "(x+2)*y");
+			PKB::getPKBInstance()->setPattern(9, "i", "i-1");
+			PKB::getPKBInstance()->setPattern(10, "x", "_if_");
+			PKB::getPKBInstance()->setPattern(11, "x", "x+1");
+			PKB::getPKBInstance()->setPattern(12, "z", "1");
+			PKB::getPKBInstance()->setPattern(13, "z", "x+(x+1)");
+			PKB::getPKBInstance()->setPattern(14, "y", "z+2");
+			PKB::getPKBInstance()->setPattern(15, "x", "(x*y)+z");
+			PKB::getPKBInstance()->setPattern(16, "z", "5");
+			PKB::getPKBInstance()->setPattern(17, "v", "z");
 
 			//set calls
 			PKB::getPKBInstance()->setCalls(-1, -2);
@@ -738,7 +738,104 @@ namespace UnitTest {
 		}
 
 		TEST_METHOD(testPatternFunctions) {
+			list<int> actual, expected;
 
+			//for pattern a("x", _)
+			actual = PKB::getPKBInstance()->getAssignWithFirstExact("x");
+			expected.push_back(1);
+			expected.push_back(4);
+			expected.push_back(7);
+			expected.push_back(11);
+			expected.push_back(15);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getAssignWithFirstExact("z");
+			expected.clear();
+			expected.push_back(2);
+			expected.push_back(12);
+			expected.push_back(13);
+			expected.push_back(16);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getAssignWithFirstExact("abc");
+			Assert::IsTrue(actual == list<int>());
+
+
+			//for pattern a(_, "x")
+			actual = PKB::getPKBInstance()->getAssignWithSecondExact("x+1");
+			expected.clear();
+			expected.push_back(11);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getAssignWithSecondExact("(x+1)");
+			Assert::IsTrue(actual == list<int>());
+
+			actual = PKB::getPKBInstance()->getAssignWithSecondExact("x*y");
+			Assert::IsTrue(actual == list<int>());
+
+
+			//for pattern a(_, _"x"_)
+			actual = PKB::getPKBInstance()->getAssignWithSecond("x+1");
+			expected.clear();
+			expected.push_back(11);
+			expected.push_back(13);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getAssignWithSecond("(x+1)");
+			expected.clear();
+			expected.push_back(13);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getAssignWithSecond("z");
+			expected.clear();
+			expected.push_back(14);
+			expected.push_back(15);
+			expected.push_back(17);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getAssignWithSecond("x+(x+1)");
+			expected.clear();
+			expected.push_back(13);
+			Assert::IsTrue(actual == expected);
+
+
+			//for pattern a("x", "y")
+			actual = PKB::getPKBInstance()->getAssignWithBothExact("x", "x+1");
+			expected.clear();
+			expected.push_back(11);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getAssignWithBothExact("z", "x+(x+1)");
+			expected.clear();
+			expected.push_back(13);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getAssignWithBothExact("z", "5");
+			expected.clear();
+			expected.push_back(16);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getAssignWithBothExact("x", "x");
+			Assert::IsTrue(actual == list<int>());
+			
+
+			//for pattern a("x", _"y"_)
+			actual = PKB::getPKBInstance()->getAssignWithBoth("x", "y");
+			expected.clear();
+			expected.push_back(7);
+			expected.push_back(15);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getAssignWithBoth("z", "x+1");
+			expected.clear();
+			expected.push_back(13);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getAssignWithBoth("z", "x+x");
+			Assert::IsTrue(actual == list<int>());
+
+			actual = PKB::getPKBInstance()->getAssignWithBoth("xyz", "x+1");
+			Assert::IsTrue(actual == list<int>());
 		}
 	};
 }

@@ -31,26 +31,71 @@ list<string> QueryEvaluator::evaluate() {
 	// first get selecet query, for iteration 1, only select first clause. hard code here
 	vector<string> select = getSelectClause(0);
 	int index;
+	string log = "Constant such that size is " + to_string(queryTree.getSuchThatConstSize());
+	SPALog::log(log);
+	for (index = 0; index < queryTree.getSuchThatConstSize(); index++) {
+		if (!processSuchThatConstClause(getSuchThatConstClause(index))) {
+			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
+			return empty;
+		}
+	}
+	for (index = 0; index < queryTree.getWithConstSize(); index++) {
+		if (!processWithConstClause(getWithConstClause(index))) {
+			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
+			return empty;
+		}
+	}
+
 	for (index = 0; index < queryTree.getSuchThatSize(); index++) {
-		processSuchThatClause(getSuchThatClause(index));
+		if (!processSuchThatClause(getSuchThatClause(index))) {
+			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
+			return empty;
+		}
 	}
 	for (index = 0; index < queryTree.getPatternSize(); index++) {
-		processPatternClause(getPatternClause(index));
+		if (!processPatternClause(getPatternClause(index))) {
+			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
+			return empty;
+		}
 	}
 	for (index = 0; index < queryTree.getWithSize(); index++) {
-		processWithClause(getWithClause(index));
+		if (!processWithClause(getWithClause(index))) {
+			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
+			return empty;
+		}
 	}
 	for (index = 0; index < queryTree.getSelectSize(); index++) {
-		processSelectClause(getSelectClause(index));
+		if (!processSelectClause(getSelectClause(index))) {
+			list<string> empty;
+			if (select.at(1) == "boolean") {
+				empty.push_back("false");
+			}
+			return empty;
+		}
 	}
 
 	//logging should be removed before final submission
 	string str;
 	str = "splited table\n";
 	for (auto& x : resultList) {
-		for (int i = 0; i < x.result.size(); ++i) {
-			for (int j = 0; j < x.result[i].size(); ++j) {
-				str += to_string(x.result[i][j]) + ", ";
+		for (int i = 0; i < x.getResult().size(); ++i) {
+			for (int j = 0; j < x.getResult()[i].size(); ++j) {
+				str += to_string(x.getResult()[i][j]) + ", ";
 			}
 			str += "\n";
 		}
@@ -76,6 +121,12 @@ vector<string> QueryEvaluator::getSuchThatClause(int index) {
 	return tempVector;
 }
 
+vector<string> QueryEvaluator::getSuchThatConstClause(int index) {
+	vector<string> tempVector;
+	tempVector = queryTree.getSuchThatConstQuery(index);
+	return tempVector;
+}
+
 vector<string> QueryEvaluator::getPatternClause(int index) {
 	vector<string> tempVector;
 	tempVector = queryTree.getPatternQuery(index);
@@ -93,8 +144,15 @@ vector<string> QueryEvaluator::getWithClause(int index) {
 	tempVector = queryTree.getWithQuery(index);
 	return tempVector;
 }
+
+vector<string> QueryEvaluator::getWithConstClause(int index) {
+	vector<string> tempVector;
+	tempVector = queryTree.getWithConstQuery(index);
+	return tempVector;
+}
+
 //Process Clause
-void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
+bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	string relationship = tempString.at(0);
 	string arg1 = tempString.at(1);
 	string arg1Type = tempString.at(2);
@@ -103,38 +161,99 @@ void QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	string log = "Such that clause: " + relationship + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
 
+	ResultTable tempResult;
+
 	if (relationship == "modifies") {
-		resultList.push_back(processModifies(tempString));
+		tempResult = processModifies(tempString);
 	}
 	else if (relationship == "uses") {
-		resultList.push_back(processUses(tempString));
+		tempResult = processUses(tempString);
 	}
 	else if (relationship == "parent") {
-		resultList.push_back(processParent(tempString));
+		tempResult = processParent(tempString);
 	}
 	else if (relationship == "follows") {
-		resultList.push_back(processFollows(tempString));
+		tempResult = processFollows(tempString);
 	}
 	else if (relationship == "parent*") {
-		resultList.push_back(processParentStar(tempString));
+		tempResult = processParentStar(tempString);
 	}
 	else if (relationship == "follows*") {
-		resultList.push_back(processFollowsStar(tempString));
+		tempResult = processFollowsStar(tempString);
 	}
 	else if (relationship == "calls") {
-		resultList.push_back(processCalls(tempString));
+		tempResult = processCalls(tempString);
 	}
 	else if (relationship == "calls*") {
-		resultList.push_back(processCallsStar(tempString));
+		tempResult = processCallsStar(tempString);
 	}
 	else if (relationship == "next") {
-		resultList.push_back(processNext(tempString));
+		tempResult = processNext(tempString);
 	}
 	else if (relationship == "next*") {
-		resultList.push_back(processNextStar(tempString));
+		tempResult = processNextStar(tempString);
 	}
 	else {
+		SPALog::log("Wrong relationship!");
+		return false;
+	}
+	if (isResultEmpty(tempResult)) {
+		return false;
+	}
+	resultList.push_back(tempResult);
+	return true;
+}
 
+bool QueryEvaluator::processSuchThatConstClause(vector<string> tempString) {
+	string relationship = tempString.at(0);
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
+	string log = "Such that const clause: " + relationship + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
+	SPALog::log(log);
+
+	ResultTable tempResult;
+
+	if (relationship == "modifies") {
+		tempResult = processModifies(tempString);
+	}
+	else if (relationship == "uses") {
+		tempResult = processUses(tempString);
+	}
+	else if (relationship == "parent") {
+		tempResult = processParent(tempString);
+	}
+	else if (relationship == "follows") {
+		tempResult = processFollows(tempString);
+	}
+	else if (relationship == "parent*") {
+		tempResult = processParentStar(tempString);
+	}
+	else if (relationship == "follows*") {
+		tempResult = processFollowsStar(tempString);
+	}
+	else if (relationship == "calls") {
+		tempResult = processCalls(tempString);
+	}
+	else if (relationship == "calls*") {
+		tempResult = processCallsStar(tempString);
+	}
+	else if (relationship == "next") {
+		tempResult = processNext(tempString);
+	}
+	else if (relationship == "next*") {
+		tempResult = processNextStar(tempString);
+	}
+	else {
+		SPALog::log("Wrong relationship!");
+		return false;
+	}
+	if (tempResult.getIsWholeTrue()==0) {
+		return false;
+	}
+	else { 
+		return true;
 	}
 }
 
@@ -143,6 +262,10 @@ bool QueryEvaluator::isInList(list<int> list, int number) {
 		return true;
 	}
 	return false;
+}
+
+bool QueryEvaluator::isResultEmpty(ResultTable tempResult) {
+	return tempResult.getResult().empty();
 }
 
 list<int> QueryEvaluator::getList(string listName) {
@@ -187,7 +310,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 		
 		if (!arg2ID) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("arg2 is not a valid variable!\n");
 			return tempResult;
 		}
@@ -198,15 +321,15 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			ResultTable tempResult = ResultTable();
 
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isModifiesValid(stoi(arg1), arg2ID)) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -214,21 +337,21 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			ResultTable tempResult = ResultTable();
 			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg1 is not a valid proc_name!\n");
 				return tempResult;
 			}
 			
 			if (find(modifiesLine.begin(), modifiesLine.end(), arg1ID) != modifiesLine.end()) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
 		else {
-			// arg2 is procedure, stmt, while, assign, if, call, prog_line
+			// arg1 is procedure, stmt, while, assign, if, call, prog_line
 			list<int> targetList = getList(arg1Type);
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
@@ -249,7 +372,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 		if (arg1Type == "number") {
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
@@ -267,7 +390,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
 				ResultTable tempResult = ResultTable();
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg1 is invalid prog_name!\n");
 				return tempResult;
 			}
@@ -318,7 +441,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 
 		if (!arg2ID) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("arg2 is not a valid variable!\n");
 			return tempResult;
 		}
@@ -329,15 +452,15 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			ResultTable tempResult = ResultTable();
 
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isUsesValid(stoi(arg1), arg2ID)) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -345,16 +468,16 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			ResultTable tempResult = ResultTable();
 			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg1 is not a valid proc_name!\n");
 				return tempResult;
 			}
 
 			if (find(usesLine.begin(), usesLine.end(), arg1ID) != usesLine.end()) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -379,7 +502,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 		if (arg1Type == "number") {
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg1 is not a valid prog_line!\n");
 				return tempResult;
 			}
@@ -397,7 +520,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
 				ResultTable tempResult = ResultTable();
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg1 is invalid prog_name!\n");
 				return tempResult;
 			}
@@ -448,7 +571,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 		bool isNotParrent = !isInList(parentList, stoi(arg1));
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1)) || isNotParrent ) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("Parent arg1 is not a valid prog_line or is not a parent stmt");
 			return tempResult;
 		}
@@ -458,15 +581,15 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Parent arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isParentValid(stoi(arg1), stoi(arg2))) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -491,7 +614,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Parent arg2 is not a valid prog_line");
 				return tempResult;
 			}
@@ -503,7 +626,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 				temp.clear();
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -513,7 +636,7 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1,arg2);
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				return tempResult;
 			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
@@ -542,7 +665,7 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("Follows arg1 is not a valid prog_line");
 			return tempResult;
 		}
@@ -550,21 +673,21 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 		int littleBrother = PKB::getPKBInstance()->getFollowsSecond(stoi(arg1));
 		if (littleBrother == 0) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			return tempResult;
 		}
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Follows arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			if ( PKB::getPKBInstance()->isFollowsValid(stoi(arg1), stoi(arg2))){
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -588,7 +711,7 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Follows arg2 is not a valid prog_line");
 				return tempResult;
 			}
@@ -600,7 +723,7 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 				temp.clear();
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -610,7 +733,7 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				return tempResult;
 			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
@@ -641,7 +764,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 		bool isNotParrent = !isInList(parentList, stoi(arg1));
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1)) || isNotParrent) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("Parent* arg1 is not a valid prog_line or is not a parent stmt");
 			return tempResult;
 		}
@@ -651,15 +774,15 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Parent* arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isParentStarValid(stoi(arg1), stoi(arg2))) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -684,7 +807,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Parent* arg2 is not a valid prog_line");
 				return tempResult;
 			}
@@ -700,7 +823,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 				}
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -710,7 +833,7 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				return tempResult;
 			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
@@ -739,7 +862,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("Follows* arg1 is not a valid prog_line");
 			return tempResult;
 		}
@@ -747,22 +870,22 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 		list<int> littleBrothers = PKB::getPKBInstance()->getFollowsStarSecond(stoi(arg1));
 		if (littleBrothers.size() == 0) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("Follows* arg1 does not have little brothers");
 			return tempResult;
 		}
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Follows* arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isFollowsStarValid(stoi(arg1), stoi(arg2))) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -789,7 +912,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Follows* arg2 is not a valid prog_line");
 				return tempResult;
 			}
@@ -805,7 +928,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 				}
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -815,7 +938,7 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				return tempResult;
 			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
@@ -846,7 +969,7 @@ ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
 
 		if (!arg1ID) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("arg1 is not a valid proc id!\n");
 			return tempResult;
 		}
@@ -858,16 +981,16 @@ ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
 			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
 
 			if (!arg2ID || (arg1 == arg2)) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg2 is not a valid proc id or arg1 == arg2!\n");
 				return tempResult;
 			}
 
 			if (PKB::getPKBInstance()->isCallsValid(arg1ID, arg2ID)) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -893,7 +1016,7 @@ ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
 			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
 
 			if (!arg2ID) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg2 is not a valid proc id!\n");
 				return tempResult;
 			}
@@ -911,7 +1034,7 @@ ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg1,arg2);
 			vector<int> temp;
 			if (arg1Type != "all" && arg1 == arg2) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Calls invalid arg1 == arg2!\n");
 				return tempResult;
 			}
@@ -950,7 +1073,7 @@ ResultTable QueryEvaluator::processCallsStar(vector<string> tempString) {
 
 		if (!arg1ID) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("arg1 is not a valid proc id!\n");
 			return tempResult;
 		}
@@ -962,16 +1085,16 @@ ResultTable QueryEvaluator::processCallsStar(vector<string> tempString) {
 			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
 
 			if (!arg2ID || arg1 == arg2) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg2 is not a valid proc id! or arg1 == arg2\n");
 				return tempResult;
 			}
 
 			if (PKB::getPKBInstance()->isCallsStarValid(arg1ID, arg2ID)) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -997,7 +1120,7 @@ ResultTable QueryEvaluator::processCallsStar(vector<string> tempString) {
 			int arg2ID = PKB::getPKBInstance()->getProcID(arg2);
 
 			if (!arg2ID) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("arg2 is not a valid proc id!\n");
 				return tempResult;
 			}
@@ -1015,7 +1138,7 @@ ResultTable QueryEvaluator::processCallsStar(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			if (arg1Type != "all" && arg1 == arg2) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Calls* invalid arg1 == arg2!\n");
 				return tempResult;
 			}
@@ -1053,7 +1176,7 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("Next arg1 is not a valid prog_line");
 			return tempResult;
 		}
@@ -1061,21 +1184,21 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 		list<int> littleBrothers = PKB::getPKBInstance()->getNextSecond(stoi(arg1));
 		if (littleBrothers.size() == 0) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			return tempResult;
 		}
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Next arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isNextvalid(stoi(arg1), stoi(arg2))) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -1102,7 +1225,7 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Next arg2 is not a valid prog_line");
 				return tempResult;
 			}
@@ -1110,7 +1233,7 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 			vector<int> temp;
 			if (brothers.size() == 0) {
 				ResultTable tempResult = ResultTable();
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				return tempResult;
 			}
 			for (list<int>::iterator t = brothers.begin(); t != brothers.end(); t++) {
@@ -1128,7 +1251,7 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				return tempResult;
 			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
@@ -1157,7 +1280,7 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("Next* arg1 is not a valid prog_line");
 			return tempResult;
 		}
@@ -1165,22 +1288,22 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 		list<int> littleBrothers = PKB::getPKBInstance()->getNextStarSecond(stoi(arg1));
 		if (littleBrothers.size() == 0) {
 			ResultTable tempResult = ResultTable();
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("Next* arg1 does not have little brothers");
 			return tempResult;
 		}
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Next* arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isNextStarValid(stoi(arg1), stoi(arg2))) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -1207,7 +1330,7 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("Next* arg2 is not a valid prog_line");
 				return tempResult;
 			}
@@ -1223,7 +1346,7 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 				}
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -1233,7 +1356,7 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				return tempResult;
 			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
@@ -1253,7 +1376,7 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 	}
 }
 
-void QueryEvaluator::processPatternClause(vector<string> tempString) {
+bool QueryEvaluator::processPatternClause(vector<string> tempString) {
 	
 	string synType = tempString.at(1);
 	string arg1 = tempString.at(2);
@@ -1264,18 +1387,27 @@ void QueryEvaluator::processPatternClause(vector<string> tempString) {
 	string log = "Pattern clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
 
+	ResultTable tempResult;
+
 	if (synType == "assign") {
-		resultList.push_back(processAssignPattern(tempString));
+		tempResult = processAssignPattern(tempString);
 	}
 	else if (synType == "while") {
-		resultList.push_back(processWhilePattern(tempString));
+		tempResult = processWhilePattern(tempString);
 	}
 	else if (synType == "if") {
-		resultList.push_back(processIfPattern(tempString));
+		tempResult = processIfPattern(tempString);
 	}
 	else {
-
+		SPALog::log("Wrong pattern!");
+		return false;
 	}
+
+	if (isResultEmpty(tempResult)) {
+		return false;
+	}
+	resultList.push_back(tempResult);
+	return true;
 	
 }
 
@@ -1417,7 +1549,7 @@ ResultTable QueryEvaluator::processWhilePattern(vector<string> tempString) {
 		vector<int> temp;
 		int arg1ID = PKB::getPKBInstance()->getVarID(arg1);
 		if (!arg1ID) {
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("arg1 is not a valid variable!\n");
 			return tempResult;
 		}
@@ -1474,7 +1606,7 @@ ResultTable QueryEvaluator::processIfPattern(vector<string> tempString) {
 		vector<int> temp;
 		int arg1ID = PKB::getPKBInstance()->getVarID(arg1);
 		if (!arg1ID) {
-			tempResult.isWholeTrue = 0;
+			tempResult.setIsWholeTrue(0);
 			SPALog::log("arg1 is not a valid variable!\n");
 			return tempResult;
 		}
@@ -1518,7 +1650,7 @@ ResultTable QueryEvaluator::processIfPattern(vector<string> tempString) {
 	}
 }
 
-void QueryEvaluator::processSelectClause(vector<string> tempString) {
+bool QueryEvaluator::processSelectClause(vector<string> tempString) {
 	string syn = tempString.at(0);
 	string synType = tempString.at(1);
 	string log = "Select clause: select " + syn + ":" + synType +"\n";
@@ -1533,8 +1665,11 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 			tempResult.addTuple(temp);
 			temp.clear();
 		}
+		if (isResultEmpty(tempResult)) {
+			return false;
+		}
 		resultList.push_back(tempResult);
-		return;
+		return true;
 	}
 	else if (synType == "procedure") {
 		ResultTable tempResult = ResultTable(syn);
@@ -1545,14 +1680,17 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 			tempResult.addTuple(temp);
 			temp.clear();
 		}
+		if (isResultEmpty(tempResult)) {
+			return false;
+		}
 		resultList.push_back(tempResult);
-		return;
+		return true;
 	}
 	else if (synType == "boolean") {
-		ResultTable tempResult = ResultTable(syn);
-		tempResult.isWholeTrue = 1;
-		resultList.push_back(tempResult);
-		return;
+		//ResultTable tempResult = ResultTable(syn);
+		//tempResult.isWholeTrue = 1;
+		//resultList.push_back(tempResult);
+		return true;
 	}
 	else {
 		list<int> targetList = getList(synType);
@@ -1563,12 +1701,15 @@ void QueryEvaluator::processSelectClause(vector<string> tempString) {
 			tempResult.addTuple(temp);
 			temp.clear();
 		}
+		if (isResultEmpty(tempResult)) {
+			return false;
+		}
 		resultList.push_back(tempResult);
-		return;
+		return true;
 	}
 }
 
-void QueryEvaluator::processWithClause(vector<string> tempString) {
+bool QueryEvaluator::processWithClause(vector<string> tempString) {
 	string synType = tempString.at(1);
 	string arg1 = tempString.at(2);
 	string arg1Type = tempString.at(3);
@@ -1578,15 +1719,56 @@ void QueryEvaluator::processWithClause(vector<string> tempString) {
 	string log = "With clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
 
+	ResultTable tempResult;
+
 	if (synType == "withNumber") {
-		resultList.push_back(processNumberWith(tempString));
+		tempResult = processNumberWith(tempString);
 	}
 	else if (synType == "withName") {
-		resultList.push_back(processNameWith(tempString));
+		tempResult = processNameWith(tempString);
 	}
 	else {
-
+		SPALog::log("Wrong with type!");
+		return false;
 	}
+
+	if (isResultEmpty(tempResult)) {
+		return false;
+	}
+	resultList.push_back(tempResult);
+	return true;
+}
+
+bool QueryEvaluator::processWithConstClause(vector<string> tempString) {
+	string synType = tempString.at(1);
+	string arg1 = tempString.at(2);
+	string arg1Type = tempString.at(3);
+	string arg2 = tempString.at(4);
+	string arg2Type = tempString.at(5);
+
+	string log = "With constant clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
+	SPALog::log(log);
+
+	ResultTable tempResult;
+
+	if (synType == "withNumber") {
+		tempResult = processNumberWith(tempString);
+	}
+	else if (synType == "withName") {
+		tempResult = processNameWith(tempString);
+	}
+	else {
+		SPALog::log("Wrong with type!");
+		return false;
+	}
+
+	if (tempResult.getIsWholeTrue() == 0) {
+		return false;
+	}
+	else {
+		return true;
+	}
+	
 }
 
 ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
@@ -1602,7 +1784,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 				return tempResult;
 			}
 			list<int> procList = getList("procedure");
@@ -1683,7 +1865,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 		else if (arg1Type == "call") {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 				return tempResult;
 			}
 			vector<int> temp;
@@ -1787,7 +1969,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 				return tempResult;
 			}
 			list<int> varList = PKB::getPKBInstance()->getVarList();
@@ -1862,10 +2044,10 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			ResultTable tempResult = ResultTable();
 			vector<int> temp;
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			else {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 			}
 			return tempResult;
 		}
@@ -1890,7 +2072,7 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 				return tempResult;
 			}
 			list<int> stmtList = getList("stmt");
@@ -1906,7 +2088,7 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("with number clause arg2 is not a valid prog_line");
 				return tempResult;
 			}
@@ -1933,7 +2115,7 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg2);
 			vector<int> temp;
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("with number clause arg1 is not a valid prog_line");
 				return tempResult;
 			}
@@ -1946,11 +2128,11 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 			ResultTable tempResult = ResultTable();
 			vector<int> temp;
 			if ( stoi(arg1) != stoi(arg2)) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("with number clause arg1 != arg2");
 			}
 			else {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 			}
 			
 			return tempResult;
@@ -1959,7 +2141,7 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg2);
 			vector<int> temp;
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("with number clause arg1 is not a valid prog_line");
 				return tempResult;
 			}
@@ -1994,7 +2176,7 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 			vector<int> temp;
 			
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				SPALog::log("with number clause arg2 is not a valid prog_line");
 				return tempResult;
 			}
@@ -2012,11 +2194,11 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			if (arg1 == arg2) {
-				tempResult.isWholeTrue = 1;
+				tempResult.setIsWholeTrue(1);
 				return tempResult;
 			}
 			if (arg1Type != arg2Type) {
-				tempResult.isWholeTrue = 0;
+				tempResult.setIsWholeTrue(0);
 				return tempResult;
 			}
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {

@@ -19,7 +19,7 @@ namespace UnitTest {
 			str += "  x = 0;\n";
 			str += "  i = 5;\n";
 			str += "  while i{\n";
-			str += "     x = x + 2 * y;\n";
+			str += "     x = (x + 2) * y;\n";
 			str += "     call Third;\n";
 			str += "     i = i - 1; }\n";
 			str += "  if x then{\n";
@@ -27,9 +27,9 @@ namespace UnitTest {
 			str += "  else {\n";
 			str += "     z = 1;\n";
 			str += "  }\n";
-			str += "  z = z + (x + i);\n";
+			str += "  z = z + (x + 1);\n";
 			str += "  y = z + 2;\n";
-			str += "  x = x*y + z; }\n";
+			str += "  x = (x*y) + z; }\n";
 			str += "procedure Third{\n";
 			str += "  z = 5;\n";
 			str += "v = z; }\n";
@@ -80,7 +80,7 @@ namespace UnitTest {
 			expectedList.push_back(temp);
 
 			temp.setNumber(7); 
-			temp.setContent("x=x+2*y;");
+			temp.setContent("x=(x+2)*y;");
 			temp.setType(assignmentStmt);
 			expectedList.push_back(temp);
 			
@@ -115,7 +115,7 @@ namespace UnitTest {
 			expectedList.push_back(temp);
 
 			temp.setNumber(13);
-			temp.setContent("z=z+(x+i);"); 
+			temp.setContent("z=z+(x+1);"); 
 			temp.setType(assignmentStmt);
 			expectedList.push_back(temp);
 
@@ -125,7 +125,7 @@ namespace UnitTest {
 			expectedList.push_back(temp);
 
 			temp.setNumber(15); 
-			temp.setContent("x=x*y+z;}"); 
+			temp.setContent("x=(x*y)+z;}"); 
 			temp.setType(assignmentStmt);
 			expectedList.push_back(temp);
 

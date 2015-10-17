@@ -13,23 +13,23 @@ namespace UnitTest
 	public:
 
 		TEST_METHOD_INITIALIZE(buildPKB) {
-				PKB::getPKBInstance()->addStmtToList(3, 3);
+				PKB::getPKBInstance()->addStmtToList(3, whileStmt);
 				//assignList
-				PKB::getPKBInstance()->addStmtToList(1, 0);
-				PKB::getPKBInstance()->addStmtToList(2, 0);
-				PKB::getPKBInstance()->addStmtToList(4, 0);
-				PKB::getPKBInstance()->addStmtToList(6, 0);
-				PKB::getPKBInstance()->addStmtToList(8, 0);
-				PKB::getPKBInstance()->addStmtToList(9, 0);
-				PKB::getPKBInstance()->addStmtToList(10, 0);
-				PKB::getPKBInstance()->addStmtToList(11, 0);
-				PKB::getPKBInstance()->addStmtToList(12, 0);
-				PKB::getPKBInstance()->addStmtToList(13, 0);
-				PKB::getPKBInstance()->addStmtToList(14, 0);
+				PKB::getPKBInstance()->addStmtToList(1, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(2, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(4, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(6, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(8, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(9, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(10, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(11, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(12, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(13, assignmentStmt);
+				PKB::getPKBInstance()->addStmtToList(14, assignmentStmt);
 				//callList
-				PKB::getPKBInstance()->addStmtToList(5, 2);
+				PKB::getPKBInstance()->addStmtToList(5, procCallStmt);
 				//ifList
-				PKB::getPKBInstance()->addStmtToList(7, 4);
+				PKB::getPKBInstance()->addStmtToList(7, ifStmt);
 				//constantList
 				PKB::getPKBInstance()->addConstantToList(0);
 				PKB::getPKBInstance()->addConstantToList(1);
@@ -230,25 +230,25 @@ namespace UnitTest
 				de.setReverseMap();
 
 				//next and nextStar
-				list<pair<int, string>> sourceList;
-				pair<int, string> temp;
-				temp.first = -1; temp.second = "procedureSecond{"; sourceList.push_back(temp);
-				temp.first = 1; temp.second = "x=0;"; sourceList.push_back(temp);
-				temp.first = 2; temp.second = "i=5;"; sourceList.push_back(temp);
-				temp.first = 3; temp.second = "whilei{"; sourceList.push_back(temp);
-				temp.first = 4; temp.second = "x=x+2*y;"; sourceList.push_back(temp);
-				temp.first = 5; temp.second = "callThird;"; sourceList.push_back(temp);
-				temp.first = 6; temp.second = "i=i-1;}"; sourceList.push_back(temp);
-				temp.first = 7; temp.second = "ifxthen{"; sourceList.push_back(temp);
-				temp.first = 8; temp.second = "x=x+1;}"; sourceList.push_back(temp);
-				temp.first = -1; temp.second = "else{"; sourceList.push_back(temp);
-				temp.first = 9; temp.second = "z=1;}"; sourceList.push_back(temp);
-				temp.first = 10; temp.second = "z=z+x+i;"; sourceList.push_back(temp);
-				temp.first = 11; temp.second = "y=z+2;"; sourceList.push_back(temp);
-				temp.first = 12; temp.second = "x=x*y+z;}"; sourceList.push_back(temp);
-				temp.first = -1; temp.second = "procedureThird{"; sourceList.push_back(temp);
-				temp.first = 13; temp.second = "z=5;"; sourceList.push_back(temp);
-				temp.first = 14; temp.second = "v=z;}"; sourceList.push_back(temp);
+				list<Statement> sourceList;
+				Statement temp= Statement();
+				temp.setNumber(-1); temp.setContent("procedureSecond{"); temp.setType(procDeclarationStmt); sourceList.push_back(temp);
+				temp.setNumber(1); temp.setContent("x=0;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(2); temp.setContent("i=5;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(3); temp.setContent("whilei{"); temp.setType(whileStmt); sourceList.push_back(temp);
+				temp.setNumber(4); temp.setContent("x=x+2*y;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(5); temp.setContent("callThird;"); temp.setType(procCallStmt); sourceList.push_back(temp);
+				temp.setNumber(6); temp.setContent("i=i-1;}"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(7); temp.setContent("ifxthen{"); temp.setType(ifStmt); sourceList.push_back(temp);
+				temp.setNumber(8); temp.setContent("x=x+1;}"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(-1); temp.setContent("else{"); temp.setType(elseStmt); sourceList.push_back(temp);
+				temp.setNumber(9); temp.setContent("z=1;}"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(10); temp.setContent("z=z+x+i;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(11); temp.setContent("y=z+2;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(12); temp.setContent("x=x*y+z;}"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(-1); temp.setContent("procedureThird{"); temp.setType(procDeclarationStmt); sourceList.push_back(temp);
+				temp.setNumber(13); temp.setContent("z=5;"); temp.setType(assignmentStmt); sourceList.push_back(temp);
+				temp.setNumber(14); temp.setContent("v=z;}"); temp.setType(assignmentStmt); sourceList.push_back(temp);
 
 				PKB::getPKBInstance()->buildCFG(sourceList);
 			
@@ -272,6 +272,7 @@ namespace UnitTest
 			 Select p such that Modifies(4, "i") Expected :
 			 Select v such that Modifies(7, v) Expected: x, z
 			 Select BOOLEAN such that Modifies("Second", "x") Expected: true
+			 Select BOOLEAN such that Modifies(2, "x") Expected: false
 			*/
 		
 			//Select s such that Modifies(s, "x") Expected: 1, 3, 4, 7, 8, 12
@@ -285,6 +286,7 @@ namespace UnitTest
 			qt.insertSuchThat("modifies", arg, argType);
 
 			qt.insertSelect("s", "stmt");
+
 			QueryEvaluator qe = (qt);
 			list<string> result = qe.evaluate();
 			list<string> expected;
@@ -433,8 +435,24 @@ namespace UnitTest
 			QueryEvaluator qe_9 = (qt_9);
 			list<string> result_9 = qe_9.evaluate();
 			list<string> expected_9;
-			expected_9.push_back("false");
-			//Assert::IsTrue(expected_9 == result_9);
+			expected_9.push_back("true");
+			Assert::IsTrue(expected_9 == result_9);
+
+			//Select BOOLEAN such that Modifies(2, "x") Expected: false
+			QueryTree qt_10;
+			vector<string> arg_10;
+			vector<string> argType_10;
+			arg_10.push_back("2");
+			arg_10.push_back("x");
+			argType_10.push_back("string");
+			argType_10.push_back("string");
+			qt_10.insertSuchThat("modifies", arg_10, argType_10);
+			qt_10.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_10 = (qt_10);
+			list<string> result_10 = qe_10.evaluate();
+			list<string> expected_10;
+			expected_10.push_back("false");
+			Assert::IsTrue(expected_10 == result_10);
 		}
 
 		TEST_METHOD(evaluateUses)
@@ -449,6 +467,8 @@ namespace UnitTest
 			Select p such that Uses(p, "m") Expected:
 			Select p such that Uses(4, "i") Expected :
 			Select v such that Uses(7, v) Expected: x
+			Select BOOLEAN such that uses(2, "x") Expected: false
+			Select BOOLEAN such that Use("Second", "x") Expected: true
 			*/
 
 			//Select s such that Uses(s, "x") Expected: 3, 4, 7, 8, 10, 12
@@ -593,6 +613,38 @@ namespace UnitTest
 			list<string> expected_8;
 			expected_8.push_back("x");
 			Assert::IsTrue(expected_8 == result_8);
+
+			//Select BOOLEAN such that Use("Second", "x") Expected: true
+			QueryTree qt_9;
+			vector<string> arg_9;
+			vector<string> argType_9;
+			arg_9.push_back("Second");
+			arg_9.push_back("x");
+			argType_9.push_back("string");
+			argType_9.push_back("string");
+			qt_9.insertSuchThat("uses", arg_9, argType_9);
+			qt_9.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_9 = (qt_9);
+			list<string> result_9 = qe_9.evaluate();
+			list<string> expected_9;
+			expected_9.push_back("true");
+			Assert::IsTrue(expected_9 == result_9);
+
+			//Select BOOLEAN such that uses(2, "x") Expected: false
+			QueryTree qt_10;
+			vector<string> arg_10;
+			vector<string> argType_10;
+			arg_10.push_back("2");
+			arg_10.push_back("x");
+			argType_10.push_back("string");
+			argType_10.push_back("string");
+			qt_10.insertSuchThat("uses", arg_10, argType_10);
+			qt_10.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_10 = (qt_10);
+			list<string> result_10 = qe_10.evaluate();
+			list<string> expected_10;
+			expected_10.push_back("false");
+			Assert::IsTrue(expected_10 == result_10);
 		}
 		
 		TEST_METHOD(evaluateParent) {
@@ -602,6 +654,8 @@ namespace UnitTest
 			Select w such that Parent(w, _) Expected: 3
 			Select ifs such that Parent( ifs , 8) Expected:7
 			Select a such that Parent(w, a) Expected: 4,6
+			Select BOOLEAN such that Parent(3, 4) Expected: true
+			Select BOOLEAN such that Parent(3, 2) Expected: false
 			*/
 
 			//Select s such that Parent(7, s) Expected: 8,9
@@ -689,6 +743,40 @@ namespace UnitTest
 			expected_4.push_back("4");
 			expected_4.push_back("6");
 			Assert::IsTrue(expected_4 == result_4);
+
+			//Select BOOLEAN such that Parent(3, 4) Expected: true
+			QueryTree qt_5;
+			vector<string> arg_5;
+			vector<string> argType_5;
+			arg_5.push_back("3");
+			arg_5.push_back("4");
+			argType_5.push_back("number");
+			argType_5.push_back("number");
+			qt_5.insertSuchThat("parent", arg_5, argType_5);
+
+			qt_5.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_5 = (qt_5);
+			list<string> result_5 = qe_5.evaluate();
+			list<string> expected_5;
+			expected_5.push_back("true");
+			Assert::IsTrue(expected_5 == result_5);
+
+			//Select BOOLEAN such that Parent(3, 4) Expected: true
+			QueryTree qt_6;
+			vector<string> arg_6;
+			vector<string> argType_6;
+			arg_6.push_back("3");
+			arg_6.push_back("2");
+			argType_6.push_back("number");
+			argType_6.push_back("number");
+			qt_6.insertSuchThat("parent", arg_6, argType_6);
+
+			qt_6.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_6 = (qt_6);
+			list<string> result_6 = qe_6.evaluate();
+			list<string> expected_6;
+			expected_6.push_back("false");
+			Assert::IsTrue(expected_6 == result_6);
 		}
 
 		TEST_METHOD(evaluateFollows) {
@@ -698,6 +786,8 @@ namespace UnitTest
 			Select w such that Follows(w, _) Expected: 3
 			Select ifs such that Follows( ifs , 10) Expected:7
 			Select s such that Follows(w, s) Expected:7 
+			Select BOOLEAN such that Follows(2, 3) Expected: true
+			Select BOOLEAN such that Follows(3, 4) Expected: true
 			*/
 
 			//Select s such that Follows(1, s) Expected: 2
@@ -783,6 +873,40 @@ namespace UnitTest
 			list<string> expected_4;
 			expected_4.push_back("7");
 			Assert::IsTrue(expected_4 == result_4);
+
+			//Select BOOLEAN such that Follows(2, 3) Expected: true
+			QueryTree qt_5;
+			vector<string> arg_5;
+			vector<string> argType_5;
+			arg_5.push_back("2");
+			arg_5.push_back("3");
+			argType_5.push_back("number");
+			argType_5.push_back("number");
+			qt_5.insertSuchThat("follows", arg_5, argType_5);
+
+			qt_5.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_5 = (qt_5);
+			list<string> result_5 = qe_5.evaluate();
+			list<string> expected_5;
+			expected_5.push_back("true");
+			Assert::IsTrue(expected_5 == result_5);
+
+			//Select BOOLEAN such that Follows(3, 4) Expected: true
+			QueryTree qt_6;
+			vector<string> arg_6;
+			vector<string> argType_6;
+			arg_6.push_back("3");
+			arg_6.push_back("2");
+			argType_6.push_back("number");
+			argType_6.push_back("number");
+			qt_6.insertSuchThat("follows", arg_6, argType_6);
+
+			qt_6.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_6 = (qt_6);
+			list<string> result_6 = qe_6.evaluate();
+			list<string> expected_6;
+			expected_6.push_back("false");
+			Assert::IsTrue(expected_6 == result_6);
 		}
 
 		TEST_METHOD(evaluateNext) {
@@ -792,6 +916,8 @@ namespace UnitTest
 			Select w such that Next(w, _) Expected: 3
 			Select s such that Next( c , s) Expected:6
 			Select ifs such that Next(_, ifs) Expected:7
+			Select BOOLEAN such that next(3,7) Expected: true
+			Select BOOLEAN such that next(3,5) Expected: false
 			*/
 
 			//Select s such that Next(3, s) Expected: 4,7
@@ -878,6 +1004,40 @@ namespace UnitTest
 			list<string> expected_4;
 			expected_4.push_back("7");
 			Assert::IsTrue(expected_4 == result_4);
+
+			//Select BOOLEAN such that next(3,7) Expected: true
+			QueryTree qt_5;
+			vector<string> arg_5;
+			vector<string> argType_5;
+			arg_5.push_back("3");
+			arg_5.push_back("7");
+			argType_5.push_back("number");
+			argType_5.push_back("number");
+			qt_5.insertSuchThat("next", arg_5, argType_5);
+
+			qt_5.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_5 = (qt_5);
+			list<string> result_5 = qe_5.evaluate();
+			list<string> expected_5;
+			expected_5.push_back("true");
+			Assert::IsTrue(expected_5 == result_5);
+
+			//Select BOOLEAN such that next(3,5) Expected: false
+			QueryTree qt_6;
+			vector<string> arg_6;
+			vector<string> argType_6;
+			arg_6.push_back("3");
+			arg_6.push_back("5");
+			argType_6.push_back("number");
+			argType_6.push_back("number");
+			qt_6.insertSuchThat("next", arg_6, argType_6);
+
+			qt_6.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_6 = (qt_6);
+			list<string> result_6 = qe_6.evaluate();
+			list<string> expected_6;
+			expected_6.push_back("false");
+			Assert::IsTrue(expected_6 == result_6);
 		}
 		
 		TEST_METHOD(evaluateCalls) {
@@ -888,6 +1048,7 @@ namespace UnitTest
 			Select p such that Calls("First", _) Expected:
 			Select p such that Calls(_, "Second") Expected:
 			Select p such that Calls(p, p) Expected:
+			Select BOOLEAN such that Calls("Second", "Third") Expected: true
 			*/
 
 			//Select p such that Calls("Second", p) Expected: Third
@@ -989,6 +1150,23 @@ namespace UnitTest
 			list<string> result_5 = qe_5.evaluate();
 			list<string> expected_5;
 			Assert::IsTrue(expected_5 == result_5);
+
+			//Select p such that Calls("Second", "Third") Expected: true
+			QueryTree qt_6;
+			vector<string> arg_6;
+			vector<string> argType_6;
+			arg_6.push_back("Second");
+			arg_6.push_back("Third");
+			argType_6.push_back("string");
+			argType_6.push_back("string");
+			qt_6.insertSuchThat("calls", arg_6, argType_6);
+
+			qt_6.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_6 = (qt_6);
+			list<string> result_6 = qe_6.evaluate();
+			list<string> expected_6;
+			expected_6.push_back("true");
+			Assert::IsTrue(expected_6 == result_6);
 		}
 
 		TEST_METHOD(evaluateCallsStar) {
@@ -999,6 +1177,7 @@ namespace UnitTest
 			Select p such that Calls*("First", _) Expected:
 			Select p such that Calls*(_, "Second") Expected:
 			Select p such that Calls*(p, p) Expected:
+			Select BOOLEAN such that Calls*("Second", "Third") Expected: true
 			*/
 
 			//Select p such that Calls*("Second", p) Expected: Third
@@ -1100,6 +1279,23 @@ namespace UnitTest
 			list<string> result_5 = qe_5.evaluate();
 			list<string> expected_5;
 			Assert::IsTrue(expected_5 == result_5);
+
+			//Select p such that Calls*("Second", "Third") Expected: true
+			QueryTree qt_6;
+			vector<string> arg_6;
+			vector<string> argType_6;
+			arg_6.push_back("Second");
+			arg_6.push_back("Third");
+			argType_6.push_back("string");
+			argType_6.push_back("string");
+			qt_6.insertSuchThat("calls*", arg_6, argType_6);
+
+			qt_6.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_6 = (qt_6);
+			list<string> result_6 = qe_6.evaluate();
+			list<string> expected_6;
+			expected_6.push_back("true");
+			Assert::IsTrue(expected_6 == result_6);
 		}
 	};
 }
