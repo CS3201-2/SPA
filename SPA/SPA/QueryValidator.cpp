@@ -163,24 +163,20 @@ bool QueryValidator::isValidQuery(string query) {
 		}
 
 		if (findAndClause(arrClauses.at(1), prevClause)) {
+			
 			if (prevClause.compare(RELTYPE_SUCH_THAT) == 0) {
 				retVal = findRel(arrClauses.at(1));
 				curClause = RELTYPE_SUCH_THAT;
-				if (!checkRetVal(retVal, isFinished, prevClause, curClause)) {
-					return false;
-				}
 			} else if (prevClause.compare(RELTYPE_PATTERN) == 0) {
 				retVal = findPatternClause(arrClauses.at(1));
 				curClause = RELTYPE_PATTERN;
-				if (!checkRetVal(retVal, isFinished, prevClause, curClause)) {
-					return false;
-				}
 			} else if (prevClause.compare(RELTYPE_WITH) == 0) {
 				retVal = findWithClause(arrClauses.at(1));
-				curClause = RELTYPE_WITH;
-				if (checkRetVal(retVal, isFinished, prevClause, curClause) == false) {
-					return false;
-				}
+				curClause = RELTYPE_WITH;		
+			}
+
+			if (checkRetVal(retVal, isFinished, prevClause, curClause) == false) {
+				return false;
 			}
 
 		}
@@ -772,9 +768,11 @@ string QueryValidator::trim(string line) {
 	return regex_replace(line, regex("[' ']{2,}"), " ");
 }
 
-/*string QueryValidator::removeSpaces(string line) {
-return regex_replace(line, regex("[' ']{1,}"), "");
-}*/
+string QueryValidator::removeSpaces(string line) {
+	line.erase(0, line.find_first_not_of(SYMBOL_SPACE));
+	line.erase(line.find_last_not_of(SYMBOL_SPACE) + 1);
+	return line;
+}
 
 string QueryValidator::stringToLower(string str) {
 	transform(str.begin(), str.end(), str.begin(), tolower);
@@ -847,12 +845,12 @@ vector<string> QueryValidator::parseExpression(string expression) {
 		temp = expression.substr(0, found);
 		
 		if (temp != "") {
-			result.push_back(temp);
+			result.push_back(removeSpaces(temp));
 		}
 		//cout << temp;
 		temp = expression.at(found);
 		//if (temp != ";") {
-			result.push_back(temp);
+			result.push_back(removeSpaces(temp));
 		//}
 		//cout << temp;
 		expression = expression.substr(found + 1);
@@ -861,12 +859,12 @@ vector<string> QueryValidator::parseExpression(string expression) {
 
 	//cout << expression<<endl;
 	if (!expression.empty()) {
-		result.push_back(expression);
+		result.push_back(removeSpaces(expression));
 	}
 
-	/*for (int i = 0; i < result.size(); i++) {
-		cout << result.at(i)<<endl;
-	}*/
+	for (int i = 0; i < result.size(); i++) {
+		cout << "."<<result.at(i)<<"."<<endl;
+	}
 	return result;
 }
 
@@ -881,7 +879,7 @@ bool QueryValidator::isValidExpression(string expression) {
 	string prevToken = "dummy";
 	for (int i = 0; i < tokens.size(); i++) {
 		if (!isOperator(tokens.at(i)) && !isValidVariableName(tokens.at(i)) &&
-			!isParenthesis(tokens.at(i)) && !isPositiveInteger(tokens.at(i))) {
+			!isParenthesis(tokens.at(i)) && !isPositiveInteger(tokens.at(i)) ) {
 			//cout << "invalid char";
 			return false;
 		}
