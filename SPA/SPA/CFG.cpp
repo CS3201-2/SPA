@@ -1,7 +1,4 @@
 #include "CFG.h"
-const regex REGEX_WHILE("while(([[:alpha:]])([[:alnum:]]+)*)\\{");
-const regex REGEX_IF("if(([[:alpha:]])([[:alnum:]]+)*)then\\{");
-const regex REGEX_PROC("procedure(([[:alpha:]])([[:alnum:]]+)*)\\{");
 const string EXCEPT_BOUND = "Exception: index out of bound!";
 
 CFG::CFG()
@@ -11,11 +8,13 @@ CFG::CFG()
 void CFG::buildGraph(list<Statement> codeLst)
 {
 	_next.resize(codeLst.size(), list<int>());
+	_typeTable.resize(codeLst.size(), assignmentStmt);
 	_statBuffer.clear();
 	_codeLst = codeLst;
 	_codeIterator = _codeLst.begin();
 	_nodeIndex = 0;
 	_size = 0;
+
 	initializeStack();
 
 	while (_codeIterator != _codeLst.end())
@@ -110,6 +109,11 @@ bool CFG::isNextStarValid(int i, int j)
 		}
 	}
 	return false;
+}
+
+StatementType CFG::getType(int i)
+{
+	return _typeTable[i];
 }
 
 void CFG::printGraph()
@@ -287,6 +291,8 @@ void CFG::solveCode()
 {
 	string codeContent = _codeIterator->getContent();
 	int codeIndex = _codeIterator->getNumber();
+	if (codeIndex != -1)
+		_typeTable[codeIndex] = _codeIterator->getType();
 	if (isContainer(*_codeIterator))
 	{
 		int tempNodeIndex = extractBuffer();
