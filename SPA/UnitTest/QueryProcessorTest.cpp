@@ -279,6 +279,46 @@ namespace UnitTest
 			Assert::IsTrue(expected == result);
 		}
 
+		TEST_METHOD(evaluateParentPattern)
+		{
 
+			string query = "assign a; while w; Select a such that Parent(w, a) pattern a(\"x\",_)";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+
+			list<string> expected;
+			expected.push_back("4");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateWithConstant)
+		{
+
+			string query = "constant c; stmt s; variable v; Select s such that Modifies(s, v) with s.stmt#=c.value";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+
+			list<string> expected;
+			expected.push_back("1");
+			expected.push_back("2");
+			expected.push_back("5");
+			Assert::IsTrue(expected == result);
+		}
 	};
 }
