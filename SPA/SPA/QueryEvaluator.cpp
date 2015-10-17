@@ -1708,11 +1708,11 @@ bool QueryEvaluator::processSelectClause(vector<string> tempString) {
 }
 
 bool QueryEvaluator::processWithClause(vector<string> tempString) {
-	string synType = tempString.at(1);
-	string arg1 = tempString.at(2);
-	string arg1Type = tempString.at(3);
-	string arg2 = tempString.at(4);
-	string arg2Type = tempString.at(5);
+	string synType = tempString.at(0);
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
 
 	string log = "With clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
@@ -1738,11 +1738,11 @@ bool QueryEvaluator::processWithClause(vector<string> tempString) {
 }
 
 bool QueryEvaluator::processWithConstClause(vector<string> tempString) {
-	string synType = tempString.at(1);
-	string arg1 = tempString.at(2);
-	string arg1Type = tempString.at(3);
-	string arg2 = tempString.at(4);
-	string arg2Type = tempString.at(5);
+	string synType = tempString.at(0);
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
 
 	string log = "With constant clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
