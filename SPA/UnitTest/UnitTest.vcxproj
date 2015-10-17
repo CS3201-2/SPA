@@ -159,6 +159,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FrontEndTest.cpp" />
     <ClCompile Include="ParserTest.cpp" />
     <ClCompile Include="PKBTest.cpp" />
     <ClCompile Include="QueryEvaluatorTest.cpp" />
