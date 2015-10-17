@@ -39,7 +39,7 @@ private:
 	vector<string> split(string str, char c);
 	vector<string> split(string str, char c, int num);
 	string QueryValidator::trim(string content);
-	//string QueryValidator::removeSpaces(string line);
+	string QueryValidator::removeSpaces(string line);
 	string stringToLower(string str);
 	bool isVarNameExists(string varName);
 	
@@ -49,6 +49,7 @@ private:
 	bool isInteger(string str);
 	bool isPositiveInteger(string str);
 	vector<string> parseExpression(string expression);
+	bool isValidExpression(string expression);
 	
 	bool isOperator(string str);
 	bool isParenthesis(string str); 
@@ -59,6 +60,5 @@ public:
 	//void areValidQueries(list<string> queries);
 	bool isValidDecAndQuery(string query);
 	QueryTree getQueryTree(); 
-	bool isValidExpression(string expression);
 };
 #pragma once
