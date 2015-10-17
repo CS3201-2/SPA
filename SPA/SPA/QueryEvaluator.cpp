@@ -1430,26 +1430,24 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 				temp.clear();
 			}
 		}
-		else {
-			//iter 1 "constant or string" or variable
-			string flag = arg2.substr(0, 1);
-			string arg2Trim;
-			list<int> assignList;
-
-			if (flag == "_") {
-			    arg2Trim = arg2.substr(2, arg2.length() - 4);
-				assignList = PKB::getPKBInstance()->getAssignWithBoth(arg1, arg2Trim);
-			}
-			else {
-				arg2Trim = arg2.substr(1, arg2.length() - 2);
-				assignList = PKB::getPKBInstance()->getAssignWithBothExact(arg1, arg2Trim);
-			}
-			
+		else if (arg2Type == "string") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithBothExact(arg1, arg2);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
+		}
+		else if (arg2Type == "substring") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithBoth(arg1, arg2);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+		}
+		else {
+			SPALog::log("Pattern arg2 wrong type");
 		}
 		return tempResult;
 	}
@@ -1468,21 +1466,8 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 				}
 			}
 		}
-		else {
-			//iter 1 "constant or string" or "variable"
-			string flag = arg2.substr(0, 1);
-			string arg2Trim;
-			list<int> assignList;
-
-			if (flag == "_") {
-				arg2Trim = arg2.substr(2, arg2.length() - 4);
-				assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2Trim);
-			}
-			else {
-				arg2Trim = arg2.substr(1, arg2.length() - 2);
-				assignList = PKB::getPKBInstance()->getAssignWithSecondExact(arg2Trim);
-			}
-
+		else if (arg2Type == "string") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecondExact(arg2);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				list<int> modifiedVarList = PKB::getPKBInstance()->getModifiesSecond(*i);
 				for (list<int>::iterator t = modifiedVarList.begin(); t != modifiedVarList.end(); t++) {
@@ -1493,7 +1478,22 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 				}
 			}
 		}
-		
+		else if (arg2Type == "substring") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+				list<int> modifiedVarList = PKB::getPKBInstance()->getModifiesSecond(*i);
+				for (list<int>::iterator t = modifiedVarList.begin(); t != modifiedVarList.end(); t++) {
+					temp.push_back(*i);
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+		}
+		else {
+			SPALog::log("Pattern arg2 wrong type");
+		}
+	
 		return tempResult;
 	}
 	else if (arg1Type == "all") {
@@ -1507,26 +1507,24 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 				temp.clear();
 			}
 		}
-		else {
-			// arg2Type is constant or string or variable
-			string flag = arg2.substr(0, 1);
-			string arg2Trim;
-			list<int> assignList;
-
-			if (flag == "_") {
-				arg2Trim = arg2.substr(2, arg2.length() - 4);
-				assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2Trim);
-			}
-			else {
-				arg2Trim = arg2.substr(1, arg2.length() - 2);
-				assignList = PKB::getPKBInstance()->getAssignWithSecondExact(arg2Trim);
-			}
-
+		else if (arg2Type == "string") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecondExact(arg2);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
+		}
+		else if (arg2Type == "substring") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+		}
+		else {
+			SPALog::log("Pattern arg2 wrong type");
 		}
 		return tempResult;
 	}
