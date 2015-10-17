@@ -12,5 +12,11 @@ public:
 	list<int> getAffectFirst(int);
 	list<int> getAffectSecond(int);
 	~Affect();
+private:
+	bool isAssignment(int);
+	bool isWhile(int);
+	bool isIf(int);
+	bool isSameProc(int, int);
+	bool contains(list<int>, int);
 };
 #endif
