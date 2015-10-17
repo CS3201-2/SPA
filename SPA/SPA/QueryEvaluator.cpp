@@ -2100,10 +2100,15 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 			vector<int> temp;
 			list<int> targetList = getList(arg2Type);
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
-				temp.push_back(*i);
-				temp.push_back(*i);
-				tempResult.addTuple(temp);
-				temp.clear();
+				list<int> arg2List = getList(arg2Type);
+				for (list<int>::iterator t = arg2List.begin(); t != arg2List.end(); t++) {
+					if (*i == *t) {
+						temp.push_back(*i);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
 			}
 			return tempResult;
 		}
@@ -2195,15 +2200,17 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 				tempResult.setIsWholeTrue(1);
 				return tempResult;
 			}
-			if (arg1Type != arg2Type) {
-				tempResult.setIsWholeTrue(0);
-				return tempResult;
-			}
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
-				temp.push_back(*i);
-				temp.push_back(*i);
-				tempResult.addTuple(temp);
-				temp.clear();
+				list<int> arg2List = getList(arg2Type);
+				for (list<int>::iterator t = arg2List.begin(); t != arg2List.end(); t++) {
+					if (*i == *t) {
+						temp.push_back(*i);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+				
 			}
 
 			return tempResult;
