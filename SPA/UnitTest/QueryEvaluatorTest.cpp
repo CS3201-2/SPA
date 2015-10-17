@@ -1297,5 +1297,25 @@ namespace UnitTest
 			expected_6.push_back("true");
 			Assert::IsTrue(expected_6 == result_6);
 		}
+
+		TEST_METHOD(evaluatePattern) {
+			//Select a pattern a("x","0") Expected: 1
+			QueryTree qt;
+			vector<string> arg;
+			vector<string> argType;
+			arg.push_back("x");
+			arg.push_back("0");
+			argType.push_back("string");
+			argType.push_back("string");
+			qt.insertPattern("a","assign", arg, argType);
+
+			qt.insertSelect("a", "assign");
+			QueryEvaluator qe = (qt);
+			list<string> result = qe.evaluate();
+			list<string> expected;
+			expected.push_back("1");
+			Assert::IsTrue(expected == result);
+		}
+
 	};
 }
