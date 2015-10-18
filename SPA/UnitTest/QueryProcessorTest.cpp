@@ -320,5 +320,244 @@ namespace UnitTest
 			expected.push_back("5");
 			Assert::IsTrue(expected == result);
 		}
+
+		TEST_METHOD(evaluateModifiesModifies)
+		{
+
+			string query = "while w; Select w such that Modifies(w, \"x\") and Modifies(4,_)";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+
+			list<string> expected;
+			expected.push_back("3");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesUses)
+		{
+
+			string query = "assign a; Select a such that Modifies(a, \"x\") and Uses(a, \"x\")";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+
+			list<string> expected;
+			expected.push_back("4");
+			expected.push_back("8");
+			expected.push_back("12");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesParent)
+		{
+
+			string query = "assign a; stmt s; variable v; Select a such that Modifies(a, v) and Parent(s, a)";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+
+			list<string> expected;
+			expected.push_back("4");
+			expected.push_back("6");
+			expected.push_back("8");
+			expected.push_back("9");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesParentStar)
+		{
+
+			string query = "assign a; while w; Select a such that Modifies(a, \"x\") and Parent*(w, a)";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+
+			list<string> expected;
+			expected.push_back("4");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesFollows)
+		{
+
+			string query = "assign a; while w; variable v; Select v such that Modifies(a, v) and Follows(a, w)";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+
+			list<string> expected;
+			expected.push_back("i");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesFollowsStar)
+		{
+
+			string query = "stmt s; variable v; Select v such that Modifies(s, v) and Follows*(7, s)";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+
+			list<string> expected;
+			expected.push_back("z");
+			expected.push_back("y");
+			expected.push_back("x");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesNext)
+		{
+			string query = "stmt s; variable v; Select v such that Modifies(s, v) and Next(7, s)";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+
+			list<string> expected;
+			expected.push_back("x");
+			expected.push_back("z");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesNextStar)
+		{
+			string query = "stmt s; Select s such that Modifies(s, \"y\") and Next*(7, s)";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+
+			list<string> expected;
+			expected.push_back("11");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesIfPattern) {
+			string query = "assign a; if ifs; variable v; Select a such that Modifies(a, v) pattern ifs(v,_,_)";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+			list<string> expected;
+			expected.push_back("1");
+			expected.push_back("4");
+			expected.push_back("8");
+			expected.push_back("12");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesWhilePattern) {
+			string query = "assign a; while w; variable v; Select a such that Modifies(a, v) pattern w(v,_,_)";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+			list<string> expected;
+			expected.push_back("2");
+			expected.push_back("6");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesAssignPattern) {
+			string query = "assign a; variable v; Select v such that Modifies(a, v) pattern a(_,_\"z+x+i\"_)";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+			list<string> expected;
+			expected.push_back("z");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesNameWith) {
+			string query = "call c; procedure p; variable v; Select v such that Modifies(p, v) with c.procName = p.procName";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+			list<string> expected;
+			expected.push_back("z");
+			expected.push_back("v");
+			Assert::IsTrue(expected == result);
+		}
 	};
 }
