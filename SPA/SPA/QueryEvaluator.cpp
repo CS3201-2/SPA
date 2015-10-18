@@ -1846,7 +1846,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 		}
 	}
 	else if (arg1Type == "call") {
-		if (arg1Type == "procedure") {
+		if (arg2Type == "procedure") {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			list<int> callList = getList("call");
@@ -1860,7 +1860,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "call") {
+		else if (arg2Type == "call") {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			if (arg1 == arg2) {
 				tempResult.setIsWholeTrue(1);
@@ -1883,7 +1883,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "variable") {
+		else if (arg2Type == "variable") {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			list<int> callList = getList("call");
@@ -1904,7 +1904,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "string") {
+		else if (arg2Type == "string") {
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
 			list<int> callList = getList("call");
