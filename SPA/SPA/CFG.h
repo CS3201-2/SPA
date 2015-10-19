@@ -25,6 +25,7 @@ class CFG
 	vector<list<int>> _next;
 	vector<list<int>> _nextTable;
 	vector<list<int>> _beforeTable;
+	vector<StatementType> _typeTable;
 	unordered_map<int, CFGNode*> _nodeMap;
 
 	list<Statement>::iterator _codeIterator;
@@ -42,6 +43,7 @@ public:
 	list<int> getNextStarFirst(int);
 	list<int> getNextStarSecond(int);
 	bool isNextStarValid(int, int);
+	StatementType getType(int);
 	void printGraph();
 	void printNextTable();
 	void printBeforeTable();

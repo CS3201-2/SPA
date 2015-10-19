@@ -1430,26 +1430,24 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 				temp.clear();
 			}
 		}
-		else {
-			//iter 1 "constant or string" or variable
-			string flag = arg2.substr(0, 1);
-			string arg2Trim;
-			list<int> assignList;
-
-			if (flag == "_") {
-			    arg2Trim = arg2.substr(2, arg2.length() - 4);
-				assignList = PKB::getPKBInstance()->getAssignWithBoth(arg1, arg2Trim);
-			}
-			else {
-				arg2Trim = arg2.substr(1, arg2.length() - 2);
-				assignList = PKB::getPKBInstance()->getAssignWithBothExact(arg1, arg2Trim);
-			}
-			
+		else if (arg2Type == "string") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithBothExact(arg1, arg2);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
+		}
+		else if (arg2Type == "substring") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithBoth(arg1, arg2);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+		}
+		else {
+			SPALog::log("Pattern arg2 wrong type");
 		}
 		return tempResult;
 	}
@@ -1468,21 +1466,8 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 				}
 			}
 		}
-		else {
-			//iter 1 "constant or string" or "variable"
-			string flag = arg2.substr(0, 1);
-			string arg2Trim;
-			list<int> assignList;
-
-			if (flag == "_") {
-				arg2Trim = arg2.substr(2, arg2.length() - 4);
-				assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2Trim);
-			}
-			else {
-				arg2Trim = arg2.substr(1, arg2.length() - 2);
-				assignList = PKB::getPKBInstance()->getAssignWithSecondExact(arg2Trim);
-			}
-
+		else if (arg2Type == "string") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecondExact(arg2);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				list<int> modifiedVarList = PKB::getPKBInstance()->getModifiesSecond(*i);
 				for (list<int>::iterator t = modifiedVarList.begin(); t != modifiedVarList.end(); t++) {
@@ -1493,7 +1478,22 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 				}
 			}
 		}
-		
+		else if (arg2Type == "substring") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+				list<int> modifiedVarList = PKB::getPKBInstance()->getModifiesSecond(*i);
+				for (list<int>::iterator t = modifiedVarList.begin(); t != modifiedVarList.end(); t++) {
+					temp.push_back(*i);
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+		}
+		else {
+			SPALog::log("Pattern arg2 wrong type");
+		}
+	
 		return tempResult;
 	}
 	else if (arg1Type == "all") {
@@ -1507,26 +1507,24 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 				temp.clear();
 			}
 		}
-		else {
-			// arg2Type is constant or string or variable
-			string flag = arg2.substr(0, 1);
-			string arg2Trim;
-			list<int> assignList;
-
-			if (flag == "_") {
-				arg2Trim = arg2.substr(2, arg2.length() - 4);
-				assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2Trim);
-			}
-			else {
-				arg2Trim = arg2.substr(1, arg2.length() - 2);
-				assignList = PKB::getPKBInstance()->getAssignWithSecondExact(arg2Trim);
-			}
-
+		else if (arg2Type == "string") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecondExact(arg2);
 			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
+		}
+		else if (arg2Type == "substring") {
+			list<int> assignList = PKB::getPKBInstance()->getAssignWithSecond(arg2);
+			for (list<int>::iterator i = assignList.begin(); i != assignList.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+		}
+		else {
+			SPALog::log("Pattern arg2 wrong type");
 		}
 		return tempResult;
 	}
@@ -1710,11 +1708,11 @@ bool QueryEvaluator::processSelectClause(vector<string> tempString) {
 }
 
 bool QueryEvaluator::processWithClause(vector<string> tempString) {
-	string synType = tempString.at(1);
-	string arg1 = tempString.at(2);
-	string arg1Type = tempString.at(3);
-	string arg2 = tempString.at(4);
-	string arg2Type = tempString.at(5);
+	string synType = tempString.at(0);
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
 
 	string log = "With clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
@@ -1740,11 +1738,11 @@ bool QueryEvaluator::processWithClause(vector<string> tempString) {
 }
 
 bool QueryEvaluator::processWithConstClause(vector<string> tempString) {
-	string synType = tempString.at(1);
-	string arg1 = tempString.at(2);
-	string arg1Type = tempString.at(3);
-	string arg2 = tempString.at(4);
-	string arg2Type = tempString.at(5);
+	string synType = tempString.at(0);
+	string arg1 = tempString.at(1);
+	string arg1Type = tempString.at(2);
+	string arg2 = tempString.at(3);
+	string arg2Type = tempString.at(4);
 
 	string log = "With constant clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
@@ -1848,7 +1846,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 		}
 	}
 	else if (arg1Type == "call") {
-		if (arg1Type == "procedure") {
+		if (arg2Type == "procedure") {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			list<int> callList = getList("call");
@@ -1862,7 +1860,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "call") {
+		else if (arg2Type == "call") {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			if (arg1 == arg2) {
 				tempResult.setIsWholeTrue(1);
@@ -1885,7 +1883,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "variable") {
+		else if (arg2Type == "variable") {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			list<int> callList = getList("call");
@@ -1906,7 +1904,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			}
 			return tempResult;
 		}
-		else if (arg1Type == "string") {
+		else if (arg2Type == "string") {
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
 			list<int> callList = getList("call");
@@ -2102,10 +2100,15 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 			vector<int> temp;
 			list<int> targetList = getList(arg2Type);
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
-				temp.push_back(*i);
-				temp.push_back(*i);
-				tempResult.addTuple(temp);
-				temp.clear();
+				list<int> arg2List = getList(arg2Type);
+				for (list<int>::iterator t = arg2List.begin(); t != arg2List.end(); t++) {
+					if (*i == *t) {
+						temp.push_back(*i);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
 			}
 			return tempResult;
 		}
@@ -2197,15 +2200,17 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 				tempResult.setIsWholeTrue(1);
 				return tempResult;
 			}
-			if (arg1Type != arg2Type) {
-				tempResult.setIsWholeTrue(0);
-				return tempResult;
-			}
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
-				temp.push_back(*i);
-				temp.push_back(*i);
-				tempResult.addTuple(temp);
-				temp.clear();
+				list<int> arg2List = getList(arg2Type);
+				for (list<int>::iterator t = arg2List.begin(); t != arg2List.end(); t++) {
+					if (*i == *t) {
+						temp.push_back(*i);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+				
 			}
 
 			return tempResult;

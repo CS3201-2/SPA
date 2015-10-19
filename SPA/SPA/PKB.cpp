@@ -243,6 +243,15 @@ void PKB::buildCFG(list<Statement> sourceCodeList) {
 	cfg.buildGraph(sourceCodeList);
 }
 
+StatementType PKB::getType(int i)
+{
+	return cfg.getType(i);
+}
+
+int PKB::getStmtSize()
+{
+	return assignStmtList.size() + whileStmtList.size() + ifStmtList.size() + callStmtList.size();
+}
 
 //varTable
 int PKB::insertVar(string varName) {

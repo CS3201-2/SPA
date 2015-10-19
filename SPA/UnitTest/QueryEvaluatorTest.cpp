@@ -1297,5 +1297,59 @@ namespace UnitTest
 			expected_6.push_back("true");
 			Assert::IsTrue(expected_6 == result_6);
 		}
+
+		TEST_METHOD(evaluatePattern) {
+			//Select a pattern a("x","0") Expected: 1
+			QueryTree qt;
+			vector<string> arg;
+			vector<string> argType;
+			arg.push_back("x");
+			arg.push_back("0");
+			argType.push_back("string");
+			argType.push_back("string");
+			qt.insertPattern("a","assign", arg, argType);
+
+			qt.insertSelect("a", "assign");
+			QueryEvaluator qe = (qt);
+			list<string> result = qe.evaluate();
+			list<string> expected;
+			expected.push_back("1");
+			Assert::IsTrue(expected == result);
+
+			//Select a pattern a(_,_"x*y"_) Expected: 12
+			QueryTree qt_1;
+			vector<string> arg_1;
+			vector<string> argType_1;
+			arg_1.push_back("_");
+			arg_1.push_back("x*y");
+			argType_1.push_back("all");
+			argType_1.push_back("substring");
+			qt_1.insertPattern("a", "assign", arg_1, argType_1);
+
+			qt_1.insertSelect("a", "assign");
+			QueryEvaluator qe_1 = (qt_1);
+			list<string> result_1 = qe_1.evaluate();
+			list<string> expected_1;
+			expected_1.push_back("12");
+			Assert::IsTrue(expected_1 == result_1);
+
+			//Select BOOLEAN pattern a(_,_"y+z"_) Expected: false
+			QueryTree qt_2;
+			vector<string> arg_2;
+			vector<string> argType_2;
+			arg_2.push_back("_");
+			arg_2.push_back("y+z");
+			argType_2.push_back("all");
+			argType_2.push_back("substring");
+			qt_2.insertPattern("a", "assign", arg_2, argType_2);
+
+			qt_2.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_2 = (qt_2);
+			list<string> result_2 = qe_2.evaluate();
+			list<string> expected_2;
+			expected_2.push_back("false");
+			Assert::IsTrue(expected_2 == result_2);
+		}
+
 	};
 }

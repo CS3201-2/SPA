@@ -41,6 +41,8 @@ public:
 	list<int> getParentList(); //while and if list
 	list<int> getConstantList();
 	int getCallStmtProc(int);
+	StatementType getType(int);
+	int getStmtSize();
 	void logWhileList();
 	void logAssignList();
 	void logCallList();
@@ -50,7 +52,6 @@ public:
 	void logStmtList();
 	void logCallStmtProcMap();
 	void buildCFG(list<Statement>);
-
 	//PKB housekeeping function
 	//sort and unify function for Modifies, Uses, FollowsStar, Parent, ParentStar
 	//unify ifList and constantList
