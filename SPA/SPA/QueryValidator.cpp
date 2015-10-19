@@ -284,7 +284,7 @@ bool QueryValidator::parseRel(string &subquery) {
 	
 	qt.insertSuchThat(relType, arrVar, varTypes);
 	
-	cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return true;
@@ -380,7 +380,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			}
 		
 			vector<string> arrVar = split(arrWords.at(0), SYMBOL_COMMA);
-			cout << relType<<" "<< arrVar.size();
+		
 			if (!r.isNumOfArgsEqual(relType, arrVar.size())) {
 				return INVALID;
 			}
@@ -404,8 +404,8 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			}
 			
 			qt.insertPattern(syn, synType, arrVar, varType);
-			cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
-			//cout << "pattern " << varType.at(0) << " " << varType.at(1) << endl;
+			//cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+			//cout << "pattern type " << varType.at(0) << " " << varType.at(1) << endl;
 		}
 	} else {
 		return INVALID;
@@ -481,18 +481,16 @@ bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varTy
 		} else {*/
 		varType = VARTYPE_ALL;
 		//}
-	} else if (arg.size() >= 5) {
-		if (arg.at(0) == '_' && arg.at(arg.size() - 1) == '_'  &&
-			arg.at(1) == '\"' && arg.at(arg.size() - 2) == '\"') {
+	} else if (arg.at(0) == '_' && arg.at(arg.size() - 1) == '_'  &&
+		arg.at(1) == '\"' && arg.at(arg.size() - 2) == '\"') {
 
-			arg = arg.substr(2, arg.size() - 4);
+		arg = arg.substr(2, arg.size() - 4);
 
-			if (isValidExpression(arg)) {
-				if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
-					return false;
-				} else {
-					varType = VARTYPE_SUBSTRING;
-				}
+		if (isValidExpression(arg)) {
+			if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
+				return false;
+			} else {
+				varType = VARTYPE_SUBSTRING;
 			}
 		}
 	} else if (arg.at(0) == '\"' && arg.at(arg.size() - 1) == '\"') {
@@ -508,7 +506,7 @@ bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varTy
 	} else {
 		return false;
 	}
-
+	
 	return true;
 }
 
@@ -863,9 +861,9 @@ vector<string> QueryValidator::parseExpression(string expression) {
 		result.push_back(removeSpaces(expression));
 	}
 
-	for (int i = 0; i < result.size(); i++) {
+	/*for (int i = 0; i < result.size(); i++) {
 		cout << "."<<result.at(i)<<"."<<endl;
-	}
+	}*/
 	return result;
 }
 
