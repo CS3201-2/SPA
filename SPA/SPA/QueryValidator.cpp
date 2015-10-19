@@ -37,7 +37,7 @@ const string RELTYPE_SUCH_THAT = "such that";
 
 const string RELTYPE_PATTERN = "pattern";
 const string RELTYPE_PATTERN_ASSIGN = "patternAssign";
-const string RELTYPE_PATTERN_WHILE = "procWhile";
+const string RELTYPE_PATTERN_WHILE = "patternWhile";
 const string RELTYPE_PATTERN_IF = "patternIf";
 
 const string RELTYPE_WITH = "with";
@@ -149,7 +149,7 @@ bool QueryValidator::isValidQuery(string query) {
 		if (!checkRetVal(retVal, isFinished, prevClause, curClause)) {
 			return false;
 		}
-
+		//cout << "reached pattern";
 		retVal = findPatternClause(arrClauses.at(1));
 		curClause = RELTYPE_PATTERN;
 		if (!checkRetVal(retVal, isFinished, prevClause, curClause)) {
@@ -357,7 +357,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 	if (arrWords.size() != 2) {
 		return INVALID;
 	}
-
+	
 	if (isVarNameExists(arrWords.at(0))) {
 		if (getVarType(arrWords.at(0)).compare(VARTYPE_ASSIGN) == 0 ||
 			getVarType(arrWords.at(0)).compare(VARTYPE_WHILE) == 0 ||
@@ -372,21 +372,22 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			if (arrWords.at(1).find(")") == string::npos) {
 				return INVALID;
 			}
-
+			
 			arrWords = split(arrWords.at(1), SYMBOL_CLOSE_BRACKET, 2);
 
 			if (arrWords.size() != 2) {
 				return INVALID;
 			}
-			
+		
 			vector<string> arrVar = split(arrWords.at(0), SYMBOL_COMMA);
-
+			cout << relType<<" "<< arrVar.size();
 			if (!r.isNumOfArgsEqual(relType, arrVar.size())) {
 				return INVALID;
 			}
-
+			
 			vector<string> varType(arrVar.size());
 			//arg1 and 2
+			//cout << "arg1 and 2\n";
 			if (!parsePatternArg1(relType, arrVar.at(0), varType.at(0)) || 
 				!parsePatternArg2(relType, arrVar.at(1), varType.at(1))) {
 				//cout << "invalid 1st arg\n";
