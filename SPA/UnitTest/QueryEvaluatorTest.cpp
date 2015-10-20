@@ -1736,13 +1736,13 @@ namespace UnitTest
 			Assert::IsTrue(expected_6 == result_6);
 		}
 
-		TEST_METHOD(evaluatePattern) {
+		TEST_METHOD(evaluateAssignPattern) {
 			/*
 			Select a pattern a("x","0") Expected: 1
 			Select a pattern a(_,_"x*y"_) Expected: 12
 			Select BOOLEAN pattern a(_,_"y+z"_) Expected: false
 			Select BOOLEAN pattern a("x",_) Expected: true
-			Select BOOLEAN pattern a("x", "x*y+1") Expected: true
+			Select BOOLEAN pattern a("x", "x*y+z") Expected: true
 			Select BOOLEAN pattern a("x", _"x*y"_) Expected: true
 			Select v pattern a(v,_) Expected: x,i,y,z,v
 			Select v pattern a(v,x*y+1) Expected: x
@@ -1799,7 +1799,60 @@ namespace UnitTest
 			list<string> expected_2;
 			expected_2.push_back("false");
 			Assert::IsTrue(expected_2 == result_2);
+
+			//Select BOOLEAN pattern a("x",_) Expected: true
+			QueryTree qt_3;
+			vector<string> arg_3;
+			vector<string> argType_3;
+			arg_3.push_back("x");
+			arg_3.push_back("_");
+			argType_3.push_back("string");
+			argType_3.push_back("all");
+			qt_3.insertPattern("a", "assign", arg_3, argType_3);
+
+			qt_3.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_3 = (qt_3);
+			list<string> result_3 = qe_3.evaluate();
+			list<string> expected_3;
+			expected_3.push_back("true");
+			Assert::IsTrue(expected_3 == result_3);
+
+			//Select BOOLEAN pattern a("x","x*y+z") Expected: true
+			QueryTree qt_4;
+			vector<string> arg_4;
+			vector<string> argType_4;
+			arg_4.push_back("x");
+			arg_4.push_back("x*y+z");
+			argType_4.push_back("string");
+			argType_4.push_back("string");
+			qt_4.insertPattern("a", "assign", arg_4, argType_4);
+
+			qt_4.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_4 = (qt_4);
+			list<string> result_4 = qe_4.evaluate();
+			list<string> expected_4;
+			expected_4.push_back("true");
+			Assert::IsTrue(expected_4 == result_4);
+
+			//Select BOOLEAN pattern a("x","x*y") Expected: true
+			QueryTree qt_5;
+			vector<string> arg_5;
+			vector<string> argType_5;
+			arg_5.push_back("x");
+			arg_5.push_back("x*y");
+			argType_5.push_back("string");
+			argType_5.push_back("substring");
+			qt_5.insertPattern("a", "assign", arg_5, argType_5);
+
+			qt_5.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_5 = (qt_5);
+			list<string> result_5 = qe_5.evaluate();
+			list<string> expected_5;
+			expected_5.push_back("true");
+			Assert::IsTrue(expected_5 == result_5);
 		}
+
+		
 
 
 
