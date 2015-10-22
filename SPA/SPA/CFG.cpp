@@ -72,16 +72,34 @@ bool CFG::isNextValid(int i, int j)
 
 list<int> CFG::getNextStarFirst(int i)
 {
-	return traverse(i, _beforeTable);
+	if (i <= _size && i >= 1)
+	{
+		return traverse(i, _beforeTable);
+	}
+	else
+	{
+		throw invalid_argument(EXCEPT_BOUND);
+	}
 }
 
 list<int> CFG::getNextStarSecond(int i)
 {
-	return traverse(i, _nextTable);
+	if (i <= _size && i >= 1)
+	{
+		return traverse(i, _nextTable);
+	}
+	else
+	{
+		throw invalid_argument(EXCEPT_BOUND);
+	}
 }
 
 bool CFG::isNextStarValid(int i, int j)
 {
+	if (!(i <= _size && i >= 1))
+	{
+		throw invalid_argument(EXCEPT_BOUND);
+	}
 	vector<bool> visit;
 	queue<int> toVisit;
 	list<int> temp = _nextTable[i];

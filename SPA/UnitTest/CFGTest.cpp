@@ -2,15 +2,17 @@
 #include "CppUnitTest.h"
 #include "CFG.h"
 #include "SPALog.h"
+const string EXCEPT_BOUND = "Exception: index out of bound!";
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTest {
 	TEST_CLASS(CFGTest)
 	{
-	public:
-		TEST_METHOD(testNoNested) {
+		CFG constructInputNoNested()
+		{
 			//constructing CFG
+			CFG cfg;
 			list<Statement> expectedList;
 			Statement temp = Statement();
 			temp.setNumber(-1);
@@ -118,21 +120,159 @@ namespace UnitTest {
 			temp.setType(assignmentStmt);
 			expectedList.push_back(temp);
 
-			CFG cfg;
-			list<int> result;
 			cfg.buildGraph(expectedList);
-			//test getNextFirst
+			return cfg;
+		}
+	public:
+		TEST_METHOD(testNextNoNestedFirst) 
+		{
+			CFG cfg = constructInputNoNested();
+			list<int> result;
 			result = { 1 };
-			Assert::AreEqual(result, cfg.getNextFirst(2));
+			Assert::IsTrue(result == cfg.getNextFirst(2));
 			result = { 5,9 };
-			Assert::AreEqual(result, cfg.getNextFirst(6));
+			Assert::IsTrue(result == cfg.getNextFirst(6));
 			result = { 6 };
-			Assert::AreEqual(result, cfg.getNextFirst(10));
+			Assert::IsTrue(result == cfg.getNextFirst(10));
 			result = { 10 };
-			Assert::AreEqual(result, cfg.getNextFirst(11));
-			//test getNextSecond
-			//test isNextValid
-			
+			Assert::IsTrue(result == cfg.getNextFirst(11));
+			result = {};
+			Assert::IsTrue(result == cfg.getNextFirst(4));
+			try
+			{
+				cfg.getNextFirst(18);
+				Assert::Fail();
+			}
+			catch (exception e)
+			{
+				
+			}
+		}
+		TEST_METHOD(testNextNoNestedSecond)
+		{
+			CFG cfg = constructInputNoNested();
+			list<int> result;
+			result = { 2 };
+			Assert::IsTrue(result == cfg.getNextSecond(1));
+			result = { 7,10 };
+			Assert::IsTrue(result == cfg.getNextSecond(6));
+			result = { 11, 12 };
+			Assert::IsTrue(result == cfg.getNextSecond(10));
+			result = { 13 };
+			Assert::IsTrue(result == cfg.getNextSecond(11));
+			result = {};
+			Assert::IsTrue(result == cfg.getNextSecond(3));
+			try
+			{
+				cfg.getNextFirst(18);
+				Assert::Fail();
+			}
+			catch (exception e)
+			{
+
+			}
+		}
+		TEST_METHOD(testNextNoNestedValid)
+		{
+			CFG cfg = constructInputNoNested();
+			bool result;
+			result = true;
+			Assert::IsTrue(result == cfg.isNextValid(1,2));
+			result = true;
+			Assert::IsTrue(result == cfg.isNextValid(6,10));
+			result = false;
+			Assert::IsTrue(result == cfg.isNextValid(11,12));
+			result = true;
+			Assert::IsTrue(result == cfg.isNextValid(11,13));
+			result = false;
+			Assert::IsTrue(result == cfg.isNextValid(15,16));
+			try
+			{
+				cfg.isNextValid(18,19);
+				Assert::Fail();
+			}
+			catch (exception e)
+			{
+
+			}
+		}
+		TEST_METHOD(testNextStarNoNestedFirst)
+		{
+			CFG cfg = constructInputNoNested();
+			list<int> result;
+			list<int> actual;
+			result = { 2,1 };
+			Assert::IsTrue(result == cfg.getNextStarFirst(3));
+			result = { 4,5,6,7,8,9 };
+			actual = cfg.getNextStarFirst(6);
+			actual.sort();
+			Assert::IsTrue(result == actual);
+			result = { 4,5,6,7,8,9,10 };
+			actual = cfg.getNextStarFirst(11);
+			actual.sort();
+			Assert::IsTrue(result == actual);
+			try
+			{
+				cfg.getNextStarFirst(18);
+				Assert::Fail();
+			}
+			catch (exception e)
+			{
+
+			}
+		}
+		TEST_METHOD(testNextStarNoNestedSecond)
+		{
+			CFG cfg = constructInputNoNested();
+			list<int> result;
+			list<int> actual;
+			result = { 2,3 };
+			Assert::IsTrue(result == cfg.getNextStarSecond(1));
+			result = { 6,7,8,9,10,11,12,13,14,15 };
+			actual = cfg.getNextStarSecond(6);
+			actual.sort();
+			Assert::IsTrue(result == actual);
+			result = { 11,12,13,14,15 };
+			actual = cfg.getNextStarSecond(10);
+			actual.sort();
+			Assert::IsTrue(result == actual);
+			result = { 13,14,15 };
+			actual = cfg.getNextStarSecond(11);
+			actual.sort();
+			Assert::IsTrue(result == actual);
+			try
+			{
+				cfg.getNextStarSecond(18);
+				Assert::Fail();
+			}
+			catch (exception e)
+			{
+
+			}
+		}
+		TEST_METHOD(testNextStarNoNestedValid)
+		{
+			CFG cfg = constructInputNoNested();
+			bool result;
+			result = true;
+			Assert::IsTrue(result == cfg.isNextStarValid(1, 3));
+			result = true;
+			Assert::IsTrue(result == cfg.isNextStarValid(6, 6));
+			result = false;
+			Assert::IsTrue(result == cfg.isNextStarValid(11, 12));
+			result = true;
+			Assert::IsTrue(result == cfg.isNextStarValid(4, 15));
+			result = false;
+			Assert::IsTrue(result == cfg.isNextStarValid(1, 16));
+			try
+			{
+				cfg.isNextStarValid(18, 19);
+				Assert::Fail();
+			}
+			catch (exception e)
+			{
+
+			}
 		}
 	};
 }
