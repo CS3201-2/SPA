@@ -4,28 +4,40 @@
 
 Affect::Affect()
 {
-	PKB* _pkb = PKB::getPKBInstance();
+	_pkb = PKB::getPKBInstance();
 }
 
 bool Affect::isAffectValid(int first, int second)
 {
 	if (!isAssignment(first) ||
 		!isAssignment(second))
+	{
+		_log.log("Processing Affect: statement type fault");
 		return false;
+	}
 	if (!isSameProc(first, second))
+	{
+		_log.log("Processing Affect: different procedures");
 		return false;
+	}	
 	int varModifiesIndex = _pkb->getModifiesSecond(first).front();
 	list<int> varUsesIndex = _pkb->getUsesSecond(second);
 	if (!contains(varUsesIndex, varModifiesIndex))
+	{
+		_log.log("Processing Affect: variable not used");
 		return false;
+	}
+	_log.log("Processing Affect: preconditions all met");
 	queue<int> path;
 	vector<int> visit;
 	visit.resize(_pkb->getStmtSize(), 0);
-	visit[first] == -1;
+	visit[first] = -1;
 	path.push(first);
 	while (!path.empty())
 	{
 		int temp = path.front();
+		string message = "Processing Affect: reach " + to_string(temp);
+		_log.log(message);
 		if (temp == second && visit[temp] != -1)
 		{
 			return true;
@@ -72,13 +84,18 @@ bool Affect::isAffectValid(int first, int second)
 		}
 		else//assignStmt and callStmt
 		{
+			message = "Processing Affect: is Assignment/Call " + to_string(temp);
+			_log.log(message);
 			path.pop();
 			list<int> tempModifies = _pkb->getModifiesSecond(temp);
 			if (visit[temp] == -1 || !contains(tempModifies, varModifiesIndex))
 			{
 				list<int> tempNext = _pkb->getNextSecond(temp);
+				message = "Processing Affect: " + to_string(temp) +
+					" has next " + to_string(tempNext.front());
 				if (!tempNext.empty())
 				{
+					_log.log(message);
 					assert(tempNext.size() == 1);
 					path.push(tempNext.front());
 				}
