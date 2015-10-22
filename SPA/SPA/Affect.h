@@ -6,6 +6,7 @@ using namespace std;
 class Affect
 {
 	PKB* _pkb;
+	SPALog _log;
 public:
 	Affect();
 	bool isAffectValid(int,int);

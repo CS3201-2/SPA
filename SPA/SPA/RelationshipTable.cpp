@@ -5,9 +5,9 @@ RelationshipTable::RelationshipTable() {
 	vector<string> arg1;
 	vector<string> arg2;
 	
-	//ModifiesS (statements)
+	//Modifies
 	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", 
-		"string", "number", "all" }; //
+		"string", "number" }; //
 	arg2 = { "variable", "string", "all" };
 	Relationship r1(2, arg1, arg2);
 	relTable["modifies"] = r1;
@@ -15,9 +15,9 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 	//cout << relTable.find("modifies*")->second.arg1.at(0);
 	
-	//UsesS (statements)
+	//Uses
 	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", 
-		"string", "number", "all" }; //
+		"string", "number" }; //
 	arg2 = { "variable", "string", "all" };
 	Relationship r2(2, arg1, arg2);
 	relTable["uses"] = r2;
