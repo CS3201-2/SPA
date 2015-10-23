@@ -2146,11 +2146,7 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 		else {
 			ResultTable tempResult = ResultTable(arg2);
 			vector<int> temp;
-			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
-				tempResult.setIsWholeTrue(0);
-				SPALog::log("with number clause arg1 is not a valid prog_line");
-				return tempResult;
-			}
+			
 			list<int> targetList = getList(arg2Type);
 		
 			if (isInList(targetList, stoi(arg1))) {
@@ -2180,13 +2176,6 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 		else if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
-			
-			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.setIsWholeTrue(0);
-				SPALog::log("with number clause arg2 is not a valid prog_line");
-				return tempResult;
-			}
-			
 
 			if (isInList(targetList, stoi(arg2))) {
 				temp.push_back(stoi(arg2));
