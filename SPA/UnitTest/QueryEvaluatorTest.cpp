@@ -2161,5 +2161,199 @@ namespace UnitTest
 			Assert::IsTrue(expected_3 == result_3);
 		}
 
+		TEST_METHOD(evaluateWithNumberProg_line) {
+			/*
+			Select n1 with n1=n2
+			Select n with n=8
+			Select n with n=c.value
+			*/
+			//Select n1 with n1 = n2
+			QueryTree qt;
+			vector<string> arg;
+			vector<string> argType;
+			arg.push_back("n1");
+			arg.push_back("n2");
+			argType.push_back("prog_line");
+			argType.push_back("prog_line");
+			qt.insertWith("withNumber", arg, argType);
+
+			qt.insertSelect("n1", "prog_line");
+			QueryEvaluator qe = (qt);
+			list<string> result = qe.evaluate();
+			list<string> expected;
+			expected.push_back("1");
+			expected.push_back("2"); 
+			expected.push_back("3");
+			expected.push_back("4");
+			expected.push_back("5");
+			expected.push_back("6");
+			expected.push_back("7");
+			expected.push_back("8");
+			expected.push_back("9");
+			expected.push_back("10");
+			expected.push_back("11");
+			expected.push_back("12");
+			expected.push_back("13");
+			expected.push_back("14");
+			Assert::IsTrue(expected == result);
+
+			//Select n with n=8
+			QueryTree qt_1;
+			vector<string> arg_1;
+			vector<string> argType_1;
+			arg_1.push_back("n");
+			arg_1.push_back("8");
+			argType_1.push_back("prog_line");
+			argType_1.push_back("number");
+			qt_1.insertWith("withNumber", arg_1, argType_1);
+
+			qt_1.insertSelect("n", "prog_line");
+			QueryEvaluator qe_1 = (qt_1);
+			list<string> result_1 = qe_1.evaluate();
+			list<string> expected_1;
+			expected_1.push_back("8");
+			Assert::IsTrue(expected_1 == result_1);
+
+			//Select n with n=c.value
+			QueryTree qt_2;
+			vector<string> arg_2;
+			vector<string> argType_2;
+			arg_2.push_back("n");
+			arg_2.push_back("c");
+			argType_2.push_back("prog_line");
+			argType_2.push_back("constant");
+			qt_2.insertWith("withNumber", arg_2, argType_2);
+
+			qt_2.insertSelect("n", "prog_line");
+			QueryEvaluator qe_2 = (qt_2);
+			list<string> result_2 = qe_2.evaluate();
+			list<string> expected_2;
+			expected_2.push_back("1");
+			expected_2.push_back("2");
+			expected_2.push_back("5");
+			Assert::IsTrue(expected_2 == result_2);
+
+		}
+
+		TEST_METHOD(evaluateWithNumberNumber) {
+			/*
+			Select n with 3=n
+			Select BOOLEAN with 3=8
+			Select c with 0=c.value
+			*/
+			//Select n with 3=n
+			QueryTree qt;
+			vector<string> arg;
+			vector<string> argType;
+			arg.push_back("3");
+			arg.push_back("n");
+			argType.push_back("number");
+			argType.push_back("prog_line");
+			qt.insertWith("withNumber", arg, argType);
+
+			qt.insertSelect("n", "prog_line");
+			QueryEvaluator qe = (qt);
+			list<string> result = qe.evaluate();
+			list<string> expected;
+			expected.push_back("3");
+			Assert::IsTrue(expected == result);
+
+			//Select BOOLEAN with 3=8
+			QueryTree qt_1;
+			vector<string> arg_1;
+			vector<string> argType_1;
+			arg_1.push_back("3");
+			arg_1.push_back("8");
+			argType_1.push_back("number");
+			argType_1.push_back("number");
+			qt_1.insertWith("withNumber", arg_1, argType_1);
+
+			qt_1.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_1 = (qt_1);
+			list<string> result_1 = qe_1.evaluate();
+			list<string> expected_1;
+			expected_1.push_back("false");
+			Assert::IsTrue(expected_1 == result_1);
+
+			//Select c with 0=c.value
+			QueryTree qt_2;
+			vector<string> arg_2;
+			vector<string> argType_2;
+			arg_2.push_back("0");
+			arg_2.push_back("c");
+			argType_2.push_back("number");
+			argType_2.push_back("constant");
+			qt_2.insertWith("withNumber", arg_2, argType_2);
+
+			qt_2.insertSelect("c", "constant");
+			QueryEvaluator qe_2 = (qt_2);
+			list<string> result_2 = qe_2.evaluate();
+			list<string> expected_2;
+			expected_2.push_back("0");
+			Assert::IsTrue(expected_2 == result_2);
+
+		}
+
+		TEST_METHOD(evaluateWithNumberConstant) {
+			/*
+			Select n with c.value=n
+			Select BOOLEAN with c.value=0
+			Select call with c.value=call.stmt#
+			*/
+			//Select n with c.value = n
+			QueryTree qt;
+			vector<string> arg;
+			vector<string> argType;
+			arg.push_back("c");
+			arg.push_back("n");
+			argType.push_back("constant");
+			argType.push_back("prog_line");
+			qt.insertWith("withNumber", arg, argType);
+
+			qt.insertSelect("n", "prog_line");
+			QueryEvaluator qe = (qt);
+			list<string> result = qe.evaluate();
+			list<string> expected;
+			expected.push_back("1");
+			expected.push_back("2");
+			expected.push_back("5");
+			Assert::IsTrue(expected == result);
+
+			// Select BOOLEAN with c.value = 0
+			QueryTree qt_1;
+			vector<string> arg_1;
+			vector<string> argType_1;
+			arg_1.push_back("c");
+			arg_1.push_back("0");
+			argType_1.push_back("constant");
+			argType_1.push_back("number");
+			qt_1.insertWith("withNumber", arg_1, argType_1);
+
+			qt_1.insertSelect("BOOLEAN", "boolean");
+			QueryEvaluator qe_1 = (qt_1);
+			list<string> result_1 = qe_1.evaluate();
+			list<string> expected_1;
+			expected_1.push_back("true");
+			Assert::IsTrue(expected_1 == result_1);
+
+			//Select c with c.value=call.stmt#
+			QueryTree qt_2;
+			vector<string> arg_2;
+			vector<string> argType_2;
+			arg_2.push_back("c");
+			arg_2.push_back("call");
+			argType_2.push_back("constant");
+			argType_2.push_back("call");
+			qt_2.insertWith("withNumber", arg_2, argType_2);
+
+			qt_2.insertSelect("c", "constant");
+			QueryEvaluator qe_2 = (qt_2);
+			list<string> result_2 = qe_2.evaluate();
+			list<string> expected_2;
+			expected_2.push_back("5");
+			Assert::IsTrue(expected_2 == result_2);
+
+		}
+
 	};
 }
