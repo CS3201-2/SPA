@@ -1,7 +1,5 @@
 #include "Affect.h"
 
-
-
 Affect::Affect()
 {
 	_pkb = PKB::getPKBInstance();
@@ -30,7 +28,7 @@ bool Affect::isAffectValid(int first, int second)
 	_log.log("Processing Affect: preconditions all met");
 	queue<int> path;
 	vector<int> visit;
-	visit.resize(_pkb->getStmtSize(), 0);
+	visit.resize(_pkb->getStmtSize()+1, 0);
 	visit[first] = -1;
 	path.push(first);
 	while (!path.empty())
@@ -114,16 +112,19 @@ list<int> Affect::getAffectSecond(int start)
 	int varModifiesIndex = _pkb->getModifiesSecond(start).front();
 	queue<int> path;
 	vector<int> visit;
-	visit.resize(_pkb->getStmtSize(), 0);
-	visit[start] == -1;
+	string message;
+	visit.resize(_pkb->getStmtSize()+1, 0);
+	visit[start] = -1;
 	path.push(start);
 	while (!path.empty())
 	{
 		int temp = path.front();
+		_log.log("Processing Affect: now we are visiting " + to_string(temp));
+		path.pop();
 		if (visit[temp] == -1)
 		{
 			//initial statement
-			visit[temp] == 1;
+			visit[temp] = 1;
 			list<int> tempNext = _pkb->getNextSecond(temp);
 			if (!tempNext.empty())
 			{
@@ -133,16 +134,18 @@ list<int> Affect::getAffectSecond(int start)
 		}
 		else
 		{
-			//check whether uses
-			list<int> varUsesIndex = _pkb->getUsesSecond(temp);
-			if (contains(varUsesIndex, varModifiesIndex))
-			{
-				buffer.push_back(temp);
-			}
 			//check whether visit
 			if (visit[temp] == 1)
 			{
-				continue;
+				//check whether uses
+				if (_pkb->getType(temp) == assignmentStmt)
+				{
+					list<int> varUsesIndex = _pkb->getUsesSecond(temp);
+					if (contains(varUsesIndex, varModifiesIndex))
+					{
+						buffer.push_back(temp);
+					}
+				}
 			}
 			else
 			{
@@ -158,6 +161,15 @@ list<int> Affect::getAffectSecond(int start)
 				}
 				else
 				{
+					//check whether uses
+					if (_pkb->getType(temp) == assignmentStmt)
+					{
+						list<int> varUsesIndex = _pkb->getUsesSecond(temp);
+						if (contains(varUsesIndex, varModifiesIndex))
+						{
+							buffer.push_back(temp);
+						}
+					}
 					//check whether modifies
 					list<int> tempModifeis = _pkb->getModifiesSecond(temp);
 					if (!contains(tempModifeis, varModifiesIndex))
@@ -171,12 +183,20 @@ list<int> Affect::getAffectSecond(int start)
 					}
 					else
 					{
+						message = "Processing Affect: " + to_string(start) + " is modified at " + to_string(temp);
+						_log.log(message);
 						//this path cannot use anymore
 					}
 				}
 			}
 		}
 	}
+	stringstream ss;
+	for (auto& x : buffer)
+	{
+		ss << x << " ";
+	}
+	_log.log("Processing Affect: " + to_string(start) + " getAffectSecond is " + ss.str());
 	return buffer;
 }
 
