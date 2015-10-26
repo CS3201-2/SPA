@@ -739,7 +739,7 @@ namespace UnitTest {
 
 		TEST_METHOD(testPatternFunctions) {
 			list<int> actual, expected;
-
+			PKB::getPKBInstance()->logPattern();
 			//for pattern a("x", _)
 			actual = PKB::getPKBInstance()->getAssignWithFirstExact("x");
 			expected.push_back(1);
@@ -768,7 +768,9 @@ namespace UnitTest {
 			Assert::IsTrue(actual == expected);
 
 			actual = PKB::getPKBInstance()->getAssignWithSecondExact("(x+1)");
-			Assert::IsTrue(actual == list<int>());
+			expected.clear();
+			expected.push_back(11);
+			Assert::IsTrue(actual == expected);
 
 			actual = PKB::getPKBInstance()->getAssignWithSecondExact("x*y");
 			Assert::IsTrue(actual == list<int>());
@@ -783,6 +785,7 @@ namespace UnitTest {
 
 			actual = PKB::getPKBInstance()->getAssignWithSecond("(x+1)");
 			expected.clear();
+			expected.push_back(11);
 			expected.push_back(13);
 			Assert::IsTrue(actual == expected);
 
