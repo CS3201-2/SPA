@@ -601,6 +601,26 @@ namespace UnitTest {
 
 			actual = PKB::getPKBInstance()->getAssignWithBoth("xyz", "x+1");
 			Assert::IsTrue(actual == list<int>());
+
+
+			//for pattern ifstat("x", _, _)
+			actual = PKB::getPKBInstance()->getIfWithFirstExact(" x");
+			expected.clear();
+			expected.push_back(10);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getIfWithFirstExact("a");
+			Assert::IsTrue(actual == list<int>());
+
+
+			//for pattern while("x", _)
+			actual = PKB::getPKBInstance()->getWhileWithFirstExact("i");
+			expected.clear();
+			expected.push_back(6);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getWhileWithFirstExact("x");
+			Assert::IsTrue(actual == list<int>());
 		}
 	};
 }
