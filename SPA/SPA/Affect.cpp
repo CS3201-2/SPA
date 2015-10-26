@@ -149,7 +149,7 @@ list<int> Affect::getAffectSecond(int start)
 			}
 			else
 			{
-				visit[temp] == 1;
+				visit[temp] = 1;
 				//check whether is container
 				if (isIf(temp) || isWhile(temp))
 				{
