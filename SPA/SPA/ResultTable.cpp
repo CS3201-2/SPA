@@ -43,3 +43,22 @@ int ResultTable::getIsWholeTrue() {
 void ResultTable::setIsWholeTrue(int isWholeTrue) {
 	_isWholeTrue = isWholeTrue;
 }
+
+void ResultTable::logTable() {
+	string str;
+
+	for (auto&x : _header) {
+		str += x + " ";
+	}
+	str += "\n";
+
+	for (auto&x : _result) {
+		for (auto&y : x) {
+			str += to_string(y) + " ";
+		}
+		str += "\n";
+	}
+	str += "\n";
+
+	SPALog::log(str);
+}

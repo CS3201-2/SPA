@@ -1,6 +1,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include "SPALog.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ public:
 	int getIsWholeTrue();
 	void setIsWholeTrue(int);
 	int isWholeTrue;
+	void logTable();
 
 private:
 	vector<string> _header;
