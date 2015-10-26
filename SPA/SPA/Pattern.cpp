@@ -177,7 +177,6 @@ string Pattern::convertToPostFix(string str) {
 
 	for (list<string>::iterator iter = tokenList.begin(); iter != tokenList.end(); ++iter) {
 		if (*iter == "(") {
-			postfixList.push_back("(");
 			opStack.push("(");
 		}
 		else if (*iter == ")") {
@@ -185,7 +184,6 @@ string Pattern::convertToPostFix(string str) {
 				postfixList.push_back(opStack.top());
 				opStack.pop();
 			}
-			postfixList.push_back(")");
 			opStack.pop();
 		}
 		else if (isOperator(*iter)) {
