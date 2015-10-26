@@ -316,7 +316,7 @@ void Parser::processPatternStmt(int stmtNo, string stmtContent, StatementType st
 	if (stmtType == assignmentStmt) {
 		size_t i = stmtContent.find("=");
 		size_t j = stmtContent.find(";");
-		PKB::getPKBInstance()->setPattern(stmtNo, stmtContent.substr(0, i), stmtContent.substr(i + 1, j - i - i));
+		PKB::getPKBInstance()->setPattern(stmtNo, stmtContent.substr(0, i), stmtContent.substr(i + 1, j - i - 1));
 	}
 	else if(stmtType == whileStmt) {
 		controlVar = getControlVarName(stmtType, stmtContent);
