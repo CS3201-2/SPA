@@ -26,6 +26,8 @@ class CFG
 	vector<list<int>> _nextTable;
 	vector<list<int>> _beforeTable;
 	vector<StatementType> _typeTable;
+	unordered_map<int, int> _procMap;
+	vector<int> _procTable;
 	unordered_map<int, CFGNode*> _nodeMap;
 
 	list<Statement>::iterator _codeIterator;
@@ -34,8 +36,12 @@ class CFG
 	list<int> _statBuffer;
 	int _nodeIndex;
 	int _size;
+	int _currentProc;
+	bool _procFirstStatementSet;
 public:
 	CFG();
+	int getFirstStatement(int);
+	int getProc(int);
 	void buildGraph(list<Statement>);
 	list<int> getNextFirst(int);
 	list<int> getNextSecond(int);
