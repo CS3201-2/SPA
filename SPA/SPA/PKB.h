@@ -41,6 +41,8 @@ public:
 	list<int> getParentList(); //while and if list
 	list<int> getConstantList();
 	int getCallStmtProc(int);
+	int getProcIDSpecial(int);
+	int getFirstStatement(int);
 	StatementType getType(int);
 	int getStmtSize();
 	void logWhileList();
