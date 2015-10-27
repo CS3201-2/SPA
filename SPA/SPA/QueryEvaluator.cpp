@@ -31,8 +31,8 @@ list<string> QueryEvaluator::evaluate() {
 	// first get selecet query, for iteration 1, only select first clause. hard code here
 	vector<string> select = getSelectClause(0);
 	int index;
-	string log = "Constant such that size is " + to_string(queryTree.getSuchThatConstSize());
-	SPALog::log(log);
+	//string log = "Constant such that size is " + to_string(queryTree.getSuchThatConstSize());
+	//SPALog::log(log);
 	for (index = 0; index < queryTree.getSuchThatConstSize(); index++) {
 		if (!processSuchThatConstClause(getSuchThatConstClause(index))) {
 			list<string> empty;
@@ -1649,62 +1649,63 @@ ResultTable QueryEvaluator::processIfPattern(vector<string> tempString) {
 }
 
 bool QueryEvaluator::processSelectClause(vector<string> tempString) {
-	string syn = tempString.at(0);
-	string synType = tempString.at(1);
-	string log = "Select clause: select " + syn + ":" + synType +"\n";
-	SPALog::log(log);
+	int tupleSize = tempString.size()/2;
+	for (int i = 0; i < tupleSize; i++) {
 
-	if (synType == "variable") {
-		ResultTable tempResult = ResultTable(syn);
-		vector<int> temp;
-		list<int> varTable = PKB::getPKBInstance()->getVarList();
-		for (list<int>::iterator i = varTable.begin(); i != varTable.end(); i++) {
-			temp.push_back(*i);
-			tempResult.addTuple(temp);
-			temp.clear();
+		string syn = tempString.at(i);
+		string synType = tempString.at(i + 1);
+		string log = "Select clause: select " + syn + ":" + synType + "\n";
+		SPALog::log(log);
+
+		if (synType == "variable") {
+			ResultTable tempResult = ResultTable(syn);
+			vector<int> temp;
+			list<int> varTable = PKB::getPKBInstance()->getVarList();
+			for (list<int>::iterator i = varTable.begin(); i != varTable.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			if (isResultEmpty(tempResult)) {
+				return false;
+			}
+			resultList.push_back(tempResult);
 		}
-		if (isResultEmpty(tempResult)) {
-			return false;
+		else if (synType == "procedure") {
+			ResultTable tempResult = ResultTable(syn);
+			vector<int> temp;
+			list<int> procList = PKB::getPKBInstance()->getProcList();
+			for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			if (isResultEmpty(tempResult)) {
+				return false;
+			}
+			resultList.push_back(tempResult);
 		}
-		resultList.push_back(tempResult);
-		return true;
+		else if (synType == "boolean") {
+			//ResultTable tempResult = ResultTable(syn);
+			//tempResult.isWholeTrue = 1;
+			//resultList.push_back(tempResult);
+		}
+		else {
+			list<int> targetList = getList(synType);
+			ResultTable tempResult = ResultTable(syn);
+			vector<int> temp;
+			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
+				temp.push_back(*i);
+				tempResult.addTuple(temp);
+				temp.clear();
+			}
+			if (isResultEmpty(tempResult)) {
+				return false;
+			}
+			resultList.push_back(tempResult);
+		}
 	}
-	else if (synType == "procedure") {
-		ResultTable tempResult = ResultTable(syn);
-		vector<int> temp;
-		list<int> procList = PKB::getPKBInstance()->getProcList();
-		for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
-			temp.push_back(*i);
-			tempResult.addTuple(temp);
-			temp.clear();
-		}
-		if (isResultEmpty(tempResult)) {
-			return false;
-		}
-		resultList.push_back(tempResult);
-		return true;
-	}
-	else if (synType == "boolean") {
-		//ResultTable tempResult = ResultTable(syn);
-		//tempResult.isWholeTrue = 1;
-		//resultList.push_back(tempResult);
-		return true;
-	}
-	else {
-		list<int> targetList = getList(synType);
-		ResultTable tempResult = ResultTable(syn);
-		vector<int> temp;
-		for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
-			temp.push_back(*i);
-			tempResult.addTuple(temp);
-			temp.clear();
-		}
-		if (isResultEmpty(tempResult)) {
-			return false;
-		}
-		resultList.push_back(tempResult);
-		return true;
-	}
+	return true;
 }
 
 bool QueryEvaluator::processWithClause(vector<string> tempString) {
