@@ -17,11 +17,12 @@ public:
 	
 	void addTuple(vector<int>);   //store a line in to table
 	vector<string> getHeader();
-	vector<vector<int>> getResult();
+	vector<vector<int>> getContent();
 	int getIsWholeTrue();
 	void setIsWholeTrue(int);
 	int isWholeTrue;
-	void logTable();
+	void logTable(int);
+	size_t getTableSize();
 
 private:
 	vector<string> _header;
