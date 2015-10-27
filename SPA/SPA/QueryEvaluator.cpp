@@ -90,13 +90,11 @@ list<string> QueryEvaluator::evaluate() {
 		resultList[i].logTable(i);
 	}
 
-	//SPALog::log(str);
-	//logging should be removed before final submission ends
 	vector<string> selectVar;
 	vector<string> selectVarType;
 	for (int i = 0; i < select.size(); i+=2) {
 		selectVar.push_back(select.at(i));
-		selectVar.push_back(select.at(i+1));
+		selectVarType.push_back(select.at(i+1));
 	}
 
 	QueryResultProjector qrp = QueryResultProjector(resultList, selectVar, selectVarType);
