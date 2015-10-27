@@ -165,6 +165,16 @@ int PKB::getCallStmtProc(int stmtNo) {
 	}
 }
 
+int PKB::getProcIDSpecial(int i)
+{
+	return cfg.getProc(i);
+}
+
+int PKB::getFirstStatement(int i)
+{
+	return cfg.getFirstStatement(i);
+}
+
 void PKB::logWhileList() {
 	string str = "while list\n";
 	for (list<int>::iterator it = whileStmtList.begin(); it != whileStmtList.end(); ++it) {
