@@ -215,6 +215,7 @@ void Affect::computeAffectAll(int procID)
 	int firstStmt = _pkb->getFirstStatement(procID);
 	//start from the first stmt in this proc and do until the end 
 	//of the proc
+	
 
 }
 
