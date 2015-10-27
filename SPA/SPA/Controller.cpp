@@ -29,11 +29,9 @@ void Controller::processSource() {
 		de.resetModifies();
 		de.resetUses();
 		de.setReverseMap();
-		logPKB();
-
 		parser.buildCFG(sourceList);
-		//logNext put under logPKB later, if there is no bug
-		PKB::getPKBInstance()->logNext();
+		
+		logPKB();
 	}
 	cout << "end of checker and parsing" << endl;
 }
@@ -87,7 +85,7 @@ void Controller::logPKB() {
 	PKB::getPKBInstance()->logPattern();
 	PKB::getPKBInstance()->logCalls();
 	PKB::getPKBInstance()->logCallsStar();
-	//PKB::getPKBInstance()->logNext();
+	PKB::getPKBInstance()->logNext();
 
 
 	//change below for testing purpose
