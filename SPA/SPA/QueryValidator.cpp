@@ -126,17 +126,59 @@ bool QueryValidator::isValidQuery(string query) {
 		return false;
 	}
 
-	arrClauses = split(arrClauses.at(1), SYMBOL_SPACE, 2);
+	if (arrClauses.at(1).at(0) == '<') {
+		arrClauses = split(arrClauses.at(1), '>', 2);
 
-	if ((!isVarNameExists(arrClauses.at(0)) && stringToLower(arrClauses.at(0)).compare(VARTYPE_BOOLEAN) != 0) || 
-		arrClauses.size() != 2) {// || arrClauses.at(0).compare("_") == 0) ) {
-		return false;
-	}
-	
-	if (isVarNameExists(arrClauses.at(0))) {
-		qt.insertSelect(arrClauses.at(0), getVarType(arrClauses.at(0)));
+		if (arrClauses.size() != 2) {
+			return false;
+		}
+
+		arrClauses.at(0) = arrClauses.at(0).substr(1, arrClauses.at(0).size() - 1);
+
+		vector<string> arrWords = split(arrClauses.at(0), SYMBOL_COMMA);
+		vector<string> var(arrWords.size()), varType(arrWords.size());
+		//cout << "size = " << arrClauses.size()<<endl;
+		//cout << "size = " << var.size() << endl;
+		for (int i = 0; i < arrWords.size(); i++) {
+			if (!isVarNameExists(arrWords.at(i))) {
+				//cout << i<<" ."<< arrWords.at(i)<<"."<<endl;
+				return false;
+			} 
+			//cout << "valid"<< i << " ." << arrWords.at(i) << "." << endl;
+			//var.push_back(arrClauses.at(i));
+			var.at(i) = arrWords.at(i);
+			//cout << i << " " << var.at(i) << " ";
+			varType.at(i) = getVarType(arrWords.at(i));
+			//varType.push_back(getVarType(arrClauses.at(i)));
+		}
+		
+		/*cout << "Select: ";
+		for (int i = 0; i < var.size(); i++) {
+			cout << i<<" "<<var.at(i) <<" ";
+		}
+
+		cout << endl;
+
+		for (int i = 0; i < var.size(); i++) {
+			cout << i << " " <<varType.at(i) << " ";
+		}
+
+		cout << endl;*/
+		//qt.insertSelect(var, varType);
 	} else {
-		qt.insertSelect("", VARTYPE_BOOLEAN);
+		arrClauses = split(arrClauses.at(1), SYMBOL_SPACE, 2);
+
+		if ((!isVarNameExists(arrClauses.at(0)) && stringToLower(arrClauses.at(0)).compare(VARTYPE_BOOLEAN) != 0) ||
+			arrClauses.size() != 2) {// || arrClauses.at(0).compare("_") == 0) ) {
+			return false;
+		}
+
+		if (isVarNameExists(arrClauses.at(0))) {
+			qt.insertSelect(arrClauses.at(0), getVarType(arrClauses.at(0)));
+		}
+		else {
+			qt.insertSelect("", VARTYPE_BOOLEAN);
+		}
 	}
 
 	bool isFinished = false;

@@ -27,11 +27,12 @@ int main() {
 		str20 = "procedure 1p; Select 1p with 1p.procName = \"SUN\"",
 		str21 = "while w; assign a; Select w such that Follows(w, a)",
 		str22 = "assign a; while w; variable v; Select a such that Modifies(a, v) pattern w(v, _ , _)",
-		str23 = "assign a; variable v; Select v such that Modifies(a, v) pattern a(_,\"z + x + i\")";
+		str23 = "assign a; variable v; Select v such that Modifies(a, v) pattern a(_,\"z + x + i\")",
+		str24 = "variable v; assign a; while w;Select <v, a, w> such that Modifies(1,v)";
 
 	//cout << str << "\n";
 
-	q.isValidDecAndQuery(str23);
+	q.isValidDecAndQuery(str24);
 	//cout << q.isValidExpression("x23*123-7y")<<endl; //0
 	//cout << q.isValidExpression("123+-x23*123") << endl; //0
 	//cout << q.isValidExpression("(x+123+y)") << endl; //1
