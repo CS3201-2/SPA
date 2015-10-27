@@ -16,9 +16,6 @@ using namespace::std;
 
 //QueryEvaluator assumes items in the QueryTree are valid
 //QueryEvaluator assumes invalid queries will in forwarded by QueryValidator so that error message can be printed in QueryResultProjector
-//QueryEvaluator assumes each query has one such that and pattern clause (For iteration 1 and will be updated later)
-//QueryEvaluator assumes 1st element in suchThat tree and 1st element in pattern tree form the first query
-
 QueryEvaluator::QueryEvaluator() {
 	queryTree = QueryTree();
 }
@@ -103,7 +100,12 @@ list<string> QueryEvaluator::evaluate() {
 	}
 	SPALog::log(str);
 	//logging should be removed before final submission ends
-	
+	vector<string> selectVar;
+	vector<string> selectVarType;
+	for (int i = 0; i < select.size(); i+=2) {
+		selectVar.push_back(select.at(i));
+		selectVar.push_back(select.at(i+1));
+	}
 	QueryResultProjector qrp = QueryResultProjector(resultList, select.at(0), select.at(1));
 	return qrp.getResult();
 }
