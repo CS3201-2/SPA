@@ -164,7 +164,7 @@ bool QueryValidator::isValidQuery(string query) {
 		}
 
 		cout << endl;*/
-		//qt.insertSelect(var, varType);
+		qt.insertSelect(var, varType);
 	} else {
 		arrClauses = split(arrClauses.at(1), SYMBOL_SPACE, 2);
 
