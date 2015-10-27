@@ -29,6 +29,7 @@ public:
 	void insertVariable(string variable, string variableType);
 	//For adding variables under the select category
 	void insertSelect(vector<string> var, vector<string> varType);
+	void insertSelect(string var, string varType);
 	//For adding variables under the with category
 	void insertWith(string rel, vector<string> arrWith, vector<string> withType);
 
