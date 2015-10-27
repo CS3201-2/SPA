@@ -51,7 +51,12 @@ void ResultTable::setIsWholeTrue(int isWholeTrue) {
 void ResultTable::logTable(int index) {
 	string str;
 
-	str += "table No." + to_string(index);
+	if(index < 0){
+		str += "final table";
+	}
+	else {
+		str += "table No." + to_string(index);
+	}
 
 	for (auto&x : _header) {
 		str += x + " ";

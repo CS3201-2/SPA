@@ -29,7 +29,7 @@ list<string> QueryResultProjector::getResult() {
 	vector<int> mergingOrder = getMergingOrder();	
 
 	ResultTable finalTable = mergeTables(mergingOrder);
-	finalTable.logTable(0);
+	finalTable.logTable(-1);
 
 	if (finalTable.getTableSize() != 0) {
 		//assume no select <a, boolean, b> kinda thing
