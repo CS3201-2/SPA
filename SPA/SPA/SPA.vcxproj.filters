@@ -86,6 +86,12 @@
     <ClCompile Include="DesignExtractor.cpp">
       <Filter>Source Files\Front-end Parser</Filter>
     </ClCompile>
+    <ClCompile Include="Affect.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="Statement.cpp">
+      <Filter>Source Files\Front-end Parser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Follows.h">
@@ -168,6 +174,15 @@
     </ClInclude>
     <ClInclude Include="DesignExtractor.h">
       <Filter>Header Files\Front-end Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="StatementType.h">
+      <Filter>Header Files\Front-end Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Statement.h">
+      <Filter>Header Files\Front-end Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Affect.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

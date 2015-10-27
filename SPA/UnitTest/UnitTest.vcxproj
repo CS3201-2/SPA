@@ -159,10 +159,13 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FrontEndTest.cpp" />
     <ClCompile Include="ParserTest.cpp" />
     <ClCompile Include="PKBTest.cpp" />
     <ClCompile Include="QueryEvaluatorTest.cpp" />
     <ClCompile Include="QueryTreeTest1.cpp" />
+    <ClCompile Include="CFGTest.cpp" />
+    <ClCompile Include="AffectTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -170,6 +173,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="queryValidatorTest.cpp" />
+    <ClCompile Include="QueryProcessorTest.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

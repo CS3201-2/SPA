@@ -1,302 +1,64 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
+#include "Parser.h"
 #include "PKB.h"
+#include "Checker.h"
 #include "DesignExtractor.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTest {
-	TEST_CLASS(PKBTest)
+	TEST_CLASS(frontEndTest)
 	{
-	public:
+	public: 
 		TEST_METHOD_INITIALIZE(buildPKB) {
-			DesignExtractor de = DesignExtractor();
+			string str;
+			str = "procedure First{\n";
+			str += "  x=  2;\n";
+			str += "  z =3;\n";
+			str += "  call Second;}\n";
+			str += "procedure Second{\n";
+			str += "  x = 0;\n";
+			str += "  i = 5;\n";
+			str += "  while i{\n";
+			str += "     x = (x + 2) * y;\n";
+			str += "     call Third;\n";
+			str += "     i = i - 1; }\n";
+			str += "  if x then{\n";
+			str += "     x = x + 1; }\n";
+			str += "  else {\n";
+			str += "     z = 1;\n";
+			str += "  }\n";
+			str += "  z = z + (x + 1);\n";
+			str += "  y = z + 2;\n";
+			str += "  x = (x*y) + z; }\n";
+			str += "procedure Third{\n";
+			str += "  z = 5;\n";
+			str += "v = z; }\n";
 
-			//set stmt list
-			PKB::getPKBInstance()->addStmtToList(1, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(2, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(3, procCallStmt);
-			PKB::getPKBInstance()->addStmtToList(4, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(5, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(6, whileStmt);
-			PKB::getPKBInstance()->addStmtToList(7, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(8, procCallStmt);
-			PKB::getPKBInstance()->addStmtToList(9, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(10, ifStmt);
-			PKB::getPKBInstance()->addStmtToList(11, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(12, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(13, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(14, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(15, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(16, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(17, assignmentStmt);
-			
-			//set constant list
-			PKB::getPKBInstance()->addConstantToList(2);
-			PKB::getPKBInstance()->addConstantToList(3);
-			PKB::getPKBInstance()->addConstantToList(0);
-			PKB::getPKBInstance()->addConstantToList(5);
-			PKB::getPKBInstance()->addConstantToList(2);
-			PKB::getPKBInstance()->addConstantToList(1);
-			PKB::getPKBInstance()->addConstantToList(1);
-			PKB::getPKBInstance()->addConstantToList(2);
-			PKB::getPKBInstance()->addConstantToList(5);
-			
-			//set callStmtMap
-			PKB::getPKBInstance()->addToCallStmtProcMap(3, -2);
-			PKB::getPKBInstance()->addToCallStmtProcMap(8, -3);
+			Parser parser = Parser();
+			Checker checker;
+			list<Statement> stmtList = parser.prepareSourceList(str);
 
-			//set procTable
-			PKB::getPKBInstance()->insertProc("First");
-			PKB::getPKBInstance()->insertProc("Second");
-			PKB::getPKBInstance()->insertProc("Third");
+			if (!checker.isSyntaxCorrect(stmtList)) {
 
-			//set varTable
-			PKB::getPKBInstance()->insertVar("x");
-			PKB::getPKBInstance()->insertVar("z");
-			PKB::getPKBInstance()->insertVar("i");
-			PKB::getPKBInstance()->insertVar("y");
-			PKB::getPKBInstance()->insertVar("v");
-
-			//set modifies
-			list<int> varList;
-			varList.push_back(4);
-			varList.push_back(5);
-			PKB::getPKBInstance()->setModifies(-3, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			varList.push_back(2);
-			varList.push_back(3);
-			varList.push_back(4);
-			varList.push_back(5);
-			PKB::getPKBInstance()->setModifies(-2, varList);
-			varList.clear();
-
-			varList.push_back(1);
-			varList.push_back(2);
-			varList.push_back(3);
-			varList.push_back(4);
-			varList.push_back(5);
-			PKB::getPKBInstance()->setModifies(-1, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			PKB::getPKBInstance()->setModifies(1, varList);
-			
-			varList.clear();
-			varList.push_back(2);
-			PKB::getPKBInstance()->setModifies(2, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			varList.push_back(2);
-			varList.push_back(3);
-			varList.push_back(4);
-			varList.push_back(5);
-			PKB::getPKBInstance()->setModifies(3, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			PKB::getPKBInstance()->setModifies(4, varList);
-			
-			varList.clear();
-			varList.push_back(3);
-			PKB::getPKBInstance()->setModifies(5, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			varList.push_back(2);
-			varList.push_back(3);
-			varList.push_back(5);
-			PKB::getPKBInstance()->setModifies(6, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			PKB::getPKBInstance()->setModifies(7, varList);
-			
-			varList.clear();
-			varList.push_back(2);
-			varList.push_back(5);
-			PKB::getPKBInstance()->setModifies(8, varList);
-
-			varList.clear();
-			varList.push_back(3);
-			PKB::getPKBInstance()->setModifies(9, varList);
-		
-			varList.clear();
-			varList.push_back(1);
-			varList.push_back(2);
-			PKB::getPKBInstance()->setModifies(10, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			PKB::getPKBInstance()->setModifies(11, varList);
-			
-			varList.clear();
-			varList.push_back(2);
-			PKB::getPKBInstance()->setModifies(12, varList);
-			
-			varList.clear();
-			varList.push_back(2);
-			PKB::getPKBInstance()->setModifies(13, varList);
-			
-			varList.clear();
-			varList.push_back(4);
-			PKB::getPKBInstance()->setModifies(14, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			PKB::getPKBInstance()->setModifies(15, varList);
-			
-			varList.clear();
-			varList.push_back(2);
-			PKB::getPKBInstance()->setModifies(16, varList);
-
-			varList.clear();
-			varList.push_back(5);
-			PKB::getPKBInstance()->setModifies(17, varList);
-			
-			//set uses
-			varList.clear();
-			varList.push_back(2);
-			PKB::getPKBInstance()->setUses(-3, varList);
-
-			varList.clear();
-			varList.push_back(1);
-			varList.push_back(2);
-			varList.push_back(3);
-			varList.push_back(4);
-			PKB::getPKBInstance()->setUses(-2, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			varList.push_back(2);
-			varList.push_back(3);
-			varList.push_back(4);
-			PKB::getPKBInstance()->setUses(-1, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			varList.push_back(2);
-			varList.push_back(3);
-			varList.push_back(4);
-			PKB::getPKBInstance()->setUses(3, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			varList.push_back(2);
-			varList.push_back(3);
-			varList.push_back(4);
-			PKB::getPKBInstance()->setUses(6, varList);
-
-			varList.clear();
-			varList.push_back(1);
-			varList.push_back(4);
-			PKB::getPKBInstance()->setUses(7, varList);
-			
-			varList.clear();
-			varList.push_back(2);
-			PKB::getPKBInstance()->setUses(8, varList);
-			
-			varList.clear();
-			varList.push_back(3);
-			PKB::getPKBInstance()->setUses(9, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			PKB::getPKBInstance()->setUses(10, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			PKB::getPKBInstance()->setUses(11, varList);
-			varList.clear();
-
-			varList.push_back(1);
-			varList.push_back(2);
-			varList.push_back(3);
-			PKB::getPKBInstance()->setUses(13, varList);
-
-			varList.clear();
-			varList.push_back(2);
-			PKB::getPKBInstance()->setUses(14, varList);
-			
-			varList.clear();
-			varList.push_back(1);
-			varList.push_back(2);
-			varList.push_back(4);
-			PKB::getPKBInstance()->setUses(15, varList);
-			
-			varList.clear();
-			varList.push_back(2);
-			PKB::getPKBInstance()->setUses(17, varList);
-
-			//set follows
-			PKB::getPKBInstance()->setFollows(1, 2);
-			PKB::getPKBInstance()->setFollows(2, 3);
-			PKB::getPKBInstance()->setFollows(4, 5);
-			PKB::getPKBInstance()->setFollows(5, 6);
-			PKB::getPKBInstance()->setFollows(6, 10);
-			PKB::getPKBInstance()->setFollows(7, 8);
-			PKB::getPKBInstance()->setFollows(8, 9);
-			PKB::getPKBInstance()->setFollows(10, 13);
-			PKB::getPKBInstance()->setFollows(13, 14);
-			PKB::getPKBInstance()->setFollows(14, 15);
-			PKB::getPKBInstance()->setFollows(16, 17);
-
-			//set followsStar
-			de.setFollowsStar();
-
-			//set parent
-			list<int> stmtList;
-			stmtList.push_back(7);
-			stmtList.push_back(8);
-			stmtList.push_back(9);
-			PKB::getPKBInstance()->setParent(6, stmtList);
-			stmtList.clear();
-
-			stmtList.push_back(11);
-			stmtList.push_back(12);
-			PKB::getPKBInstance()->setParent(10, stmtList);
-			stmtList.clear();
-
-			//set parentStar
-			de.setParentStar();
-
-			//set pattern
-			PKB::getPKBInstance()->setPattern(1, "x", "2");
-			PKB::getPKBInstance()->setPattern(2, "z", "3");
-			PKB::getPKBInstance()->setPattern(4, "x", "0");
-			PKB::getPKBInstance()->setPattern(5, "i", "5");
-			PKB::getPKBInstance()->setPattern(6, "i", "_while_");
-			PKB::getPKBInstance()->setPattern(7, "x", "(x+2)*y");
-			PKB::getPKBInstance()->setPattern(9, "i", "i-1");
-			PKB::getPKBInstance()->setPattern(10, "x", "_if_");
-			PKB::getPKBInstance()->setPattern(11, "x", "x+1");
-			PKB::getPKBInstance()->setPattern(12, "z", "1");
-			PKB::getPKBInstance()->setPattern(13, "z", "x+(x+1)");
-			PKB::getPKBInstance()->setPattern(14, "y", "z+2");
-			PKB::getPKBInstance()->setPattern(15, "x", "(x*y)+z");
-			PKB::getPKBInstance()->setPattern(16, "z", "5");
-			PKB::getPKBInstance()->setPattern(17, "v", "z");
-
-			//set calls
-			PKB::getPKBInstance()->setCalls(-1, -2);
-			PKB::getPKBInstance()->setCalls(-2, -3);
-
-			//set callsStar
-			de.setCallsStar();
-
-			//reverse all the maps
-			de.setReverseMap();
-			PKB::getPKBInstance()->houseKeeping();
+			}
+			else {
+				parser.parseSource(stmtList);
+				DesignExtractor de = DesignExtractor();
+				de.setFollowsStar();
+				de.setParentStar();
+				de.resetModifies();
+				de.resetUses();
+				de.setReverseMap();
+			}
 		}
 
 		TEST_METHOD_CLEANUP(clean) {
 			PKB::DestroyInstance();
 		}
 
-		TEST_METHOD(testAllGetListFunctions) {
+		TEST_METHOD(testAllGetListFunctionsIntegration) {
 			//test getList functions
 			list<int> actual, expected;
 			actual = PKB::getPKBInstance()->getAssignList();
@@ -314,7 +76,7 @@ namespace UnitTest {
 			expected.push_back(16);
 			expected.push_back(17);
 			Assert::IsTrue(actual == expected);
-			
+
 			actual = PKB::getPKBInstance()->getProcList();
 			expected.clear();
 			expected.push_back(-1);
@@ -322,7 +84,7 @@ namespace UnitTest {
 			expected.push_back(-3);
 			Assert::IsTrue(actual == expected);
 
-			
+
 			actual = PKB::getPKBInstance()->getVarList();
 			expected.clear();
 			expected.push_back(1);
@@ -374,7 +136,7 @@ namespace UnitTest {
 			expected.push_back(6);
 			expected.push_back(10);
 			Assert::IsTrue(actual == expected);
-			
+
 			actual = PKB::getPKBInstance()->getConstantList();
 			expected.clear();
 			expected.push_back(0);
@@ -388,20 +150,20 @@ namespace UnitTest {
 			Assert::IsTrue(PKB::getPKBInstance()->getCallStmtProc(4) == 0);
 		}
 
-		TEST_METHOD(testVarTableFunctions) {
+		TEST_METHOD(testVarTableFunctionsIntegration) {
 			Assert::IsTrue(PKB::getPKBInstance()->getVarID("x") == 1);
 			Assert::IsTrue(PKB::getPKBInstance()->getVarID("y") == 4);
 			Assert::IsTrue(PKB::getPKBInstance()->getVarID("xy") == 0);
 			Assert::IsTrue(PKB::getPKBInstance()->getVarName(3) == "i");
 		}
 
-		TEST_METHOD(testProcTableFunctions) {
+		TEST_METHOD(testProcTableFunctionsIntegration) {
 			Assert::IsTrue(PKB::getPKBInstance()->getProcID("Third") == -3);
 			Assert::IsTrue(PKB::getPKBInstance()->getProcID("Fourth") == 0);
 			Assert::IsTrue(PKB::getPKBInstance()->getProcName(-1) == "First");
 		}
 
-		TEST_METHOD(testModifiesFunctions) {
+		TEST_METHOD(testModifiesFunctionsIntegration) {
 			list<int> actual, expected;
 
 			Assert::IsTrue(PKB::getPKBInstance()->getModifiesFirst(50) == list<int>());
@@ -433,7 +195,7 @@ namespace UnitTest {
 
 			//test getModifiesSecond
 			Assert::IsTrue(PKB::getPKBInstance()->getModifiesSecond(18) == list<int>());
-			
+
 			actual = PKB::getPKBInstance()->getModifiesSecond(10);
 			expected.clear();
 			expected.push_back(1);
@@ -456,19 +218,18 @@ namespace UnitTest {
 			Assert::IsTrue(PKB::getPKBInstance()->isModifiesValid(15, 1));
 		}
 
-		TEST_METHOD(testUsesFunctions) {
+		TEST_METHOD(testUsesFunctionsIntegration) {
 			list<int> actual, expected;
-				
+
 			//test getUsesFirst
 			Assert::IsTrue(PKB::getPKBInstance()->getUsesFirst(5) == list<int>());
-		
+
 			actual = PKB::getPKBInstance()->getUsesFirst(3);
 			expected.push_back(-2);
 			expected.push_back(-1);
 			expected.push_back(3);
 			expected.push_back(6);
 			expected.push_back(9);
-			expected.push_back(13);
 			Assert::IsTrue(actual == expected);
 
 			actual = PKB::getPKBInstance()->getUsesFirst(4);
@@ -503,10 +264,10 @@ namespace UnitTest {
 			Assert::IsTrue(PKB::getPKBInstance()->isUsesValid(-3, 2));
 			Assert::IsFalse(PKB::getPKBInstance()->isUsesValid(9, 4));
 			Assert::IsFalse(PKB::getPKBInstance()->isUsesValid(19, 4));
-			Assert::IsTrue(PKB::getPKBInstance()->isUsesValid(13, 3));
+			Assert::IsTrue(PKB::getPKBInstance()->isUsesValid(13, 1));
 		}
 
-		TEST_METHOD(testFollowsFunctions) {
+		TEST_METHOD(testFollowsFunctionsIntegration) {
 			int actual, expected;
 
 			//test getFollowsFirst
@@ -519,8 +280,8 @@ namespace UnitTest {
 			Assert::IsTrue(actual == expected);
 
 			Assert::IsTrue(PKB::getPKBInstance()->getFollowsFirst(7) == 0);
-		
-			
+
+
 			//test getFollowsSecond
 			actual = PKB::getPKBInstance()->getFollowsSecond(4);
 			expected = 5;
@@ -531,8 +292,8 @@ namespace UnitTest {
 			Assert::IsTrue(actual == expected);
 
 			Assert::IsTrue(PKB::getPKBInstance()->getFollowsSecond(18) == 0);
-		
-			
+
+
 			//test isFollowsValid
 			Assert::IsTrue(PKB::getPKBInstance()->isFollowsValid(2, 3));
 			Assert::IsTrue(PKB::getPKBInstance()->isFollowsValid(10, 13));
@@ -540,7 +301,7 @@ namespace UnitTest {
 			Assert::IsFalse(PKB::getPKBInstance()->isFollowsValid(17, 2));
 		}
 
-		TEST_METHOD(testFollowsStarFunctions) {
+		TEST_METHOD(testFollowsStarFunctionsIntegration) {
 			list<int> actual, expected;
 
 			//test getFollowsStarFirst
@@ -557,8 +318,8 @@ namespace UnitTest {
 			Assert::IsTrue(actual == expected);
 
 			Assert::IsTrue(PKB::getPKBInstance()->getFollowsStarFirst(16) == list<int>());
-		
-			
+
+
 			//test getFollowsStarSecond
 			actual = PKB::getPKBInstance()->getFollowsStarSecond(10);
 			expected.clear();
@@ -578,8 +339,8 @@ namespace UnitTest {
 			Assert::IsTrue(actual == expected);
 
 			Assert::IsTrue(PKB::getPKBInstance()->getFollowsStarSecond(3) == list<int>());
-		
-			
+
+
 			//test isFollowsStarValid
 			Assert::IsTrue(PKB::getPKBInstance()->isFollowsStarValid(4, 15));
 			Assert::IsTrue(PKB::getPKBInstance()->isFollowsStarValid(6, 14));
@@ -587,7 +348,7 @@ namespace UnitTest {
 			Assert::IsFalse(PKB::getPKBInstance()->isFollowsStarValid(19, 10));
 		}
 
-		TEST_METHOD(testParentFunctions) {
+		TEST_METHOD(testParentFunctionsIntegration) {
 			list<int> actualList, expectedList;
 			int actualInt, expectedInt;
 
@@ -601,8 +362,8 @@ namespace UnitTest {
 			Assert::IsTrue(actualInt == expectedInt);
 
 			Assert::IsTrue(PKB::getPKBInstance()->getParentFirst(13) == 0);
-		
-			
+
+
 			//test getParentSecond
 			actualList = PKB::getPKBInstance()->getParentSecond(6);
 			expectedList.push_back(7);
@@ -617,8 +378,8 @@ namespace UnitTest {
 			Assert::IsTrue(actualList == expectedList);
 
 			Assert::IsTrue(PKB::getPKBInstance()->getParentSecond(11) == list<int>());
-		
-			
+
+
 			//test isParentValid
 			Assert::IsTrue(PKB::getPKBInstance()->isParentValid(6, 9));
 			Assert::IsTrue(PKB::getPKBInstance()->isParentValid(10, 12));
@@ -626,7 +387,7 @@ namespace UnitTest {
 			Assert::IsFalse(PKB::getPKBInstance()->isParentValid(20, 10));
 		}
 
-		TEST_METHOD(testParentStarFunctions) {
+		TEST_METHOD(testParentStarFunctionsIntegration) {
 			list<int> actual, expected;
 
 			//test getParentStarFirst
@@ -666,7 +427,7 @@ namespace UnitTest {
 			Assert::IsFalse(PKB::getPKBInstance()->isParentStarValid(20, 23));
 		}
 
-		TEST_METHOD(testCallsFunctions) {
+		TEST_METHOD(testCallsFunctionsIntegration) {
 			list<int> actual, expected;
 
 			//test getCallsFirst
@@ -680,8 +441,8 @@ namespace UnitTest {
 			Assert::IsTrue(actual == expected);
 
 			Assert::IsTrue(PKB::getPKBInstance()->getCallsFirst(-1) == list<int>());
-		
-			
+
+
 			//test getCallsSecond
 			actual = PKB::getPKBInstance()->getCallsSecond(-1);
 			expected.clear();
@@ -698,7 +459,7 @@ namespace UnitTest {
 			Assert::IsFalse(PKB::getPKBInstance()->isCallsValid(-4, -1));
 		}
 
-		TEST_METHOD(testCallsStarFunctions) {
+		TEST_METHOD(testCallsStarFunctionsIntegration) {
 			list<int> actual, expected;
 
 			//test getCallsStarFirst
@@ -737,9 +498,9 @@ namespace UnitTest {
 			Assert::IsFalse(PKB::getPKBInstance()->isCallsStarValid(-4, -2));
 		}
 
-		TEST_METHOD(testPatternFunctions) {
+		TEST_METHOD(testPatternFunctionsIntegration) {
 			list<int> actual, expected;
-			PKB::getPKBInstance()->logPattern();
+
 			//for pattern a("x", _)
 			actual = PKB::getPKBInstance()->getAssignWithFirstExact("x");
 			expected.push_back(1);
@@ -791,12 +552,13 @@ namespace UnitTest {
 
 			actual = PKB::getPKBInstance()->getAssignWithSecond("z");
 			expected.clear();
+			expected.push_back(13);
 			expected.push_back(14);
 			expected.push_back(15);
 			expected.push_back(17);
 			Assert::IsTrue(actual == expected);
 
-			actual = PKB::getPKBInstance()->getAssignWithSecond("x+(x+1)");
+			actual = PKB::getPKBInstance()->getAssignWithSecond("z+(x+1)");
 			expected.clear();
 			expected.push_back(13);
 			Assert::IsTrue(actual == expected);
@@ -808,7 +570,7 @@ namespace UnitTest {
 			expected.push_back(11);
 			Assert::IsTrue(actual == expected);
 
-			actual = PKB::getPKBInstance()->getAssignWithBothExact("z", "x+(x+1)");
+			actual = PKB::getPKBInstance()->getAssignWithBothExact("z", "z+(x+1)");
 			expected.clear();
 			expected.push_back(13);
 			Assert::IsTrue(actual == expected);
@@ -820,8 +582,8 @@ namespace UnitTest {
 
 			actual = PKB::getPKBInstance()->getAssignWithBothExact("x", "x");
 			Assert::IsTrue(actual == list<int>());
-			
 
+			
 			//for pattern a("x", _"y"_)
 			actual = PKB::getPKBInstance()->getAssignWithBoth("x", "y");
 			expected.clear();

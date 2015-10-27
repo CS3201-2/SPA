@@ -1,45 +1,45 @@
 #include "ResultTable.h"
-#include <vector>
-#include <string>
+
 
 using namespace std;
 
 ResultTable::ResultTable() {
-	isWholeTrue = -1;
+	_isWholeTrue = -1;
 }
 
-ResultTable::ResultTable(string attr1, string attr2)
-{
-	isWholeTrue = -1;
-	header.push_back(attr1);
-	header.push_back(attr2);
+ResultTable::ResultTable(string attr1, string attr2) {
+	_isWholeTrue = -1;
+	_header.push_back(attr1);
+	_header.push_back(attr2);
 }
 
-ResultTable::ResultTable(string attr1)
-{
-	isWholeTrue = -1;
-	header.push_back(attr1);
+ResultTable::ResultTable(string attr1) {
+	_isWholeTrue = -1;
+	_header.push_back(attr1);
 }
 
-ResultTable::ResultTable(int isWholeTrueA, vector<string> headerA, vector<vector<int>> resultA) 
-{
-	isWholeTrue = isWholeTrueA;
-	header = headerA;
-	result = resultA;
+ResultTable::ResultTable(int isWholeTrue, vector<string> header, vector<vector<int>> result) {
+	_isWholeTrue = isWholeTrue;
+	_header = header;
+	_result = result;
 }
 
 void ResultTable::addTuple(vector<int> tuple) {
-	result.push_back(tuple);
+	_result.push_back(tuple);
 }
 
 vector<string> ResultTable::getHeader() {
-	return header;
+	return _header;
 }
 
 vector<vector<int>> ResultTable::getResult() {
-	return result;
+	return _result;
 }
 
 int ResultTable::getIsWholeTrue() {
-	return isWholeTrue;
+	return _isWholeTrue;
+}
+
+void ResultTable::setIsWholeTrue(int isWholeTrue) {
+	_isWholeTrue = isWholeTrue;
 }

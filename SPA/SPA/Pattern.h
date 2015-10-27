@@ -4,6 +4,7 @@
 #include <map>
 #include <stack>
 #include <algorithm>
+#include <iterator>
 
 using namespace std;
 
@@ -23,17 +24,25 @@ public:
 	list<int> getAssignWithBoth(string, string);
 	list<int> getIfWithFirstExact(string);
 	list<int> getWhileWithFisrtExact(string);
+	void sortAndUnifyMap();
 	void logPattern();
 
 private:
-	map<int, pair<string, string>> patternMap;
+	map<int, pair<string, string>> assignMap;
+	map<string, list<int>> ifMap;
+	map<string, list<int>> whileMap;
+	map<string, list<int>> assignLeftMap;
+	map<string, list<int>> assignRightMap;
+
+	void insertToMap(map<string, list<int>>&, string, int);
 	string convertToPostFix(string);
 	int getPriority(string);
 	bool isParenthesis(string);
 	bool isOperator(string);
 	string removeAllSpace(string);
 	list<string> parseExpression(string);
-
+	list<string> getVariableList(string);
+	string getFirstVar(string);
 };
 
 #endif

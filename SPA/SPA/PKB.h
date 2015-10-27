@@ -10,6 +10,9 @@
 #include "VarTable.h"
 #include "Pattern.h"
 #include "CFG.h"
+#include "Statement.h"
+#include "StatementType.h"
+
 
 using namespace std;
 
@@ -21,11 +24,11 @@ class PKB
 {
 public:
 	static PKB* getPKBInstance();
-
+	static void DestroyInstance();
 	
 	//general
 	bool isValidStmtNo(int);
-	void addStmtToList(int, int);
+	void addStmtToList(int, StatementType);
 	void addConstantToList(int);
 	void addToCallStmtProcMap(int, int);
 	list<int> getProcList();
@@ -38,6 +41,8 @@ public:
 	list<int> getParentList(); //while and if list
 	list<int> getConstantList();
 	int getCallStmtProc(int);
+	StatementType getType(int);
+	int getStmtSize();
 	void logWhileList();
 	void logAssignList();
 	void logCallList();
@@ -46,8 +51,7 @@ public:
 	void logParentList();
 	void logStmtList();
 	void logCallStmtProcMap();
-	void buildCFG(list<pair<int, string>>);
-
+	void buildCFG(list<Statement>);
 	//PKB housekeeping function
 	//sort and unify function for Modifies, Uses, FollowsStar, Parent, ParentStar
 	//unify ifList and constantList
@@ -99,6 +103,7 @@ public:
 	list<int> getAssignWithBothExact(string, string);  //pattern a ("x", "x")
 	list<int> getIfWithFirstExact(string);
 	list<int> getWhileWithFirstExact(string);
+	void sortAndUnifyMap();
 	void logPattern();
 
 

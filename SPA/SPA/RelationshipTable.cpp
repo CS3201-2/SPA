@@ -5,8 +5,9 @@ RelationshipTable::RelationshipTable() {
 	vector<string> arg1;
 	vector<string> arg2;
 	
-	//ModifiesS (statements)
-	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "string", "number", "all" }; //
+	//Modifies
+	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", 
+		"string", "number" }; //
 	arg2 = { "variable", "string", "all" };
 	Relationship r1(2, arg1, arg2);
 	relTable["modifies"] = r1;
@@ -14,8 +15,9 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 	//cout << relTable.find("modifies*")->second.arg1.at(0);
 	
-	//UsesS (statements)
-	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", "string", "number", "all" }; //
+	//Uses
+	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", 
+		"string", "number" }; //
 	arg2 = { "variable", "string", "all" };
 	Relationship r2(2, arg1, arg2);
 	relTable["uses"] = r2;
@@ -127,8 +129,10 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//WithNumber
-	arg1 = { "constant", "stmt", "assign", "while", "if", "call", "number", "prog_line" };
-	arg2 = { "constant", "stmt", "assign", "while", "if", "call", "number", "prog_line" };
+	arg1 = { "constant", "stmt", "assign", "while", "if", "call", "number", 
+		"prog_line" };
+	arg2 = { "constant", "stmt", "assign", "while", "if", "call", "number", 
+		"prog_line" };
 	Relationship r16(2, arg1, arg2);
 	relTable["withNumber"] = r16;
 	arg1.clear();

@@ -9,6 +9,8 @@
 #include<stdexcept>
 #include"SPALog.h"
 #include"CFGNode.h"
+#include"Statement.h"
+#include"StatementType.h"
 using namespace std;
 #ifndef CFG_H
 #define CFG_H
@@ -23,34 +25,35 @@ class CFG
 	vector<list<int>> _next;
 	vector<list<int>> _nextTable;
 	vector<list<int>> _beforeTable;
+	vector<StatementType> _typeTable;
 	unordered_map<int, CFGNode*> _nodeMap;
 
-	list<pair<int, string>>::iterator _codeIterator;
-	list<pair<int, string>> _codeLst;
+	list<Statement>::iterator _codeIterator;
+	list<Statement> _codeLst;
 	stack<pair<int,int>> _nodeInOperation;
 	list<int> _statBuffer;
 	int _nodeIndex;
 	int _size;
 public:
 	CFG();
-	void buildGraph(list<pair<int, string>>);
+	void buildGraph(list<Statement>);
 	list<int> getNextFirst(int);
 	list<int> getNextSecond(int);
 	bool isNextValid(int, int);
 	list<int> getNextStarFirst(int);
 	list<int> getNextStarSecond(int);
 	bool isNextStarValid(int, int);
+	StatementType getType(int);
 	void printGraph();
 	void printNextTable();
 	void printBeforeTable();
 	void logNext();
 	~CFG();
 private:
-	int findNode(int);
 	int extractBuffer();
 	int createContainerNode(int);
 	int createDummyNode();
-	int getType(string);
+	int getType(Statement);
 	int countBrace(string);
 	list<int> traverse(int, vector<list<int>>);
 	void solveCode();
@@ -60,9 +63,9 @@ private:
 	void updateVector(int, int, vector<list<int>>&);
 	void storeNextTable();
 	void storeNext(int);
-	bool isContainer(string);
-	bool isIfStmt(string);
-	bool isWhileStmt(string);
-	bool isProc(string);
+	bool isContainer(Statement);
+	bool isIfStmt(Statement);
+	bool isWhileStmt(Statement);
+	bool isProc(Statement);
 };
 #endif

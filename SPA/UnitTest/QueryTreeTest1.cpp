@@ -15,12 +15,13 @@ namespace UnitTest
 			QueryTree qt;
 			vector<string> arrVar;
 			vector<string> arrType;
-			arrVar.push_back("1");
-			arrVar.push_back("2");
-			arrType.push_back("variable");
-			arrType.push_back("variable");
-			qt.insertSuchThat("Modifies", arrVar, arrType);
+			arrVar.push_back("s");
+			arrVar.push_back("x");
+			arrType.push_back("stmt");
+			arrType.push_back("string");
+			qt.insertSuchThat("modifies", arrVar, arrType);
 			Assert::AreEqual(1, qt.getSuchThatSize());
+			Assert::AreEqual(0, qt.getSuchThatConstSize());
 		}
 
 		TEST_METHOD(getSelectSize)
