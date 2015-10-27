@@ -89,20 +89,9 @@ list<string> QueryEvaluator::evaluate() {
 		}
 	}
 
-	//logging should be removed before final submission
-	string str;
-	str = "splited table\n";
-	for (auto& x : resultList) {
-		for (int i = 0; i < x.getResult().size(); ++i) {
-			for (int j = 0; j < x.getResult()[i].size(); ++j) {
-				str += to_string(x.getResult()[i][j]) + ", ";
-			}
-			str += "\n";
-		}
-		str += "-----------------------------------\n";
+	for (int i = 0; i < resultList.size(); ++i) {
+		resultList[i].logTable(i);
 	}
-	SPALog::log(str);
-	//logging should be removed before final submission ends
 	
 	QueryResultProjector qrp = QueryResultProjector(resultList, select.at(0), select.at(1));
 	return qrp.getResult();
@@ -265,7 +254,7 @@ bool QueryEvaluator::isInList(list<int> list, int number) {
 }
 
 bool QueryEvaluator::isResultEmpty(ResultTable tempResult) {
-	return tempResult.getResult().empty();
+	return tempResult.getContent().empty();
 }
 
 list<int> QueryEvaluator::getList(string listName) {
