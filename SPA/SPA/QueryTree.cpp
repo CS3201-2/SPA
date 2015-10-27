@@ -13,23 +13,27 @@ QueryTree::QueryTree() {
 
 //Inserting the particular type of query into its respective tree
 void QueryTree::insertSuchThat(string rel, vector<string> arrVar, vector<string> arrType) {
-	vector<string> tempVector;
-	vector<string> tempConstVector;
-	if ((arrType.at(0) == "string" || arrType.at(0) == "number") && (arrType.at(1) == "string" || arrType.at(1) == "number")) {
-		tempConstVector.push_back(rel);
-		tempConstVector.push_back(arrVar.at(0));
-		tempConstVector.push_back(arrType.at(0));
-		tempConstVector.push_back(arrVar.at(1));
-		tempConstVector.push_back(arrType.at(1));
-		qTree.at(5).push_back(tempConstVector);
-	}
-	else {
-		tempVector.push_back(rel);
-		tempVector.push_back(arrVar.at(0));
-		tempVector.push_back(arrType.at(0));
-		tempVector.push_back(arrVar.at(1));
-		tempVector.push_back(arrType.at(1));
-		qTree.at(1).push_back(tempVector);
+	int i = 0;
+	while (i < arrVar.size()) {
+		if ((arrType.at(i) == "string" || arrType.at(i) == "number") && (arrType.at(i + 1) == "string" || arrType.at(i + 1) == "number")) {
+			vector<string> tempConstVector;
+			tempConstVector.push_back(rel);
+			tempConstVector.push_back(arrVar.at(i));
+			tempConstVector.push_back(arrType.at(i));
+			tempConstVector.push_back(arrVar.at(i+1));
+			tempConstVector.push_back(arrType.at(i+1));
+			qTree.at(5).push_back(tempConstVector);
+		}
+		else {
+			vector<string> tempVector;
+			tempVector.push_back(rel);
+			tempVector.push_back(arrVar.at(i));
+			tempVector.push_back(arrType.at(i));
+			tempVector.push_back(arrVar.at(i+1));
+			tempVector.push_back(arrType.at(i+1));
+			qTree.at(1).push_back(tempVector);
+		}
+		i = i + 2;
 	}
 }
 
@@ -51,31 +55,31 @@ void QueryTree::insertVariable(string variable, string variableType) {
 	qTree.at(0).push_back(tempVector);
 }
 
-void QueryTree::insertSelect(string var, string varType) {
-	vector<string> tempVector;
-	tempVector.push_back(var);
-	tempVector.push_back(varType);
-	qTree.at(3).push_back(tempVector);
+void QueryTree::insertSelect(vector<string> var, vector<string> varType) {
+	for (int i = 0; i < var.size(); i++) {
+		vector<string> tempVector;
+		tempVector.push_back(var.at(i));
+		tempVector.push_back(varType.at(i));
+		qTree.at(3).push_back(tempVector);
+	}
 }
 
 void QueryTree::insertWith(string rel, vector<string> arrWith, vector<string> withType) {
-	vector<string> tempVector;
-	vector<string> tempConstVector;
-	if ((withType.at(0) == "string" || withType.at(0) == "number") && (withType.at(1) == "string" || withType.at(1) == "number")) {
-		tempConstVector.push_back(rel);
-		tempConstVector.push_back(arrWith.at(0));
-		tempConstVector.push_back(withType.at(0));
-		tempConstVector.push_back(arrWith.at(1));
-		tempConstVector.push_back(withType.at(1));
-		qTree.at(6).push_back(tempConstVector);
-	}
-	else {
-		tempVector.push_back(rel);
-		tempVector.push_back(arrWith.at(0));
-		tempVector.push_back(withType.at(0));
-		tempVector.push_back(arrWith.at(1));
-		tempVector.push_back(withType.at(1));
-		qTree.at(4).push_back(tempVector);
+	for (int i = 0; i < arrWith.size(); i++) {
+		if (withType.at(i) == "string" || withType.at(i) == "number") {
+			vector<string> tempConstVector;
+			tempConstVector.push_back(rel);
+			tempConstVector.push_back(arrWith.at(i));
+			tempConstVector.push_back(withType.at(i));
+			qTree.at(6).push_back(tempConstVector);
+		}
+		else {
+			vector<string> tempVector;
+			tempVector.push_back(rel);
+			tempVector.push_back(arrWith.at(i));
+			tempVector.push_back(withType.at(i));
+			qTree.at(4).push_back(tempVector);
+		}
 	}
 }
 
