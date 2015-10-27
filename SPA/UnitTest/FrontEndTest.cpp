@@ -529,7 +529,9 @@ namespace UnitTest {
 			Assert::IsTrue(actual == expected);
 
 			actual = PKB::getPKBInstance()->getAssignWithSecondExact("(x+1)");
-			Assert::IsTrue(actual == list<int>());
+			expected.clear();
+			expected.push_back(11);
+			Assert::IsTrue(actual == expected);
 
 			actual = PKB::getPKBInstance()->getAssignWithSecondExact("x*y");
 			Assert::IsTrue(actual == list<int>());
@@ -544,6 +546,7 @@ namespace UnitTest {
 
 			actual = PKB::getPKBInstance()->getAssignWithSecond("(x+1)");
 			expected.clear();
+			expected.push_back(11);
 			expected.push_back(13);
 			Assert::IsTrue(actual == expected);
 
@@ -597,6 +600,26 @@ namespace UnitTest {
 			Assert::IsTrue(actual == list<int>());
 
 			actual = PKB::getPKBInstance()->getAssignWithBoth("xyz", "x+1");
+			Assert::IsTrue(actual == list<int>());
+
+
+			//for pattern ifstat("x", _, _)
+			actual = PKB::getPKBInstance()->getIfWithFirstExact(" x");
+			expected.clear();
+			expected.push_back(10);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getIfWithFirstExact("a");
+			Assert::IsTrue(actual == list<int>());
+
+
+			//for pattern while("x", _)
+			actual = PKB::getPKBInstance()->getWhileWithFirstExact("i");
+			expected.clear();
+			expected.push_back(6);
+			Assert::IsTrue(actual == expected);
+
+			actual = PKB::getPKBInstance()->getWhileWithFirstExact("x");
 			Assert::IsTrue(actual == list<int>());
 		}
 	};

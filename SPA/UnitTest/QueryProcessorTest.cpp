@@ -508,7 +508,7 @@ namespace UnitTest
 		}
 
 		TEST_METHOD(evaluateModifiesWhilePattern) {
-			string query = "assign a; while w; variable v; Select a such that Modifies(a, v) pattern w(v,_,_)";
+			string query = "assign a; while w; variable v; Select a such that Modifies(a, v) pattern w(v,_)";
 			QueryValidator qv;
 			list<string> result;
 			if (qv.isValidDecAndQuery(query)) {

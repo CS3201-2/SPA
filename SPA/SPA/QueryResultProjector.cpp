@@ -24,41 +24,42 @@ list<string> QueryResultProjector::getResult() {
 	
 	mergeTable();
 
-	int index = getIndexOf(_resultTable.getHeader(), _select);
+	int index;
+	if (_selectType != TYPE_BOOL) {
+		index = getIndexOf(_resultTable.getHeader(), _select);
+	}
 	string result = "";
 
 	if (!_resultTable.getResult().empty()) {
 		list<int> resultList;
+		if (_selectType == TYPE_BOOL) {
+			resultStringList.push_back(RESULT_TRUE);
+			return resultStringList;
+		}
 		for (vector<vector<string>>::size_type i = 0; i < _resultTable.getResult().size(); ++i) {
 			if (find(resultList.begin(), resultList.end(), _resultTable.getResult()[i][index]) == resultList.end()) {
 				resultList.push_back(_resultTable.getResult()[i][index]);
 			}
 		}
 
-		if (_selectType == TYPE_BOOL) {
-			if (resultList.empty()) {
-				resultStringList.push_back(RESULT_FALSE);
+		for (list<int>::iterator it = resultList.begin(); it != resultList.end(); ) {
+			if (_selectType == TYPE_VARIABLE) {
+				string varName = PKB::getPKBInstance()->getVarName(*it);
+				resultStringList.push_back(varName);
+			}
+			else if (_selectType == TYPE_PROCEDURE) {
+				string procName = PKB::getPKBInstance()->getProcName(*it);
+				resultStringList.push_back(procName);
 			}
 			else {
-				resultStringList.push_back(RESULT_TRUE);
+				resultStringList.push_back(to_string(*it));
 			}
+			++it;
 		}
-
-		else {
-			for (list<int>::iterator it = resultList.begin(); it != resultList.end(); ) {
-				if (_selectType == TYPE_VARIABLE) {
-					string varName = PKB::getPKBInstance()->getVarName(*it);
-					resultStringList.push_back(varName);
-				}
-				else if (_selectType == TYPE_PROCEDURE) {
-					string procName = PKB::getPKBInstance()->getProcName(*it);
-					resultStringList.push_back(procName);
-				}
-				else {
-					resultStringList.push_back(to_string(*it));
-				}
-				++it;
-			}
+	}
+	else {
+		if (_selectType == TYPE_BOOL) {
+			resultStringList.push_back(RESULT_FALSE);
 		}
 	}
 

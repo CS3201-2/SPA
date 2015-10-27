@@ -1812,7 +1812,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			list<int> procList = getList("procedure");
-			list<int> varList = getList("variable");
+			list<int> varList = PKB::getPKBInstance()->getVarList();
 			for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
 				string procName = PKB::getPKBInstance()->getProcName(*i);
 				for (list<int>::iterator t = varList.begin(); t != varList.end(); t++) {
@@ -1928,7 +1928,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			list<int> procList = getList("procedure");
-			list<int> varList = getList("variable");
+			list<int> varList = PKB::getPKBInstance()->getVarList();
 			for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
 				string procName = PKB::getPKBInstance()->getProcName(*i);
 				for (list<int>::iterator t = varList.begin(); t != varList.end(); t++) {
@@ -1960,10 +1960,10 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 						temp.clear();
 					}
 				}
-
 			}
+			return tempResult;
 		}
-		else if (arg2Type == "vaiable") {
+		else if (arg2Type == "variable") {
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			if (arg1 == arg2) {
@@ -1977,6 +1977,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
+			return tempResult;
 		}
 		else if (arg2Type == "string") {
 			ResultTable tempResult = ResultTable(arg1);
@@ -1990,6 +1991,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 					temp.clear();
 				}
 			}
+			return tempResult;
 		}
 		else {
 
@@ -2037,6 +2039,7 @@ ResultTable QueryEvaluator::processNameWith(vector<string> tempString) {
 					temp.clear();
 				}
 			}
+			return tempResult;
 		}
 		else if (arg2Type == "string") {
 			ResultTable tempResult = ResultTable();
@@ -2143,11 +2146,7 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 		else {
 			ResultTable tempResult = ResultTable(arg2);
 			vector<int> temp;
-			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
-				tempResult.setIsWholeTrue(0);
-				SPALog::log("with number clause arg1 is not a valid prog_line");
-				return tempResult;
-			}
+			
 			list<int> targetList = getList(arg2Type);
 		
 			if (isInList(targetList, stoi(arg1))) {
@@ -2177,13 +2176,6 @@ ResultTable QueryEvaluator::processNumberWith(vector<string> tempString) {
 		else if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
-			
-			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
-				tempResult.setIsWholeTrue(0);
-				SPALog::log("with number clause arg2 is not a valid prog_line");
-				return tempResult;
-			}
-			
 
 			if (isInList(targetList, stoi(arg2))) {
 				temp.push_back(stoi(arg2));

@@ -1,4 +1,5 @@
 #include"PKB.h"
+#include<sstream>
 #include<assert.h>
 using namespace std;
 #ifndef Affect_H
@@ -6,6 +7,7 @@ using namespace std;
 class Affect
 {
 	PKB* _pkb;
+	SPALog _log;
 public:
 	Affect();
 	bool isAffectValid(int,int);
