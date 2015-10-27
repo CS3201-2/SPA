@@ -64,6 +64,13 @@ void QueryTree::insertSelect(vector<string> var, vector<string> varType) {
 	}
 }
 
+void QueryTree::insertSelect(string var, string varType) {
+	vector<string> tempVector;
+	tempVector.push_back(var);
+	tempVector.push_back(varType);
+	qTree.at(3).push_back(tempVector);
+}
+
 void QueryTree::insertWith(string rel, vector<string> arrWith, vector<string> withType) {
 	for (int i = 0; i < arrWith.size(); i++) {
 		if (withType.at(i) == "string" || withType.at(i) == "number") {
