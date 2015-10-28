@@ -284,11 +284,11 @@ void QueryEvaluator::indexQueryTree() {
 
 //Process Clause
 bool QueryEvaluator::processSuchThatClause(Clause tempString) {
-	string relationship = tempString.at(0);
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+	string relationship = tempString.getRelationship();
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 	string log = "Such that clause: " + relationship + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
 
@@ -1509,11 +1509,12 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 
 bool QueryEvaluator::processPatternClause(Clause tempString) {
 	
-	string synType = tempString.at(1);
-	string arg1 = tempString.at(2);
-	string arg1Type = tempString.at(3);
-	string arg2 = tempString.at(4);
-	string arg2Type = tempString.at(5);
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
+	string syn = tempString.getVar().at(2);
+	string synType = tempString.getVarType().at(2);
 	
 	string log = "Pattern clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
@@ -1542,15 +1543,16 @@ bool QueryEvaluator::processPatternClause(Clause tempString) {
 	
 }
 
-ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
-	string syn = tempString.at(0);
-	string synType = tempString.at(1);
-	string arg1 = tempString.at(2);
-	string arg1Type = tempString.at(3);
-	string arg2 = tempString.at(4);
-	string arg2Type = tempString.at(5);
+ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
+	string syn = tempString.getVar().at(2);
+	string synType = tempString.getVarType().at(2);
 
 	if (arg1Type == "string") {
+		// PatternoneVarTree
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
 		if (arg2Type == "all") {
@@ -1665,13 +1667,13 @@ ResultTable QueryEvaluator::processAssignPattern(vector<string> tempString) {
 	}
 }
 
-ResultTable QueryEvaluator::processWhilePattern(vector<string> tempString) {
-	string syn = tempString.at(0);
-	string synType = tempString.at(1);
-	string arg1 = tempString.at(2);
-	string arg1Type = tempString.at(3);
-	string arg2 = tempString.at(4);
-	string arg2Type = tempString.at(5);
+ResultTable QueryEvaluator::processWhilePattern(Clause tempString) {
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
+	string syn = tempString.getVar().at(2);
+	string synType = tempString.getVarType().at(2);
 
 	if (arg1Type == "string") {
 		ResultTable tempResult = ResultTable(syn);
@@ -1722,13 +1724,13 @@ ResultTable QueryEvaluator::processWhilePattern(vector<string> tempString) {
 	}
 }
 
-ResultTable QueryEvaluator::processIfPattern(vector<string> tempString) {
-	string syn = tempString.at(0);
-	string synType = tempString.at(1);
-	string arg1 = tempString.at(2);
-	string arg1Type = tempString.at(3);
-	string arg2 = tempString.at(4);
-	string arg2Type = tempString.at(5);
+ResultTable QueryEvaluator::processIfPattern(Clause tempString) {
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
+	string syn = tempString.getVar().at(2);
+	string synType = tempString.getVarType().at(2);
 
 	if (arg1Type == "string") {
 		ResultTable tempResult = ResultTable(syn);
@@ -1840,11 +1842,11 @@ bool QueryEvaluator::processSelectClause(Clause tempString) {
 }
 
 bool QueryEvaluator::processWithClause(Clause tempString) {
-	string synType = tempString.at(0);
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+	string synType = tempString.getRelationship();
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 
 	string log = "With clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);

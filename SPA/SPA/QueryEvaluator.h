@@ -18,6 +18,9 @@ public:
 
 private:
 	QueryTree queryTree;
+	//intermidiate result 
+	vector<ResultTable> midResult;
+	// final result pass to projector
 	vector<ResultTable> resultList;
 	bool isInList(list<int>, int);
 	bool isResultEmpty(ResultTable tempResult);
@@ -46,9 +49,9 @@ private:
 	ResultTable processNumberWith(vector<string> tempString);
 	ResultTable processNameWith(vector<string> tempString);
 
-	ResultTable processAssignPattern(vector<string> tempString);
-	ResultTable processWhilePattern(vector<string> tempString);
-	ResultTable processIfPattern(vector<string> tempString);
+	ResultTable processAssignPattern(Clause tempString);
+	ResultTable processWhilePattern(Clause tempString);
+	ResultTable processIfPattern(Clause tempString);
 };
 
 #endif
