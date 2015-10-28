@@ -5,6 +5,8 @@ const string NO_RELATIONSHIP = "";
 const int NO_VARIABLE = 0;
 const int ONE_VARIABLE = 1;
 const int TWO_VARIABLE = 2;
+const int FIRST_TYPE = 0;
+const string VARIABLE_TYPE = "variable";
 
 QueryTree::QueryTree() {
 
@@ -27,21 +29,15 @@ void QueryTree::insertSuchThat(string rel, vector<string> arrVar, vector<string>
 }
 
 void QueryTree::insertPattern(string syn, string synType, vector<string> arrPtrn, vector<string> ptrnType) {
-	int numOfVar = getNumOfVar(ptrnType);
 	arrPtrn.push_back(syn);
 	ptrnType.push_back(synType);
 	Clause clause = Clause(NO_RELATIONSHIP, arrPtrn, ptrnType);
-	
-	if (numOfVar == NO_VARIABLE) {
-	
-	}
-	else if (numOfVar == ONE_VARIABLE) {
-		
+	if (ptrnType.at(FIRST_TYPE) == VARIABLE_TYPE) {
+		patternOneVarTree.push_back(clause);
 	}
 	else {
-		
+		patternTwoVarTree.push_back(clause);
 	}
-	//qTree.at(2).push_back(clause);
 }
 
 void QueryTree::insertVariable(string variable, string variableType) {
