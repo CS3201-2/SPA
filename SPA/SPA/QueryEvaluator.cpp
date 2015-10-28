@@ -25,7 +25,27 @@ QueryEvaluator::QueryEvaluator(QueryTree qt) {
 }
 // entry function for controller;
 list<string> QueryEvaluator::evaluate() {
-	// first get selecet query, for iteration 1, only select first clause. hard code here
+	// first evaluate Const Const
+	int index;
+	Clause selectClause = queryTree.getSelectTree().at(0);
+	for (index = 0; index < queryTree.getWithNoVarTree().size(); index++) {
+		if (!processWithConstClause(queryTree.getWithNoVarTree().at(index))) {
+			list<string> empty;
+			if (selectClause.getVarType().at(0) == "boolean") {
+				empty.push_back("false");
+			}
+			return empty;
+		}
+	}
+	for (index = 0; index < queryTree.getSuchThatNoVarTree().size(); index++) {
+		if (!processSuchThatConstClause(queryTree.getWithNoVarTree().at(index))) {
+			list<string> empty;
+			if (selectClause.getVarType().at(0) == "boolean") {
+				empty.push_back("false");
+			}
+			return empty;
+		}
+	}
 	vector<string> select = getSelectClause(0);
 	int index;
 	//string log = "Constant such that size is " + to_string(queryTree.getSuchThatConstSize());
@@ -101,51 +121,8 @@ list<string> QueryEvaluator::evaluate() {
 	return qrp.getResult();
 }
 
-//Retrieve information from respective trees
-vector<string> QueryEvaluator::getSelectClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getSelectQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getSuchThatClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getSuchThatQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getSuchThatConstClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getSuchThatConstQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getPatternClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getPatternQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getVarDeclaration(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getVariableQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getWithClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getWithQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getWithConstClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getWithConstQuery(index);
-	return tempVector;
-}
-
 //Process Clause
-bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
+bool QueryEvaluator::processSuchThatClause(Clause tempString) {
 	string relationship = tempString.at(0);
 	string arg1 = tempString.at(1);
 	string arg1Type = tempString.at(2);
@@ -197,12 +174,12 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	return true;
 }
 
-bool QueryEvaluator::processSuchThatConstClause(vector<string> tempString) {
-	string relationship = tempString.at(0);
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+bool QueryEvaluator::processSuchThatConstClause(Clause tempString) {
+	string relationship = tempString.getRelationShip();
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType.at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType.at(1);
 	string log = "Such that const clause: " + relationship + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
 
@@ -1369,7 +1346,7 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 	}
 }
 
-bool QueryEvaluator::processPatternClause(vector<string> tempString) {
+bool QueryEvaluator::processPatternClause(Clause tempString) {
 	
 	string synType = tempString.at(1);
 	string arg1 = tempString.at(2);
@@ -1641,7 +1618,7 @@ ResultTable QueryEvaluator::processIfPattern(vector<string> tempString) {
 	}
 }
 
-bool QueryEvaluator::processSelectClause(vector<string> tempString) {
+bool QueryEvaluator::processSelectClause(Clause tempString) {
 	int tupleSize = tempString.size()/2;
 	for (int i = 0; i < tupleSize; i++) {
 
@@ -1701,7 +1678,7 @@ bool QueryEvaluator::processSelectClause(vector<string> tempString) {
 	return true;
 }
 
-bool QueryEvaluator::processWithClause(vector<string> tempString) {
+bool QueryEvaluator::processWithClause(Clause tempString) {
 	string synType = tempString.at(0);
 	string arg1 = tempString.at(1);
 	string arg1Type = tempString.at(2);
@@ -1731,12 +1708,12 @@ bool QueryEvaluator::processWithClause(vector<string> tempString) {
 	return true;
 }
 
-bool QueryEvaluator::processWithConstClause(vector<string> tempString) {
-	string synType = tempString.at(0);
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+bool QueryEvaluator::processWithConstClause(Clause tempString) {
+	string synType = tempString.getRelationShip();
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType.at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType.at(1);
 
 	string log = "With constant clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);

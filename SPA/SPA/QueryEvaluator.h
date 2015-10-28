@@ -34,20 +34,12 @@ private:
 	ResultTable processNext(vector<string> tempString);
 	ResultTable processNextStar(vector<string> tempString);
 
-	vector<string> getSelectClause(int index);
-	vector<string> getWithClause(int index);
-	vector<string> getWithConstClause(int index);
-	vector<string> getSuchThatClause(int index);
-	vector<string> getSuchThatConstClause(int index);
-	vector<string> getPatternClause(int index);
-	vector<string> getVarDeclaration(int index);
-
-	bool processSuchThatClause(vector<string> tempString);
-	bool processSuchThatConstClause(vector<string> tempString);
-	bool processPatternClause(vector<string> tempString);
-	bool processWithClause(vector<string> tempString);
-	bool processWithConstClause(vector<string> tempString);
-	bool processSelectClause(vector<string> tempString);
+	bool processSuchThatClause(Clause tempString);
+	bool processSuchThatConstClause(Clause tempString);
+	bool processPatternClause(Clause tempString);
+	bool processWithClause(Clause tempString);
+	bool processWithConstClause(Clause tempString);
+	bool processSelectClause(Clause tempString);
 
 	ResultTable processNumberWith(vector<string> tempString);
 	ResultTable processNameWith(vector<string> tempString);
