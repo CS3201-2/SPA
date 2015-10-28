@@ -25,61 +25,220 @@ QueryEvaluator::QueryEvaluator(QueryTree qt) {
 }
 // entry function for controller;
 list<string> QueryEvaluator::evaluate() {
-	// first get selecet query, for iteration 1, only select first clause. hard code here
-	vector<string> select = getSelectClause(0);
+
+	// first evaluate Const Const
 	int index;
-	//string log = "Constant such that size is " + to_string(queryTree.getSuchThatConstSize());
-	//SPALog::log(log);
-	for (index = 0; index < queryTree.getSuchThatConstSize(); index++) {
-		if (!processSuchThatConstClause(getSuchThatConstClause(index))) {
+	Clause selectClause = queryTree.getSelectTree().at(0);
+
+	for (vector<Clause>::iterator i = queryTree.getWithNoVarTree().begin(); i != queryTree.getWithNoVarTree().end(); i++) {
+		if (!processWithConstClause(*i)) {
 			list<string> empty;
-			if (select.at(1) == "boolean") {
+			if (selectClause.getVarType().at(0) == "boolean") {
 				empty.push_back("false");
 			}
 			return empty;
 		}
 	}
-	for (index = 0; index < queryTree.getWithConstSize(); index++) {
-		if (!processWithConstClause(getWithConstClause(index))) {
+	for (vector<Clause>::iterator i = queryTree.getSuchThatNoVarTree().begin(); i != queryTree.getSuchThatNoVarTree().end(); i++) {
+		if (!processSuchThatConstClause(*i)) {
 			list<string> empty;
-			if (select.at(1) == "boolean") {
+			if (selectClause.getVarType().at(0) == "boolean") {
 				empty.push_back("false");
 			}
 			return empty;
 		}
+	}
+	
+	//remove the queries not related to select
+	if (selectClause.getVarType().at(0) != "boolean") {
+		indexQueryTree();
+		vector<string> tempHeaderList;
+		vector<Clause> clauseList;
+		list<int> group1;
+
+		tempHeaderList.insert(tempHeaderList.end(), selectClause.getVar().begin(), selectClause.getVar().end());
+		clauseList.insert(clauseList.end(), queryTree.getPatternOneVarTree().begin(), queryTree.getPatternOneVarTree().end());
+		clauseList.insert(clauseList.end(), queryTree.getSuchThatOneVarTree().begin(), queryTree.getSuchThatOneVarTree().end());
+		clauseList.insert(clauseList.end(), queryTree.getWithOneVarTree().begin(), queryTree.getWithOneVarTree().end());
+		clauseList.insert(clauseList.end(), queryTree.getPatternTwoVarTree().begin(), queryTree.getPatternTwoVarTree().end());
+		clauseList.insert(clauseList.end(), queryTree.getSuchThatTwoVarTree().begin(), queryTree.getSuchThatTwoVarTree().end());
+		clauseList.insert(clauseList.end(), queryTree.getWithTwoVarTree().begin(), queryTree.getWithTwoVarTree().end());
+
+
+		int tempHeaderIndex = 0;
+		list<int> evaluateGroup;
+		size_t clauseListSize = clauseList.size();
+
+		while (true) {
+			if (clauseList.empty()) {
+				break;
+			}
+
+			for (vector<Clause>::iterator it = clauseList.begin(); it != clauseList.begin(); it++) {
+				bool isDelete = false;
+				for (int i = 0; i < (*it).getVar().size(); ++i) {
+					if (((*it).getVar().at(i) != "string" && (*it).getVar().at(i) != "number") && (*it).getVar().at(i) == tempHeaderList.at(tempHeaderIndex)) {
+						evaluateGroup.push_back((*it).getIndex());
+						if ((i == 0 && (*it).getVar().at(1) != "string" && (*it).getVar().at(1) != "number") ||
+							(i == 1 && (*it).getVar().at(0) != "string" && (*it).getVar().at(0) != "number")) {
+							string variable;
+							if (i==0) {
+								variable = (*it).getVar().at(1);
+							}
+							else {
+								variable = (*it).getVar().at(0);
+							}
+
+							if (find(tempHeaderList.begin(), tempHeaderList.end(), variable)
+								== tempHeaderList.end()) {
+								tempHeaderList.push_back(variable);
+							}
+						}
+						isDelete = true;
+						break;
+					}
+				}
+
+				if (isDelete) {
+					clauseList.erase(it++);
+				}
+				else {
+					++it;
+				}
+			}
+			if (clauseListSize == clauseList.size()) {
+				break;
+			}
+			else {
+				clauseListSize = clauseList.size();
+				++tempHeaderIndex;
+			}
+		}
+
+		//evaluate group generated, then run through the query tree, check whether inside evaluated group, if not boolEvaluate it, if true, remove, else return none
+		for (vector<Clause>::iterator i = queryTree.getPatternOneVarTree().begin(); i != queryTree.getPatternOneVarTree().end(); i++) {
+			if (!isInList(evaluateGroup, (*i).getIndex())) {
+				if (!processPatternClause(*i)) {
+					list<string> empty;
+					return empty;
+				}
+				else {
+					queryTree.getPatternOneVarTree().erase(i);
+				}
+			}
+		}
+		for (vector<Clause>::iterator i = queryTree.getSuchThatOneVarTree().begin(); i != queryTree.getSuchThatOneVarTree().end(); i++) {
+			if (!isInList(evaluateGroup, (*i).getIndex())) {
+				if (!processSuchThatClause(*i)) {
+					list<string> empty;
+					return empty;
+				}
+				else {
+					queryTree.getSuchThatOneVarTree().erase(i);
+				}
+			}
+		}
+		for (vector<Clause>::iterator i = queryTree.getWithOneVarTree().begin(); i != queryTree.getWithOneVarTree().end(); i++) {
+			if (!isInList(evaluateGroup, (*i).getIndex())) {
+				if (!processWithClause(*i)) {
+					list<string> empty;
+					return empty;
+				}
+				else {
+					queryTree.getWithOneVarTree().erase(i);
+				}
+			}
+		}
+		for (vector<Clause>::iterator i = queryTree.getPatternTwoVarTree().begin(); i != queryTree.getPatternTwoVarTree().end(); i++) {
+			if (!isInList(evaluateGroup, (*i).getIndex())) {
+				if (!processPatternClause(*i)) {
+					list<string> empty;
+					return empty;
+				}
+				else {
+					queryTree.getPatternTwoVarTree().erase(i);
+				}
+			}
+		}
+		for (vector<Clause>::iterator i = queryTree.getSuchThatTwoVarTree().begin(); i != queryTree.getSuchThatTwoVarTree().end(); i++) {
+			if (!isInList(evaluateGroup, (*i).getIndex())) {
+				if (!processSuchThatClause(*i)) {
+					list<string> empty;
+					return empty;
+				}
+				else {
+					queryTree.getSuchThatTwoVarTree().erase(i);
+				}
+			}
+		}
+		for (vector<Clause>::iterator i = queryTree.getWithTwoVarTree().begin(); i != queryTree.getWithTwoVarTree().end(); i++) {
+			if (!isInList(evaluateGroup, (*i).getIndex())) {
+				if (!processWithClause(*i)) {
+					list<string> empty;
+					return empty;
+				}
+				else {
+					queryTree.getWithTwoVarTree().erase(i);
+				}
+			}
+		}
+
+	}
+	else {
+
 	}
 
-	for (index = 0; index < queryTree.getSuchThatSize(); index++) {
-		if (!processSuchThatClause(getSuchThatClause(index))) {
+	// start to evaluate
+	// first evaluate one syn clauses
+	for (vector<Clause>::iterator i = queryTree.getWithOneVarTree().begin(); i != queryTree.getWithOneVarTree().end(); i++) {
+		if (!processWithClause(*i)) {
 			list<string> empty;
-			if (select.at(1) == "boolean") {
+			if (selectClause.getVarType().at(0) == "boolean") {
 				empty.push_back("false");
 			}
 			return empty;
 		}
 	}
-	for (index = 0; index < queryTree.getPatternSize(); index++) {
-		if (!processPatternClause(getPatternClause(index))) {
+	for (vector<Clause>::iterator i = queryTree.getSuchThatOneVarTree().begin(); i != queryTree.getSuchThatOneVarTree().end(); i++) {
+		if (!processSuchThatClause(*i)) {
 			list<string> empty;
-			if (select.at(1) == "boolean") {
+			if (selectClause.getVarType().at(0) == "boolean") {
 				empty.push_back("false");
 			}
 			return empty;
 		}
 	}
-	for (index = 0; index < queryTree.getWithSize(); index++) {
-		if (!processWithClause(getWithClause(index))) {
+	for (vector<Clause>::iterator i = queryTree.getPatternOneVarTree().begin(); i != queryTree.getPatternOneVarTree().end(); i++) {
+		if (!processPatternClause(*i)) {
 			list<string> empty;
-			if (select.at(1) == "boolean") {
+			if (selectClause.getVarType().at(0) == "boolean") {
 				empty.push_back("false");
 			}
 			return empty;
 		}
 	}
-	for (index = 0; index < queryTree.getSelectSize(); index++) {
-		if (!processSelectClause(getSelectClause(index))) {
+	for (vector<Clause>::iterator i = queryTree.getWithTwoVarTree().begin(); i != queryTree.getWithTwoVarTree().end(); i++) {
+		if (!processWithClause(*i)) {
 			list<string> empty;
-			if (select.at(1) == "boolean") {
+			if (selectClause.getVarType().at(0) == "boolean") {
+				empty.push_back("false");
+			}
+			return empty;
+		}
+	}
+	for (vector<Clause>::iterator i = queryTree.getSuchThatTwoVarTree().begin(); i != queryTree.getSuchThatTwoVarTree().end(); i++) {
+		if (!processSuchThatClause(*i)) {
+			list<string> empty;
+			if (selectClause.getVarType().at(0) == "boolean") {
+				empty.push_back("false");
+			}
+			return empty;
+		}
+	}
+	for (vector<Clause>::iterator i = queryTree.getPatternTwoVarTree().begin(); i != queryTree.getPatternTwoVarTree().end(); i++) {
+		if (!processPatternClause(*i)) {
+			list<string> empty;
+			if (selectClause.getVarType().at(0) == "boolean") {
 				empty.push_back("false");
 			}
 			return empty;
@@ -90,62 +249,41 @@ list<string> QueryEvaluator::evaluate() {
 		resultList[i].logTable(i);
 	}
 
-	vector<string> selectVar;
-	vector<string> selectVarType;
-	for (int i = 0; i < select.size(); i+=2) {
-		selectVar.push_back(select.at(i));
-		selectVarType.push_back(select.at(i+1));
-	}
-
-	QueryResultProjector qrp = QueryResultProjector(resultList, selectVar, selectVarType);
+	
+	QueryResultProjector qrp = QueryResultProjector(resultList, selectClause.getVar(), selectClause.getVarType());
 	return qrp.getResult();
 }
 
-//Retrieve information from respective trees
-vector<string> QueryEvaluator::getSelectClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getSelectQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getSuchThatClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getSuchThatQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getSuchThatConstClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getSuchThatConstQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getPatternClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getPatternQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getVarDeclaration(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getVariableQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getWithClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getWithQuery(index);
-	return tempVector;
-}
-
-vector<string> QueryEvaluator::getWithConstClause(int index) {
-	vector<string> tempVector;
-	tempVector = queryTree.getWithConstQuery(index);
-	return tempVector;
+void QueryEvaluator::indexQueryTree() {
+	int counter = 0;
+	for (vector<Clause>::iterator i = queryTree.getPatternOneVarTree().begin(); i != queryTree.getPatternOneVarTree().end(); i++) {
+		(*i).setIndex(counter);
+		counter++;
+	}
+	for (vector<Clause>::iterator i = queryTree.getSuchThatOneVarTree().begin(); i != queryTree.getSuchThatOneVarTree().end(); i++) {
+		(*i).setIndex(counter);
+		counter++;
+	}
+	for (vector<Clause>::iterator i = queryTree.getWithOneVarTree().begin(); i != queryTree.getWithOneVarTree().end(); i++) {
+		(*i).setIndex(counter);
+		counter++;
+	}
+	for (vector<Clause>::iterator i = queryTree.getPatternTwoVarTree().begin(); i != queryTree.getPatternTwoVarTree().end(); i++) {
+		(*i).setIndex(counter);
+		counter++;
+	}
+	for (vector<Clause>::iterator i = queryTree.getSuchThatTwoVarTree().begin(); i != queryTree.getSuchThatTwoVarTree().end(); i++) {
+		(*i).setIndex(counter);
+		counter++;
+	}
+	for (vector<Clause>::iterator i = queryTree.getWithTwoVarTree().begin(); i != queryTree.getWithTwoVarTree().end(); i++) {
+		(*i).setIndex(counter);
+		counter++;
+	}
 }
 
 //Process Clause
-bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
+bool QueryEvaluator::processSuchThatClause(Clause tempString) {
 	string relationship = tempString.at(0);
 	string arg1 = tempString.at(1);
 	string arg1Type = tempString.at(2);
@@ -197,12 +335,12 @@ bool QueryEvaluator::processSuchThatClause(vector<string> tempString) {
 	return true;
 }
 
-bool QueryEvaluator::processSuchThatConstClause(vector<string> tempString) {
-	string relationship = tempString.at(0);
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+bool QueryEvaluator::processSuchThatConstClause(Clause tempString) {
+	string relationship = tempString.getRelationShip();
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType.at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType.at(1);
 	string log = "Such that const clause: " + relationship + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
 
@@ -1369,7 +1507,7 @@ ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
 	}
 }
 
-bool QueryEvaluator::processPatternClause(vector<string> tempString) {
+bool QueryEvaluator::processPatternClause(Clause tempString) {
 	
 	string synType = tempString.at(1);
 	string arg1 = tempString.at(2);
@@ -1641,7 +1779,7 @@ ResultTable QueryEvaluator::processIfPattern(vector<string> tempString) {
 	}
 }
 
-bool QueryEvaluator::processSelectClause(vector<string> tempString) {
+bool QueryEvaluator::processSelectClause(Clause tempString) {
 	int tupleSize = tempString.size()/2;
 	for (int i = 0; i < tupleSize; i++) {
 
@@ -1701,7 +1839,7 @@ bool QueryEvaluator::processSelectClause(vector<string> tempString) {
 	return true;
 }
 
-bool QueryEvaluator::processWithClause(vector<string> tempString) {
+bool QueryEvaluator::processWithClause(Clause tempString) {
 	string synType = tempString.at(0);
 	string arg1 = tempString.at(1);
 	string arg1Type = tempString.at(2);
@@ -1731,12 +1869,12 @@ bool QueryEvaluator::processWithClause(vector<string> tempString) {
 	return true;
 }
 
-bool QueryEvaluator::processWithConstClause(vector<string> tempString) {
-	string synType = tempString.at(0);
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+bool QueryEvaluator::processWithConstClause(Clause tempString) {
+	string synType = tempString.getRelationShip();
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType.at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType.at(1);
 
 	string log = "With constant clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
