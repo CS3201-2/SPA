@@ -2,28 +2,12 @@
 using namespace std;
 
 const string NO_RELATIONSHIP = "";
-const int VARIABLE_TREE = 0;
-const int SELECT_TREE = 1;
-const int ST_NO_VAR_TREE = 2;
-const int ST_ONE_VAR_TREE = 3;
-const int ST_TWO_VAR_TREE = 4;
-const int WITH_NO_VAR_TREE = 5;
-const int WITH_ONE_VAR_TREE = 6;
-const int WITH_TWO_VAR_TREE = 7;
-const int PATTERN_ONE_VAR_TREE = 8;
-const int PATTERN_TWO_VAR_TREE = 9;
+const int NO_VARIABLE = 0;
+const int ONE_VARIABLE = 1;
+const int TWO_VARIABLE = 2;
 
 QueryTree::QueryTree() {
-	qTree.push_back(variableTree);
-	qTree.push_back(selectTree);
-	qTree.push_back(suchThatNoVarTree);
-	qTree.push_back(suchThatOneVarTree);
-	qTree.push_back(suchThatTwoVarTree);
-	qTree.push_back(withNoVarTree);
-	qTree.push_back(withOneVarTree);
-	qTree.push_back(withTwoVarTree);
-	qTree.push_back(patternOneVarTree);
-	qTree.push_back(patternTwoVarTree);
+
 }
 
 //Inserting the particular type of query into its respective tree
@@ -81,4 +65,51 @@ void QueryTree::insertWith(string rel, vector<string> arrWith, vector<string> wi
 	}
 }
 
+vector<Clause> QueryTree::getVariableTree() {
+	return variableTree;
+}
 
+vector<Clause> QueryTree::getSelectTree() {
+	return selectTree;
+}
+
+vector<Clause> QueryTree::getSuchThatNoVarTree() {
+	return suchThatNoVarTree;
+}
+
+vector<Clause> QueryTree::getSuchThatOneVarTree() {
+	return suchThatOneVarTree;
+}
+
+vector<Clause> QueryTree::getSuchThatTwoVarTree() {
+	return suchThatTwoVarTree;
+}
+
+vector<Clause> QueryTree::getWithNoVarTree() {
+	return withNoVarTree;
+}
+
+vector<Clause> QueryTree::getWithOneVarTree() {
+	return withOneVarTree;
+}
+
+vector<Clause> QueryTree::getWithTwoVarTree() {
+	return withTwoVarTree;
+}
+
+vector<Clause> QueryTree::getPatternOneVarTree() {
+	return patternOneVarTree;
+}
+
+vector<Clause> QueryTree::getPatternTwoVarTree() {
+	return patternTwoVarTree;
+}
+
+int QueryTree::countNumOfVar(vector<string> arrType) {
+	int count = 2;
+	for (auto &i : arrType) {
+		if (i == "string" || i == "variable") {
+			
+		}
+	}
+}

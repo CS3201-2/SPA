@@ -4,12 +4,10 @@
 #include "Clause.h"
 
 using namespace std;
-#pragma once
+
 
 class QueryTree {
 private:
-	vector<vector<Clause>> qTree;
-
 	vector<Clause> variableTree;
 	vector<Clause> selectTree;
 	vector<Clause> suchThatNoVarTree;
@@ -24,23 +22,19 @@ private:
 public:
 	QueryTree();
 
-	//For inserting relationships categorized under the such that clause
 	//eg. Parent, Follows, Next, Modifies, Uses
-	void insertSuchThat(string rel, vector<string> arrVar, vector<string> argType);
+	void insertSuchThat(string, vector<string>, vector<string>);
 	//For inserting relationships categorized under the pattern clause
 	//all pattern types eg. Pattern syn(ptrn1, ptrn2)
-	void insertPattern(string syn, string synType, vector<string> arrPtrn, vector<string> ptrnType);
+	void insertPattern(string, string, vector<string>, vector<string>);
 	//For adding variables eg. assign a, => insertVariable(a, assign)
-	void insertVariable(string variable, string variableType);
+	void insertVariable(string, string);
 	//For adding variables under the select category
-	void insertSelect(vector<string> var, vector<string> varType);
-	void insertSelect(string var, string varType);
+	void insertSelect(vector<string>, vector<string>);
+	void insertSelect(string, string);
 	//For adding variables under the with category
-	void insertWith(string rel, vector<string> arrWith, vector<string> withType);
+	void insertWith(string, vector<string>, vector<string>);
 
-	//Obtaining the information of specific relationships that fall under the respective clauses
-	//eg. To see the first relationship under the such that tree, we call getSuchThatQuery(0) and assign it to a vector
-	//to read the information
 	vector<Clause> getVariableTree();
 	vector<Clause> getSelectTree();
 	vector<Clause> getSuchThatNoVarTree();
@@ -51,4 +45,6 @@ public:
 	vector<Clause> getWithTwoVarTree();
 	vector<Clause> getPatternOneVarTree();
 	vector<Clause> getPatternTwoVarTree();
+
+	int countNumOfVar(vector<string>);
 };
