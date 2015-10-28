@@ -52,10 +52,10 @@ void ResultTable::logTable(int index) {
 	string str;
 
 	if(index < 0){
-		str += "final table";
+		str += "final table\n";
 	}
 	else {
-		str += "table No." + to_string(index);
+		str += "table No." + to_string(index) + "\n";
 	}
 
 	for (auto&x : _header) {
