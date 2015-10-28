@@ -2,16 +2,28 @@
 using namespace std;
 
 const string NO_RELATIONSHIP = "";
-
+const int VARIABLE_TREE = 0;
+const int SELECT_TREE = 1;
+const int ST_NO_VAR_TREE = 2;
+const int ST_ONE_VAR_TREE = 3;
+const int ST_TWO_VAR_TREE = 4;
+const int WITH_NO_VAR_TREE = 5;
+const int WITH_ONE_VAR_TREE = 6;
+const int WITH_TWO_VAR_TREE = 7;
+const int PATTERN_ONE_VAR_TREE = 8;
+const int PATTERN_TWO_VAR_TREE = 9;
 
 QueryTree::QueryTree() {
 	qTree.push_back(variableTree);
-	qTree.push_back(suchThatTree);
-	qTree.push_back(patternTree);
 	qTree.push_back(selectTree);
-	qTree.push_back(withTree);
-	qTree.push_back(suchThatConstTree);
-	qTree.push_back(withConstTree);
+	qTree.push_back(suchThatNoVarTree);
+	qTree.push_back(suchThatOneVarTree);
+	qTree.push_back(suchThatTwoVarTree);
+	qTree.push_back(withNoVarTree);
+	qTree.push_back(withOneVarTree);
+	qTree.push_back(withTwoVarTree);
+	qTree.push_back(patternOneVarTree);
+	qTree.push_back(patternTwoVarTree);
 }
 
 //Inserting the particular type of query into its respective tree
@@ -69,60 +81,4 @@ void QueryTree::insertWith(string rel, vector<string> arrWith, vector<string> wi
 	}
 }
 
-//Obtaining the size of the tree of each of the query types
-int QueryTree::getSuchThatSize() {
-	return qTree.at(1).size();
-}
 
-int QueryTree::getSuchThatConstSize() {
-	return qTree.at(5).size();
-}
-
-int QueryTree::getPatternSize() {
-	return qTree.at(2).size();
-}
-
-int QueryTree::getVariableSize() {
-	return qTree.at(0).size();
-}
-
-int QueryTree::getSelectSize() {
-	return qTree.at(3).size();
-}
-
-int QueryTree::getWithSize() {
-	return qTree.at(4).size();
-}
-
-int QueryTree::getWithConstSize() {
-	return qTree.at(6).size();
-}
-
-//Obtaining the queries for the respective query types
-Clause QueryTree::getSuchThatQuery(int queryPos) {
-	return qTree.at(1).at(queryPos);
-}
-
-Clause QueryTree::getSuchThatConstQuery(int queryPos) {
-	return qTree.at(5).at(queryPos);
-}
-
-Clause QueryTree::getPatternQuery(int queryPos) {
-	return qTree.at(2).at(queryPos);
-}
-
-Clause QueryTree::getVariableQuery(int queryPos) {
-	return qTree.at(0).at(queryPos);
-}
-
-Clause QueryTree::getSelectQuery(int queryPos) {
-	return qTree.at(3).at(queryPos);
-}
-
-Clause QueryTree::getWithQuery(int queryPos) {
-	return qTree.at(4).at(queryPos);
-}
-
-Clause QueryTree::getWithConstQuery(int queryPos) {
-	return qTree.at(6).at(queryPos);
-}
