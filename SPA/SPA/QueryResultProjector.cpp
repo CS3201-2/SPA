@@ -6,6 +6,9 @@ const string TYPE_BOOL = "boolean";
 const string RESULT_TRUE = "true";
 const string RESULT_FALSE = "false";
 const int FIRST_TYPE = 0;
+const size_t HEADER_SIZE_ONE = 1;
+const size_t HEADER_SIZE_TWO = 2;
+const size_t HEADER_SIZE_ZERO = 0;
 
 //constructor
 QueryResultProjector::QueryResultProjector(vector<ResultTable> tempTables, 
@@ -74,6 +77,13 @@ list<string> QueryResultProjector::getResult() {
 
 	resultStringList.sort();
 	resultStringList.unique();
+
+	string str;
+	for (auto &x : resultStringList) {
+		str += x + " ";
+	}
+	SPALog::log(str);
+
 	return resultStringList;
 }
 
@@ -131,6 +141,7 @@ vector<int> QueryResultProjector::getMergingOrder() {
 	vector<string> tempHeaderList;
 	
 	bool _isSelectBool = isSelectBool();
+	//if it is select Boolean, 
 	if (_isSelectBool) {
 		countHeader();
 		for (map<string, int>::iterator it = _headerCount.begin(); it != _headerCount.end(); ++it) {
@@ -300,33 +311,38 @@ ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2)
 		}
 		//end of hashing into hashedMaps
 
-		//get the index to remove in the second table
-		for (int i = 0; i < header2.size(); ++i) {
-			if (header2.at(i) == hashedKey) {
-				index = i;
-				break;
-			}
-		}
-
-		header2.erase(header2.begin() + index);
-		//construct result header
-		rHeader.push_back(hashedKey);
-		rHeader.insert(rHeader.end(), header1.begin(), header1.end());
-		rHeader.insert(rHeader.end(), header2.begin(), header2.end());
-		for (vector<vector<int>>::iterator it = content2.begin(); it != content2.end(); ++it) {
-			vector<int> tempResult = *it;
-			int key = tempResult.at(index);
-			tempResult.erase(tempResult.begin() + index);
-			if (hashedMap.find(key) != hashedMap.end()) {
-				list<vector<int>> pResult = hashedMap.at(key);
-				for (list<vector<int>>::iterator it2 = pResult.begin(); it2 != pResult.end(); ++it2) {
-					vector<int> finalResult;
-					finalResult.push_back(key);
-					finalResult.insert(finalResult.end(), (*it2).begin(), (*it2).end());
-					finalResult.insert(finalResult.end(), tempResult.begin(), tempResult.end());
-					rContent.push_back(finalResult);
+		if (commonHeaders.size() == 1) {
+			//get the index to remove in the second table
+			for (int i = 0; i < header2.size(); ++i) {
+				if (header2.at(i) == hashedKey) {
+					index = i;
+					break;
 				}
 			}
+
+			header2.erase(header2.begin() + index);
+			//construct result header
+			rHeader.push_back(hashedKey);
+			rHeader.insert(rHeader.end(), header1.begin(), header1.end());
+			rHeader.insert(rHeader.end(), header2.begin(), header2.end());
+			for (vector<vector<int>>::iterator it = content2.begin(); it != content2.end(); ++it) {
+				vector<int> tempResult = *it;
+				int key = tempResult.at(index);
+				tempResult.erase(tempResult.begin() + index);
+				if (hashedMap.find(key) != hashedMap.end()) {
+					list<vector<int>> pResult = hashedMap.at(key);
+					for (list<vector<int>>::iterator it2 = pResult.begin(); it2 != pResult.end(); ++it2) {
+						vector<int> finalResult;
+						finalResult.push_back(key);
+						finalResult.insert(finalResult.end(), (*it2).begin(), (*it2).end());
+						finalResult.insert(finalResult.end(), tempResult.begin(), tempResult.end());
+						rContent.push_back(finalResult);
+					}
+				}
+			}
+		}
+		else if(commonHeaders.size() == 2){
+			
 		}
 	}
 	//no common header, but still need to merge table, for Select Boolean
