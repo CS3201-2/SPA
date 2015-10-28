@@ -1,6 +1,9 @@
 #include "QueryTree.h"
 using namespace std;
 
+const string NO_RELATIONSHIP = "";
+
+
 QueryTree::QueryTree() {
 	qTree.push_back(variableTree);
 	qTree.push_back(suchThatTree);
@@ -13,78 +16,56 @@ QueryTree::QueryTree() {
 
 //Inserting the particular type of query into its respective tree
 void QueryTree::insertSuchThat(string rel, vector<string> arrVar, vector<string> arrType) {
-	vector<string> tempVector;
-	vector<string> tempConstVector;
 	if ((arrType.at(0) == "string" || arrType.at(0) == "number") && (arrType.at(1) == "string" || arrType.at(1) == "number")) {
-		tempConstVector.push_back(rel);
-		tempConstVector.push_back(arrVar.at(0));
-		tempConstVector.push_back(arrType.at(0));
-		tempConstVector.push_back(arrVar.at(1));
-		tempConstVector.push_back(arrType.at(1));
-		qTree.at(5).push_back(tempConstVector);
+		Clause clause = Clause(rel, arrVar, arrType);
+		qTree.at(5).push_back(clause);
 	}
 	else {
-		tempVector.push_back(rel);
-		tempVector.push_back(arrVar.at(0));
-		tempVector.push_back(arrType.at(0));
-		tempVector.push_back(arrVar.at(1));
-		tempVector.push_back(arrType.at(1));
-		qTree.at(1).push_back(tempVector);
+		Clause clause = Clause(rel, arrVar, arrType);
+		qTree.at(1).push_back(clause);
 	}
 }
 
 void QueryTree::insertPattern(string syn, string synType, vector<string> arrPtrn, vector<string> ptrnType) {
-	vector<string> tempVector;
-	tempVector.push_back(syn);
-	tempVector.push_back(synType);
-	for (int i = 0; i < arrPtrn.size(); i++) {
-		tempVector.push_back(arrPtrn.at(i));
-		tempVector.push_back(ptrnType.at(i));
-	}
-	qTree.at(2).push_back(tempVector);
+	arrPtrn.push_back(syn);
+	ptrnType.push_back(synType);
+	Clause clause = Clause(NO_RELATIONSHIP, arrPtrn, ptrnType);
+	qTree.at(2).push_back(clause);
 }
 
 void QueryTree::insertVariable(string variable, string variableType) {
-	vector<string> tempVector;
-	tempVector.push_back(variable);
-	tempVector.push_back(variableType);
-	qTree.at(0).push_back(tempVector);
+	vector<string> varVector;
+	varVector.push_back(variable);
+	vector<string> varTypeVector;
+	varTypeVector.push_back(variableType);
+	Clause clause = Clause(NO_RELATIONSHIP, varVector, varTypeVector);
+	qTree.at(0).push_back(clause);
 }
 
 void QueryTree::insertSelect(vector<string> var, vector<string> varType) {
-	for (int i = 0; i < var.size(); i++) {
-		vector<string> tempVector;
-		tempVector.push_back(var.at(i));
-		tempVector.push_back(varType.at(i));
-		qTree.at(3).push_back(tempVector);
-	}
+	Clause clause = Clause(NO_RELATIONSHIP, var, varType);
+	qTree.at(3).push_back(clause);
 }
 
 void QueryTree::insertSelect(string var, string varType) {
-	vector<string> tempVector;
-	tempVector.push_back(var);
-	tempVector.push_back(varType);
-	qTree.at(3).push_back(tempVector);
+	vector<string> varVector;
+	varVector.push_back(var);
+	vector<string> varTypeVector;
+	varTypeVector.push_back(varType);
+	Clause clause = Clause(NO_RELATIONSHIP, varVector, varTypeVector);
+	qTree.at(3).push_back(clause);
 }
 
 void QueryTree::insertWith(string rel, vector<string> arrWith, vector<string> withType) {
 	vector<string> tempVector;
 	vector<string> tempConstVector;
 	if ((withType.at(0) == "string" || withType.at(0) == "number") && (withType.at(1) == "string" || withType.at(1) == "number")) {
-		tempConstVector.push_back(rel);
-		tempConstVector.push_back(arrWith.at(0));
-		tempConstVector.push_back(withType.at(0));
-		tempConstVector.push_back(arrWith.at(1));
-		tempConstVector.push_back(withType.at(1));
-		qTree.at(6).push_back(tempConstVector);
+		Clause clause = Clause(rel, arrWith, withType);
+		qTree.at(6).push_back(clause);
 	}
 	else {
-		tempVector.push_back(rel);
-		tempVector.push_back(arrWith.at(0));
-		tempVector.push_back(withType.at(0));
-		tempVector.push_back(arrWith.at(1));
-		tempVector.push_back(withType.at(1));
-		qTree.at(4).push_back(tempVector);
+		Clause clause = Clause(rel, arrWith, withType);
+		qTree.at(4).push_back(clause);
 	}
 }
 
@@ -118,30 +99,30 @@ int QueryTree::getWithConstSize() {
 }
 
 //Obtaining the queries for the respective query types
-vector<string> QueryTree::getSuchThatQuery(int queryPos) {
+Clause QueryTree::getSuchThatQuery(int queryPos) {
 	return qTree.at(1).at(queryPos);
 }
 
-vector<string> QueryTree::getSuchThatConstQuery(int queryPos) {
+Clause QueryTree::getSuchThatConstQuery(int queryPos) {
 	return qTree.at(5).at(queryPos);
 }
 
-vector<string> QueryTree::getPatternQuery(int queryPos) {
+Clause QueryTree::getPatternQuery(int queryPos) {
 	return qTree.at(2).at(queryPos);
 }
 
-vector<string> QueryTree::getVariableQuery(int queryPos) {
+Clause QueryTree::getVariableQuery(int queryPos) {
 	return qTree.at(0).at(queryPos);
 }
 
-vector<string> QueryTree::getSelectQuery(int queryPos) {
+Clause QueryTree::getSelectQuery(int queryPos) {
 	return qTree.at(3).at(queryPos);
 }
 
-vector<string> QueryTree::getWithQuery(int queryPos) {
+Clause QueryTree::getWithQuery(int queryPos) {
 	return qTree.at(4).at(queryPos);
 }
 
-vector<string> QueryTree::getWithConstQuery(int queryPos) {
+Clause QueryTree::getWithConstQuery(int queryPos) {
 	return qTree.at(6).at(queryPos);
 }

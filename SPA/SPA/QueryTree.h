@@ -1,20 +1,21 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "Clause.h"
 
 using namespace std;
 #pragma once
 
 class QueryTree {
 private:
-	vector<vector<vector<string>>> qTree;
-	vector<vector<string>> suchThatTree;
-	vector<vector<string>> patternTree;
-	vector<vector<string>> withTree;
-	vector<vector<string>> variableTree;
-	vector<vector<string>> selectTree;
-	vector<vector<string>> suchThatConstTree;
-	vector<vector<string>> withConstTree;
+	vector<vector<Clause>> qTree;
+	vector<Clause> suchThatTree;
+	vector<Clause> patternTree;
+	vector<Clause> withTree;
+	vector<Clause> variableTree;
+	vector<Clause> selectTree;
+	vector<Clause> suchThatConstTree;
+	vector<Clause> withConstTree;
 
 public:
 	QueryTree();
@@ -51,11 +52,11 @@ public:
 	//Obtaining the information of specific relationships that fall under the respective clauses
 	//eg. To see the first relationship under the such that tree, we call getSuchThatQuery(0) and assign it to a vector
 	//to read the information
-	vector<string> getSuchThatQuery(int queryPos);
-	vector<string> getSuchThatConstQuery(int queryPos);
-	vector<string> getPatternQuery(int queryPos);
-	vector<string> getVariableQuery(int queryPos);
-	vector<string> getSelectQuery(int queryPos);
-	vector<string> getWithQuery(int queryPos);
-	vector<string> getWithConstQuery(int queryPos);
+	Clause getSuchThatQuery(int queryPos);
+	Clause getSuchThatConstQuery(int queryPos);
+	Clause getPatternQuery(int queryPos);
+	Clause getVariableQuery(int queryPos);
+	Clause getSelectQuery(int queryPos);
+	Clause getWithQuery(int queryPos);
+	Clause getWithConstQuery(int queryPos);
 };
