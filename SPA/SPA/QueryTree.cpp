@@ -78,43 +78,43 @@ void QueryTree::insertWith(string rel, vector<string> arrWith, vector<string> wi
 	}
 }
 
-vector<Clause> QueryTree::getVariableTree() {
+vector<Clause>& QueryTree::getVariableTree() {
 	return variableTree;
 }
 
-vector<Clause> QueryTree::getSelectTree() {
+vector<Clause>& QueryTree::getSelectTree() {
 	return selectTree;
 }
 
-vector<Clause> QueryTree::getSuchThatNoVarTree() {
+vector<Clause>& QueryTree::getSuchThatNoVarTree() {
 	return suchThatNoVarTree;
 }
 
-vector<Clause> QueryTree::getSuchThatOneVarTree() {
+vector<Clause>& QueryTree::getSuchThatOneVarTree() {
 	return suchThatOneVarTree;
 }
 
-vector<Clause> QueryTree::getSuchThatTwoVarTree() {
+vector<Clause>& QueryTree::getSuchThatTwoVarTree() {
 	return suchThatTwoVarTree;
 }
 
-vector<Clause> QueryTree::getWithNoVarTree() {
+vector<Clause>& QueryTree::getWithNoVarTree() {
 	return withNoVarTree;
 }
 
-vector<Clause> QueryTree::getWithOneVarTree() {
+vector<Clause>& QueryTree::getWithOneVarTree() {
 	return withOneVarTree;
 }
 
-vector<Clause> QueryTree::getWithTwoVarTree() {
+vector<Clause>& QueryTree::getWithTwoVarTree() {
 	return withTwoVarTree;
 }
 
-vector<Clause> QueryTree::getPatternOneVarTree() {
+vector<Clause>& QueryTree::getPatternOneVarTree() {
 	return patternOneVarTree;
 }
 
-vector<Clause> QueryTree::getPatternTwoVarTree() {
+vector<Clause>& QueryTree::getPatternTwoVarTree() {
 	return patternTwoVarTree;
 }
 
