@@ -61,7 +61,7 @@ public:
 	Clause getWithOneVarTree(int);
 	Clause getWithTwoVarTree(int);
 	Clause getPatternOneVarTree(int);
-	Clause getpatternTwoVarTree(int);
+	Clause getPatternTwoVarTree(int);
 
 	Clause getSuchThatQuery(int queryPos);
 	Clause getSuchThatConstQuery(int queryPos);
