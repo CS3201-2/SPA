@@ -15,4 +15,6 @@ public:
 	string getRelationShip();
 	vector<string> getVar();
 	vector<string> getVarType();
+	void setIndex(int);
+	int getIndex();
 };
