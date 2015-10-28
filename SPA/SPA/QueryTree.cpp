@@ -12,21 +12,36 @@ QueryTree::QueryTree() {
 
 //Inserting the particular type of query into its respective tree
 void QueryTree::insertSuchThat(string rel, vector<string> arrVar, vector<string> arrType) {
-	if ((arrType.at(0) == "string" || arrType.at(0) == "number") && (arrType.at(1) == "string" || arrType.at(1) == "number")) {
-		Clause clause = Clause(rel, arrVar, arrType);
-		qTree.at(5).push_back(clause);
+	int numOfVar = getNumOfVar(arrType);
+	Clause clause = Clause(rel, arrVar, arrType);
+
+	if (numOfVar == NO_VARIABLE) {
+		suchThatNoVarTree.push_back(clause);
+	}
+	else if (numOfVar == ONE_VARIABLE) {
+		suchThatOneVarTree.push_back(clause);
 	}
 	else {
-		Clause clause = Clause(rel, arrVar, arrType);
-		qTree.at(1).push_back(clause);
+		suchThatTwoVarTree.push_back(clause);
 	}
 }
 
 void QueryTree::insertPattern(string syn, string synType, vector<string> arrPtrn, vector<string> ptrnType) {
+	int numOfVar = getNumOfVar(ptrnType);
 	arrPtrn.push_back(syn);
 	ptrnType.push_back(synType);
 	Clause clause = Clause(NO_RELATIONSHIP, arrPtrn, ptrnType);
-	qTree.at(2).push_back(clause);
+	
+	if (numOfVar == NO_VARIABLE) {
+	
+	}
+	else if (numOfVar == ONE_VARIABLE) {
+		
+	}
+	else {
+		
+	}
+	//qTree.at(2).push_back(clause);
 }
 
 void QueryTree::insertVariable(string variable, string variableType) {
@@ -35,12 +50,12 @@ void QueryTree::insertVariable(string variable, string variableType) {
 	vector<string> varTypeVector;
 	varTypeVector.push_back(variableType);
 	Clause clause = Clause(NO_RELATIONSHIP, varVector, varTypeVector);
-	qTree.at(0).push_back(clause);
+	variableTree.push_back(clause);
 }
 
 void QueryTree::insertSelect(vector<string> var, vector<string> varType) {
 	Clause clause = Clause(NO_RELATIONSHIP, var, varType);
-	qTree.at(3).push_back(clause);
+	selectTree.push_back(clause);
 }
 
 void QueryTree::insertSelect(string var, string varType) {
@@ -49,19 +64,21 @@ void QueryTree::insertSelect(string var, string varType) {
 	vector<string> varTypeVector;
 	varTypeVector.push_back(varType);
 	Clause clause = Clause(NO_RELATIONSHIP, varVector, varTypeVector);
-	qTree.at(3).push_back(clause);
+	selectTree.push_back(clause);
 }
 
 void QueryTree::insertWith(string rel, vector<string> arrWith, vector<string> withType) {
-	vector<string> tempVector;
-	vector<string> tempConstVector;
-	if ((withType.at(0) == "string" || withType.at(0) == "number") && (withType.at(1) == "string" || withType.at(1) == "number")) {
-		Clause clause = Clause(rel, arrWith, withType);
-		qTree.at(6).push_back(clause);
+	int numOfVar = getNumOfVar(withType);
+	Clause clause = Clause(rel, arrWith, withType);
+
+	if (numOfVar == NO_VARIABLE) {
+		withNoVarTree.push_back(clause);
+	}
+	else if (numOfVar = ONE_VARIABLE) {
+		withOneVarTree.push_back(clause);
 	}
 	else {
-		Clause clause = Clause(rel, arrWith, withType);
-		qTree.at(4).push_back(clause);
+		withTwoVarTree.push_back(clause);
 	}
 }
 
@@ -105,11 +122,12 @@ vector<Clause> QueryTree::getPatternTwoVarTree() {
 	return patternTwoVarTree;
 }
 
-int QueryTree::countNumOfVar(vector<string> arrType) {
-	int count = 2;
+int QueryTree::getNumOfVar(vector<string> arrType) {
+	int numOfVar = TWO_VARIABLE;
 	for (auto &i : arrType) {
 		if (i == "string" || i == "variable") {
-			
+			--numOfVar;
 		}
 	}
+	return numOfVar;
 }

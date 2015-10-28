@@ -46,5 +46,5 @@ public:
 	vector<Clause> getPatternOneVarTree();
 	vector<Clause> getPatternTwoVarTree();
 
-	int countNumOfVar(vector<string>);
+	int getNumOfVar(vector<string>);
 };
