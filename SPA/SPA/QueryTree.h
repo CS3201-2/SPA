@@ -52,6 +52,17 @@ public:
 	//Obtaining the information of specific relationships that fall under the respective clauses
 	//eg. To see the first relationship under the such that tree, we call getSuchThatQuery(0) and assign it to a vector
 	//to read the information
+	Clause getVariableTree(int);
+	Clause getSelectTree(int);
+	Clause getSuchThatNoVarTree(int);
+	Clause getSuchThatOneVarTree(int);
+	Clause getSuchThatTwoVarTree(int);
+	Clause getWithNoVarTree(int);
+	Clause getWithOneVarTree(int);
+	Clause getWithTwoVarTree(int);
+	Clause getPatternOneVarTree(int);
+	Clause getpatternTwoVarTree(int);
+
 	Clause getSuchThatQuery(int queryPos);
 	Clause getSuchThatConstQuery(int queryPos);
 	Clause getPatternQuery(int queryPos);
