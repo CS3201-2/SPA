@@ -23,6 +23,8 @@ private:
 	bool isResultEmpty(ResultTable tempResult);
 	list<int> getList(string listName);
 
+	void indexQueryTree();
+
 	ResultTable processModifies(vector<string> tempString);
 	ResultTable processUses(vector<string> tempString);
 	ResultTable processParent(vector<string> tempString);
