@@ -24,7 +24,12 @@ private:
 	vector<ResultTable> resultList;
 	bool isInList(list<int>, int);
 	bool isResultEmpty(ResultTable tempResult);
-	list<int> getList(string listName);
+	list<int> getList(string arr, string arrType);
+
+	//split the result 
+	void _updateMidResult(ResultTable newResult);
+	// update the result
+	void updateMidResult(ResultTable newResult);
 
 	void indexQueryTree();
 
