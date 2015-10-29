@@ -32,7 +32,7 @@ vector<string> ResultTable::getHeader() {
 	return _header;
 }
 
-vector<vector<int>> ResultTable::getContent() {
+vector<vector<int>> & ResultTable::getContent() {
 	return _result;
 }
 

@@ -17,7 +17,7 @@ public:
 	
 	void addTuple(vector<int>);   //store a line in to table
 	vector<string> getHeader();
-	vector<vector<int>> getContent();
+	vector<vector<int>> & getContent();
 	int getIsWholeTrue();
 	void setIsWholeTrue(int);
 	int isWholeTrue;
