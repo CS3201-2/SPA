@@ -31,7 +31,7 @@ private:
 	// update the result
 	void updateMidResult(ResultTable newResult);
 
-	void indexQueryTree();
+	
 
 	ResultTable processModifies(Clause tempString);
 	ResultTable processUses(Clause tempString);
