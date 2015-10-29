@@ -33,16 +33,16 @@ private:
 
 	void indexQueryTree();
 
-	ResultTable processModifies(vector<string> tempString);
-	ResultTable processUses(vector<string> tempString);
-	ResultTable processParent(vector<string> tempString);
-	ResultTable processFollows(vector<string> tempString);
-	ResultTable processParentStar(vector<string> tempString);
-	ResultTable processFollowsStar(vector<string> tempString);
-	ResultTable processCalls(vector<string> tempString);
-	ResultTable processCallsStar(vector<string> tempString);
-	ResultTable processNext(vector<string> tempString);
-	ResultTable processNextStar(vector<string> tempString);
+	ResultTable processModifies(Clause tempString);
+	ResultTable processUses(Clause tempString);
+	ResultTable processParent(Clause tempString);
+	ResultTable processFollows(Clause tempString);
+	ResultTable processParentStar(Clause tempString);
+	ResultTable processFollowsStar(Clause tempString);
+	ResultTable processCalls(Clause tempString);
+	ResultTable processCallsStar(Clause tempString);
+	ResultTable processNext(Clause tempString);
+	ResultTable processNextStar(Clause tempString);
 
 	bool processSuchThatClause(Clause tempString);
 	bool processSuchThatConstClause(Clause tempString);

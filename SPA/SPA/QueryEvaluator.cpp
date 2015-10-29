@@ -331,6 +331,9 @@ bool QueryEvaluator::processSuchThatClause(Clause tempString) {
 	if (isResultEmpty(tempResult)) {
 		return false;
 	}
+	if (tempResult.getIsWholeTrue()==1) {
+		return true;
+	}
 	resultList.push_back(tempResult);
 	return true;
 }
@@ -508,12 +511,12 @@ void QueryEvaluator::updateMidResult(ResultTable newResult) {
 	}
 }
 
-ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
+ResultTable QueryEvaluator::processModifies(Clause tempString) {
 
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 	
 	if (arg2Type == "string") {
 
@@ -563,7 +566,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 		}
 		else {
 			// arg1 is procedure, stmt, while, assign, if, call, prog_line
-			list<int> targetList = getList(arg1Type);
+			list<int> targetList = getList(arg1, arg1Type);
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
 			for (list<int>::iterator i = modifiesLine.begin(); i != modifiesLine.end(); i++) {
@@ -573,12 +576,13 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 					temp.clear();
 				}
 			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 			
 	}
 
-	else if( arg2Type == "variable" || "all") {
+	else if( arg2Type == "variable") {
 		
 		if (arg1Type == "number") {
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
@@ -595,6 +599,7 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 		else if (arg1Type == "string") {
@@ -613,11 +618,12 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 		else {
 			//procedue, while, assign, if, call, stmt, prog_line
-			list<int> targetList = getList(arg1Type);
+			list<int> targetList = getList(arg1, arg1Type);
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
@@ -629,6 +635,62 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 					temp.clear();
 				}
 			}
+			_updateMidResult(tempResult);
+			return tempResult;
+		}
+	}
+
+	else if (arg2Type == "all") {
+
+		if (arg1Type == "number") {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
+				ResultTable tempResult = ResultTable();
+				tempResult.setIsWholeTrue(0);
+				SPALog::log("arg1 is not a valid prog_line!\n");
+				return tempResult;
+			}
+			list<int> varList = PKB::getPKBInstance()->getModifiesSecond(stoi(arg1));
+			ResultTable tempResult = ResultTable();
+			if (varList.empty()) {
+				tempResult.setIsWholeTrue(0);
+			}
+			else {
+				tempResult.setIsWholeTrue(1);
+			}
+			return tempResult;
+		}
+		else if (arg1Type == "string") {
+			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
+			if (!arg1ID) {
+				ResultTable tempResult = ResultTable();
+				tempResult.setIsWholeTrue(0);
+				SPALog::log("arg1 is invalid prog_name!\n");
+				return tempResult;
+			}
+			list<int> varList = PKB::getPKBInstance()->getModifiesSecond(arg1ID);
+			ResultTable tempResult = ResultTable(arg2);
+			if (varList.empty()) {
+				tempResult.setIsWholeTrue(0);
+			}
+			else {
+				tempResult.setIsWholeTrue(1);
+			}
+			return tempResult;
+		}
+		else {
+			//procedue, while, assign, if, call, stmt, prog_line
+			list<int> targetList = getList(arg1, arg1Type);
+			ResultTable tempResult = ResultTable(arg1);
+			vector<int> temp;
+			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
+				list<int> varList = PKB::getPKBInstance()->getModifiesSecond(*i);
+				if (!varList.empty()) {
+					temp.push_back(*i);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 	}
@@ -639,12 +701,12 @@ ResultTable QueryEvaluator::processModifies(vector<string> tempString) {
 	
 }
 
-ResultTable QueryEvaluator::processUses(vector<string> tempString) {
+ResultTable QueryEvaluator::processUses(Clause tempString) {
 
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 	
 	if (arg2Type == "string") {
 
@@ -694,7 +756,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 		}
 		else {
 			// arg2 is procedure, stmt, while, assign, if, call, prog_line
-			list<int> targetList = getList(arg1Type);
+			list<int> targetList = getList(arg1,arg1Type);
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
 			for (list<int>::iterator i = usesLine.begin(); i != usesLine.end(); i++) {
@@ -704,12 +766,13 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 					temp.clear();
 				}
 			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 
 	}
 
-	else if (arg2Type == "variable" || "all") {
+	else if (arg2Type == "variable") {
 		if (arg1Type == "number") {
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
@@ -725,6 +788,7 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 		else if (arg1Type == "string") {
@@ -743,11 +807,12 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 		else {
 
-			list<int> targetList = getList(arg1Type);
+			list<int> targetList = getList(arg1, arg1Type);
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
@@ -759,6 +824,61 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 					temp.clear();
 				}
 			}
+			_updateMidResult(tempResult);
+			return tempResult;
+		}
+	}
+
+	else if (arg2Type == "all") {
+		if (arg1Type == "number") {
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
+				ResultTable tempResult = ResultTable();
+				tempResult.setIsWholeTrue(0);
+				SPALog::log("arg1 is not a valid prog_line!\n");
+				return tempResult;
+			}
+			list<int> varList = PKB::getPKBInstance()->getUsesSecond(stoi(arg1));
+			ResultTable tempResult = ResultTable();
+			if (varList.empty()) {
+				tempResult.setIsWholeTrue(0);
+			}
+			else {
+				tempResult.setIsWholeTrue(1);
+			}
+			return tempResult;
+		}
+		else if (arg1Type == "string") {
+			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
+			if (!arg1ID) {
+				ResultTable tempResult = ResultTable();
+				tempResult.setIsWholeTrue(0);
+				SPALog::log("arg1 is invalid prog_name!\n");
+				return tempResult;
+			}
+			list<int> varList = PKB::getPKBInstance()->getUsesSecond(arg1ID);
+			ResultTable tempResult = ResultTable();
+			if (varList.empty()) {
+				tempResult.setIsWholeTrue(0);
+			}
+			else {
+				tempResult.setIsWholeTrue(1);
+			}
+			return tempResult;
+		}
+		else {
+
+			list<int> targetList = getList(arg1, arg1Type);
+			ResultTable tempResult = ResultTable(arg1);
+			vector<int> temp;
+			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
+				list<int> varList = PKB::getPKBInstance()->getUsesSecond(*i);
+				if (!varList.empty()) {
+					temp.push_back(*i);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 	}
@@ -769,12 +889,12 @@ ResultTable QueryEvaluator::processUses(vector<string> tempString) {
 
 }
 
-ResultTable QueryEvaluator::processParent(vector<string> tempString) {
+ResultTable QueryEvaluator::processParent(Clause tempString) {
 	
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 	
 	list<int> parentList = PKB::getPKBInstance()->getParentList();
 
@@ -804,10 +924,20 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			}
 			return tempResult;
 		}
+		else if(arg2Type == "all"){
+			ResultTable tempResult = ResultTable();
+			if (childList.empty()) {
+				tempResult.setIsWholeTrue(0);
+			}
+			else {
+				tempResult.setIsWholeTrue(1);
+			}
+			return tempResult;
+		}
 		else {
-			//stmt, assign, while, call, if, prog_line, all
+			//stmt, assign, while, call, if, prog_line
 			vector<int> temp;
-			list<int> targetList = getList(arg2Type);
+			list<int> targetList = getList(arg2, arg2Type);
 			ResultTable tempResult = ResultTable(arg2);
 			for (list<int>::iterator t = childList.begin(); t != childList.end(); t++) {
 				if (isInList(targetList, *t)) {
@@ -816,12 +946,61 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 					temp.clear();
 				}
 			}
+			_updateMidResult(tempResult);
+			return tempResult;
+		}
+	}
+	else if(arg1Type == "all"){
+		if (arg2Type == "number") {
+			ResultTable tempResult = ResultTable();
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
+				tempResult.setIsWholeTrue(0);
+				SPALog::log("Parent arg2 is not a valid prog_line");
+				return tempResult;
+			}
+			int parent = PKB::getPKBInstance()->getParentFirst(stoi(arg2));
+			
+			if (parent != 0) {
+				tempResult.setIsWholeTrue(1);
+			}
+			else {
+				tempResult.setIsWholeTrue(0);
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "all") {
+			list<int> arg1List = getList(arg1, arg1Type);
+			vector<int> temp;
+			ResultTable tempResult = ResultTable();
+			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
+				list<int> childList = PKB::getPKBInstance()->getParentSecond(*t);
+				if (!childList.empty()) {
+					tempResult.setIsWholeTrue(1);
+					break;
+				}
+			}
+			return tempResult;
+		}
+		else {
+			//arg2Type can be assign, while, if, call, stmt, prog_line
+			list<int> arg2List = getList(arg2, arg2Type);
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			for (list<int>::iterator t = arg2List.begin(); t != arg2List.end(); t++) {
+				int parent = PKB::getPKBInstance()->getParentFirst(*t);
+				if (parent != 0) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 	}
 	else {
-		// arg1Type can be while, if, stmt, prog_line, all
-		list<int> arg1List = getList(arg1Type);
+		// arg1Type can be while, if, stmt, prog_line
+		list<int> arg1List = getList(arg1, arg1Type);
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
@@ -839,11 +1018,26 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
+			_updateMidResult(tempResult);
+			return tempResult;
+		}
+		else if (arg2Type == "all") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1);
+			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
+				list<int> childList = PKB::getPKBInstance()->getParentSecond(*t);
+				if (!childList.empty()) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 		else {
-			//arg2Type can be assign, while, if, call, stmt, prog_line, all
-			list<int> arg2List = getList(arg2Type);
+			//arg2Type can be assign, while, if, call, stmt, prog_line
+			list<int> arg2List = getList(arg2,arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1,arg2);
 			if (arg1 == arg2) {
@@ -861,17 +1055,17 @@ ResultTable QueryEvaluator::processParent(vector<string> tempString) {
 					}
 				}
 			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 	}
 }
 
-ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
-	
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+ResultTable QueryEvaluator::processFollows(Clause tempString) {
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 	
 	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
@@ -902,9 +1096,16 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 			}
 			return tempResult;
 		}
+		else if (arg2Type == "all") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable();
+			//littlebro must exist
+			tempResult.setIsWholeTrue(1);
+			return tempResult;
+		}
 		else {
-			// arg2 can be assign, while, if, call, stmt, prog_line, all
-			list<int> targetList = getList(arg2Type);
+			// arg2 can be assign, while, if, call, stmt, prog_line
+			list<int> targetList = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
 			if (isInList(targetList, littleBrother)) {
@@ -912,13 +1113,61 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 
 	}
+	else if (arg1Type == "all"){
+		if (arg2Type == "number") {
+			ResultTable tempResult = ResultTable(arg1);
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
+				tempResult.setIsWholeTrue(0);
+				SPALog::log("Follows arg2 is not a valid prog_line");
+				return tempResult;
+			}
+			int brother = PKB::getPKBInstance()->getFollowsFirst(stoi(arg2));
+			if (brother != 0) {
+				tempResult.setIsWholeTrue(1);
+			}
+			else {
+				tempResult.setIsWholeTrue(0);
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "all") {
+			list<int> arg2List = getList(arg2, arg2Type);
+			vector<int> temp;
+			ResultTable tempResult = ResultTable();
+			for (list<int>::iterator t = arg2List.begin(); t != arg2List.end(); t++) {
+				int brother = PKB::getPKBInstance()->getFollowsFirst(*t);
+				if (brother!=0) {
+					tempResult.setIsWholeTrue(1);
+					break;
+				}
+			}
+			return tempResult;
+		}
+		else {
+			//arg2 can be assign, while, if, call, stmt, prog_line
+			list<int> arg2List = getList(arg2, arg2Type);
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			for (list<int>::iterator t = arg2List.begin(); t != arg2List.end(); t++) {
+				int brother= PKB::getPKBInstance()->getFollowsFirst(*t);
+				if (brother != 0) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			_updateMidResult(tempResult);
+			return tempResult;
+		}
+	}
 	else {
-		// arg1 can be while, assign, call, stmt, if, prog_line, all
-		list<int> arg1List = getList(arg1Type);
+		// arg1 can be while, assign, call, stmt, if, prog_line
+		list<int> arg1List = getList(arg1, arg1Type);
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
@@ -936,11 +1185,26 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
+			_updateMidResult(tempResult);
+			return tempResult;
+		}
+		else if (arg2Type == "all") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1);
+			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
+				int littleBrother = PKB::getPKBInstance()->getFollowsSecond(*t);
+				if (littleBrother!= 0) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 		else {
-			//arg2 can be assign, while, if, call, stmt, prog_line, all
-			list<int> arg2List = getList(arg2Type);
+			//arg2 can be assign, while, if, call, stmt, prog_line
+			list<int> arg2List = getList(arg2,arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			if (arg1 == arg2) {
@@ -956,18 +1220,19 @@ ResultTable QueryEvaluator::processFollows(vector<string> tempString) {
 					temp.clear();
 				}
 			}
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 	}
 
 }
 
-ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
+ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 	
 	list<int> parentList = PKB::getPKBInstance()->getParentList();
 	
@@ -1063,12 +1328,12 @@ ResultTable QueryEvaluator::processParentStar(vector<string> tempString) {
 	}
 }
 
-ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
+ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 
 	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
@@ -1170,11 +1435,11 @@ ResultTable QueryEvaluator::processFollowsStar(vector<string> tempString) {
 
 }
 
-ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+ResultTable QueryEvaluator::processCalls(Clause tempString) {
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 	if (arg1Type == "string") {
 		int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 
@@ -1274,11 +1539,11 @@ ResultTable QueryEvaluator::processCalls(vector<string> tempString) {
 
 }
 
-ResultTable QueryEvaluator::processCallsStar(vector<string> tempString) {
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 	if (arg1Type == "string") {
 		int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 
@@ -1378,11 +1643,11 @@ ResultTable QueryEvaluator::processCallsStar(vector<string> tempString) {
 
 }
 
-ResultTable QueryEvaluator::processNext(vector<string> tempString){
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+ResultTable QueryEvaluator::processNext(Clause tempString){
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 
 	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
@@ -1482,11 +1747,11 @@ ResultTable QueryEvaluator::processNext(vector<string> tempString){
 	}
 }
 
-ResultTable QueryEvaluator::processNextStar(vector<string> tempString) {
-	string arg1 = tempString.at(1);
-	string arg1Type = tempString.at(2);
-	string arg2 = tempString.at(3);
-	string arg2Type = tempString.at(4);
+ResultTable QueryEvaluator::processNextStar(Clause tempString) {
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
 
 	if (arg1Type == "number") {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
