@@ -17,6 +17,7 @@ public:
 	//then append those oneVarTables at the back if their header 
 	//is part of the select clause
 	
+	//for select boolean
 	//just put all tables in the list, it would be better if all twoVarTables
 	//are at the front of the list
 	QueryResultProjector(vector<ResultTable>, vector<string>, vector<string>);
