@@ -2617,18 +2617,18 @@ ResultTable QueryEvaluator::processIfPattern(Clause tempString) {
 }
 
 bool QueryEvaluator::processSelectClause(Clause tempString) {
-	int tupleSize = tempString.size()/2;
+	int tupleSize = tempString.getVar().size();
 	for (int i = 0; i < tupleSize; i++) {
 
-		string syn = tempString.at(i);
-		string synType = tempString.at(i + 1);
+		string syn = tempString.getVar().at(i);
+		string synType = tempString.getVarType().at(i);
 		string log = "Select clause: select " + syn + ":" + synType + "\n";
 		SPALog::log(log);
 
 		if (synType == "variable") {
 			ResultTable tempResult = ResultTable(syn);
 			vector<int> temp;
-			list<int> varTable = PKB::getPKBInstance()->getVarList();
+			list<int> varTable = getList(syn,synType);
 			for (list<int>::iterator i = varTable.begin(); i != varTable.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
@@ -2642,7 +2642,7 @@ bool QueryEvaluator::processSelectClause(Clause tempString) {
 		else if (synType == "procedure") {
 			ResultTable tempResult = ResultTable(syn);
 			vector<int> temp;
-			list<int> procList = PKB::getPKBInstance()->getProcList();
+			list<int> procList = getList(syn, synType);
 			for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
@@ -2659,7 +2659,7 @@ bool QueryEvaluator::processSelectClause(Clause tempString) {
 			//resultList.push_back(tempResult);
 		}
 		else {
-			list<int> targetList = getList(synType);
+			list<int> targetList = getList(syn, synType);
 			ResultTable tempResult = ResultTable(syn);
 			vector<int> temp;
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
