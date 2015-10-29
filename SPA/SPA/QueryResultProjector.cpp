@@ -14,14 +14,6 @@ const int SECOND_COMMON_HEADER = 1;
 const int EMPTY_TABLE = 0;
 
 //constructor
-QueryResultProjector::QueryResultProjector(vector<ResultTable> oneVarTables,
-	vector<ResultTable> twoVarTables, vector<string> select, vector<string> selectType){
-	_oneVarTables = oneVarTables;
-	_twoVarTables = twoVarTables;
-	_select = select;
-	_selectType = selectType;
-}
-
 QueryResultProjector::QueryResultProjector(vector<ResultTable> tempTables, 
 	vector<string> select, vector<string> selectType) {
 	_tempTables = tempTables;
@@ -38,51 +30,10 @@ list<string> QueryResultProjector::getResult() {
 		return resultStringList;
 	}
 
-	_resultTable = mergeTables();
-	_resultTable.logTable(-1);
+	_finalTable = mergeTables();
+	_finalTable.logTable(-1);
 
-	if (_resultTable.getTableSize() != 0) {
-		//assume no select <a, boolean, b> kinda thing
-		if (_selectType.size() == 1 && _selectType[FIRST_TYPE] == TYPE_BOOL) {
-			resultStringList.push_back(RESULT_TRUE);
-			return resultStringList;
-		}
-
-		vector<int> index = getIndexOfSelect(_resultTable.getHeader());
-		vector<vector<int>> finalContent = _resultTable.getContent();
-		//tuple case is not fully handled, eg Select<a, a, a>
-		for (int i = 0; i < finalContent.size(); ++i) {
-			string result = "";
-			for (int j = 0; j < index.size(); ++j) {
-				if (result != "") {
-					result += " ";
-				}
-
-				if (_selectType[j] == TYPE_VARIABLE) {
-					string varName = PKB::getPKBInstance()->getVarName(finalContent[i][j]);
-					result += varName;
-				}
-				else if (_selectType[j] == TYPE_PROCEDURE) {
-					string procName = PKB::getPKBInstance()->getProcName(finalContent[i][j]);
-					result += procName;
-				}
-				else {
-					result += to_string(finalContent[i][j]);
-				}
-			}
-
-			resultStringList.push_back(result);
-		}
-	}
-	else {
-		if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
-			resultStringList.push_back(RESULT_FALSE);
-			return resultStringList;
-		}
-	}
-
-	resultStringList.sort();
-	logFinalResult(resultStringList);
+	resultStringList = extractResultFromMergedTable();	
 
 	return resultStringList;
 }
@@ -146,6 +97,7 @@ ResultTable QueryResultProjector::mergeTables() {
 	}
 }*/
 
+/*
 list<string> QueryResultProjector::getResultOld() {
 	list<string> resultStringList;
 
@@ -213,7 +165,9 @@ list<string> QueryResultProjector::getResultOld() {
 
 	return resultStringList;
 }
+*/
 
+/*
 void QueryResultProjector::trimTempTablesOld() {
 	for (int i = 0; i < _tempTables.size(); ++i) {
 		vector<string> header = _tempTables.at(i).getHeader();
@@ -262,7 +216,9 @@ void QueryResultProjector::trimTempTablesOld() {
 		}
 	}
 }
+*/
 
+/*
 vector<int> QueryResultProjector::getMergingOrder() {
 	map<int, vector<string>> headerMap;
 	vector<string> tempHeaderList;
@@ -353,9 +309,10 @@ vector<int> QueryResultProjector::getMergingOrder() {
 
 	return mergingOrder;
 }
+*/
 
 //assume multiselect does not have boolean type
-bool QueryResultProjector::isSelectBool() {
+bool QueryResultProjector::isSelectBoolType() {
 	if ((_select.size() == 1 && _select[0] != "BOOLEAN")
 		|| _select.size() > 1) {
 		return false;
@@ -363,6 +320,7 @@ bool QueryResultProjector::isSelectBool() {
 	return true;
 }
 
+/*
 void QueryResultProjector::countHeader() {
 	for (auto &i : _tempTables) {
 		vector<string> header = i.getHeader();
@@ -377,7 +335,8 @@ void QueryResultProjector::countHeader() {
 		}
 	}
 }
-
+*/
+/*
 ResultTable QueryResultProjector::mergeTables(vector<int> mergingOrder) {
 	ResultTable finalTable, tempTable;
 	finalTable = _tempTables.at(mergingOrder.at(0));
@@ -398,6 +357,7 @@ ResultTable QueryResultProjector::mergeTables(vector<int> mergingOrder) {
 
 	return finalTable;
 }
+*/
 
 ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2) {
 	//r1 is always the table to be hashed into the unordered map
@@ -537,7 +497,7 @@ vector<string> QueryResultProjector::getCommonHeader(vector<string> h1, vector<s
 	return cHeader;
 }
 
-vector<int> QueryResultProjector::getIndexOfSelect(vector<string> finalTableHeader) {
+vector<int> QueryResultProjector::getSelectIDsInFinalTable(vector<string> finalTableHeader) {
 	vector<int> index;
 
 	for (auto &i : _select) {
@@ -550,6 +510,57 @@ vector<int> QueryResultProjector::getIndexOfSelect(vector<string> finalTableHead
 	}
 
 	return index;
+}
+
+list<string> QueryResultProjector::extractResultFromMergedTable() {
+	list<string> resultList;
+
+	if (_finalTable.getTableSize() != 0) {
+		//assume no select <a, boolean, b> kinda thing
+		if (_selectType.size() == 1 && _selectType[FIRST_TYPE] == TYPE_BOOL) {
+			resultList.push_back(RESULT_TRUE);
+			return resultList;
+		}
+
+		vector<int> selectIDsInFinalTable = getSelectIDsInFinalTable(_finalTable.getHeader());
+		vector<vector<int>> finalContent = _finalTable.getContent();
+		//tuple case is not fully handled, eg Select<a, a, a>
+		for (int i = 0; i < finalContent.size(); ++i) {
+			string result = "";
+			for (int j = 0; j < selectIDsInFinalTable.size(); ++j) {
+				if (result != "") {
+					result += " ";
+				}
+
+				int selectID = selectIDsInFinalTable[j];
+
+				if (_selectType[j] == TYPE_VARIABLE) {
+					string varName = PKB::getPKBInstance()->getVarName(finalContent[i][selectID]);
+					result += varName;
+				}
+				else if (_selectType[j] == TYPE_PROCEDURE) {
+					string procName = PKB::getPKBInstance()->getProcName(finalContent[i][selectID]);
+					result += procName;
+				}
+				else {
+					result += to_string(finalContent[i][selectID]);
+				}
+			}
+
+			resultList.push_back(result);
+		}
+	}
+	else {
+		if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
+			resultList.push_back(RESULT_FALSE);
+			return resultList;
+		}
+	}
+
+	resultList.sort();
+	resultList.unique();
+	logFinalResult(resultList);
+	return resultList;
 }
 
 void QueryResultProjector::logFinalResult(list<string> resultStringList) {
