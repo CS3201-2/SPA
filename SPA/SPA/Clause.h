@@ -3,6 +3,8 @@
 
 using namespace std;
 
+#ifndef Clause_H
+#define Clause_H
 class Clause {
 private:
 	string _relationship;
@@ -18,3 +20,5 @@ public:
 	void setIndex(int);
 	int getIndex();
 };
+
+#endif
