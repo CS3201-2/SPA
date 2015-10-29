@@ -489,7 +489,7 @@ void QueryEvaluator::_updateMidResult(ResultTable newResult) {
 		}
 		for (vector<vector<int>>::iterator i = newResult.getContent().begin(); i != newResult.getContent().end(); ++i) {
 			inside = false;
-			for (vector<vector<int>>::iterator t = r1.getContent().begin(); t != r1.getContent().end(); ++t) {
+			for (vector<vector<int>>::iterator t = r2.getContent().begin(); t != r2.getContent().end(); ++t) {
 				if ((*i).at(1) == (*t).at(0)) {
 					inside = true;
 				}
@@ -517,21 +517,29 @@ void QueryEvaluator::updateMidResult(ResultTable newResult) {
 		if ((*it).getHeader().at(0) == newResult.getHeader().at(0)) {
 			//merge these two 
 			bool findIt;
-			for (vector<vector<int>>::iterator i = (*it).getContent().begin(); i != (*it).getContent().end(); ++i) {
+			int count = 0;
+			vector<vector<int>> content = (*it).getContent();
+			
+			for (vector<vector<int>>::iterator i = content.begin(); i != content.end(); ++i) {
 				findIt = false;
 				for (vector<vector<int>>::iterator t = newResult.getContent().begin(); t != newResult.getContent().end(); ++t) {
 					if ((*i).at(0) == (*t).at(0)) {
 						//find it 
 						findIt = true;
+						count++;
 					}
 				}
 				if (!findIt) {
-					(*it).getContent().erase(i);
+					(*it).eraseContent(count);
 				}
+				
 			}
-			
+			return;
 		}
 	}
+	// it is not inside intermediate result;
+	midResult.push_back(newResult);
+	return;
 }
 
 ResultTable QueryEvaluator::processModifies(Clause tempString) {
