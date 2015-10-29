@@ -3183,16 +3183,21 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 	}
 	else {
 		list<int> targetList = getList(arg1, arg1Type);
-		//arg1 == stmt, call, while, assign, call, constant
+		//arg1 == stmt, call, while, assign, constant
 		if (arg2Type == "prog_line") {
+			list<int> arg2List = getList(arg2, arg2Type);
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
 		
 			for (list<int>::iterator i = targetList.begin(); i != targetList.end(); i++) {
-				temp.push_back(*i);
-				temp.push_back(*i);
-				tempResult.addTuple(temp);
-				temp.clear();
+				for (list<int>::iterator t = arg2List.begin(); t != arg2List.end(); t++) {
+					if (*i == *t) {
+						temp.push_back(*i);
+						temp.push_back(*t);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
 			}
 			_updateMidResult(tempResult);
 			return tempResult;
