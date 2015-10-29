@@ -12,33 +12,38 @@ using namespace std;
 class QueryResultProjector {
 
 public:
+	//for select non boolean things
+	//as for the list of tables, put all twoVarTables first
+	//then append those oneVarTables at the back if their header 
+	//is part of the select clause
+	
+	//just put all tables in the list, it would be better if all twoVarTables
+	//are at the front of the list
 	QueryResultProjector(vector<ResultTable>, vector<string>, vector<string>);
-	QueryResultProjector(vector<ResultTable>, vector<ResultTable>, vector<string>, vector<string>);
-	list<string> getResultOld();
 	list<string> getResult();
 
 private:
 	int _isWholeTrue;// -1 doesnt matter, 0 false, 1 true
-	vector<ResultTable> _oneVarTables;
-	vector<ResultTable> _twoVarTables;
 	vector<string> _select;
 	vector<string> _selectType;
 	map<string, int> _headerCount;
 	vector<ResultTable> _tempTables;
-	ResultTable _resultTable;
+	ResultTable _finalTable;
 	
-	void logFinalResult(list<string>);
 	ResultTable mergeTables();
-	ResultTable mergeTables(vector<int>);
+	//ResultTable mergeTables(vector<int>);
 	ResultTable mergeTwoTables(ResultTable, ResultTable);
-	vector<int> getMergingOrder();
-	//might need to deal with "_" in the table header
+	//vector<int> getMergingOrder();
 	//void trimTempTables();
-	void trimTempTablesOld();
-	void countHeader();
-	bool isSelectBool();
-	vector<int> getIndexOfSelect(vector<string>);
+	//void trimTempTablesOld();
+	//void countHeader();
+	bool isSelectBoolType();
+	vector<int> getSelectIDsInFinalTable(vector<string>);
 	vector<string> getCommonHeader(vector<string>, vector<string>);
+	list<string> extractResultFromMergedTable();
+
+	void logFinalResult(list<string>);
+
 };
 
 #endif
