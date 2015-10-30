@@ -357,7 +357,10 @@ bool QueryEvaluator::processSuchThatClause(Clause tempString) {
 	if (isResultEmpty(tempResult)) {
 		return false;
 	}
-	resultList.push_back(tempResult);
+	if (tempResult.getHeader().size() == 2) {
+		resultList.push_back(tempResult);
+	}
+	
 	return true;
 }
 
@@ -2737,7 +2740,10 @@ bool QueryEvaluator::processWithClause(Clause tempString) {
 	if (isResultEmpty(tempResult)) {
 		return false;
 	}
-	resultList.push_back(tempResult);
+	if (tempResult.getHeader().size() == 2) {
+		resultList.push_back(tempResult);
+	}
+	
 	return true;
 }
 
