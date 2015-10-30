@@ -200,7 +200,7 @@ bool QueryValidator::isValidQuery(string query) {
 
 		retVal = findWithClause(arrClauses.at(1));
 		curClause = RELTYPE_WITH;
-		if (checkRetVal(retVal, isFinished, prevClause, curClause) == false) {
+		if (!checkRetVal(retVal, isFinished, prevClause, curClause)) {
 			return false;
 		}
 
@@ -224,10 +224,10 @@ bool QueryValidator::isValidQuery(string query) {
 		}
 	}
 
-	//if (arrClauses.at(1).compare(" ") != 0) {
+	if (arrClauses.at(1).compare(" ") != 0 || arrClauses.at(1).compare("") != 0) {
 		//cout << "\n."<< arrClauses.at(1) <<".\n";
-		//return false;
-	//}
+		return false;
+	}
 
 	//cout << arrClauses.at(1).size();	
 	return true;
@@ -397,6 +397,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 	arrWords = split(arrWords.at(1), SYMBOL_OPEN_BRACKET, 2);
 
 	if (arrWords.size() != 2) {
+		//cout << "yes1\n";
 		return INVALID;
 	}
 	
@@ -410,12 +411,43 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			if (!parsePatternType(arrWords.at(0), relType, syn, synType)) {
 				return INVALID;
 			}
-			//cout << "parsed patterns";
+			//cout << "parsed patterns\n";
 			if (arrWords.at(1).find(")") == string::npos) {
+				//cout << "no "<< arrWords.at(1)<<"\n";
 				return INVALID;
 			}
 			
-			arrWords = split(arrWords.at(1), SYMBOL_CLOSE_BRACKET, 2);
+			int openBrac = arrWords.at(1).find("("), closeBrac = arrWords.at(1).find(")");
+
+			if (closeBrac != string::npos && openBrac > closeBrac) {
+				arrWords = split(arrWords.at(1), SYMBOL_CLOSE_BRACKET, 2);
+			} else if (closeBrac != string::npos && openBrac < closeBrac) {
+				int countClose = 1, countOpen = 1;
+				
+				while (countClose <= countOpen && (openBrac != string::npos 
+						|| closeBrac != string::npos)) {
+					
+					openBrac = arrWords.at(1).find("(", openBrac + 1);
+					closeBrac = arrWords.at(1).find(")", closeBrac + 1);
+					
+					if (openBrac != string::npos) {
+						countOpen++;
+					}
+
+					if (closeBrac != string::npos) {
+						countClose++;
+					}
+				}
+				
+				string word = arrWords.at(1);
+				arrWords.at(0) = trim(word.substr(0, closeBrac));
+				arrWords.at(1) = trim(word.substr(closeBrac + 1, word.size() - closeBrac - 1));
+				//cout << "1. " << arrWords.at(0) << endl;
+				//cout << "2. " << arrWords.at(1) << endl;
+				//arrWords = split(arrWords.at(1), SYMBOL_CLOSE_BRACKET, 2);
+			} else {
+				return INVALID;
+			}
 
 			if (arrWords.size() != 2) {
 				return INVALID;
@@ -430,16 +462,17 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			vector<string> varType(arrVar.size());
 			//arg1 and 2
 			//cout << "arg1 and 2\n";
-			if (!parsePatternArg1(relType, arrVar.at(0), varType.at(0)) || 
-				!parsePatternArg2(relType, arrVar.at(1), varType.at(1))) {
+			if (!parsePatternArg1(relType, arrVar.at(0), varType.at(0))) {// || 
+				//!parsePatternArg2(relType, arrVar.at(1), varType.at(1))) {
 				//cout << "invalid 1st arg\n";
 				return INVALID;
 			}
 			
 			//arg2
-			/*if (!parsePatternArg2(relType, arrVar.at(1), varType.at(1))) {
+			if (!parsePatternArg2(relType, arrVar.at(1), varType.at(1))) {
+				//cout << "invalid 2nd arg\n";
 				return INVALID;
-			}*/
+			}
 			//cout << "parsed 2nd arg\n";
 			if (relType.compare(RELTYPE_PATTERN_IF) == 0 && arrVar.at(2).compare("_") != 0) {
 				return INVALID;
@@ -454,7 +487,6 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 	}
 	//cout << "pattern " << arrVar.at(0) << " " << value << endl;
 	subquery = trim(arrWords.at(1));
-
 	return VALID;
 }
 
@@ -515,8 +547,8 @@ bool QueryValidator::parsePatternArg1(string relType, string &arg, string &varTy
 }
 
 bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varType) {
-
 	//string value;
+	//cout << "parsePatternArg2 "<<arg<<"\n";
 	if (arg.compare("_") == 0) {
 		/*if (!r.isArgValid(relType, 2, VARTYPE_ALL)) {
 		return false;
@@ -527,7 +559,7 @@ bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varTy
 		arg.at(1) == '\"' && arg.at(arg.size() - 2) == '\"') {
 
 		arg = arg.substr(2, arg.size() - 4);
-
+		//cout << "yes2\n";
 		if (isValidExpression(arg)) {
 			if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
 				return false;
@@ -579,7 +611,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findWithClause(string &subquery) {
 
 	subquery = arrWords.at(1);
 	
-	cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	//cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	qt.insertWith(relType, arrVar, varTypes);
 	return VALID;
