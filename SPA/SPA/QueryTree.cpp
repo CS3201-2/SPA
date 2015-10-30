@@ -121,7 +121,7 @@ vector<Clause> QueryTree::getPatternTwoVarTree() {
 int QueryTree::getNumOfVar(vector<string> arrType) {
 	int numOfVar = TWO_VARIABLE;
 	for (auto &i : arrType) {
-		if (i == "string" || i == "number") {
+		if (i == "string" || i == "number" || i == "all") {
 			--numOfVar;
 		}
 	}

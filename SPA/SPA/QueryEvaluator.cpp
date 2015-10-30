@@ -2866,7 +2866,7 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 				tempResult.addTuple(temp);
 				temp.clear();
 			}
-			updateMidResult(tempResult);
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 		else if (arg2Type == "call") {
@@ -3026,7 +3026,7 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.clear();
 				}
 			}
-			updateMidResult(tempResult);
+			_updateMidResult(tempResult);
 			return tempResult;
 		}
 		else if (arg2Type == "call") {
