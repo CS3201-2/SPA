@@ -953,4 +953,3 @@ void PKB::clearQueue(queue<int>& q)
 	{
 		q.pop();
 	}
-}
