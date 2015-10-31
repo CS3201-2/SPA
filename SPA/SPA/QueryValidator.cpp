@@ -129,9 +129,9 @@ bool QueryValidator::isValidQuery(string query) {
 	if (arrClauses.at(1).at(0) == '<') {
 		arrClauses = split(arrClauses.at(1), '>', 2);
 
-		if (arrClauses.size() != 2) {
+		/*if (arrClauses.size() != 2) {
 			return false;
-		}
+		}*/
 
 		arrClauses.at(0) = arrClauses.at(0).substr(1, arrClauses.at(0).size() - 1);
 
@@ -168,8 +168,9 @@ bool QueryValidator::isValidQuery(string query) {
 	} else {
 		arrClauses = split(arrClauses.at(1), SYMBOL_SPACE, 2);
 
-		if ((!isVarNameExists(arrClauses.at(0)) && stringToLower(arrClauses.at(0)).compare(VARTYPE_BOOLEAN) != 0) ||
-			arrClauses.size() != 2) {// || arrClauses.at(0).compare("_") == 0) ) {
+		if ((!isVarNameExists(arrClauses.at(0)) && stringToLower(arrClauses.at(0)).compare(VARTYPE_BOOLEAN) != 0)){// ||
+			//arrClauses.size() != 2) {// || arrClauses.at(0).compare("_") == 0) ) {
+			cout << "yes" << endl;
 			return false;
 		}
 
@@ -181,10 +182,14 @@ bool QueryValidator::isValidQuery(string query) {
 		}
 	}
 
+	if (arrClauses.size() == 1) {
+		return true;
+	}
+
 	bool isFinished = false;
 	RETURN_TYPE retVal;
 	string prevClause = "", curClause = "";
-
+	
 	while (!isFinished) {
 		retVal = findRel(arrClauses.at(1));
 		curClause = RELTYPE_SUCH_THAT;
@@ -227,7 +232,7 @@ bool QueryValidator::isValidQuery(string query) {
 	if (arrClauses.at(1).size() > 0 && arrClauses.at(1).at(0) != NULL) {
 		//cout << "\n."<< (int) arrClauses.at(1).at(0) <<".\n";
 		//cout << arrClauses.at(1).size();
-		//cout << "yes\n";
+		cout << "yes\n";
 		return false;
 	}
 

@@ -31,11 +31,12 @@ int main() {
 		str24 = "variable v; assign a; while w;Select <v, a, w> such that Modifies(1,v)",
 		str25 = "assign a; Select a pattern a(_, _\"(f - d + b) - l\"_))",
 		str26 = "while w; assign a; Select w such that Follows(w, a)",
-		str27 = "assign a; if ifs; variable v; Select a such that Modifies(a, v) pattern ifs(v,_,_)";
+		str27 = "assign a; if ifs; variable v; Select a such that Modifies(a, v) pattern ifs(v,_,_)",
+		str28 = "stmt s; Select s";
 
 	//cout << str << "\n";
 
-	q.isValidDecAndQuery(str27);
+	q.isValidDecAndQuery(str28);
 	//cout << q.isValidExpression("x23*123-7y")<<endl; //0
 	//cout << q.isValidExpression("123+-x23*123") << endl; //0
 	//cout << q.isValidExpression("(x+123+y)") << endl; //1
