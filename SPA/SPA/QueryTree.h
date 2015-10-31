@@ -21,6 +21,8 @@ private:
 	vector<Clause> patternOneVarTree;
 	vector<Clause> patternTwoVarTree;
 
+	int getNumOfVar(vector<string>);
+
 public:
 	QueryTree();
 
@@ -47,7 +49,5 @@ public:
 	vector<Clause> getWithTwoVarTree();
 	vector<Clause> getPatternOneVarTree();
 	vector<Clause> getPatternTwoVarTree();
-
-	int getNumOfVar(vector<string>);
 };
 #endif
