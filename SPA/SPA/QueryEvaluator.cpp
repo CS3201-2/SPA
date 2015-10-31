@@ -363,9 +363,7 @@ bool QueryEvaluator::processSuchThatClause(Clause tempString) {
 	if (isResultEmpty(tempResult)) {
 		return false;
 	}
-	if (tempResult.getHeader().size() == 2) {
-		resultList.push_back(tempResult);
-	}
+	resultList.push_back(tempResult);
 	
 	return true;
 }
@@ -2734,8 +2732,17 @@ bool QueryEvaluator::processPatternClause(Clause tempString) {
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
 	string arg2Type = tempString.getVarType().at(1);
-	string syn = tempString.getVar().at(2);
-	string synType = tempString.getVarType().at(2);
+	string syn;
+	string synType;
+	if (tempString.getVarType().size() == 4) {
+		syn = tempString.getVar().at(3);
+		synType = tempString.getVarType().at(3);
+	}
+	else {
+		syn = tempString.getVar().at(2);
+		synType = tempString.getVarType().at(2);
+	}
+	
 	
 	string log = "Pattern clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
@@ -2759,6 +2766,7 @@ bool QueryEvaluator::processPatternClause(Clause tempString) {
 	if (isResultEmpty(tempResult)) {
 		return false;
 	}
+
 	resultList.push_back(tempResult);
 	return true;
 	
@@ -3100,9 +3108,7 @@ bool QueryEvaluator::processWithClause(Clause tempString) {
 	if (isResultEmpty(tempResult)) {
 		return false;
 	}
-	if (tempResult.getHeader().size() == 2) {
-		resultList.push_back(tempResult);
-	}
+	resultList.push_back(tempResult);
 	
 	return true;
 }
