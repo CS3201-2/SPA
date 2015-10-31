@@ -291,11 +291,11 @@ namespace UnitTest
 			list<string> result = qe.evaluate();
 			list<string> expected;
 			expected.push_back("1");
+			expected.push_back("12");
 			expected.push_back("3");
 			expected.push_back("4");
 			expected.push_back("7");
 			expected.push_back("8");
-			expected.push_back("12");
 			Assert::IsTrue(expected == result);
 
 			//Select v such that Modifies("Second", v) Expected: x, i, y, z, v
@@ -312,11 +312,11 @@ namespace UnitTest
 			QueryEvaluator qe_2 = (qt_2);
 			list<string> result_2 = qe_2.evaluate();
 			list<string> expected_2;
-			expected_2.push_back("x");
 			expected_2.push_back("i");
+			expected_2.push_back("v");
+			expected_2.push_back("x");
 			expected_2.push_back("y");
 			expected_2.push_back("z");
-			expected_2.push_back("v");
 			Assert::IsTrue(expected_2 == result_2);
 
 
@@ -351,8 +351,8 @@ namespace UnitTest
 			QueryEvaluator qe_4 = (qt_4);
 			list<string> result_4 = qe_4.evaluate();
 			list<string> expected_4;
-			expected_4.push_back("z");
 			expected_4.push_back("v");
+			expected_4.push_back("z");
 			Assert::IsTrue(expected_4 == result_4);
 
 
@@ -485,12 +485,13 @@ namespace UnitTest
 			QueryEvaluator qe = (qt);
 			list<string> result = qe.evaluate();
 			list<string> expected;
+		
+			expected.push_back("10");
+			expected.push_back("12");
 			expected.push_back("3");
 			expected.push_back("4");
 			expected.push_back("7");
 			expected.push_back("8");
-			expected.push_back("10");
-			expected.push_back("12");
 			Assert::IsTrue(expected == result );
 
 			//Select v such that Uses("Second", v) Expected: x, i, y, z
@@ -507,8 +508,8 @@ namespace UnitTest
 			QueryEvaluator qe_2 = (qt_2);
 			list<string> result_2 = qe_2.evaluate();
 			list<string> expected_2;
-			expected_2.push_back("x");
 			expected_2.push_back("i");
+			expected_2.push_back("x");
 			expected_2.push_back("y");
 			expected_2.push_back("z");
 			Assert::IsTrue(expected_2 == result_2);
@@ -1134,10 +1135,10 @@ namespace UnitTest
 			QueryEvaluator qe_4 = (qt_4);
 			list<string> result_4 = qe_4.evaluate();
 			list<string> expected_4;
-			expected_4.push_back("7");
 			expected_4.push_back("10");
 			expected_4.push_back("11");
 			expected_4.push_back("12");
+			expected_4.push_back("7");
 			Assert::IsTrue(expected_4 == result_4);
 
 			//Select BOOLEAN such that Follows*(2, 3) Expected: true
@@ -1402,11 +1403,12 @@ namespace UnitTest
 			QueryEvaluator qe_3 = (qt_3);
 			list<string> result_3 = qe_3.evaluate();
 			list<string> expected_3;
-			expected_3.push_back("8");
-			expected_3.push_back("9");
+			
 			expected_3.push_back("10");
 			expected_3.push_back("11");
 			expected_3.push_back("12");
+			expected_3.push_back("8");
+			expected_3.push_back("9");
 			Assert::IsTrue(expected_3 == result_3);
 
 			//Select ifs such that Next*(_, ifs) Expected:7
@@ -2059,11 +2061,11 @@ namespace UnitTest
 			QueryEvaluator qe_2 = (qt_2);
 			list<string> result_2 = qe_2.evaluate();
 			list<string> expected_2;
-			expected_2.push_back("x");
 			expected_2.push_back("i");
+			expected_2.push_back("v");
+			expected_2.push_back("x");
 			expected_2.push_back("y");
 			expected_2.push_back("z");
-			expected_2.push_back("v");
 			Assert::IsTrue(expected_2 == result_2);
 
 			//Select v with v.varName="x"
@@ -2182,6 +2184,11 @@ namespace UnitTest
 			list<string> result = qe.evaluate();
 			list<string> expected;
 			expected.push_back("1");
+			expected.push_back("10");
+			expected.push_back("11");
+			expected.push_back("12");
+			expected.push_back("13");
+			expected.push_back("14");
 			expected.push_back("2"); 
 			expected.push_back("3");
 			expected.push_back("4");
@@ -2190,11 +2197,6 @@ namespace UnitTest
 			expected.push_back("7");
 			expected.push_back("8");
 			expected.push_back("9");
-			expected.push_back("10");
-			expected.push_back("11");
-			expected.push_back("12");
-			expected.push_back("13");
-			expected.push_back("14");
 			Assert::IsTrue(expected == result);
 
 			//Select n with n=8

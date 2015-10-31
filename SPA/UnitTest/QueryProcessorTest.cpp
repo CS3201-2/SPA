@@ -357,9 +357,9 @@ namespace UnitTest
 			}
 
 			list<string> expected;
+			expected.push_back("12");
 			expected.push_back("4");
 			expected.push_back("8");
-			expected.push_back("12");
 			Assert::IsTrue(expected == result);
 		}
 
@@ -442,9 +442,9 @@ namespace UnitTest
 			}
 
 			list<string> expected;
-			expected.push_back("z");
-			expected.push_back("y");
 			expected.push_back("x");
+			expected.push_back("y");
+			expected.push_back("z");
 			Assert::IsTrue(expected == result);
 		}
 
@@ -555,8 +555,8 @@ namespace UnitTest
 				SPALog::log("Wrong query");
 			}
 			list<string> expected;
-			expected.push_back("z");
 			expected.push_back("v");
+			expected.push_back("z");
 			Assert::IsTrue(expected == result);
 		}
 	};
