@@ -104,6 +104,63 @@ bool Affect::isAffectValid(int first, int second)
 	return false;
 }
 
+list<int> Affect::getAffectFirst(int end)
+{
+	list<int> buffer;
+	if (!isAssignment(end))
+		return buffer;
+	list<int> varUsesIndex = _pkb->getUsesSecond(end);
+	int test1 = varUsesIndex.front();
+	int test2 = varUsesIndex.back();
+	queue<int> path;
+	vector<int> visit;
+	string message;
+	for (auto& tempUses : varUsesIndex)
+	{
+		clearQueue(path);
+		visit.resize(_pkb->getStmtSize() + 1, 0);
+		visit[end] = -1;
+		path.push(end);
+		while (!path.empty())
+		{
+			int temp = path.front();
+			message = "Processing AffectFirst: now we are visiting " + 
+				to_string(temp);
+			_log.log(message);
+			path.pop();
+			if (visit[temp] == -1)
+			{
+				//initial statement
+				visit[temp] = 1;
+				transfer(temp, path, false);
+			}
+			else
+			{
+				//check whether Modifies
+				if (_pkb->getType(temp) == assignmentStmt)
+				{
+					list<int> varModifiesIndex = _pkb->getModifiesSecond(temp);
+					if (contains(varModifiesIndex, tempUses))
+					{
+						buffer.push_back(temp);
+					}
+				}
+				if (visit[temp] == 1)
+				{
+					//have visited 
+					true;
+				}
+				else
+				{
+					transfer(temp, path, false);
+					visit[temp] = 1;
+				}
+			}
+		}
+	}
+	return buffer;
+}
+
 list<int> Affect::getAffectSecond(int start)
 {
 	list<int> buffer;
@@ -119,18 +176,13 @@ list<int> Affect::getAffectSecond(int start)
 	while (!path.empty())
 	{
 		int temp = path.front();
-		_log.log("Processing Affect: now we are visiting " + to_string(temp));
+		_log.log("Processing AffectSecond: now we are visiting " + to_string(temp));
 		path.pop();
 		if (visit[temp] == -1)
 		{
 			//initial statement
 			visit[temp] = 1;
-			list<int> tempNext = _pkb->getNextSecond(temp);
-			if (!tempNext.empty())
-			{
-				assert(tempNext.size() == 1);
-				path.push(tempNext.front());
-			}
+			transfer(temp, path, true);
 		}
 		else
 		{
@@ -153,11 +205,7 @@ list<int> Affect::getAffectSecond(int start)
 				//check whether is container
 				if (isIf(temp) || isWhile(temp))
 				{
-					list<int> tempNext = _pkb->getNextSecond(temp);
-					for (auto& x : tempNext)
-					{
-						path.push(x);
-					}
+					transfer(temp, path, true);
 				}
 				else
 				{
@@ -174,12 +222,7 @@ list<int> Affect::getAffectSecond(int start)
 					list<int> tempModifeis = _pkb->getModifiesSecond(temp);
 					if (!contains(tempModifeis, varModifiesIndex))
 					{
-						list<int> tempNext = _pkb->getNextSecond(temp);
-						if (!tempNext.empty())
-						{
-							assert(tempNext.size() == 1);
-							path.push(tempNext.front());
-						}
+						transfer(temp, path, true);
 					}
 					else
 					{
@@ -233,4 +276,34 @@ bool Affect::contains(list<int> lst, int i)
 			return true;
 	}
 	return false;
+}
+//mode equals true: push its next to queue,
+//			  false: push its previous to queue
+void Affect::transfer(int temp, queue<int>& q, bool mode)
+{
+	list<int> tempNext;
+	if (mode)
+	{
+		tempNext = _pkb->getNextSecond(temp);
+	}
+	else
+	{ 
+		tempNext = _pkb->getNextFirst(temp);
+	}
+	int test3 = tempNext.front();
+	if (!tempNext.empty())
+	{
+		for (auto& x : tempNext)
+		{
+			q.push(x);
+		}
+	}
+}
+
+void Affect::clearQueue(queue<int>& q)
+{
+	while (!q.empty())
+	{
+		q.pop();
+	}
 }

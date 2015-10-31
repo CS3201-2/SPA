@@ -137,7 +137,7 @@ namespace UnitTest {
 			result = { 10 };
 			Assert::IsTrue(result == cfg.getNextFirst(11));
 			result = {};
-			Assert::IsTrue(result == cfg.getNextFirst(4));
+			Assert::IsTrue(result == cfg.getNextFirst(16));
 			try
 			{
 				cfg.getNextFirst(18);
