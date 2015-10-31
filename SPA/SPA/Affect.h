@@ -10,7 +10,6 @@ class Affect
 	SPALog _log;
 public:
 	Affect();
-	void getAffectAll(int);
 	bool isAffectValid(int,int);
 	list<int> getAffectFirst(int);
 	list<int> getAffectSecond(int);
@@ -21,5 +20,7 @@ private:
 	bool isIf(int);
 	bool isSameProc(int, int);
 	bool contains(list<int>, int);
+	void transfer(int,queue<int>&, bool);
+	void clearQueue(queue<int>&);
 };
 #endif
