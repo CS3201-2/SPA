@@ -83,12 +83,6 @@ list<int> Pattern::getAssignWithSecond(string second) {
 		temp = assignRightMap.at(firstVar);
 	}
 
-	logPattern();
-	string str;
-	for (auto&x : temp) {
-		str += to_string(x) + ", ";
-	}
-	SPALog::log(str);
 
 	for (list<int>::iterator it = temp.begin(); it != temp.end(); ++it) {
 		if (assignMap.at(*it).second.find(secondPostFix) != string::npos) {

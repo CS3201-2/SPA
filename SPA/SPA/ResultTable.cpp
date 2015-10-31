@@ -36,6 +36,10 @@ vector<vector<int>> & ResultTable::getContent() {
 	return _result;
 }
 
+void ResultTable::eraseContent(int i) {
+	_result.erase(_result.begin()+i);
+}
+
 size_t ResultTable::getTableSize() {
 	return _result.size();
 }

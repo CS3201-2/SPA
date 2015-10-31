@@ -5,6 +5,8 @@
 
 using namespace std;
 
+#ifndef QueryTree_H
+#define QueryTree_H
 
 class QueryTree {
 private:
@@ -35,16 +37,17 @@ public:
 	//For adding variables under the with category
 	void insertWith(string, vector<string>, vector<string>);
 
-	vector<Clause>& getVariableTree();
-	vector<Clause>& getSelectTree();
-	vector<Clause>& getSuchThatNoVarTree();
-	vector<Clause>& getSuchThatOneVarTree();
-	vector<Clause>& getSuchThatTwoVarTree();
-	vector<Clause>& getWithNoVarTree();
-	vector<Clause>& getWithOneVarTree();
-	vector<Clause>& getWithTwoVarTree();
-	vector<Clause>& getPatternOneVarTree();
-	vector<Clause>& getPatternTwoVarTree();
+	vector<Clause> getVariableTree();
+	vector<Clause> getSelectTree();
+	vector<Clause> getSuchThatNoVarTree();
+	vector<Clause> getSuchThatOneVarTree();
+	vector<Clause> getSuchThatTwoVarTree();
+	vector<Clause> getWithNoVarTree();
+	vector<Clause> getWithOneVarTree();
+	vector<Clause> getWithTwoVarTree();
+	vector<Clause> getPatternOneVarTree();
+	vector<Clause> getPatternTwoVarTree();
 
 	int getNumOfVar(vector<string>);
 };
+#endif
