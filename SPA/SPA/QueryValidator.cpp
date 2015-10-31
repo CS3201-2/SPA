@@ -224,12 +224,14 @@ bool QueryValidator::isValidQuery(string query) {
 		}
 	}
 
-	if (arrClauses.at(1).compare(" ") != 0 || arrClauses.at(1).compare("") != 0) {
-		//cout << "\n."<< arrClauses.at(1) <<".\n";
+	if (arrClauses.at(1).size() > 0 && arrClauses.at(1).at(0) != NULL) {
+		//cout << "\n."<< (int) arrClauses.at(1).at(0) <<".\n";
+		//cout << arrClauses.at(1).size();
+		//cout << "yes\n";
 		return false;
 	}
 
-	//cout << arrClauses.at(1).size();	
+	
 	return true;
 }
 
@@ -411,6 +413,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			if (!parsePatternType(arrWords.at(0), relType, syn, synType)) {
 				return INVALID;
 			}
+			//cout << "syntype = " << synType<<endl;
 			//cout << "parsed patterns\n";
 			if (arrWords.at(1).find(")") == string::npos) {
 				//cout << "no "<< arrWords.at(1)<<"\n";
@@ -419,7 +422,7 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			
 			int openBrac = arrWords.at(1).find("("), closeBrac = arrWords.at(1).find(")");
 
-			if (closeBrac != string::npos && openBrac > closeBrac) {
+			if (closeBrac != string::npos && (openBrac > closeBrac || openBrac == string::npos)) {
 				arrWords = split(arrWords.at(1), SYMBOL_CLOSE_BRACKET, 2);
 			} else if (closeBrac != string::npos && openBrac < closeBrac) {
 				int countClose = 1, countOpen = 1;
@@ -439,12 +442,12 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 					}
 				}
 				
+				//cout << "done splitting\n";
 				string word = arrWords.at(1);
 				arrWords.at(0) = trim(word.substr(0, closeBrac));
 				arrWords.at(1) = trim(word.substr(closeBrac + 1, word.size() - closeBrac - 1));
 				//cout << "1. " << arrWords.at(0) << endl;
 				//cout << "2. " << arrWords.at(1) << endl;
-				//arrWords = split(arrWords.at(1), SYMBOL_CLOSE_BRACKET, 2);
 			} else {
 				return INVALID;
 			}
@@ -477,8 +480,9 @@ QueryValidator::RETURN_TYPE QueryValidator::findPatternClause(string &subquery) 
 			if (relType.compare(RELTYPE_PATTERN_IF) == 0 && arrVar.at(2).compare("_") != 0) {
 				return INVALID;
 			}
-			
+
 			qt.insertPattern(syn, synType, arrVar, varType);
+
 			//cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 			//cout << "pattern type " << varType.at(0) << " " << varType.at(1) << endl;
 		}
