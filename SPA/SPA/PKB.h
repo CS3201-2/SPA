@@ -12,7 +12,9 @@
 #include "CFG.h"
 #include "Statement.h"
 #include "StatementType.h"
-
+#include "SPALog.h"
+#include <assert.h>
+#include<sstream>
 
 using namespace std;
 
@@ -211,6 +213,7 @@ private:
 	list<int> ifStmtList;
 	list<int> constantList;
 	map<int, int> callStmtProcMap;
+	SPALog _log;
 
 	ProcTable& getProcTable();
 	VarTable& getVarTable();
@@ -226,6 +229,14 @@ private:
 
 	size_t getVarTableSize();
 	size_t getProcTableSize();
+
+	bool isAssignment(int);
+	bool isWhile(int);
+	bool isIf(int);
+	bool isSameProc(int, int);
+	bool contains(list<int>, int);
+	void transfer(int, queue<int>&, bool);
+	void clearQueue(queue<int>&);
 };
 
 #endif

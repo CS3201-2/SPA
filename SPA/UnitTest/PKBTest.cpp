@@ -860,5 +860,66 @@ namespace UnitTest {
 			actual = PKB::getPKBInstance()->getWhileWithFirstExact("x");
 			Assert::IsTrue(actual == list<int>());
 		}
+
+		TEST_METHOD(testAffectValid)
+		{
+			Assert::IsTrue(PKB::getPKBInstance()->isAffectsValid(4, 7));
+			Assert::IsTrue(PKB::getPKBInstance()->isAffectsValid(5, 9));
+			Assert::IsTrue(PKB::getPKBInstance()->isAffectsValid(12, 13));
+			Assert::IsFalse(PKB::getPKBInstance()->isAffectsValid(6, 7));
+			Assert::IsFalse(PKB::getPKBInstance()->isAffectsValid(5, 7));
+		}
+
+		TEST_METHOD(testAffectSecond)
+		{
+			list<int> expect;
+			list<int> actual;
+
+			expect = { 17 };
+			actual = PKB::getPKBInstance()->getAffectsSecond(16);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+
+			expect = { 7,11,13,15 };
+			actual = PKB::getPKBInstance()->getAffectsSecond(4);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+
+			expect = { 7,11,13,15 };
+			actual = PKB::getPKBInstance()->getAffectsSecond(7);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+
+			expect = { 13 };
+			actual = PKB::getPKBInstance()->getAffectsSecond(12);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+		}
+
+		TEST_METHOD(testAffectFirst)
+		{
+			list<int> expect;
+			list<int> actual;
+
+			expect = { 16 };
+			actual = PKB::getPKBInstance()->getAffectsFirst(17);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+
+			expect = { 4,7 };
+			actual = PKB::getPKBInstance()->getAffectsFirst(7);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+
+			expect = { 4,7,11,12 };
+			actual = PKB::getPKBInstance()->getAffectsFirst(13);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+
+			expect = {};
+			actual = PKB::getPKBInstance()->getAffectsFirst(12);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+		}
 	};
 }

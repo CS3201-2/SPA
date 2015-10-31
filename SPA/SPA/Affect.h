@@ -8,7 +8,6 @@ class Affect
 {
 	PKB* _pkb;
 	SPALog _log;
-	vector<bool> _computed;
 public:
 	Affect();
 	bool isAffectValid(int,int);
@@ -16,7 +15,6 @@ public:
 	list<int> getAffectSecond(int);
 	~Affect();
 private:
-	void computeAffectAll(int);
 	bool isAssignment(int);
 	bool isWhile(int);
 	bool isIf(int);
