@@ -5,6 +5,16 @@ CFG::CFG()
 {
 }
 
+int CFG::getFirstStatement(int ProcNo)
+{
+	return _procTable[ProcNo];
+}
+
+int CFG::getProc(int statementNo)
+{
+	return _procMap.at(statementNo);
+}
+
 void CFG::buildGraph(list<Statement> codeLst)
 {
 	_next.resize(codeLst.size(), list<int>());
@@ -14,7 +24,9 @@ void CFG::buildGraph(list<Statement> codeLst)
 	_codeIterator = _codeLst.begin();
 	_nodeIndex = 0;
 	_size = 0;
-
+	_currentProc = -1;
+	_procMap.clear();
+	_procTable.clear();
 	initializeStack();
 
 	while (_codeIterator != _codeLst.end())
@@ -310,7 +322,15 @@ void CFG::solveCode()
 	string codeContent = _codeIterator->getContent();
 	int codeIndex = _codeIterator->getNumber();
 	if (codeIndex != -1)
+	{ 
+		_procMap.insert(make_pair(codeIndex, _currentProc));
 		_typeTable[codeIndex] = _codeIterator->getType();
+		if (!_procFirstStatementSet)
+		{
+			_procTable.push_back(codeIndex);
+			_procFirstStatementSet = true;
+		}
+	}
 	if (isContainer(*_codeIterator))
 	{
 		int tempNodeIndex = extractBuffer();
@@ -323,6 +343,8 @@ void CFG::solveCode()
 	}
 	else if (isProc(*_codeIterator))
 	{
+		_currentProc++;
+		_procFirstStatementSet = false;
 		initializeStack();
 		_statBuffer.clear();
 		_nodeInOperation.push(std::make_pair(-1, TYPE_PROC));
@@ -339,7 +361,6 @@ void CFG::solveCode()
 			{
 				solveNode(tempNodeIndex, 0);
 			}
-
 			pair<int, int> temp = _nodeInOperation.top();
 			_nodeInOperation.pop();
 			pair<int, int> top = _nodeInOperation.top();

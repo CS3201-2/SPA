@@ -3,6 +3,7 @@
 Affect::Affect()
 {
 	_pkb = PKB::getPKBInstance();
+	_computed.resize(_pkb->getProcList().size(), false);
 }
 
 bool Affect::isAffectValid(int first, int second)
@@ -247,6 +248,20 @@ Affect::~Affect()
 {
 }
 
+void Affect::computeAffectAll(int procID)
+{
+	//if this procedure has been computed, skip
+	if (_computed[procID])
+	{
+		return;
+	}
+	int firstStmt = _pkb->getFirstStatement(procID);
+	//start from the first stmt in this proc and do until the end 
+	//of the proc
+	
+
+}
+
 bool Affect::isAssignment(int i)
 {
 	return _pkb->getType(i) == assignmentStmt;
@@ -264,8 +279,9 @@ bool Affect::isIf(int i)
 
 bool Affect::isSameProc(int i, int j)
 {
-	//havent implement
-	return true;
+	int pro1 = _pkb->getProcIDSpecial(i);
+	int pro2 = _pkb->getProcIDSpecial(j);
+	return pro1 == pro2;
 }
 
 bool Affect::contains(list<int> lst, int i)
