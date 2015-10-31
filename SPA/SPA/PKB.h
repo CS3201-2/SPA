@@ -205,7 +205,6 @@ private:
 	Calls calls;
 	CallsStar callsStar;
 	CFG cfg;
-	Affect affect;
 	list<int> whileStmtList;
 	list<int> assignStmtList;
 	list<int> callStmtList;
