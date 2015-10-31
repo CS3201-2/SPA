@@ -501,9 +501,9 @@ namespace UnitTest
 			}
 			list<string> expected;
 			expected.push_back("1");
+			expected.push_back("12");
 			expected.push_back("4");
 			expected.push_back("8");
-			expected.push_back("12");
 			Assert::IsTrue(expected == result);
 		}
 
@@ -557,6 +557,23 @@ namespace UnitTest
 			list<string> expected;
 			expected.push_back("v");
 			expected.push_back("z");
+			Assert::IsTrue(expected == result);
+		}
+
+		TEST_METHOD(evaluateModifiesBOOLEAN) {
+			string query = "assign a; Select BOOLEAN such that Modifies(a, \"x\")";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+			list<string> expected;
+			expected.push_back("true");
 			Assert::IsTrue(expected == result);
 		}
 	};
