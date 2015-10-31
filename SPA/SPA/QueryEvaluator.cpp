@@ -347,10 +347,10 @@ bool QueryEvaluator::processSuchThatClause(Clause tempString) {
 		tempResult = processNextStar(tempString);
 	}
 	else if (relationship == "affects") {
-		//tempResult = processAffects(tempString);
+		tempResult = processAffects(tempString);
 	}
 	else if (relationship == "affects*") {
-		//tempResult = processAffectsStar(tempString);
+		tempResult = processAffectsStar(tempString);
 	}
 	else {
 		SPALog::log("Wrong relationship!");
@@ -412,10 +412,10 @@ bool QueryEvaluator::processSuchThatConstClause(Clause tempString) {
 		tempResult = processNextStar(tempString);
 	}
 	else if (relationship == "affects") {
-		//tempResult = processAffects(tempString);
+		tempResult = processAffects(tempString);
 	}
 	else if (relationship == "affects*") {
-		//tempResult = processAffectsStar(tempString);
+		tempResult = processAffectsStar(tempString);
 	}
 	else {
 		SPALog::log("Wrong relationship!");
@@ -2477,8 +2477,8 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
 			for (list<int>::iterator t = arg2List.begin(); t != arg2List.end(); t++) {
-				list<int> brothers = PKB::getPKBInstance()->getNextFirst(*t);
-				if (!brothers.empty()) {
+				list<int> affects = PKB::getPKBInstance()->getAffectsFirst(*t);
+				if (!affects.empty()) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
@@ -2490,23 +2490,23 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 	}
 
 	else {
-		// arg1 can be while, assign, call, stmt, if, prog_line
+		// arg1 can be assign, prog_line
 		list<int> arg1List = getList(arg1, arg1Type);
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Next arg2 is not a valid prog_line");
+				SPALog::log("Affects arg2 is not a valid prog_line");
 				return tempResult;
 			}
-			list<int> brothers = PKB::getPKBInstance()->getNextFirst(stoi(arg2));
+			list<int> affects = PKB::getPKBInstance()->getAffectsFirst(stoi(arg2));
 			vector<int> temp;
-			if (brothers.size() == 0) {
+			if (affects.size() == 0) {
 				ResultTable tempResult = ResultTable();
 				tempResult.setIsWholeTrue(0);
 				return tempResult;
 			}
-			for (list<int>::iterator t = brothers.begin(); t != brothers.end(); t++) {
+			for (list<int>::iterator t = affects.begin(); t != affects.end(); t++) {
 				if (isInList(arg1List, *t)) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
@@ -2520,8 +2520,8 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1);
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
-				list<int> littleBrothers = PKB::getPKBInstance()->getNextSecond(*t);
-				if (!littleBrothers.empty()) {
+				list<int> affected = PKB::getPKBInstance()->getAffectsSecond(*t);
+				if (!affected.empty()) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
@@ -2531,17 +2531,13 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 			return tempResult;
 		}
 		else {
-			//arg2 can be assign, while, if, call, stmt, prog_line
+			//arg2 can be assign, prog_line
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
-			if (arg1 == arg2) {
-				tempResult.setIsWholeTrue(0);
-				return tempResult;
-			}
 			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
-				list<int> littleBrothers = PKB::getPKBInstance()->getNextSecond(*t);
-				for (list<int>::iterator i = littleBrothers.begin(); i != littleBrothers.end(); i++) {
+				list<int> affected = PKB::getPKBInstance()->getAffectsSecond(*t);
+				for (list<int>::iterator i = affected.begin(); i != affected.end(); i++) {
 					if (isInList(arg2List, *i)) {
 						temp.push_back(*t);
 						temp.push_back(*i);
@@ -2550,6 +2546,181 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 					}
 				}
 
+			}
+			_updateMidResult(tempResult);
+			return tempResult;
+		}
+	}
+}
+
+ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
+	string arg1 = tempString.getVar().at(0);
+	string arg1Type = tempString.getVarType().at(0);
+	string arg2 = tempString.getVar().at(1);
+	string arg2Type = tempString.getVarType().at(1);
+
+	if (arg1Type == "number") {
+		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
+			ResultTable tempResult = ResultTable();
+			tempResult.setIsWholeTrue(0);
+			SPALog::log("Affects* arg1 is not a valid prog_line");
+			return tempResult;
+		}
+
+		if (arg2Type == "number") {
+			ResultTable tempResult = ResultTable();
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
+				tempResult.setIsWholeTrue(0);
+				SPALog::log("Affects* arg2 is not a valid prog_line");
+				return tempResult;
+			}
+			if (PKB::getPKBInstance()->isAffectsStarValid(stoi(arg1), stoi(arg2))) {
+				tempResult.setIsWholeTrue(1);
+			}
+			else {
+				tempResult.setIsWholeTrue(0);
+			}
+			return tempResult;
+		}
+
+		else if (arg2Type == "all") {
+			list<int> affected = PKB::getPKBInstance()->getAffectsStarSecond(stoi(arg1));
+			ResultTable tempResult = ResultTable();
+			if (!affected.empty()) {
+				tempResult.setIsWholeTrue(1);
+			}
+			else {
+				tempResult.setIsWholeTrue(0);
+			}
+			return tempResult;
+		}
+
+		else {
+			// arg2 can be assign, prog_line
+			list<int> targetList = getList(arg2, arg2Type);
+			list<int> affected = PKB::getPKBInstance()->getAffectsStarSecond(stoi(arg1));
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			for (list<int>::iterator t = affected.begin(); t != affected.end(); t++) {
+				if (isInList(targetList, *t)) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			_updateMidResult(tempResult);
+			return tempResult;
+		}
+
+	}
+
+	else if (arg1Type == "all") {
+		if (arg2Type == "number") {
+			ResultTable tempResult = ResultTable();
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
+				tempResult.setIsWholeTrue(0);
+				SPALog::log("Affects* arg2 is not a valid prog_line");
+				return tempResult;
+			}
+			list<int> affects = PKB::getPKBInstance()->getAffectsStarFirst(stoi(arg2));
+			vector<int> temp;
+			if (affects.size() == 0) {
+				tempResult.setIsWholeTrue(0);
+			}
+			else {
+				tempResult.setIsWholeTrue(1);
+			}
+			return tempResult;
+		}
+		else if (arg2Type == "all") {
+			list<int> arg1List = getList(arg1, arg1Type);
+			vector<int> temp;
+			ResultTable tempResult = ResultTable();
+			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
+				list<int> affects = PKB::getPKBInstance()->getAffectsStarSecond(*t);
+				if (!affects.empty()) {
+					tempResult.setIsWholeTrue(1);
+					break;
+				}
+			}
+			return tempResult;
+		}
+		else {
+			//arg2 can be assign, prog_line
+			list<int> arg2List = getList(arg2, arg2Type);
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg2);
+			for (list<int>::iterator t = arg2List.begin(); t != arg2List.end(); t++) {
+				list<int> affects = PKB::getPKBInstance()->getAffectsStarFirst(*t);
+				if (!affects.empty()) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			_updateMidResult(tempResult);
+			return tempResult;
+		}
+	}
+
+	else {
+		// arg1 can be assign, prog_line
+		list<int> arg1List = getList(arg1, arg1Type);
+		if (arg2Type == "number") {
+			ResultTable tempResult = ResultTable(arg1);
+			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
+				tempResult.setIsWholeTrue(0);
+				SPALog::log("Affects* arg2 is not a valid prog_line");
+				return tempResult;
+			}
+			list<int> affects = PKB::getPKBInstance()->getAffectsStarFirst(stoi(arg2));
+			vector<int> temp;
+			if (affects.size() != 0) {
+				for (list<int>::iterator t = affects.begin(); t != affects.end(); t++) {
+					if (isInList(arg1List, *t)) {
+						temp.push_back(*t);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
+			}
+			else {
+				tempResult.setIsWholeTrue(0);
+			}
+			_updateMidResult(tempResult);
+			return tempResult;
+		}
+
+		else if (arg2Type == "all") {
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1);
+			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
+				list<int> affected = PKB::getPKBInstance()->getAffectsStarSecond(*t);
+				if (!affected.empty()) {
+					temp.push_back(*t);
+					tempResult.addTuple(temp);
+					temp.clear();
+				}
+			}
+			_updateMidResult(tempResult);
+			return tempResult;
+		}
+
+		else {
+			//arg2 can be assign, prog_line
+			list<int> arg2List = getList(arg2, arg2Type);
+			vector<int> temp;
+			ResultTable tempResult = ResultTable(arg1, arg2);
+			for (list<int>::iterator t = arg1List.begin(); t != arg1List.end(); t++) {
+				list<int> affected = PKB::getPKBInstance()->getAffectsStarSecond(*t);
+				for (list<int>::iterator i = affected.begin(); i != affected.end(); i++) {
+					if (isInList(arg2List, *i)) {
+						temp.push_back(*t);
+						temp.push_back(*i);
+						tempResult.addTuple(temp);
+						temp.clear();
+					}
+				}
 			}
 			_updateMidResult(tempResult);
 			return tempResult;
