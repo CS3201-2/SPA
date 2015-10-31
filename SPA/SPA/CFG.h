@@ -25,6 +25,11 @@ class CFG
 	vector<list<int>> _next;
 	vector<list<int>> _nextTable;
 	vector<list<int>> _beforeTable;
+	vector<list<int>> _nextTableWithDummy;
+	vector<list<int>> _beforeTableWithDummy;
+	vector<list<int>> _nextTableForDummy;
+	vector<list<int>> _beforeTableForDummy;
+
 	vector<StatementType> _typeTable;
 	unordered_map<int, int> _procMap;
 	vector<int> _procTable;
@@ -69,6 +74,9 @@ private:
 	void updateVector(int, int, vector<list<int>>&);
 	void storeNextTable();
 	void storeNext(int);
+	void storeNextTableWithDummy();
+	void storeNextDummy(int);
+	void storeNextWithinNode(int);
 	bool isContainer(Statement);
 	bool isIfStmt(Statement);
 	bool isWhileStmt(Statement);

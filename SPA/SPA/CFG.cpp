@@ -480,25 +480,10 @@ void CFG::storeNextTable()
 
 void CFG::storeNext(int index)
 {
-	CFGNode* node = _nodeMap.at(index);
-	int begin = node->getStrat();
-	int end = node->getEnd();
-	int i = 0;
-	list<int> temp;
+	storeNextWithinNode(index);
+	list<int> temp = _next[index];
 	list<int> buffer;
-	if (begin == -1)
-	{
-		return;
-	}
-	for (i = begin; i < end; i++)
-	{
-		temp.push_back(i + 1);
-		_nextTable[i] = temp;
-		_size++;
-		updateVector(i+1, i, _beforeTable);
-		temp.clear();
-	}
-	temp = _next[index];
+	int end = _nodeMap.at(index)->getEnd();
 	for (auto& x: temp)
 	{
 		while (x != -1)
@@ -518,6 +503,52 @@ void CFG::storeNext(int index)
 	}
 	_nextTable[end] = buffer;
 	_size++;
+}
+
+void CFG::storeNextTableWithDummy()
+{
+	list<int> empty;
+	_nextTableWithDummy.resize(_codeLst.size() + 1, empty);
+	_beforeTableWithDummy.resize(_codeLst.size() + 1, empty);
+	_nextTableForDummy.resize(_codeLst.size() + 1, empty);
+	_beforeTableForDummy.resize(_codeLst.size() + 1, empty);
+	for (int i = 0; i < _next.size(); i++)
+	{
+		try {
+			storeNextDummy(i);
+		}
+		catch (exception e)
+		{
+			break;
+		}
+	}
+}
+
+void CFG::storeNextDummy(int)
+{
+
+}
+
+void CFG::storeNextWithinNode(int index)
+{
+	CFGNode* node = _nodeMap.at(index);
+	int begin = node->getStrat();
+	int end = node->getEnd();
+	int i = 0;
+	list<int> temp;
+	list<int> buffer;
+	if (begin == -1)
+	{
+		return;
+	}
+	for (i = begin; i < end; i++)
+	{
+		temp.push_back(i + 1);
+		_nextTable[i] = temp;
+		_size++;
+		updateVector(i + 1, i, _beforeTable);
+		temp.clear();
+	}
 }
 
 bool CFG::isContainer(Statement s)
