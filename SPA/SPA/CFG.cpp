@@ -480,10 +480,24 @@ void CFG::storeNextTable()
 
 void CFG::storeNext(int index)
 {
-	storeNextWithinNode(index);
-	list<int> temp = _next[index];
+	CFGNode* node = _nodeMap.at(index);
+	int begin = node->getStrat();
+	int end = node->getEnd();
+	int i = 0;
+	list<int> temp;
 	list<int> buffer;
-	int end = _nodeMap.at(index)->getEnd();
+	if (begin == -1)
+	{
+		return;
+	}
+	for (i = begin; i < end; i++)
+	{
+		temp.push_back(i + 1);
+		_nextTable[i] = temp;
+		_size++;
+		updateVector(i + 1, i, _beforeTable);
+		temp.clear();
+	}
 	for (auto& x: temp)
 	{
 		while (x != -1)
