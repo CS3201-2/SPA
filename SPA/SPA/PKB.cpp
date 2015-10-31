@@ -628,27 +628,27 @@ bool PKB::isNextStarValid(int first, int second) {
 }
 
 //Affect
-list<int> PKB::getAffectFirst(int second) {
+list<int> PKB::getAffectsFirst(int second) {
 	return list<int>();
 }
 
-list<int> PKB::getAffectSecond(int first) {
+list<int> PKB::getAffectsSecond(int first) {
 	return list<int>();
 }
 
-bool PKB::isAffectValid(int first, int second) {
+bool PKB::isAffectsValid(int first, int second) {
 	return true;
 }
 
 //AffectStar
-list<int> PKB::getAffectStarFirst(int second) {
+list<int> PKB::getAffectsStarFirst(int second) {
 	return list<int>();
 }
 
-list<int> PKB::getAffectStarSecond(int first) {
+list<int> PKB::getAffectsStarSecond(int first) {
 	return list<int>();
 }
 
-bool PKB::isAffectStarValid(int first, int second) {
+bool PKB::isAffectsStarValid(int first, int second) {
 	return true;
 }

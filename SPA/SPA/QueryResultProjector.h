@@ -31,14 +31,10 @@ private:
 	vector<ResultTable> _tempTables;
 	ResultTable _finalTable;
 	
-	ResultTable mergeTables();
-	//ResultTable mergeTables(vector<int>);
+	ResultTable mergeTables(vector<int>);
 	ResultTable mergeTwoTables(ResultTable, ResultTable);
-	//vector<int> getMergingOrder();
-	//void trimTempTables();
-	//void trimTempTablesOld();
-	//void countHeader();
-	bool isSelectBoolType();
+	vector<int> getMergingOrder();
+	void countHeader();
 	vector<int> getSelectIDsInFinalTable(vector<string>);
 	vector<string> getCommonHeader(vector<string>, vector<string>);
 	list<string> extractResultFromMergedTable();

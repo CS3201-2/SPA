@@ -29,9 +29,6 @@
     <ClCompile Include="queryValidatorTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QueryTreeTest1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="QueryEvaluatorTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
