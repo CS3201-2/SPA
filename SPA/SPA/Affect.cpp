@@ -111,8 +111,6 @@ list<int> Affect::getAffectFirst(int end)
 	if (!isAssignment(end))
 		return buffer;
 	list<int> varUsesIndex = _pkb->getUsesSecond(end);
-	int test1 = varUsesIndex.front();
-	int test2 = varUsesIndex.back();
 	queue<int> path;
 	vector<int> visit;
 	string message;
@@ -127,7 +125,7 @@ list<int> Affect::getAffectFirst(int end)
 			int temp = path.front();
 			message = "Processing AffectFirst: now we are visiting " + 
 				to_string(temp);
-			_log.log(message);
+			//_log.log(message);
 			path.pop();
 			if (visit[temp] == -1)
 			{
@@ -159,6 +157,16 @@ list<int> Affect::getAffectFirst(int end)
 			}
 		}
 	}
+	message = "Processing AffectFirst: the result for " + 
+		to_string(end)+ " is:";
+	_log.log(message);
+	
+	stringstream ss;
+	for (auto& x : buffer)
+	{
+		ss << x << " ";
+	}
+	_log.log("  "+ss.str());
 	return buffer;
 }
 
@@ -306,7 +314,6 @@ void Affect::transfer(int temp, queue<int>& q, bool mode)
 	{ 
 		tempNext = _pkb->getNextFirst(temp);
 	}
-	int test3 = tempNext.front();
 	if (!tempNext.empty())
 	{
 		for (auto& x : tempNext)

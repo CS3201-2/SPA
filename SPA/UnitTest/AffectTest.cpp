@@ -459,15 +459,15 @@ namespace UnitTest {
 			actual.sort();
 			Assert::IsTrue(expect == actual);
 
-			expect = { 7,11,13,15 };
-			actual = af.getAffectFirst(7);
+			expect = { 4,7,11,12 };
+			actual = af.getAffectFirst(13);
 			actual.sort();
-			//Assert::IsTrue(expect == actual);
+			Assert::IsTrue(expect == actual);
 
-			expect = { 13 };
+			expect = { };
 			actual = af.getAffectFirst(12);
 			actual.sort();
-			//Assert::IsTrue(expect == actual);*/
+			Assert::IsTrue(expect == actual);
 		}
 	};
 }
