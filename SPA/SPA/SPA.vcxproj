@@ -125,6 +125,7 @@
     <ClCompile Include="CFG.cpp" />
     <ClCompile Include="CFGNode.cpp" />
     <ClCompile Include="Checker.cpp" />
+    <ClCompile Include="Clause.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DesignExtractor.cpp" />
     <ClCompile Include="Follows.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="CFG.h" />
     <ClInclude Include="CFGNode.h" />
     <ClInclude Include="Checker.h" />
+    <ClInclude Include="Clause.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="DesignExtractor.h" />
     <ClInclude Include="Follows.h" />

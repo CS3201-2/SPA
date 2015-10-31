@@ -1,60 +1,53 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "Clause.h"
 
 using namespace std;
-#pragma once
+
+#ifndef QueryTree_H
+#define QueryTree_H
 
 class QueryTree {
 private:
-	vector<vector<vector<string>>> qTree;
-	vector<vector<string>> suchThatTree;
-	vector<vector<string>> patternTree;
-	vector<vector<string>> withTree;
-	vector<vector<string>> variableTree;
-	vector<vector<string>> selectTree;
-	vector<vector<string>> suchThatConstTree;
-	vector<vector<string>> withConstTree;
+	vector<Clause> variableTree;
+	vector<Clause> selectTree;
+	vector<Clause> suchThatNoVarTree;
+	vector<Clause> suchThatOneVarTree;
+	vector<Clause> suchThatTwoVarTree;
+	vector<Clause> withNoVarTree;
+	vector<Clause> withOneVarTree;
+	vector<Clause> withTwoVarTree;
+	vector<Clause> patternOneVarTree;
+	vector<Clause> patternTwoVarTree;
 
 public:
 	QueryTree();
 
-	//For inserting relationships categorized under the such that clause
 	//eg. Parent, Follows, Next, Modifies, Uses
-	void insertSuchThat(string rel, vector<string> arrVar, vector<string> argType);
+	void insertSuchThat(string, vector<string>, vector<string>);
 	//For inserting relationships categorized under the pattern clause
 	//all pattern types eg. Pattern syn(ptrn1, ptrn2)
-	void insertPattern(string syn, string synType, vector<string> arrPtrn, vector<string> ptrnType);
+	void insertPattern(string, string, vector<string>, vector<string>);
 	//For adding variables eg. assign a, => insertVariable(a, assign)
-	void insertVariable(string variable, string variableType);
+	void insertVariable(string, string);
 	//For adding variables under the select category
-	void insertSelect(string var, string varType);
+	void insertSelect(vector<string>, vector<string>);
+	void insertSelect(string, string);
 	//For adding variables under the with category
-	void insertWith(string rel, vector<string> arrWith, vector<string> withType);
+	void insertWith(string, vector<string>, vector<string>);
 
-	//Getting the number of relationships that fall under the such that clause
-	int getSuchThatSize();
-	//Getting the relationships that are under the such that clause but are constants
-	int getSuchThatConstSize();
-	//Getting the number of relationships that are of Pattern types
-	int getPatternSize();
-	//Getting the number of variables
-	int getVariableSize();
-	//Getting the number of variables under select
-	int getSelectSize();
-	//Getting the number of relationships under the with clause
-	int getWithSize();
-	//Getting the relationships under the with clause but are constants
-	int getWithConstSize();
+	vector<Clause> getVariableTree();
+	vector<Clause> getSelectTree();
+	vector<Clause> getSuchThatNoVarTree();
+	vector<Clause> getSuchThatOneVarTree();
+	vector<Clause> getSuchThatTwoVarTree();
+	vector<Clause> getWithNoVarTree();
+	vector<Clause> getWithOneVarTree();
+	vector<Clause> getWithTwoVarTree();
+	vector<Clause> getPatternOneVarTree();
+	vector<Clause> getPatternTwoVarTree();
 
-	//Obtaining the information of specific relationships that fall under the respective clauses
-	//eg. To see the first relationship under the such that tree, we call getSuchThatQuery(0) and assign it to a vector
-	//to read the information
-	vector<string> getSuchThatQuery(int queryPos);
-	vector<string> getSuchThatConstQuery(int queryPos);
-	vector<string> getPatternQuery(int queryPos);
-	vector<string> getVariableQuery(int queryPos);
-	vector<string> getSelectQuery(int queryPos);
-	vector<string> getWithQuery(int queryPos);
-	vector<string> getWithConstQuery(int queryPos);
+	int getNumOfVar(vector<string>);
 };
+#endif

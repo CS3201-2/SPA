@@ -1,5 +1,4 @@
 #include "RelationshipTable.h"
-//#include <iostream>
 
 RelationshipTable::RelationshipTable() {
 	vector<string> arg1;
@@ -7,17 +6,16 @@ RelationshipTable::RelationshipTable() {
 	
 	//Modifies
 	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", 
-		"string", "number" }; //
+		"string", "number" }; 
 	arg2 = { "variable", "string", "all" };
 	Relationship r1(2, arg1, arg2);
 	relTable["modifies"] = r1;
 	arg1.clear();
 	arg2.clear();
-	//cout << relTable.find("modifies*")->second.arg1.at(0);
 	
 	//Uses
 	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", 
-		"string", "number" }; //
+		"string", "number" }; 
 	arg2 = { "variable", "string", "all" };
 	Relationship r2(2, arg1, arg2);
 	relTable["uses"] = r2;
@@ -25,24 +23,24 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Parent
-	arg1 = { "stmt", "prog_line", "while", "if", "number", "all" }; //
-	arg2 = { "stmt", "assign", "prog_line", "while", "if" , "call", "number", "all" }; //
+	arg1 = { "stmt", "prog_line", "while", "if", "number", "all" }; 
+	arg2 = { "stmt", "assign", "prog_line", "while", "if" , "call", "number", "all" }; 
 	Relationship r3(2, arg1, arg2);
 	relTable["parent"] = r3;
 	arg1.clear();
 	arg2.clear();
 
 	//Parent*
-	arg1 = { "stmt", "prog_line", "while", "if", "number", "all" }; //
-	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; //
+	arg1 = { "stmt", "prog_line", "while", "if", "number", "all" }; 
+	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; 
 	Relationship r4(2, arg1, arg2);
 	relTable["parent*"] = r4;
 	arg1.clear();
 	arg2.clear();
 
 	//Follows
-	arg1 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; //
-	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; //
+	arg1 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; 
+	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; 
 	Relationship r5(2, arg1, arg2);
 	relTable["follows"] = r5;
 	arg1.clear();

@@ -32,8 +32,16 @@ vector<string> ResultTable::getHeader() {
 	return _header;
 }
 
-vector<vector<int>> ResultTable::getResult() {
+vector<vector<int>> & ResultTable::getContent() {
 	return _result;
+}
+
+void ResultTable::eraseContent(int i) {
+	_result.erase(_result.begin()+i);
+}
+
+size_t ResultTable::getTableSize() {
+	return _result.size();
 }
 
 int ResultTable::getIsWholeTrue() {
@@ -42,4 +50,30 @@ int ResultTable::getIsWholeTrue() {
 
 void ResultTable::setIsWholeTrue(int isWholeTrue) {
 	_isWholeTrue = isWholeTrue;
+}
+
+void ResultTable::logTable(int index) {
+	string str;
+
+	if(index < 0){
+		str += "final table\n";
+	}
+	else {
+		str += "table No." + to_string(index) + "\n";
+	}
+
+	for (auto&x : _header) {
+		str += x + " ";
+	}
+	str += "\n";
+
+	for (auto&x : _result) {
+		for (auto&y : x) {
+			str += to_string(y) + " ";
+		}
+		str += "\n";
+	}
+	str += "--------------------------------\n";
+
+	SPALog::log(str);
 }

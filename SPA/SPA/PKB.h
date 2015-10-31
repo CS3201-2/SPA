@@ -175,10 +175,20 @@ public:
 	bool isNextvalid(int, int);
 	void logNext();
 
-	//Next Star
+	//NextStar
 	list<int> getNextStarFirst(int);
 	list<int> getNextStarSecond(int);
 	bool isNextStarValid(int, int);
+
+	//Affect
+	list<int> getAffectFirst(int);
+	list<int> getAffectSecond(int);
+	bool isAffectValid(int, int);
+
+	//AffectStar
+	list<int> getAffectStarFirst(int);
+	list<int> getAffectStarSecond(int);
+	bool isAffectStarValid(int, int);
 
 private:
 	static PKB* PKBInstance;
