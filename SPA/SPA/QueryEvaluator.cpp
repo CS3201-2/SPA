@@ -2955,8 +2955,8 @@ ResultTable QueryEvaluator::processIfPattern(Clause tempString) {
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
 	string arg2Type = tempString.getVarType().at(1);
-	string syn = tempString.getVar().at(2);
-	string synType = tempString.getVarType().at(2);
+	string syn = tempString.getVar().at(3);
+	string synType = tempString.getVarType().at(3);
 
 	if (arg1Type == "string") {
 		ResultTable tempResult = ResultTable(syn);
