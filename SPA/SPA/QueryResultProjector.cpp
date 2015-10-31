@@ -30,9 +30,10 @@ list<string> QueryResultProjector::getResult() {
 		return resultStringList;
 	}
 
-	vector<int> mergingOrder = getMergingOrder();
+	//vector<int> mergingOrder = getMergingOrder();
 
-	_finalTable = mergeTables(mergingOrder);
+	//_finalTable = mergeTables(mergingOrder);
+	_finalTable = mergeTables();
 	_finalTable.logTable(-1);
 
 	resultStringList = extractResultFromMergedTable();	
@@ -41,12 +42,12 @@ list<string> QueryResultProjector::getResult() {
 }
 
 //assume there is at least one table in _tempTables
-ResultTable QueryResultProjector::mergeTables(vector<int> mergingOrder) {
+ResultTable QueryResultProjector::mergeTables() {
 	ResultTable finalTable, tempTable;
-	finalTable = _tempTables.at(mergingOrder.at(0));
+	finalTable = _tempTables.at(0);
 
-	for (size_t i = 1; i < mergingOrder.size(); ++i) {
-		tempTable = _tempTables.at(mergingOrder.at(i));
+	for (size_t i = 1; i < _tempTables.size(); ++i) {
+		tempTable = _tempTables.at(i);
 		if (finalTable.getTableSize() < tempTable.getTableSize()) {
 			finalTable = mergeTwoTables(finalTable, tempTable);
 		}
@@ -139,6 +140,7 @@ vector<int> QueryResultProjector::getMergingOrder() {
 	}
 
 	if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
+		SPALog::log("add map to boolean");
 		for (map<int, vector<string>>::iterator it = headerMap.begin(); it != headerMap.end(); ++it) {
 			mergingOrder.push_back((*it).first);
 		}

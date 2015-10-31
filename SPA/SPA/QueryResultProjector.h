@@ -31,7 +31,7 @@ private:
 	vector<ResultTable> _tempTables;
 	ResultTable _finalTable;
 	
-	ResultTable mergeTables(vector<int>);
+	ResultTable mergeTables();
 	ResultTable mergeTwoTables(ResultTable, ResultTable);
 	vector<int> getMergingOrder();
 	void countHeader();
