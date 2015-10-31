@@ -626,3 +626,29 @@ list<int> PKB::getNextStarSecond(int first) {
 bool PKB::isNextStarValid(int first, int second) {
 	return cfg.isNextStarValid(first, second);
 }
+
+//Affect
+list<int> PKB::getAffectFirst(int second) {
+	return list<int>();
+}
+
+list<int> PKB::getAffectSecond(int first) {
+	return list<int>();
+}
+
+bool PKB::isAffectValid(int first, int second) {
+	return true;
+}
+
+//AffectStar
+list<int> PKB::getAffectStarFirst(int second) {
+	return list<int>();
+}
+
+list<int> PKB::getAffectStarSecond(int first) {
+	return list<int>();
+}
+
+bool PKB::isAffectStarValid(int first, int second) {
+	return true;
+}

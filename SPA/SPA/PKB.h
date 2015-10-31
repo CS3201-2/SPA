@@ -175,10 +175,20 @@ public:
 	bool isNextvalid(int, int);
 	void logNext();
 
-	//Next Star
+	//NextStar
 	list<int> getNextStarFirst(int);
 	list<int> getNextStarSecond(int);
 	bool isNextStarValid(int, int);
+
+	//Affect
+	list<int> getAffectFirst(int);
+	list<int> getAffectSecond(int);
+	bool isAffectValid(int, int);
+
+	//AffectStar
+	list<int> getAffectStarFirst(int);
+	list<int> getAffectStarSecond(int);
+	bool isAffectStarValid(int, int);
 
 private:
 	static PKB* PKBInstance;
@@ -195,6 +205,7 @@ private:
 	Calls calls;
 	CallsStar callsStar;
 	CFG cfg;
+	Affect affect;
 	list<int> whileStmtList;
 	list<int> assignStmtList;
 	list<int> callStmtList;
