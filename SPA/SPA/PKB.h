@@ -181,14 +181,14 @@ public:
 	bool isNextStarValid(int, int);
 
 	//Affect
-	list<int> getAffectFirst(int);
-	list<int> getAffectSecond(int);
-	bool isAffectValid(int, int);
+	list<int> getAffectsFirst(int);
+	list<int> getAffectsSecond(int);
+	bool isAffectsValid(int, int);
 
 	//AffectStar
-	list<int> getAffectStarFirst(int);
-	list<int> getAffectStarSecond(int);
-	bool isAffectStarValid(int, int);
+	list<int> getAffectsStarFirst(int);
+	list<int> getAffectsStarSecond(int);
+	bool isAffectsStarValid(int, int);
 
 private:
 	static PKB* PKBInstance;

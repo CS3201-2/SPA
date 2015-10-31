@@ -346,6 +346,12 @@ bool QueryEvaluator::processSuchThatClause(Clause tempString) {
 	else if (relationship == "next*") {
 		tempResult = processNextStar(tempString);
 	}
+	else if (relationship == "affects") {
+		//tempResult = processAffects(tempString);
+	}
+	else if (relationship == "affects*") {
+		//tempResult = processAffectsStar(tempString);
+	}
 	else {
 		SPALog::log("Wrong relationship!");
 		return false;
@@ -404,6 +410,12 @@ bool QueryEvaluator::processSuchThatConstClause(Clause tempString) {
 	}
 	else if (relationship == "next*") {
 		tempResult = processNextStar(tempString);
+	}
+	else if (relationship == "affects") {
+		//tempResult = processAffects(tempString);
+	}
+	else if (relationship == "affects*") {
+		//tempResult = processAffectsStar(tempString);
 	}
 	else {
 		SPALog::log("Wrong relationship!");

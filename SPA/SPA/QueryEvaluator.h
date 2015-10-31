@@ -43,6 +43,8 @@ private:
 	ResultTable processCallsStar(Clause tempString);
 	ResultTable processNext(Clause tempString);
 	ResultTable processNextStar(Clause tempString);
+	ResultTable processAffects(Clause tempString);
+	ResultTable processAffectsStar(Clause tempString);
 
 	bool processSuchThatClause(Clause tempString);
 	bool processSuchThatConstClause(Clause tempString);
