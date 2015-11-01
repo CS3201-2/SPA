@@ -145,40 +145,40 @@ bool QueryEvaluator::processSuchThatClause(Clause tempString, bool useful) {
 	ResultTable tempResult;
 
 	if (relationship == "modifies") {
-		tempResult = processModifies(tempString);
+		tempResult = processModifies(tempString, useful);
 	}
 	else if (relationship == "uses") {
-		tempResult = processUses(tempString);
+		tempResult = processUses(tempString, useful);
 	}
 	else if (relationship == "parent") {
-		tempResult = processParent(tempString);
+		tempResult = processParent(tempString, useful);
 	}
 	else if (relationship == "follows") {
-		tempResult = processFollows(tempString);
+		tempResult = processFollows(tempString, useful);
 	}
 	else if (relationship == "parent*") {
-		tempResult = processParentStar(tempString);
+		tempResult = processParentStar(tempString, useful);
 	}
 	else if (relationship == "follows*") {
-		tempResult = processFollowsStar(tempString);
+		tempResult = processFollowsStar(tempString, useful);
 	}
 	else if (relationship == "calls") {
-		tempResult = processCalls(tempString);
+		tempResult = processCalls(tempString, useful);
 	}
 	else if (relationship == "calls*") {
-		tempResult = processCallsStar(tempString);
+		tempResult = processCallsStar(tempString, useful);
 	}
 	else if (relationship == "next") {
-		tempResult = processNext(tempString);
+		tempResult = processNext(tempString, useful);
 	}
 	else if (relationship == "next*") {
-		tempResult = processNextStar(tempString);
+		tempResult = processNextStar(tempString, useful);
 	}
 	else if (relationship == "affects") {
-		tempResult = processAffects(tempString);
+		tempResult = processAffects(tempString, useful);
 	}
 	else if (relationship == "affects*") {
-		tempResult = processAffectsStar(tempString);
+		tempResult = processAffectsStar(tempString, useful);
 	}
 	else {
 		SPALog::log("Wrong relationship!");
@@ -211,40 +211,40 @@ bool QueryEvaluator::processSuchThatConstClause(Clause tempString, bool useful) 
 	ResultTable tempResult;
 
 	if (relationship == "modifies") {
-		tempResult = processModifies(tempString);
+		tempResult = processModifies(tempString, useful);
 	}
 	else if (relationship == "uses") {
-		tempResult = processUses(tempString);
+		tempResult = processUses(tempString, useful);
 	}
 	else if (relationship == "parent") {
-		tempResult = processParent(tempString);
+		tempResult = processParent(tempString, useful);
 	}
 	else if (relationship == "follows") {
-		tempResult = processFollows(tempString);
+		tempResult = processFollows(tempString, useful);
 	}
 	else if (relationship == "parent*") {
-		tempResult = processParentStar(tempString);
+		tempResult = processParentStar(tempString, useful);
 	}
 	else if (relationship == "follows*") {
-		tempResult = processFollowsStar(tempString);
+		tempResult = processFollowsStar(tempString, useful);
 	}
 	else if (relationship == "calls") {
-		tempResult = processCalls(tempString);
+		tempResult = processCalls(tempString, useful);
 	}
 	else if (relationship == "calls*") {
-		tempResult = processCallsStar(tempString);
+		tempResult = processCallsStar(tempString, useful);
 	}
 	else if (relationship == "next") {
-		tempResult = processNext(tempString);
+		tempResult = processNext(tempString, useful);
 	}
 	else if (relationship == "next*") {
-		tempResult = processNextStar(tempString);
+		tempResult = processNextStar(tempString, useful);
 	}
 	else if (relationship == "affects") {
-		tempResult = processAffects(tempString);
+		tempResult = processAffects(tempString, useful);
 	}
 	else if (relationship == "affects*") {
-		tempResult = processAffectsStar(tempString);
+		tempResult = processAffectsStar(tempString, useful);
 	}
 	else {
 		SPALog::log("Wrong relationship!");
@@ -386,7 +386,7 @@ void QueryEvaluator::updateMidResult(ResultTable newResult) {
 	return;
 }
 
-ResultTable QueryEvaluator::processModifies(Clause tempString) {
+ResultTable QueryEvaluator::processModifies(Clause tempString, bool useful) {
 
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -449,9 +449,14 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 			
@@ -473,8 +478,13 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg1Type == "string") {
@@ -492,8 +502,13 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -508,9 +523,14 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 					temp.push_back(*j);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -563,9 +583,14 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -577,7 +602,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 	
 }
 
-ResultTable QueryEvaluator::processUses(Clause tempString) {
+ResultTable QueryEvaluator::processUses(Clause tempString, bool useful) {
 
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -640,9 +665,14 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -663,8 +693,13 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg1Type == "string") {
@@ -682,8 +717,13 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -698,9 +738,14 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 					temp.push_back(*j);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -752,9 +797,14 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -766,7 +816,7 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 
 }
 
-ResultTable QueryEvaluator::processParent(Clause tempString) {
+ResultTable QueryEvaluator::processParent(Clause tempString, bool useful) {
 	
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -821,9 +871,14 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -869,9 +924,14 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -891,11 +951,16 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 				temp.push_back(parent);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -907,9 +972,14 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -929,16 +999,21 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 }
 
-ResultTable QueryEvaluator::processFollows(Clause tempString) {
+ResultTable QueryEvaluator::processFollows(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -989,8 +1064,13 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 				temp.push_back(littleBrother);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1036,9 +1116,14 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -1058,11 +1143,16 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 				temp.push_back(brother);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -1074,9 +1164,14 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -1095,16 +1190,21 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 					temp.push_back(littleBrother);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 
 }
 
-ResultTable QueryEvaluator::processParentStar(Clause tempString) {
+ResultTable QueryEvaluator::processParentStar(Clause tempString, bool useful) {
 
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -1161,9 +1261,14 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -1210,9 +1315,14 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -1235,13 +1345,18 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1254,9 +1369,14 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1277,16 +1397,21 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 }
 
-ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
+ResultTable QueryEvaluator::processFollowsStar(Clause tempString, bool useful) {
 
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -1340,9 +1465,14 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1389,9 +1519,14 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -1414,13 +1549,18 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1433,9 +1573,14 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1456,18 +1601,23 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 				
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 
 }
 
-ResultTable QueryEvaluator::processCalls(Clause tempString) {
+ResultTable QueryEvaluator::processCalls(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -1521,8 +1671,13 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1549,8 +1704,13 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -1563,9 +1723,14 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "procedure") {
@@ -1585,9 +1750,14 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -1643,9 +1813,14 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -1661,7 +1836,7 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 
 }
 
-ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
+ResultTable QueryEvaluator::processCallsStar(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -1713,8 +1888,13 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -1740,8 +1920,13 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -1754,9 +1939,14 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "procedure") {
@@ -1776,9 +1966,14 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -1834,9 +2029,14 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -1851,7 +2051,7 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 
 }
 
-ResultTable QueryEvaluator::processNext(Clause tempString){
+ResultTable QueryEvaluator::processNext(Clause tempString, bool useful){
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -1906,9 +2106,14 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1956,9 +2161,14 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -1985,9 +2195,14 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -1999,9 +2214,14 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -2021,17 +2241,22 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 				
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 }
 
-ResultTable QueryEvaluator::processNextStar(Clause tempString) {
+ResultTable QueryEvaluator::processNextStar(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -2089,9 +2314,14 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2139,9 +2369,14 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -2164,13 +2399,18 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2183,9 +2423,14 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2202,16 +2447,21 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 }
 
-ResultTable QueryEvaluator::processAffects(Clause tempString) {
+ResultTable QueryEvaluator::processAffects(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -2263,9 +2513,14 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2313,9 +2568,14 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -2342,9 +2602,14 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -2356,9 +2621,14 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -2374,17 +2644,22 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 }
 
-ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
+ResultTable QueryEvaluator::processAffectsStar(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -2437,9 +2712,14 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2487,9 +2767,14 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -2512,13 +2797,18 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2531,9 +2821,14 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2550,10 +2845,15 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}

@@ -33,18 +33,18 @@ private:
 
 	
 
-	ResultTable processModifies(Clause tempString);
-	ResultTable processUses(Clause tempString);
-	ResultTable processParent(Clause tempString);
-	ResultTable processFollows(Clause tempString);
-	ResultTable processParentStar(Clause tempString);
-	ResultTable processFollowsStar(Clause tempString);
-	ResultTable processCalls(Clause tempString);
-	ResultTable processCallsStar(Clause tempString);
-	ResultTable processNext(Clause tempString);
-	ResultTable processNextStar(Clause tempString);
-	ResultTable processAffects(Clause tempString);
-	ResultTable processAffectsStar(Clause tempString);
+	ResultTable processModifies(Clause tempString, bool useful);
+	ResultTable processUses(Clause tempString, bool useful);
+	ResultTable processParent(Clause tempString, bool useful);
+	ResultTable processFollows(Clause tempString, bool useful);
+	ResultTable processParentStar(Clause tempString, bool useful);
+	ResultTable processFollowsStar(Clause tempString, bool useful);
+	ResultTable processCalls(Clause tempString, bool useful);
+	ResultTable processCallsStar(Clause tempString, bool useful);
+	ResultTable processNext(Clause tempString, bool useful);
+	ResultTable processNextStar(Clause tempString, bool useful);
+	ResultTable processAffects(Clause tempString, bool useful);
+	ResultTable processAffectsStar(Clause tempString, bool useful);
 
 	bool processClause(Clause tempString, bool isUseful, bool noVar);
 
