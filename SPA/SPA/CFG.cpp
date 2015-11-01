@@ -464,8 +464,8 @@ void CFG::updateVector(int position, int value, vector<list<int>>& temp)
 void CFG::storeNextTable()
 {
 	list<int> empty;
-	_nextTable.resize(_codeLst.size(), empty);
-	_beforeTable.resize(_codeLst.size(), empty);
+	_nextTable.resize(_codeLst.size()+1, empty);
+	_beforeTable.resize(_codeLst.size()+1, empty);
 	for (int i = 0; i < _next.size(); i++)
 	{
 		try {
