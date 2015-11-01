@@ -27,25 +27,25 @@ QueryEvaluator::QueryEvaluator(QueryTree qt) {
 bool QueryEvaluator::processClause(Clause tempString, bool isUseful, bool noVar) {
 	string rel = tempString.getRelationship();
 	if (rel == "select") {
-		processSelectClause(tempString, isUseful);
+		return processSelectClause(tempString, isUseful);
 	}
 	else if (rel == "assign" || rel == "while" || rel == "if") {
-		processPatternClause(tempString, isUseful);
+		return processPatternClause(tempString, isUseful);
 	}
 	else if (rel =="withName" || rel =="withNumber") {
 		if (noVar) {
-			processWithConstClause(tempString, isUseful);
+			return processWithConstClause(tempString, isUseful);
 		}
 		else {
-			processWithClause(tempString, isUseful);
+			return processWithClause(tempString, isUseful);
 		}
 	}
 	else {
 		if (noVar) {
-			processSuchThatConstClause(tempString, isUseful);
+			return processSuchThatConstClause(tempString, isUseful);
 		}
 		else {
-			processSuchThatClause(tempString, isUseful);
+			return processSuchThatClause(tempString, isUseful);
 		}
 	}
 }
@@ -55,7 +55,7 @@ list<string> QueryEvaluator::evaluate() {
 
 	// first evaluate useful no var query
 	int index;
-	Clause selectClause = queryTree.getSelectTree().at(0);
+	Clause selectClause = queryTree.getSelectClause();
 
 	vector<Clause> usefulNoVarTree = queryTree.getUsefulNoVarTree();
 	vector<Clause> usefulOneVarTree = queryTree.getUsefulOneVarTree();
