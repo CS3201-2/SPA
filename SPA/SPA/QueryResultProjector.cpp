@@ -44,7 +44,10 @@ list<string> QueryResultProjector::getResult() {
 		}
 	}
 	else {
-		vector<int> mergingOrder = getMergingOrderNonBoolean();
+		vector<int> mergingOrder;
+		for (size_t i = 0; i < _tempTables.size(); ++i) {
+			mergingOrder.push_back(i);
+		}
 		_finalTable = mergeTables(mergingOrder);
 		_finalTable.logTable(-1);
 		resultStringList = extractResultFromMergedTable();
@@ -90,17 +93,6 @@ int QueryResultProjector::find(int i) {
 void QueryResultProjector::merge(int i, int j) {
 	int u = find(i), v = find(j);
 	_parent[u] = v;
-}
-
-vector<int> QueryResultProjector::getMergingOrderNonBoolean() {
-	vector<int> mergingOrder;
-	for (size_t i = 0; i < _parent.size(); ++i) {
-		if (_parent[i] == _parent.size() - 1) {
-			mergingOrder.push_back(i);
-		}
-	}
-
-	return mergingOrder;
 }
 
 map<int, vector<int>> QueryResultProjector::getMergingOrderBoolean() {

@@ -26,7 +26,6 @@ private:
 
 	ResultTable mergeTables(vector<int>);
 	ResultTable mergeTwoTables(ResultTable, ResultTable);
-	vector<int> getMergingOrderNonBoolean();
 	map<int, vector<int>> getMergingOrderBoolean();
 	void countHeader();
 	vector<int> getSelectIDsInFinalTable(vector<string>);
