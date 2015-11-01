@@ -442,5 +442,32 @@ namespace UnitTest {
 			actual.sort();
 			Assert::IsTrue(expect == actual);
 		}
+
+		TEST_METHOD(testAffectFirst)
+		{
+			Affect af;
+			list<int> expect;
+			list<int> actual;
+
+			expect = { 16 };
+			actual = af.getAffectFirst(17);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+
+			expect = { 4,7 };
+			actual = af.getAffectFirst(7);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+
+			expect = { 4,7,11,12 };
+			actual = af.getAffectFirst(13);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+
+			expect = { };
+			actual = af.getAffectFirst(12);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+		}
 	};
 }
