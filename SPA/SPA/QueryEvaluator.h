@@ -46,19 +46,21 @@ private:
 	ResultTable processAffects(Clause tempString);
 	ResultTable processAffectsStar(Clause tempString);
 
-	bool processSuchThatClause(Clause tempString);
-	bool processSuchThatConstClause(Clause tempString);
-	bool processPatternClause(Clause tempString);
-	bool processWithClause(Clause tempString);
-	bool processWithConstClause(Clause tempString);
-	bool processSelectClause(Clause tempString);
+	bool processClause(Clause tempString, bool isUseful, bool noVar);
 
-	ResultTable processNumberWith(Clause tempString);
-	ResultTable processNameWith(Clause tempString);
+	bool processSuchThatClause(Clause tempString, bool useful);
+	bool processSuchThatConstClause(Clause tempString, bool useful);
+	bool processPatternClause(Clause tempString, bool useful);
+	bool processWithClause(Clause tempString, bool useful);
+	bool processWithConstClause(Clause tempString, bool useful);
+	bool processSelectClause(Clause tempString, bool useful);
 
-	ResultTable processAssignPattern(Clause tempString);
-	ResultTable processWhilePattern(Clause tempString);
-	ResultTable processIfPattern(Clause tempString);
+	ResultTable processNumberWith(Clause tempString, bool useful);
+	ResultTable processNameWith(Clause tempString, bool useful);
+
+	ResultTable processAssignPattern(Clause tempString, bool useful);
+	ResultTable processWhilePattern(Clause tempString, bool useful);
+	ResultTable processIfPattern(Clause tempString, bool useful);
 };
 
 #endif
