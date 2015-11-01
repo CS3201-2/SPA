@@ -2997,10 +2997,10 @@ bool QueryEvaluator::processWithClause(Clause tempString, bool useful) {
 	ResultTable tempResult;
 
 	if (synType == "withNumber") {
-		tempResult = processNumberWith(tempString);
+		tempResult = processNumberWith(tempString, useful);
 	}
 	else if (synType == "withName") {
-		tempResult = processNameWith(tempString);
+		tempResult = processNameWith(tempString, useful);
 	}
 	else {
 		SPALog::log("Wrong with type!");
@@ -3036,10 +3036,10 @@ bool QueryEvaluator::processWithConstClause(Clause tempString, bool useful) {
 	ResultTable tempResult;
 
 	if (synType == "withNumber") {
-		tempResult = processNumberWith(tempString);
+		tempResult = processNumberWith(tempString, useful);
 	}
 	else if (synType == "withName") {
-		tempResult = processNameWith(tempString);
+		tempResult = processNameWith(tempString, useful);
 	}
 	else {
 		SPALog::log("Wrong with type!");
@@ -3055,7 +3055,7 @@ bool QueryEvaluator::processWithConstClause(Clause tempString, bool useful) {
 	
 }
 
-ResultTable QueryEvaluator::processNameWith(Clause tempString) {
+ResultTable QueryEvaluator::processNameWith(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -3077,8 +3077,13 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "call") {
@@ -3092,8 +3097,14 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
+			
 			return tempResult;
 		}
 		else if (arg2Type == "variable") {
@@ -3110,10 +3121,15 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "string") {
@@ -3126,9 +3142,14 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -3148,8 +3169,13 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 				temp.push_back(procID);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "call") {
@@ -3169,11 +3195,16 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 					
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "variable") {
@@ -3191,11 +3222,16 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "string") {
@@ -3209,9 +3245,14 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -3234,10 +3275,15 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "call") {
@@ -3255,10 +3301,15 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "variable") {
@@ -3274,8 +3325,13 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "string") {
@@ -3288,9 +3344,14 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -3309,9 +3370,14 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "call") {
@@ -3325,9 +3391,14 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "variable") {
@@ -3340,9 +3411,14 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "string") {
@@ -3368,7 +3444,7 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 
 }
 
-ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
+ResultTable QueryEvaluator::processNumberWith(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -3388,8 +3464,13 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "number") {
@@ -3403,7 +3484,9 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 			temp.push_back(stoi(arg2));
 			tempResult.addTuple(temp);
 			temp.clear();
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -3418,10 +3501,15 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -3437,7 +3525,9 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 			temp.push_back(stoi(arg1));
 			tempResult.addTuple(temp);
 			temp.clear();
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "number") {
@@ -3463,8 +3553,13 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 				temp.push_back(stoi(arg1));
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -3483,10 +3578,15 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "number") {
@@ -3497,8 +3597,13 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 				temp.push_back(stoi(arg2));
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -3516,11 +3621,16 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 				
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}

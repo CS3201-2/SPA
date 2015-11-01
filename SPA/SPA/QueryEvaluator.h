@@ -55,8 +55,8 @@ private:
 	bool processWithConstClause(Clause tempString, bool useful);
 	bool processSelectClause(Clause tempString, bool useful);
 
-	ResultTable processNumberWith(Clause tempString);
-	ResultTable processNameWith(Clause tempString);
+	ResultTable processNumberWith(Clause tempString, bool useful);
+	ResultTable processNameWith(Clause tempString, bool useful);
 
 	ResultTable processAssignPattern(Clause tempString, bool useful);
 	ResultTable processWhilePattern(Clause tempString, bool useful);
