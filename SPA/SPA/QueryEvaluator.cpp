@@ -52,7 +52,7 @@ bool QueryEvaluator::processClause(Clause tempString, bool isUseful, bool noVar)
 
 // entry function for controller;
 list<string> QueryEvaluator::evaluate() {
-
+	queryTree.grouping();
 	// first evaluate useful no var query
 	int index;
 	Clause selectClause = queryTree.getSelectClause();
@@ -62,6 +62,13 @@ list<string> QueryEvaluator::evaluate() {
 	vector<Clause> usefulTwoVarTree = queryTree.getUsefulTwoVarTree();
 	vector<Clause> uselessOneVarTree = queryTree.getUselessOneVarTree();
 	vector<Clause> uselessTwoVarTree = queryTree.getUselessTwoVarTree();
+	string str;
+	str += to_string(usefulNoVarTree.size());
+	str += to_string(usefulOneVarTree.size());
+	str += to_string(usefulTwoVarTree.size());
+	str += to_string(uselessOneVarTree.size());
+	str += to_string(uselessTwoVarTree.size());
+	SPALog::log(str);
 
 	//evaluate no var
 	for (vector<Clause>::iterator i = usefulNoVarTree.begin(); i != usefulNoVarTree.end(); i++) {
