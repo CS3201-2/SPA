@@ -741,6 +741,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 
 	else {
 		SPALog::log("Error: Modifies arg2 wrong type");
+		return ResultTable();
 	}
 	
 }
@@ -929,6 +930,7 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 
 	else {
 		SPALog::log("Error: Uses arg2 wrong type");
+		return ResultTable();
 	}
 
 }
@@ -3222,7 +3224,8 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 			return tempResult;
 		}
 		else {
-
+			SPALog::log("Error: with arg2 wrong type");
+			return ResultTable();
 		}
 	}
 	else if (arg1Type == "call") {
@@ -3304,7 +3307,8 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 			return tempResult;
 		}
 		else {
-
+			SPALog::log("Error: with arg2 wrong type");
+			return ResultTable();
 		}
 	}
 	else if (arg1Type == "variable") {
@@ -3382,7 +3386,8 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 			return tempResult;
 		}
 		else {
-
+			SPALog::log("Error: with arg2 wrong type");
+			return ResultTable();
 		}
 	}
 	else if (arg1Type == "string") {
@@ -3444,11 +3449,13 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 			return tempResult;
 		}
 		else {
-
+			SPALog::log("Error: with arg2 wrong type");
+			return ResultTable();
 		}
 	}
 	else {
-
+		SPALog::log("Error: with arg1 wrong type");
+		return ResultTable();
 	}
 
 }
