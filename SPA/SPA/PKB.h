@@ -40,6 +40,7 @@ public:
 	list<int> getCallList();
 	list<int> getIfList();
 	list<int> getStmtList(); //everything
+	list<int> getStmtLstList();
 	list<int> getParentList(); //while and if list
 	list<int> getConstantList();
 	int getCallStmtProc(int);
@@ -54,6 +55,7 @@ public:
 	void logConstantList();
 	void logParentList();
 	void logStmtList();
+	void logStmtLstList();
 	void logCallStmtProcMap();
 	void buildCFG(list<Statement>);
 	//PKB housekeeping function
@@ -212,6 +214,7 @@ private:
 	list<int> callStmtList;
 	list<int> ifStmtList;
 	list<int> constantList;
+	list<int> stmtLstList;
 	map<int, int> callStmtProcMap;
 	SPALog _log;
 

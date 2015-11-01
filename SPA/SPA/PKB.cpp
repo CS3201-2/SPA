@@ -73,6 +73,7 @@ void PKB::houseKeeping() {
 	ifStmtList.unique();
 	constantList.sort();
 	constantList.unique();
+	stmtLstList.sort();
 }
 
 //general
@@ -87,6 +88,7 @@ void PKB::addStmtToList(int stmtNo, StatementType stmtType) {
 	case procCallStmt: callStmtList.push_back(stmtNo); break;
 	case whileStmt: whileStmtList.push_back(stmtNo); break;
 	case ifStmt: ifStmtList.push_back(stmtNo); break;
+	case stmtLstStmt: stmtLstList.push_back(stmtNo); break;
 	}
 }
 
@@ -132,6 +134,10 @@ list<int> PKB::getCallList() {
 
 list<int> PKB::getIfList() {
 	return ifStmtList;
+}
+
+list<int> PKB::getStmtLstList() {
+	return stmtLstList;
 }
 
 list<int> PKB::getStmtList() {
@@ -234,6 +240,16 @@ void PKB::logStmtList() {
 	string str = "stmt list\n";
 	list<int> stmtList = getStmtList();
 	for (list<int>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
+		str += to_string(*it) + ", ";
+	}
+	str += "\n";
+	SPALog::log(str);
+}
+
+void PKB::logStmtLstList() {
+	string str = "stmtLst list\n";
+	list<int> stmtListList = getStmtLstList();
+	for (list<int>::iterator it = stmtListList.begin(); it != stmtListList.end(); ++it) {
 		str += to_string(*it) + ", ";
 	}
 	str += "\n";
