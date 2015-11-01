@@ -2,6 +2,7 @@
 using namespace std;
 
 const string NO_RELATIONSHIP = "";
+const string SELECT_RELATIONSHIP = "select";
 const int NO_VARIABLE = 0;
 const int ONE_VARIABLE = 1;
 const int TWO_VARIABLE = 2;
@@ -31,7 +32,7 @@ void QueryTree::insertSuchThat(string rel, vector<string> arrVar, vector<string>
 void QueryTree::insertPattern(string syn, string synType, vector<string> arrPtrn, vector<string> ptrnType) {
 	arrPtrn.push_back(syn);
 	ptrnType.push_back(synType);
-	Clause clause = Clause(NO_RELATIONSHIP, arrPtrn, ptrnType);
+	Clause clause = Clause(synType, arrPtrn, ptrnType);
 	if (ptrnType.at(FIRST_TYPE) == VARIABLE_TYPE) {
 		patternOneVarTree.push_back(clause);
 	}
@@ -50,7 +51,7 @@ void QueryTree::insertVariable(string variable, string variableType) {
 }
 
 void QueryTree::insertSelect(vector<string> var, vector<string> varType) {
-	Clause clause = Clause(NO_RELATIONSHIP, var, varType);
+	Clause clause = Clause(SELECT_RELATIONSHIP, var, varType);
 	selectTree.push_back(clause);
 }
 
@@ -59,7 +60,7 @@ void QueryTree::insertSelect(string var, string varType) {
 	varVector.push_back(var);
 	vector<string> varTypeVector;
 	varTypeVector.push_back(varType);
-	Clause clause = Clause(NO_RELATIONSHIP, varVector, varTypeVector);
+	Clause clause = Clause(SELECT_RELATIONSHIP, varVector, varTypeVector);
 	selectTree.push_back(clause);
 }
 

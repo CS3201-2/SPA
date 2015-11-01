@@ -49,5 +49,16 @@ public:
 	vector<Clause> getWithTwoVarTree();
 	vector<Clause> getPatternOneVarTree();
 	vector<Clause> getPatternTwoVarTree();
+
+	//new
+	vector<Clause> getUsefulNoVarTree();
+	vector<Clause> getUsefulOneVarTree();
+	vector<Clause> getUsefulTwoVarTree();
+	vector<Clause> getUselessOneVarTree();
+	vector<Clause> getUselessTwoVarTree();
+
+	//group method
+	void grouping();
+
 };
 #endif
