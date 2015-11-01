@@ -134,7 +134,7 @@ void QueryTree::grouping() {
 			vector<string> temp;
 			for (size_t j = 0; j < var.size(); ++j) {
 				if (varType.at(j) != STRING_TYPE && varType.at(j) != NUMBER_TYPE
-					&& varType.at(j) == "all") {
+					&& varType.at(j) != ALL_TYPE) {
 					temp.push_back(var.at(j));
 				}
 			}
