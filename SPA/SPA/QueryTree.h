@@ -10,16 +10,15 @@ using namespace std;
 
 class QueryTree {
 private:
-	vector<Clause> variableTree;
-	vector<Clause> selectTree;
-	vector<Clause> suchThatNoVarTree;
-	vector<Clause> suchThatOneVarTree;
-	vector<Clause> suchThatTwoVarTree;
-	vector<Clause> withNoVarTree;
-	vector<Clause> withOneVarTree;
-	vector<Clause> withTwoVarTree;
-	vector<Clause> patternOneVarTree;
-	vector<Clause> patternTwoVarTree;
+	vector<Clause> _allClauses;
+	vector<Clause> _variableTree;
+	Clause _selectClause;
+	vector<int> _parent;
+	vector<Clause> _usefulNoVarTree;
+	vector<Clause> _usefulOneVarTree;
+	vector<Clause> _usefulTwoVarTree;
+	vector<Clause> _uselessOneVarTree;
+	vector<Clause> _uselessTwoVarTree;
 
 	int getNumOfVar(vector<string>);
 
@@ -40,17 +39,7 @@ public:
 	void insertWith(string, vector<string>, vector<string>);
 
 	vector<Clause> getVariableTree();
-	vector<Clause> getSelectTree();
-	vector<Clause> getSuchThatNoVarTree();
-	vector<Clause> getSuchThatOneVarTree();
-	vector<Clause> getSuchThatTwoVarTree();
-	vector<Clause> getWithNoVarTree();
-	vector<Clause> getWithOneVarTree();
-	vector<Clause> getWithTwoVarTree();
-	vector<Clause> getPatternOneVarTree();
-	vector<Clause> getPatternTwoVarTree();
-
-	//new
+	Clause getSelectClause();
 	vector<Clause> getUsefulNoVarTree();
 	vector<Clause> getUsefulOneVarTree();
 	vector<Clause> getUsefulTwoVarTree();
@@ -59,6 +48,8 @@ public:
 
 	//group method
 	void grouping();
-
+	int find(int);
+	void merge(int, int);
+	bool hasCommon(vector<string>, vector<string>);
 };
 #endif

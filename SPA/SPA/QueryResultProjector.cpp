@@ -24,6 +24,7 @@ QueryResultProjector::QueryResultProjector(vector<ResultTable> tempTables,
 
 list<string> QueryResultProjector::getResult() {
 	list<string> resultStringList;
+	groupTables();
 
 	if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
 		if (_tempTables.empty()) {
