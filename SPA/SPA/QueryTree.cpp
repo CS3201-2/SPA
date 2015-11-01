@@ -28,11 +28,11 @@ void QueryTree::insertPattern(string syn, string synType, vector<string> arrPtrn
 	arrPtrn.push_back(syn);
 	ptrnType.push_back(synType);
 	if (ptrnType.at(FIRST_TYPE) == VARIABLE_TYPE) {
-		Clause clause = Clause(synType, arrPtrn, ptrnType, ONE_VARIABLE);
+		Clause clause = Clause(synType, arrPtrn, ptrnType, TWO_VARIABLE);
 		_allClauses.push_back(clause);
 	}
 	else {
-		Clause clause = Clause(synType, arrPtrn, ptrnType, TWO_VARIABLE);
+		Clause clause = Clause(synType, arrPtrn, ptrnType, ONE_VARIABLE);
 		_allClauses.push_back(clause);
 	}
 }

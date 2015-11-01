@@ -102,14 +102,6 @@ list<int> Pattern::getAssignWithBothExact(string first, string second) {
 	temp2 = getAssignWithSecondExact(second);
 	set_intersection(temp1.begin(), temp1.end(), temp2.begin(), temp2.end(), back_inserter(result));
 	return result;
-
-	/*for (list<int>::iterator it = temp.begin(); it != temp.end(); ++it) {
-		if (assignMap.at(*it).second == secondPostFix) {
-			result.push_back(*it);
-		}
-	}
-
-	return result;*/
 }
 
 list<int> Pattern::getAssignWithBoth(string first, string second) {
@@ -121,18 +113,6 @@ list<int> Pattern::getAssignWithBoth(string first, string second) {
 	temp2 = getAssignWithSecond(second);
 	set_intersection(temp1.begin(), temp1.end(), temp2.begin(), temp2.end(), back_inserter(result));
 	return result;
-	/*
-
-	list<string> varList = getFirstVar(trimmedSecond);
-	temp = mergeList(varList);
-
-	for (list<int>::iterator it = temp.begin(); it != temp.end(); ++it) {
-		if (assignMap.at(*it).second.find(secondPostFix) != string::npos) {
-			result.push_back(*it);
-		}
-	}
-
-	return result;*/
 }
 
 list<int> Pattern::getIfWithFirstExact(string first) {
