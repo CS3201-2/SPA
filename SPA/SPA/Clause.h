@@ -11,14 +11,18 @@ private:
 	vector<string> _var;
 	vector<string> _varType;
 	int _index;
+	int _numOfVar;
 
 public:
+	Clause();
 	Clause(string, vector<string>, vector<string>);
+	Clause(string, vector<string>, vector<string>, int);
 	string getRelationship();
 	vector<string> getVar();
 	vector<string> getVarType();
 	void setIndex(int);
 	int getIndex();
+	int getNumOfVar();
 };
 
 #endif
