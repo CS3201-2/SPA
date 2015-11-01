@@ -312,6 +312,9 @@ list<int> QueryEvaluator::getList(string arr, string arrType) {
 	else if (arrType == "variable") {
 		return PKB::getPKBInstance()->getVarList();
 	}
+	else if (arrType == "stmtLst") {
+		return PKB::getPKBInstance()->getStmtLstList();
+	}
 	else {
 		list<int> emptyList;
 		SPALog::log("Wrong list type!");
