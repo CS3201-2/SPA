@@ -63,11 +63,11 @@ list<string> QueryEvaluator::evaluate() {
 	vector<Clause> uselessOneVarTree = queryTree.getUselessOneVarTree();
 	vector<Clause> uselessTwoVarTree = queryTree.getUselessTwoVarTree();
 	string str;
-	str += to_string(usefulNoVarTree.size());
-	str += to_string(usefulOneVarTree.size());
-	str += to_string(usefulTwoVarTree.size());
-	str += to_string(uselessOneVarTree.size());
-	str += to_string(uselessTwoVarTree.size());
+	str += "size of 0 var useful: " + to_string(usefulNoVarTree.size());
+	str += "\nsize of 1 var useful: " + to_string(usefulOneVarTree.size());
+	str += "\nsize of 2 var useful: " + to_string(usefulTwoVarTree.size());
+	str += "\nsize of 1 var useless: " + to_string(uselessOneVarTree.size());
+	str += "\nsize of 2 var useless: " + to_string(uselessTwoVarTree.size());
 	SPALog::log(str);
 
 	//evaluate no var
