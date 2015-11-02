@@ -5,7 +5,7 @@ RelationshipTable::RelationshipTable() {
 	vector<string> arg2;
 	
 	//Modifies
-	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", 
+	arg1 = { "stmt", "stmtlst", "assign", "while", "prog_line", "if", "call", "procedure", 
 		"string", "number" }; 
 	arg2 = { "variable", "string", "all" };
 	Relationship r1(2, arg1, arg2);
@@ -14,7 +14,7 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 	
 	//Uses
-	arg1 = { "stmt", "assign", "while", "prog_line", "if", "call", "procedure", 
+	arg1 = { "stmt", "stmtlst", "assign", "while", "prog_line", "if", "call", "procedure",
 		"string", "number" }; 
 	arg2 = { "variable", "string", "all" };
 	Relationship r2(2, arg1, arg2);
@@ -23,32 +23,32 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Parent
-	arg1 = { "stmt", "prog_line", "while", "if", "number", "all" }; 
-	arg2 = { "stmt", "assign", "prog_line", "while", "if" , "call", "number", "all" }; 
+	arg1 = { "stmt", "stmtlst", "prog_line", "while", "if", "number", "all" };
+	arg2 = { "stmt", "stmtlst", "assign", "prog_line", "while", "if" , "call", "number", "all" };
 	Relationship r3(2, arg1, arg2);
 	relTable["parent"] = r3;
 	arg1.clear();
 	arg2.clear();
 
 	//Parent*
-	arg1 = { "stmt", "prog_line", "while", "if", "number", "all" }; 
-	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; 
+	arg1 = { "stmt", "stmtlst", "prog_line", "while", "if", "number", "all" };
+	arg2 = { "stmt", "stmtlst", "assign", "prog_line", "while", "if", "call", "number", "all" };
 	Relationship r4(2, arg1, arg2);
 	relTable["parent*"] = r4;
 	arg1.clear();
 	arg2.clear();
 
 	//Follows
-	arg1 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; 
-	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" }; 
+	arg1 = { "stmt", "stmtlst", "assign", "prog_line", "while", "if", "call", "number", "all" };
+	arg2 = { "stmt", "stmtlst", "assign", "prog_line", "while", "if", "call", "number", "all" };
 	Relationship r5(2, arg1, arg2);
 	relTable["follows"] = r5;
 	arg1.clear();
 	arg2.clear();
 
 	//Follows*
-	arg1 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" };
-	arg2 = { "stmt", "assign", "prog_line", "while", "if", "call", "number", "all" };
+	arg1 = { "stmt", "stmtlst", "assign", "prog_line", "while", "if", "call", "number", "all" };
+	arg2 = { "stmt", "stmtlst", "assign", "prog_line", "while", "if", "call", "number", "all" };
 	Relationship r6(2, arg1, arg2);
 	relTable["follows*"] = r6;
 	arg1.clear();
@@ -79,16 +79,16 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Next
-	arg1 = { "stmt", "assign", "while", "if", "call", "prog_line", "number", "all" };
-	arg2 = { "stmt", "assign", "while", "if", "call", "prog_line", "number", "all" };
+	arg1 = { "stmt", "stmtlst", "assign", "while", "if", "call", "prog_line", "number", "all" };
+	arg2 = { "stmt", "stmtlst", "assign", "while", "if", "call", "prog_line", "number", "all" };
 	Relationship r10(2, arg1, arg2);
 	relTable["next"] = r10;
 	arg1.clear();
 	arg2.clear();
 
 	//Next*
-	arg1 = { "stmt", "assign", "while", "if", "call", "prog_line", "number", "all" };
-	arg2 = { "stmt", "assign", "while", "if", "call", "prog_line", "number", "all" };
+	arg1 = { "stmt", "stmtlst", "assign", "while", "if", "call", "prog_line", "number", "all" };
+	arg2 = { "stmt", "stmtlst", "assign", "while", "if", "call", "prog_line", "number", "all" };
 	Relationship r11(2, arg1, arg2);
 	relTable["next*"] = r11;
 	arg1.clear();
@@ -119,17 +119,17 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Affects*
-	arg1 = { "prog_line", "stmt", "assign", "number", "all" };
-	arg2 = { "prog_line", "stmt", "assign", "number", "all" };
+	arg1 = { "prog_line", "stmt", "stmtlst", "assign", "number", "all" };
+	arg2 = { "prog_line", "stmt", "stmtlst", "assign", "number", "all" };
 	Relationship r15(2, arg1, arg2);
 	relTable["affects*"] = r15;
 	arg1.clear();
 	arg2.clear();
 
 	//WithNumber
-	arg1 = { "constant", "stmt", "assign", "while", "if", "call", "number", 
+	arg1 = { "constant", "stmt","stmtlst",  "assign", "while", "if", "call", "number",
 		"prog_line" };
-	arg2 = { "constant", "stmt", "assign", "while", "if", "call", "number", 
+	arg2 = { "constant", "stmt", "stmtlst", "assign", "while", "if", "call", "number",
 		"prog_line" };
 	Relationship r16(2, arg1, arg2);
 	relTable["withNumber"] = r16;

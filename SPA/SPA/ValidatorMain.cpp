@@ -32,11 +32,19 @@ int main() {
 		str25 = "assign a; Select a pattern a(_, _\"(f - d + b) - l\"_))",
 		str26 = "while w; assign a; Select w such that Follows(w, a)",
 		str27 = "assign a; if ifs; variable v; Select a such that Modifies(a, v) pattern ifs(v,_,_)",
-		str28 = "stmt s; Select s";
+		str28 = "stmt s; Select s",
+		str29 = "assign a1, a2, a3; stmt s1,s2,s3; variable v1, v2, v3; "
+		"Select <a1, s1, v2> such that Uses(5, \"y\") and Follows(3, 4) pattern a1(v2, _\"x + y\"_) "
+		"such that Affects(a1, a2) with a2.stmt#  = 20 such that Modifies(a3, v3) pattern a3(\"z\", _) "
+		"such that Uses(s3, v1) and Modifies(s3, \"x\") and Follows(s1, s2) and Parent(3, s1) and Uses(s2, v1)",
+		str30 = "Select BOOLEAN such that Affects(3, 9)",
+		str31 = "while w; call calls; Select w such that Next(calls, w) and Parent(w, 9)",
+		str32 = "assign a1, a2; stmtLst s; Select s such that Modifies(a1, \"x\") and Modifies(a2, \"x\") and Follows(a1, a2)",
+		str33 = "assign a; while w; Select a pattern a(_, _\"haha\"_) such that Parent*(w,a)";
 
-	//cout << str << "\n";
+	//cout << str29 << "\n";
 
-	q.isValidDecAndQuery(str28);
+	q.isValidDecAndQuery(str33);
 	//cout << q.isValidExpression("x23*123-7y")<<endl; //0
 	//cout << q.isValidExpression("123+-x23*123") << endl; //0
 	//cout << q.isValidExpression("(x+123+y)") << endl; //1
