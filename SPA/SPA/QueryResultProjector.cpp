@@ -74,12 +74,7 @@ ResultTable QueryResultProjector::mergeTables() {
 
 	for (size_t i = 1; i < _tempTables.size(); ++i) {
 		tempTable = _tempTables.at(i);
-		if (finalTable.getTableSize() < tempTable.getTableSize()) {
-			finalTable = mergeTwoTables(finalTable, tempTable);
-		}
-		else {
-			finalTable = mergeTwoTables(tempTable, finalTable);
-		}
+		finalTable = mergeTwoTables(finalTable, tempTable);
 
 		if (finalTable.getTableSize() == EMPTY_TABLE) {
 			return ResultTable();
@@ -106,6 +101,7 @@ void QueryResultProjector::countHeader() {
 
 ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2) {
 	//r1 is always the table to be hashed into the unordered map
+	//size of header of r2 can only be 1 or 2
 	unordered_map<int, list<vector<int>>> hashedMap;
 	vector<string> cHeaders, rHeader, header1 = r1.getHeader(), header2 = r2.getHeader();
 	vector<vector<int>> rContent, content1 = r1.getContent(), content2 = r2.getContent();
