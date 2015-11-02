@@ -33,32 +33,34 @@ private:
 
 	
 
-	ResultTable processModifies(Clause tempString);
-	ResultTable processUses(Clause tempString);
-	ResultTable processParent(Clause tempString);
-	ResultTable processFollows(Clause tempString);
-	ResultTable processParentStar(Clause tempString);
-	ResultTable processFollowsStar(Clause tempString);
-	ResultTable processCalls(Clause tempString);
-	ResultTable processCallsStar(Clause tempString);
-	ResultTable processNext(Clause tempString);
-	ResultTable processNextStar(Clause tempString);
-	ResultTable processAffects(Clause tempString);
-	ResultTable processAffectsStar(Clause tempString);
+	ResultTable processModifies(Clause tempString, bool useful);
+	ResultTable processUses(Clause tempString, bool useful);
+	ResultTable processParent(Clause tempString, bool useful);
+	ResultTable processFollows(Clause tempString, bool useful);
+	ResultTable processParentStar(Clause tempString, bool useful);
+	ResultTable processFollowsStar(Clause tempString, bool useful);
+	ResultTable processCalls(Clause tempString, bool useful);
+	ResultTable processCallsStar(Clause tempString, bool useful);
+	ResultTable processNext(Clause tempString, bool useful);
+	ResultTable processNextStar(Clause tempString, bool useful);
+	ResultTable processAffects(Clause tempString, bool useful);
+	ResultTable processAffectsStar(Clause tempString, bool useful);
 
-	bool processSuchThatClause(Clause tempString);
-	bool processSuchThatConstClause(Clause tempString);
-	bool processPatternClause(Clause tempString);
-	bool processWithClause(Clause tempString);
-	bool processWithConstClause(Clause tempString);
-	bool processSelectClause(Clause tempString);
+	bool processClause(Clause tempString, bool isUseful, bool noVar);
 
-	ResultTable processNumberWith(Clause tempString);
-	ResultTable processNameWith(Clause tempString);
+	bool processSuchThatClause(Clause tempString, bool useful);
+	bool processSuchThatConstClause(Clause tempString, bool useful);
+	bool processPatternClause(Clause tempString, bool useful);
+	bool processWithClause(Clause tempString, bool useful);
+	bool processWithConstClause(Clause tempString, bool useful);
+	bool processSelectClause(Clause tempString, bool useful);
 
-	ResultTable processAssignPattern(Clause tempString);
-	ResultTable processWhilePattern(Clause tempString);
-	ResultTable processIfPattern(Clause tempString);
+	ResultTable processNumberWith(Clause tempString, bool useful);
+	ResultTable processNameWith(Clause tempString, bool useful);
+
+	ResultTable processAssignPattern(Clause tempString, bool useful);
+	ResultTable processWhilePattern(Clause tempString, bool useful);
+	ResultTable processIfPattern(Clause tempString, bool useful);
 };
 
 #endif

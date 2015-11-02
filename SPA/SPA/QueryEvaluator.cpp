@@ -23,215 +23,56 @@ QueryEvaluator::QueryEvaluator() {
 QueryEvaluator::QueryEvaluator(QueryTree qt) {
 	queryTree = qt;
 }
-// entry function for controller;
-list<string> QueryEvaluator::evaluate() {
 
-	// first evaluate Const Const
-	int index;
-	Clause selectClause = queryTree.getSelectTree().at(0);
-
-	vector<Clause> suchThatNoVarTree = queryTree.getSuchThatNoVarTree();
-	vector<Clause> withNoVarTree = queryTree.getWithNoVarTree();
-
-	vector<Clause> patternOneVarTree = queryTree.getPatternOneVarTree();
-	vector<Clause> patternTwoVarTree = queryTree.getPatternTwoVarTree();
-	vector<Clause> suchThatOneVarTree = queryTree.getSuchThatOneVarTree();
-	vector<Clause> suchThatTwoVarTree = queryTree.getSuchThatTwoVarTree();
-	vector<Clause> withOneVarTree = queryTree.getWithOneVarTree();
-	vector<Clause> withTwoVarTree = queryTree.getWithTwoVarTree();
-
-
-	for (vector<Clause>::iterator i = withNoVarTree.begin(); i != withNoVarTree.end(); i++) {
-		if (!processWithConstClause(*i)) {
-			list<string> empty;
-			if (selectClause.getVarType().at(0) == "boolean") {
-				empty.push_back("false");
-			}
-			return empty;
-		}
+bool QueryEvaluator::processClause(Clause tempString, bool isUseful, bool noVar) {
+	string rel = tempString.getRelationship();
+	if (rel == "select") {
+		return processSelectClause(tempString, isUseful);
 	}
-	for (vector<Clause>::iterator i = suchThatNoVarTree.begin(); i != suchThatNoVarTree.end(); i++) {
-		if (!processSuchThatConstClause(*i)) {
-			list<string> empty;
-			if (selectClause.getVarType().at(0) == "boolean") {
-				empty.push_back("false");
-			}
-			return empty;
-		}
+	else if (rel == "assign" || rel == "while" || rel == "if") {
+		return processPatternClause(tempString, isUseful);
 	}
-/*	
-	//remove the queries not related to select
-	if (selectClause.getVarType().at(0) != "boolean") {
-		//indexQueryTree
-		int counter = 0;
-		for (vector<Clause>::iterator i = patternOneVarTree.begin(); i != patternOneVarTree.end(); i++) {
-			(*i).setIndex(counter);
-			counter++;
+	else if (rel =="withName" || rel =="withNumber") {
+		if (noVar) {
+			return processWithConstClause(tempString, isUseful);
 		}
-		for (vector<Clause>::iterator i = suchThatOneVarTree.begin(); i != suchThatOneVarTree.end(); i++) {
-			(*i).setIndex(counter);
-			counter++;
+		else {
+			return processWithClause(tempString, isUseful);
 		}
-		for (vector<Clause>::iterator i = withOneVarTree.begin(); i != withOneVarTree.end(); i++) {
-			(*i).setIndex(counter);
-			counter++;
-		}
-		for (vector<Clause>::iterator i = patternTwoVarTree.begin(); i != patternTwoVarTree.end(); i++) {
-			(*i).setIndex(counter);
-			counter++;
-		}
-		for (vector<Clause>::iterator i = suchThatTwoVarTree.begin(); i != suchThatTwoVarTree.end(); i++) {
-			(*i).setIndex(counter);
-			counter++;
-		}
-		for (vector<Clause>::iterator i = withTwoVarTree.begin(); i != withTwoVarTree.end(); i++) {
-			(*i).setIndex(counter);
-			counter++;
-		}
-
-		vector<string> tempHeaderList;
-		vector<Clause> clauseList;
-
-		vector<string> selectHeaders = selectClause.getVar();
-
-		tempHeaderList.insert(tempHeaderList.end(), selectHeaders.begin(), selectHeaders.end());
-
-		clauseList.insert(clauseList.end(), patternOneVarTree.begin(), patternOneVarTree.end());
-		clauseList.insert(clauseList.end(), suchThatOneVarTree.begin(), suchThatOneVarTree.end());
-		clauseList.insert(clauseList.end(), withOneVarTree.begin(), withOneVarTree.end());
-		clauseList.insert(clauseList.end(), patternTwoVarTree.begin(), patternTwoVarTree.end());
-		clauseList.insert(clauseList.end(), suchThatTwoVarTree.begin(), suchThatTwoVarTree.end());
-		clauseList.insert(clauseList.end(), withTwoVarTree.begin(), withTwoVarTree.end());
-
-
-		int tempHeaderIndex = 0;
-		list<int> evaluateGroup;
-		size_t clauseListSize = clauseList.size();
-
-		while (true) {
-			if (clauseList.empty()) {
-				break;
-			}
-
-			for (vector<Clause>::iterator it = clauseList.begin(); it != clauseList.begin(); it++) {
-				bool isDelete = false;
-				for (int i = 0; i < (*it).getVar().size(); ++i) {
-					if (((*it).getVar().at(i) != "string" && (*it).getVar().at(i) != "number") && (*it).getVar().at(i) == tempHeaderList.at(tempHeaderIndex)) {
-						evaluateGroup.push_back((*it).getIndex());
-						if ((i == 0 && (*it).getVar().at(1) != "string" && (*it).getVar().at(1) != "number") ||
-							(i == 1 && (*it).getVar().at(0) != "string" && (*it).getVar().at(0) != "number")) {
-							string variable;
-							if (i==0) {
-								variable = (*it).getVar().at(1);
-							}
-							else {
-								variable = (*it).getVar().at(0);
-							}
-
-							if (find(tempHeaderList.begin(), tempHeaderList.end(), variable)
-								== tempHeaderList.end()) {
-								tempHeaderList.push_back(variable);
-							}
-						}
-						isDelete = true;
-						break;
-					}
-				}
-
-				if (isDelete) {
-					clauseList.erase(it++);
-				}
-				else {
-					++it;
-				}
-			}
-			if (clauseListSize == clauseList.size()) {
-				break;
-			}
-			else {
-				clauseListSize = clauseList.size();
-				++tempHeaderIndex;
-			}
-		}
-
-
-		//evaluate group generated, then run through the query tree, check whether inside evaluated group, if not boolEvaluate it, if true, remove, else return none
-		for (vector<Clause>::iterator i = patternOneVarTree.begin(); i != patternOneVarTree.end(); i++) {
-			if (!isInList(evaluateGroup, (*i).getIndex())) {
-				if (!processPatternClause(*i)) {
-					list<string> empty;
-					return empty;
-				}
-				else {
-					patternOneVarTree.erase(i);
-				}
-			}
-		}
-		for (vector<Clause>::iterator i = suchThatOneVarTree.begin(); i != suchThatOneVarTree.end(); i++) {
-			if (!isInList(evaluateGroup, (*i).getIndex())) {
-				if (!processSuchThatClause(*i)) {
-					list<string> empty;
-					return empty;
-				}
-				else {
-					suchThatOneVarTree.erase(i);
-				}
-			}
-		}
-		for (vector<Clause>::iterator i = withOneVarTree.begin(); i != withOneVarTree.end(); i++) {
-			if (!isInList(evaluateGroup, (*i).getIndex())) {
-				if (!processWithClause(*i)) {
-					list<string> empty;
-					return empty;
-				}
-				else {
-					withOneVarTree.erase(i);
-				}
-			}
-		}
-		for (vector<Clause>::iterator i = patternTwoVarTree.begin(); i != patternTwoVarTree.end(); i++) {
-			if (!isInList(evaluateGroup, (*i).getIndex())) {
-				if (!processPatternClause(*i)) {
-					list<string> empty;
-					return empty;
-				}
-				else {
-					patternTwoVarTree.erase(i);
-				}
-			}
-		}
-		for (vector<Clause>::iterator i = suchThatTwoVarTree.begin(); i != suchThatTwoVarTree.end(); i++) {
-			if (!isInList(evaluateGroup, (*i).getIndex())) {
-				if (!processSuchThatClause(*i)) {
-					list<string> empty;
-					return empty;
-				}
-				else {
-					suchThatTwoVarTree.erase(i);
-				}
-			}
-		}
-		for (vector<Clause>::iterator i = withTwoVarTree.begin(); i != withTwoVarTree.end(); i++) {
-			if (!isInList(evaluateGroup, (*i).getIndex())) {
-				if (!processWithClause(*i)) {
-					list<string> empty;
-					return empty;
-				}
-				else {
-					withTwoVarTree.erase(i);
-				}
-			}
-		}
-
 	}
 	else {
+		if (noVar) {
+			return processSuchThatConstClause(tempString, isUseful);
+		}
+		else {
+			return processSuchThatClause(tempString, isUseful);
+		}
+	}
+}
 
-	}
-	*/
-	// start to evaluate
-	// first evaluate syn clauses
-	for (vector<Clause>::iterator i = withOneVarTree.begin(); i != withOneVarTree.end(); i++) {
-		if (!processWithClause(*i)) {
+// entry function for controller;
+list<string> QueryEvaluator::evaluate() {
+	queryTree.grouping();
+	// first evaluate useful no var query
+	int index;
+	Clause selectClause = queryTree.getSelectClause();
+
+	vector<Clause> usefulNoVarTree = queryTree.getUsefulNoVarTree();
+	vector<Clause> usefulOneVarTree = queryTree.getUsefulOneVarTree();
+	vector<Clause> usefulTwoVarTree = queryTree.getUsefulTwoVarTree();
+	vector<Clause> uselessOneVarTree = queryTree.getUselessOneVarTree();
+	vector<Clause> uselessTwoVarTree = queryTree.getUselessTwoVarTree();
+	string str;
+	str += to_string(usefulNoVarTree.size());
+	str += to_string(usefulOneVarTree.size());
+	str += to_string(usefulTwoVarTree.size());
+	str += to_string(uselessOneVarTree.size());
+	str += to_string(uselessTwoVarTree.size());
+	SPALog::log(str);
+
+	//evaluate no var
+	for (vector<Clause>::iterator i = usefulNoVarTree.begin(); i != usefulNoVarTree.end(); i++) {
+		if (!processClause(*i, true, true)) {
 			list<string> empty;
 			if (selectClause.getVarType().at(0) == "boolean") {
 				empty.push_back("false");
@@ -239,8 +80,10 @@ list<string> QueryEvaluator::evaluate() {
 			return empty;
 		}
 	}
-	for (vector<Clause>::iterator i = suchThatOneVarTree.begin(); i != suchThatOneVarTree.end(); i++) {
-		if (!processSuchThatClause(*i)) {
+	
+	//evaluate useless clause
+	for (vector<Clause>::iterator i = uselessOneVarTree.begin(); i != uselessOneVarTree.end(); i++) {
+		if (!processClause(*i, false, false)) {
 			list<string> empty;
 			if (selectClause.getVarType().at(0) == "boolean") {
 				empty.push_back("false");
@@ -248,8 +91,9 @@ list<string> QueryEvaluator::evaluate() {
 			return empty;
 		}
 	}
-	for (vector<Clause>::iterator i = patternOneVarTree.begin(); i != patternOneVarTree.end(); i++) {
-		if (!processPatternClause(*i)) {
+
+	for (vector<Clause>::iterator i = uselessTwoVarTree.begin(); i != uselessTwoVarTree.end(); i++) {
+		if (!processClause(*i, false, false)) {
 			list<string> empty;
 			if (selectClause.getVarType().at(0) == "boolean") {
 				empty.push_back("false");
@@ -257,8 +101,10 @@ list<string> QueryEvaluator::evaluate() {
 			return empty;
 		}
 	}
-	for (vector<Clause>::iterator i = withTwoVarTree.begin(); i != withTwoVarTree.end(); i++) {
-		if (!processWithClause(*i)) {
+
+	// evaluate useful clause
+	for (vector<Clause>::iterator i = usefulOneVarTree.begin(); i != usefulOneVarTree.end(); i++) {
+		if (!processClause(*i, true, false)) {
 			list<string> empty;
 			if (selectClause.getVarType().at(0) == "boolean") {
 				empty.push_back("false");
@@ -266,17 +112,8 @@ list<string> QueryEvaluator::evaluate() {
 			return empty;
 		}
 	}
-	for (vector<Clause>::iterator i = suchThatTwoVarTree.begin(); i != suchThatTwoVarTree.end(); i++) {
-		if (!processSuchThatClause(*i)) {
-			list<string> empty;
-			if (selectClause.getVarType().at(0) == "boolean") {
-				empty.push_back("false");
-			}
-			return empty;
-		}
-	}
-	for (vector<Clause>::iterator i = patternTwoVarTree.begin(); i != patternTwoVarTree.end(); i++) {
-		if (!processPatternClause(*i)) {
+	for (vector<Clause>::iterator i = usefulTwoVarTree.begin(); i != usefulTwoVarTree.end(); i++) {
+		if (!processClause(*i, true, false)) {
 			list<string> empty;
 			if (selectClause.getVarType().at(0) == "boolean") {
 				empty.push_back("false");
@@ -286,26 +123,24 @@ list<string> QueryEvaluator::evaluate() {
 	}
 
 	// select clause
-	if (!processSelectClause(selectClause)) {
+	if (!processSelectClause(selectClause, true)) {
 		list<string> empty;
 		if (selectClause.getVarType().at(0) == "boolean") {
 			empty.push_back("false");
 		}
 		return empty;
 	}
-	
 
 	for (int i = 0; i < resultList.size(); ++i) {
 		resultList[i].logTable(i);
 	}
 
-	
 	QueryResultProjector qrp = QueryResultProjector(resultList, selectClause.getVar(), selectClause.getVarType());
 	return qrp.getResult();
 }
 
 //Process Clause
-bool QueryEvaluator::processSuchThatClause(Clause tempString) {
+bool QueryEvaluator::processSuchThatClause(Clause tempString, bool useful) {
 	string relationship = tempString.getRelationship();
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -317,40 +152,40 @@ bool QueryEvaluator::processSuchThatClause(Clause tempString) {
 	ResultTable tempResult;
 
 	if (relationship == "modifies") {
-		tempResult = processModifies(tempString);
+		tempResult = processModifies(tempString, useful);
 	}
 	else if (relationship == "uses") {
-		tempResult = processUses(tempString);
+		tempResult = processUses(tempString, useful);
 	}
 	else if (relationship == "parent") {
-		tempResult = processParent(tempString);
+		tempResult = processParent(tempString, useful);
 	}
 	else if (relationship == "follows") {
-		tempResult = processFollows(tempString);
+		tempResult = processFollows(tempString, useful);
 	}
 	else if (relationship == "parent*") {
-		tempResult = processParentStar(tempString);
+		tempResult = processParentStar(tempString, useful);
 	}
 	else if (relationship == "follows*") {
-		tempResult = processFollowsStar(tempString);
+		tempResult = processFollowsStar(tempString, useful);
 	}
 	else if (relationship == "calls") {
-		tempResult = processCalls(tempString);
+		tempResult = processCalls(tempString, useful);
 	}
 	else if (relationship == "calls*") {
-		tempResult = processCallsStar(tempString);
+		tempResult = processCallsStar(tempString, useful);
 	}
 	else if (relationship == "next") {
-		tempResult = processNext(tempString);
+		tempResult = processNext(tempString, useful);
 	}
 	else if (relationship == "next*") {
-		tempResult = processNextStar(tempString);
+		tempResult = processNextStar(tempString, useful);
 	}
 	else if (relationship == "affects") {
-		tempResult = processAffects(tempString);
+		tempResult = processAffects(tempString, useful);
 	}
 	else if (relationship == "affects*") {
-		tempResult = processAffectsStar(tempString);
+		tempResult = processAffectsStar(tempString, useful);
 	}
 	else {
 		SPALog::log("Wrong relationship!");
@@ -363,14 +198,15 @@ bool QueryEvaluator::processSuchThatClause(Clause tempString) {
 	if (isResultEmpty(tempResult)) {
 		return false;
 	}
-	if (tempResult.getHeader().size() == 2) {
+
+	if (useful) {
 		resultList.push_back(tempResult);
 	}
 	
 	return true;
 }
 
-bool QueryEvaluator::processSuchThatConstClause(Clause tempString) {
+bool QueryEvaluator::processSuchThatConstClause(Clause tempString, bool useful) {
 	string relationship = tempString.getRelationship();
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -382,40 +218,40 @@ bool QueryEvaluator::processSuchThatConstClause(Clause tempString) {
 	ResultTable tempResult;
 
 	if (relationship == "modifies") {
-		tempResult = processModifies(tempString);
+		tempResult = processModifies(tempString, useful);
 	}
 	else if (relationship == "uses") {
-		tempResult = processUses(tempString);
+		tempResult = processUses(tempString, useful);
 	}
 	else if (relationship == "parent") {
-		tempResult = processParent(tempString);
+		tempResult = processParent(tempString, useful);
 	}
 	else if (relationship == "follows") {
-		tempResult = processFollows(tempString);
+		tempResult = processFollows(tempString, useful);
 	}
 	else if (relationship == "parent*") {
-		tempResult = processParentStar(tempString);
+		tempResult = processParentStar(tempString, useful);
 	}
 	else if (relationship == "follows*") {
-		tempResult = processFollowsStar(tempString);
+		tempResult = processFollowsStar(tempString, useful);
 	}
 	else if (relationship == "calls") {
-		tempResult = processCalls(tempString);
+		tempResult = processCalls(tempString, useful);
 	}
 	else if (relationship == "calls*") {
-		tempResult = processCallsStar(tempString);
+		tempResult = processCallsStar(tempString, useful);
 	}
 	else if (relationship == "next") {
-		tempResult = processNext(tempString);
+		tempResult = processNext(tempString, useful);
 	}
 	else if (relationship == "next*") {
-		tempResult = processNextStar(tempString);
+		tempResult = processNextStar(tempString, useful);
 	}
 	else if (relationship == "affects") {
-		tempResult = processAffects(tempString);
+		tempResult = processAffects(tempString, useful);
 	}
 	else if (relationship == "affects*") {
-		tempResult = processAffectsStar(tempString);
+		tempResult = processAffectsStar(tempString, useful);
 	}
 	else {
 		SPALog::log("Wrong relationship!");
@@ -475,6 +311,9 @@ list<int> QueryEvaluator::getList(string arr, string arrType) {
 	}
 	else if (arrType == "variable") {
 		return PKB::getPKBInstance()->getVarList();
+	}
+	else if (arrType == "stmtLst") {
+		return PKB::getPKBInstance()->getStmtLstList();
 	}
 	else {
 		list<int> emptyList;
@@ -557,7 +396,7 @@ void QueryEvaluator::updateMidResult(ResultTable newResult) {
 	return;
 }
 
-ResultTable QueryEvaluator::processModifies(Clause tempString) {
+ResultTable QueryEvaluator::processModifies(Clause tempString, bool useful) {
 
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -620,9 +459,14 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 			
@@ -644,8 +488,13 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg1Type == "string") {
@@ -663,8 +512,13 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -679,9 +533,14 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 					temp.push_back(*j);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -734,20 +593,26 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 
 	else {
 		SPALog::log("Error: Modifies arg2 wrong type");
+		return ResultTable();
 	}
 	
 }
 
-ResultTable QueryEvaluator::processUses(Clause tempString) {
+ResultTable QueryEvaluator::processUses(Clause tempString, bool useful) {
 
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -810,9 +675,14 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -833,8 +703,13 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg1Type == "string") {
@@ -852,8 +727,13 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -868,9 +748,14 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 					temp.push_back(*j);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -922,20 +807,26 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 
 	else {
 		SPALog::log("Error: Uses arg2 wrong type");
+		return ResultTable();
 	}
 
 }
 
-ResultTable QueryEvaluator::processParent(Clause tempString) {
+ResultTable QueryEvaluator::processParent(Clause tempString, bool useful) {
 	
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -990,9 +881,14 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -1038,9 +934,14 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -1060,11 +961,16 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 				temp.push_back(parent);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -1076,9 +982,14 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -1098,16 +1009,21 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 }
 
-ResultTable QueryEvaluator::processFollows(Clause tempString) {
+ResultTable QueryEvaluator::processFollows(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -1158,8 +1074,13 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 				temp.push_back(littleBrother);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1205,9 +1126,14 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -1227,11 +1153,16 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 				temp.push_back(brother);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -1243,9 +1174,14 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -1264,16 +1200,21 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 					temp.push_back(littleBrother);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 
 }
 
-ResultTable QueryEvaluator::processParentStar(Clause tempString) {
+ResultTable QueryEvaluator::processParentStar(Clause tempString, bool useful) {
 
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -1330,9 +1271,14 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -1379,9 +1325,14 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -1404,13 +1355,18 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1423,9 +1379,14 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1446,16 +1407,21 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 }
 
-ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
+ResultTable QueryEvaluator::processFollowsStar(Clause tempString, bool useful) {
 
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -1509,9 +1475,14 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1558,9 +1529,14 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -1583,13 +1559,18 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1602,9 +1583,14 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1625,18 +1611,23 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 				
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 
 }
 
-ResultTable QueryEvaluator::processCalls(Clause tempString) {
+ResultTable QueryEvaluator::processCalls(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -1690,8 +1681,13 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -1718,8 +1714,13 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -1732,9 +1733,14 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "procedure") {
@@ -1754,9 +1760,14 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -1812,9 +1823,14 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -1830,7 +1846,7 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 
 }
 
-ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
+ResultTable QueryEvaluator::processCallsStar(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -1882,8 +1898,13 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -1909,8 +1930,13 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -1923,9 +1949,14 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "procedure") {
@@ -1945,9 +1976,14 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -2003,9 +2039,14 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -2020,7 +2061,7 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 
 }
 
-ResultTable QueryEvaluator::processNext(Clause tempString){
+ResultTable QueryEvaluator::processNext(Clause tempString, bool useful){
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -2075,9 +2116,14 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2125,9 +2171,14 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -2154,9 +2205,14 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -2168,9 +2224,14 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -2190,17 +2251,22 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 				
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 }
 
-ResultTable QueryEvaluator::processNextStar(Clause tempString) {
+ResultTable QueryEvaluator::processNextStar(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -2258,9 +2324,14 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2308,9 +2379,14 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -2333,13 +2409,18 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2352,9 +2433,14 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2371,16 +2457,21 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 }
 
-ResultTable QueryEvaluator::processAffects(Clause tempString) {
+ResultTable QueryEvaluator::processAffects(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -2432,9 +2523,14 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2482,9 +2578,14 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -2511,9 +2612,14 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "all") {
@@ -2525,9 +2631,14 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -2543,17 +2654,22 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 }
 
-ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
+ResultTable QueryEvaluator::processAffectsStar(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -2606,9 +2722,14 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2656,9 +2777,14 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -2681,13 +2807,18 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
 			else {
 				tempResult.setIsWholeTrue(0);
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2700,9 +2831,14 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 
@@ -2719,23 +2855,37 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
 }
 
-bool QueryEvaluator::processPatternClause(Clause tempString) {
+bool QueryEvaluator::processPatternClause(Clause tempString, bool useful) {
 	
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
 	string arg2Type = tempString.getVarType().at(1);
-	string syn = tempString.getVar().at(2);
-	string synType = tempString.getVarType().at(2);
+	string syn;
+	string synType;
+	if (tempString.getVarType().size() == 4) {
+		syn = tempString.getVar().at(3);
+		synType = tempString.getVarType().at(3);
+	}
+	else {
+		syn = tempString.getVar().at(2);
+		synType = tempString.getVarType().at(2);
+	}
+	
 	
 	string log = "Pattern clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
 	SPALog::log(log);
@@ -2743,13 +2893,13 @@ bool QueryEvaluator::processPatternClause(Clause tempString) {
 	ResultTable tempResult;
 
 	if (synType == "assign") {
-		tempResult = processAssignPattern(tempString);
+		tempResult = processAssignPattern(tempString, useful);
 	}
 	else if (synType == "while") {
-		tempResult = processWhilePattern(tempString);
+		tempResult = processWhilePattern(tempString, useful);
 	}
 	else if (synType == "if") {
-		tempResult = processIfPattern(tempString);
+		tempResult = processIfPattern(tempString, useful);
 	}
 	else {
 		SPALog::log("Wrong pattern!");
@@ -2759,12 +2909,16 @@ bool QueryEvaluator::processPatternClause(Clause tempString) {
 	if (isResultEmpty(tempResult)) {
 		return false;
 	}
-	resultList.push_back(tempResult);
+
+	if (useful) {
+		resultList.push_back(tempResult);
+	}
+	
 	return true;
 	
 }
 
-ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
+ResultTable QueryEvaluator::processAssignPattern(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -2782,6 +2936,9 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 		}
 		else if (arg2Type == "string") {
@@ -2790,6 +2947,9 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 		}
 		else if (arg2Type == "substring") {
@@ -2798,12 +2958,19 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 		}
 		else {
 			SPALog::log("Pattern arg2 wrong type");
 		}
-		_updateMidResult(tempResult);
+
+		if (useful) {
+			_updateMidResult(tempResult);
+		}
+		
 		return tempResult;
 	}
 	else if (arg1Type == "variable") {
@@ -2818,6 +2985,9 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
 		}
@@ -2830,6 +3000,9 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
 		}
@@ -2842,13 +3015,18 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 					temp.push_back(*t);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
 		}
 		else {
 			SPALog::log("Pattern arg2 wrong type");
 		}
-		_updateMidResult(tempResult);
+		if (useful) {
+			_updateMidResult(tempResult);
+		}
 		return tempResult;
 	}
 	else if (arg1Type == "all") {
@@ -2860,6 +3038,9 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 		}
 		else if (arg2Type == "string") {
@@ -2868,6 +3049,9 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 		}
 		else if (arg2Type == "substring") {
@@ -2876,12 +3060,17 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 		}
 		else {
 			SPALog::log("Pattern arg2 wrong type");
 		}
-		_updateMidResult(tempResult);
+		if (useful) {
+			_updateMidResult(tempResult);
+		}
 		return tempResult;
 	}
 	else {
@@ -2890,7 +3079,7 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 	}
 }
 
-ResultTable QueryEvaluator::processWhilePattern(Clause tempString) {
+ResultTable QueryEvaluator::processWhilePattern(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -2913,8 +3102,13 @@ ResultTable QueryEvaluator::processWhilePattern(Clause tempString) {
 			temp.push_back(*i);
 			tempResult.addTuple(temp);
 			temp.clear();
+			if (!useful) {
+				return tempResult;
+			}
 		}
-		_updateMidResult(tempResult);
+		if (useful) {
+			_updateMidResult(tempResult);
+		}
 		return tempResult;
 	}
 	else if (arg1Type == "variable") {
@@ -2929,9 +3123,15 @@ ResultTable QueryEvaluator::processWhilePattern(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 		}
-		_updateMidResult(tempResult);
+		if (useful) {
+			_updateMidResult(tempResult);
+		}
+		
 		return tempResult;
 	}
 	else {
@@ -2944,13 +3144,19 @@ ResultTable QueryEvaluator::processWhilePattern(Clause tempString) {
 			temp.push_back(*t);
 			tempResult.addTuple(temp);
 			temp.clear();
+			if (!useful) {
+				return tempResult;
+			}
 		}
-		_updateMidResult(tempResult);
+		if (useful) {
+			_updateMidResult(tempResult);
+		}
+		
 		return tempResult;
 	}
 }
 
-ResultTable QueryEvaluator::processIfPattern(Clause tempString) {
+ResultTable QueryEvaluator::processIfPattern(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -2973,8 +3179,14 @@ ResultTable QueryEvaluator::processIfPattern(Clause tempString) {
 			temp.push_back(*i);
 			tempResult.addTuple(temp);
 			temp.clear();
+			if (useful) {
+				return tempResult;
+			}
 		}
-		_updateMidResult(tempResult);
+		if (!useful) {
+			_updateMidResult(tempResult);
+		}
+		
 		return tempResult;
 	}
 	else if (arg1Type == "variable") {
@@ -2989,9 +3201,15 @@ ResultTable QueryEvaluator::processIfPattern(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
 		}
-		_updateMidResult(tempResult);
+		if (useful) {
+			_updateMidResult(tempResult);
+		}
+		
 		return tempResult;
 	}
 	else {
@@ -3004,13 +3222,19 @@ ResultTable QueryEvaluator::processIfPattern(Clause tempString) {
 			temp.push_back(*t);
 			tempResult.addTuple(temp);
 			temp.clear();
+			if (!useful) {
+				return tempResult;
+			}
 		}
-		_updateMidResult(tempResult);
+		if (useful) {
+			_updateMidResult(tempResult);
+		}
+		
 		return tempResult;
 	}
 }
 
-bool QueryEvaluator::processSelectClause(Clause tempString) {
+bool QueryEvaluator::processSelectClause(Clause tempString, bool useful) {
 	int tupleSize = tempString.getVar().size();
 	for (int i = 0; i < tupleSize; i++) {
 
@@ -3070,7 +3294,7 @@ bool QueryEvaluator::processSelectClause(Clause tempString) {
 	return true;
 }
 
-bool QueryEvaluator::processWithClause(Clause tempString) {
+bool QueryEvaluator::processWithClause(Clause tempString, bool useful) {
 	string synType = tempString.getRelationship();
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -3083,10 +3307,10 @@ bool QueryEvaluator::processWithClause(Clause tempString) {
 	ResultTable tempResult;
 
 	if (synType == "withNumber") {
-		tempResult = processNumberWith(tempString);
+		tempResult = processNumberWith(tempString, useful);
 	}
 	else if (synType == "withName") {
-		tempResult = processNameWith(tempString);
+		tempResult = processNameWith(tempString, useful);
 	}
 	else {
 		SPALog::log("Wrong with type!");
@@ -3100,14 +3324,16 @@ bool QueryEvaluator::processWithClause(Clause tempString) {
 	if (isResultEmpty(tempResult)) {
 		return false;
 	}
-	if (tempResult.getHeader().size() == 2) {
+
+	if (useful) {
 		resultList.push_back(tempResult);
 	}
+	
 	
 	return true;
 }
 
-bool QueryEvaluator::processWithConstClause(Clause tempString) {
+bool QueryEvaluator::processWithConstClause(Clause tempString, bool useful) {
 	string synType = tempString.getRelationship();
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
@@ -3120,10 +3346,10 @@ bool QueryEvaluator::processWithConstClause(Clause tempString) {
 	ResultTable tempResult;
 
 	if (synType == "withNumber") {
-		tempResult = processNumberWith(tempString);
+		tempResult = processNumberWith(tempString, useful);
 	}
 	else if (synType == "withName") {
-		tempResult = processNameWith(tempString);
+		tempResult = processNameWith(tempString, useful);
 	}
 	else {
 		SPALog::log("Wrong with type!");
@@ -3139,7 +3365,7 @@ bool QueryEvaluator::processWithConstClause(Clause tempString) {
 	
 }
 
-ResultTable QueryEvaluator::processNameWith(Clause tempString) {
+ResultTable QueryEvaluator::processNameWith(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -3161,8 +3387,13 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "call") {
@@ -3176,8 +3407,14 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
+			
 			return tempResult;
 		}
 		else if (arg2Type == "variable") {
@@ -3194,10 +3431,15 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "string") {
@@ -3210,13 +3452,19 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
-
+			SPALog::log("Error: with arg2 wrong type");
+			return ResultTable();
 		}
 	}
 	else if (arg1Type == "call") {
@@ -3231,8 +3479,13 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 				temp.push_back(procID);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "call") {
@@ -3252,11 +3505,16 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 					
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "variable") {
@@ -3274,11 +3532,16 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "string") {
@@ -3292,13 +3555,19 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
-
+			SPALog::log("Error: with arg2 wrong type");
+			return ResultTable();
 		}
 	}
 	else if (arg1Type == "variable") {
@@ -3316,10 +3585,15 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "call") {
@@ -3337,10 +3611,15 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "variable") {
@@ -3356,8 +3635,13 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "string") {
@@ -3370,13 +3654,19 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
-
+			SPALog::log("Error: with arg2 wrong type");
+			return ResultTable();
 		}
 	}
 	else if (arg1Type == "string") {
@@ -3390,9 +3680,14 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "call") {
@@ -3406,9 +3701,14 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "variable") {
@@ -3421,9 +3721,14 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 					temp.push_back(*i);
 					tempResult.addTuple(temp);
 					temp.clear();
+					if (!useful) {
+						return tempResult;
+					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "string") {
@@ -3438,16 +3743,18 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 			return tempResult;
 		}
 		else {
-
+			SPALog::log("Error: with arg2 wrong type");
+			return ResultTable();
 		}
 	}
 	else {
-
+		SPALog::log("Error: with arg1 wrong type");
+		return ResultTable();
 	}
 
 }
 
-ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
+ResultTable QueryEvaluator::processNumberWith(Clause tempString, bool useful) {
 	string arg1 = tempString.getVar().at(0);
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
@@ -3467,8 +3774,13 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 				temp.push_back(*i);
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "number") {
@@ -3482,7 +3794,9 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 			temp.push_back(stoi(arg2));
 			tempResult.addTuple(temp);
 			temp.clear();
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -3497,10 +3811,15 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -3516,7 +3835,9 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 			temp.push_back(stoi(arg1));
 			tempResult.addTuple(temp);
 			temp.clear();
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "number") {
@@ -3542,8 +3863,13 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 				temp.push_back(stoi(arg1));
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}
@@ -3562,10 +3888,15 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 						temp.push_back(*t);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else if (arg2Type == "number") {
@@ -3576,8 +3907,13 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 				temp.push_back(stoi(arg2));
 				tempResult.addTuple(temp);
 				temp.clear();
+				if (!useful) {
+					return tempResult;
+				}
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 		else {
@@ -3595,11 +3931,16 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 						temp.push_back(*i);
 						tempResult.addTuple(temp);
 						temp.clear();
+						if (!useful) {
+							return tempResult;
+						}
 					}
 				}
 				
 			}
-			_updateMidResult(tempResult);
+			if (useful) {
+				_updateMidResult(tempResult);
+			}
 			return tempResult;
 		}
 	}

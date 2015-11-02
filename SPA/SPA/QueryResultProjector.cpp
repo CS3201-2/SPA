@@ -24,29 +24,102 @@ QueryResultProjector::QueryResultProjector(vector<ResultTable> tempTables,
 
 list<string> QueryResultProjector::getResult() {
 	list<string> resultStringList;
+	groupTables();
 
-	if (_tempTables.empty() && _selectType[FIRST_TYPE] == TYPE_BOOL) {
-		resultStringList.push_back(RESULT_TRUE);
-		return resultStringList;
+	if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
+		if (_tempTables.empty()) {
+			resultStringList.push_back(RESULT_TRUE);
+		}
+		else {
+			map<int, vector<int>> mergingOrder = getMergingOrderBoolean();
+			for (map<int, vector<int>>::iterator it = mergingOrder.begin();
+				it != mergingOrder.end(); ++it) {
+				ResultTable mergedTable = mergeTables((*it).second);
+				if (mergedTable.getTableSize() == 0) {
+					resultStringList.push_back(RESULT_FALSE);
+					return resultStringList;
+				}
+			}
+			resultStringList.push_back(RESULT_TRUE);
+		}
+	}
+	else {
+		vector<int> mergingOrder;
+		for (size_t i = 0; i < _tempTables.size(); ++i) {
+			mergingOrder.push_back(i);
+		}
+		_finalTable = mergeTables(mergingOrder);
+		_finalTable.logTable(-1);
+		resultStringList = extractResultFromMergedTable();
 	}
 
-	vector<int> mergingOrder = getMergingOrder();
-
-	_finalTable = mergeTables(mergingOrder);
-	_finalTable.logTable(-1);
-
-	resultStringList = extractResultFromMergedTable();	
 
 	return resultStringList;
+}
+
+//use idea of disjoint set to group tables
+void QueryResultProjector::groupTables() {
+	for (size_t i = 0; i < _tempTables.size(); ++i) {
+		_parent.push_back(i);
+	}
+
+	for (size_t i = 0; i < _tempTables.size(); ++i) {
+		for (size_t j = i + 1; j < _tempTables.size(); ++j) {
+			if (getCommonHeader(_tempTables[i].getHeader(),
+				_tempTables[j].getHeader()).size() != 0) {
+				merge(i, j);
+			}
+		}
+	}
+
+	//adjustment: to make sure all depth in disjoint set is 1
+	for (int i = _parent.size() - 1; i > -1; --i) {
+		if (_parent[_parent[i]] != _parent[i]) {
+			_parent[i] = _parent[_parent[i]];
+		}
+	}
+}
+
+int QueryResultProjector::find(int i) {
+	if (_parent[i] == i) {
+		return i;
+	}
+	else {
+		int result = find(_parent[i]);
+		_parent[i] = result;
+		return result;
+	}
+}
+void QueryResultProjector::merge(int i, int j) {
+	int u = find(i), v = find(j);
+	_parent[u] = v;
+}
+
+map<int, vector<int>> QueryResultProjector::getMergingOrderBoolean() {
+	map<int, vector<int>> mergingOrder;
+	for (size_t i = 0; i < _parent.size(); ++i) {
+		vector<int> temp;
+		if (mergingOrder.find(_parent[i]) == mergingOrder.end()) {
+			temp.push_back(i);
+			mergingOrder[_parent[i]] = temp;
+		}
+		else {
+			temp = mergingOrder.at(_parent[i]);
+			temp.push_back(i);
+			mergingOrder[_parent[i]] = temp;
+		}
+	}
+
+	return mergingOrder;
 }
 
 //assume there is at least one table in _tempTables
 ResultTable QueryResultProjector::mergeTables(vector<int> mergingOrder) {
 	ResultTable finalTable, tempTable;
-	finalTable = _tempTables.at(mergingOrder.at(0));
+	finalTable = _tempTables.at(0);
 
-	for (size_t i = 1; i < mergingOrder.size(); ++i) {
-		tempTable = _tempTables.at(mergingOrder.at(i));
+	for (size_t i = 1; i < _tempTables.size(); ++i) {
+		tempTable = _tempTables.at(i);
 		if (finalTable.getTableSize() < tempTable.getTableSize()) {
 			finalTable = mergeTwoTables(finalTable, tempTable);
 		}
@@ -60,96 +133,6 @@ ResultTable QueryResultProjector::mergeTables(vector<int> mergingOrder) {
 	}
 
 	return finalTable;
-}
-
-vector<int> QueryResultProjector::getMergingOrder() {
-	map<int, vector<string>> headerMap;
-	vector<string> tempHeaderList;
-	
-	//if it is select Boolean, 
-	if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
-		countHeader();
-		for (map<string, int>::iterator it = _headerCount.begin(); it != _headerCount.end(); ++it) {
-			if ((*it).second > 1) {
-				tempHeaderList.push_back((*it).first);
-			}
-		}
-	}
-	else {
-		tempHeaderList.insert(tempHeaderList.end(), _select.begin(), _select.end());
-	}
-	
-	int tempHeaderIndex = 0;
-	vector<int> mergingOrder;
-	size_t mapSize = headerMap.size();
-
-	//not considering those select tables
-	for (int i = 0; i < _tempTables.size() - _select.size(); ++i) {
-		headerMap[i] = _tempTables[i].getHeader();
-	}
-
-	while (true) {
-		if (headerMap.empty()) {
-			break;
-		}
-
-		for (map<int, vector<string>>::iterator it = headerMap.begin(); it != headerMap.end();) {
-			bool isDelete = false;
-			for (int i = 0; i < (*it).second.size(); ++i) {
-				if ((*it).second.at(i) == tempHeaderList.at(tempHeaderIndex)) {
-					//update final order of merging table
-					mergingOrder.push_back((*it).first);
-					//update selectedHeaderList
-					//means there is another variable to update 
-					if ((*it).second.size() == 2) {
-						string variable;
-						if (i == 0) {
-							variable = (*it).second.at(1);
-						}
-						else {
-							variable = (*it).second.at(0);
-						}
-
-						if (find(tempHeaderList.begin(), tempHeaderList.end(), variable)
-							== tempHeaderList.end()) {
-							tempHeaderList.push_back(variable);
-						}
-					}
-					//update hMap
-					isDelete = true;
-					break;
-				}
-			}
-
-			if (isDelete) {
-				headerMap.erase(it++);
-			}
-			else {
-				++it;
-			}
-		}
-
-		if (mapSize == headerMap.size()) {
-			break;
-		}
-		else {
-			mapSize = headerMap.size();
-			++tempHeaderIndex;
-		}
-	}
-
-	if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
-		for (map<int, vector<string>>::iterator it = headerMap.begin(); it != headerMap.end(); ++it) {
-			mergingOrder.push_back((*it).first);
-		}
-	}
-	else {
-		for (int i = 0; i < _select.size(); ++i) {
-			mergingOrder.push_back(_tempTables.size() - 1 - i);
-		}
-	}
-
-	return mergingOrder;
 }
 
 void QueryResultProjector::countHeader() {
@@ -324,12 +307,6 @@ list<string> QueryResultProjector::extractResultFromMergedTable() {
 	list<string> resultList;
 
 	if (_finalTable.getTableSize() != 0) {
-		//assume no select <a, boolean, b> kinda thing
-		if (_selectType.size() == 1 && _selectType[FIRST_TYPE] == TYPE_BOOL) {
-			resultList.push_back(RESULT_TRUE);
-			return resultList;
-		}
-
 		vector<int> selectIDsInFinalTable = getSelectIDsInFinalTable(_finalTable.getHeader());
 		vector<vector<int>> finalContent = _finalTable.getContent();
 		//tuple case is not fully handled, eg Select<a, a, a>
@@ -356,12 +333,6 @@ list<string> QueryResultProjector::extractResultFromMergedTable() {
 			}
 
 			resultList.push_back(result);
-		}
-	}
-	else {
-		if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
-			resultList.push_back(RESULT_FALSE);
-			return resultList;
 		}
 	}
 

@@ -31,6 +31,7 @@ list<string> QueryController::processQueries(string queries) {
 	list<string> result;
 	if (qv.isValidDecAndQuery(queries)) {
 		QueryTree qt = qv.getQueryTree();
+		//qt.grouping();
 		QueryEvaluator qe(qt);
 		result = qe.evaluate();
 	} 

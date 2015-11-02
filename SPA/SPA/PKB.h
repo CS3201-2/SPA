@@ -12,7 +12,9 @@
 #include "CFG.h"
 #include "Statement.h"
 #include "StatementType.h"
-
+#include "SPALog.h"
+#include <assert.h>
+#include<sstream>
 
 using namespace std;
 
@@ -38,6 +40,7 @@ public:
 	list<int> getCallList();
 	list<int> getIfList();
 	list<int> getStmtList(); //everything
+	list<int> getStmtLstList();
 	list<int> getParentList(); //while and if list
 	list<int> getConstantList();
 	int getCallStmtProc(int);
@@ -52,6 +55,7 @@ public:
 	void logConstantList();
 	void logParentList();
 	void logStmtList();
+	void logStmtLstList();
 	void logCallStmtProcMap();
 	void buildCFG(list<Statement>);
 	//PKB housekeeping function
@@ -210,7 +214,9 @@ private:
 	list<int> callStmtList;
 	list<int> ifStmtList;
 	list<int> constantList;
+	list<int> stmtLstList;
 	map<int, int> callStmtProcMap;
+	SPALog _log;
 
 	ProcTable& getProcTable();
 	VarTable& getVarTable();
@@ -226,6 +232,14 @@ private:
 
 	size_t getVarTableSize();
 	size_t getProcTableSize();
+
+	bool isAssignment(int);
+	bool isWhile(int);
+	bool isIf(int);
+	bool isSameProc(int, int);
+	bool contains(list<int>, int);
+	void transfer(int, queue<int>&, bool);
+	void clearQueue(queue<int>&);
 };
 
 #endif
