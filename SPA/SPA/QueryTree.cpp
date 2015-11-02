@@ -10,6 +10,7 @@ const int FIRST_TYPE = 0;
 const string VARIABLE_TYPE = "variable";
 const string BOOLEAN_TYPE = "boolean";
 const string STRING_TYPE = "string";
+const string SUB_STRING_TYPE = "substring";
 const string NUMBER_TYPE = "number";
 const string ALL_TYPE = "all";
 const bool IS_NOT_USEFUL = false;
@@ -97,7 +98,8 @@ vector<Clause> QueryTree::getUselessTwoVarTree() {
 int QueryTree::getNumOfVar(vector<string> arrType) {
 	int numOfVar = TWO_VARIABLE;
 	for (auto &i : arrType) {
-		if (i == STRING_TYPE || i == NUMBER_TYPE || i == ALL_TYPE) {
+		if (i == STRING_TYPE || i == NUMBER_TYPE || i == ALL_TYPE 
+			|| i == SUB_STRING_TYPE) {
 			--numOfVar;
 		}
 	}
@@ -142,14 +144,14 @@ void QueryTree::grouping() {
 		}
 		
 		vector<string> _usefulVars = _selectClause.getVar();
-		for (size_t i = 0; i < _allClauses.size(); ++i) {
-			vector<string> temp1 = _allClauses.at(i).getVar();
+		for (size_t i = 0; i < queryVars.size(); ++i) {
+			vector<string> temp1 = queryVars.at(i);
 			if (hasCommon(_usefulVars, temp1)) {
 				_useful[i] = IS_USEFUL;
 				_usefulVars.insert(_usefulVars.end(), temp1.begin(), temp1.end());
 			}
 			for (size_t j = 0; j < i; ++j) {
-				temp1 = _allClauses.at(j).getVar();
+				temp1 = queryVars.at(j);
 				if (_useful.at(j) != IS_USEFUL &&
 					hasCommon(_usefulVars, temp1)) {
 					_useful[j] = IS_USEFUL;
