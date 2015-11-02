@@ -148,6 +148,16 @@ namespace UnitTest {
 
 			Assert::IsTrue(PKB::getPKBInstance()->getCallStmtProc(3) == -2);
 			Assert::IsTrue(PKB::getPKBInstance()->getCallStmtProc(4) == 0);
+
+			actual = PKB::getPKBInstance()->getStmtLstList();
+			expected.clear();
+			expected.push_back(1);
+			expected.push_back(4);
+			expected.push_back(7);
+			expected.push_back(11);
+			expected.push_back(12);
+			expected.push_back(16);
+			Assert::IsTrue(actual == expected);
 		}
 
 		TEST_METHOD(testVarTableFunctionsIntegration) {
