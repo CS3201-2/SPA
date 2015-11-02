@@ -12,16 +12,20 @@ const char SYMBOL_CLOSE_BRACKET = ')';
 const char SYMBOL_EQUALS = '=';
 const char SYMBOL_FULL_STOP = '.';
 
-const vector<string> KEYWORDS = { "constant", "stmt", "assign", "while", "if",
+const vector<string> KEYWORDS = { "constant", "stmt", "stmtLst", "assign", "while", "if",
 	"procedure", "call", "prog_line", "select", "modifies", "uses", "parent",
 	"parent*", "follows", "follows*", "pattern", "next", "next*", "calls",
 	"calls*", "affects", "affects*", "with", "and", "such", "that" };
+
+const vector<string> VARTYPES = { "variable", "constant", "stmt", 
+	"stmtlst", "assign", "while", "if", "procedure", "call", "prog_line" };
 
 const string VARTYPE_VARIABLE = "variable";
 const string VARTYPE_STRING = "string";
 const string VARTYPE_SUBSTRING = "substring";
 const string VARTYPE_CONSTANT = "constant";
 const string VARTYPE_STMT = "stmt";
+const string VARTYPE_STMTLST = "stmtlst";
 const string VARTYPE_ASSIGN = "assign";
 const string VARTYPE_WHILE = "while";
 const string VARTYPE_IF = "if";
@@ -83,22 +87,24 @@ QueryTree QueryValidator::getQueryTree() {
 }
 
 bool QueryValidator::isValidDeclaration(string declaration) {
-	//cout << "isValidDeclaration" << endl;
+	cout << "isValidDeclaration" << endl;
 	vector<string> arrDec = split(declaration, SYMBOL_SPACE, 2);
 	//cout << arrDec.at(1) << endl;
 
-	if (!(arrDec.at(0).compare(VARTYPE_STMT) == 0 || arrDec.at(0).compare(VARTYPE_ASSIGN) == 0 ||
+	/*if (arrDec.size() < 2 || !(arrDec.at(0).compare(VARTYPE_STMT) == 0 || arrDec.at(0).compare(VARTYPE_ASSIGN) == 0 ||
 		arrDec.at(0).compare(VARTYPE_WHILE) == 0 || arrDec.at(0).compare(VARTYPE_VARIABLE) == 0 ||
 		arrDec.at(0).compare(VARTYPE_CONSTANT) == 0 || arrDec.at(0).compare(VARTYPE_PROG_LINE) == 0 ||
 		arrDec.at(0).compare(VARTYPE_IF) == 0 || arrDec.at(0).compare(VARTYPE_PROCEDURE) == 0 ||
-		arrDec.at(0).compare(VARTYPE_CALL) == 0) || arrDec.size() < 2) {
+		arrDec.at(0).compare(VARTYPE_CALL) == 0 || arrDec.at(0).compare(VARTYPE_STMTLST) == 0)) {*/
+	if (arrDec.size() < 2 || find(VARTYPES.begin(), VARTYPES.end(), stringToLower(arrDec.at(0))) == VARTYPES.end()) {
 		return false;
 	}
 
 	vector<string> synonyms = split(arrDec.at(1), SYMBOL_COMMA);
 
-	//cout << synonyms.at(0) << endl;
+	cout << synonyms.at(0) << endl;
 	if (synonyms.size() < 1) {
+		cout << "here1\n";
 		return false;
 	}
 	
@@ -106,10 +112,11 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 
 		//if (synonyms.at(i)) - check if empty (no variable after type)
 		if (!isValidVariableName(synonyms.at(i)) || isVarNameExists(synonyms.at(i))) {
+			cout << "here2\n"<< isValidVariableName(synonyms.at(i));
 			return false;
 		} else {
 			varMap[synonyms.at(i)] = arrDec.at(0);
-			//cout << "dec: " << synonyms.at(i) <<" "<< arrDec.at(0) << endl;
+			cout << "dec: " << synonyms.at(i) <<" "<< arrDec.at(0) << endl;
 			qt.insertVariable(synonyms.at(i), arrDec.at(0));
 			//cout << varMap.find("a")->second;
 		}
@@ -848,7 +855,8 @@ bool QueryValidator::isValidVariableName(string varName) {
 		return false;
 	}
 
-	if (std::find(KEYWORDS.begin(), KEYWORDS.end(), stringToLower(varName)) != KEYWORDS.end()) {
+	if (find(KEYWORDS.begin(), KEYWORDS.end(), stringToLower(varName)) != KEYWORDS.end()) {
+		cout << "here3";
 		return false;
 	}
 
