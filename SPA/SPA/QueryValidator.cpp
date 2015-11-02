@@ -87,7 +87,7 @@ QueryTree QueryValidator::getQueryTree() {
 }
 
 bool QueryValidator::isValidDeclaration(string declaration) {
-	cout << "isValidDeclaration" << endl;
+	//cout << "isValidDeclaration" << endl;
 	vector<string> arrDec = split(declaration, SYMBOL_SPACE, 2);
 	//cout << arrDec.at(1) << endl;
 
@@ -104,7 +104,7 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 
 	cout << synonyms.at(0) << endl;
 	if (synonyms.size() < 1) {
-		cout << "here1\n";
+		//cout << "here1\n";
 		return false;
 	}
 	
@@ -112,11 +112,11 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 
 		//if (synonyms.at(i)) - check if empty (no variable after type)
 		if (!isValidVariableName(synonyms.at(i)) || isVarNameExists(synonyms.at(i))) {
-			cout << "here2\n"<< isValidVariableName(synonyms.at(i));
+			//cout << "here2\n"<< isValidVariableName(synonyms.at(i));
 			return false;
 		} else {
 			varMap[synonyms.at(i)] = arrDec.at(0);
-			cout << "dec: " << synonyms.at(i) <<" "<< arrDec.at(0) << endl;
+			//cout << "dec: " << synonyms.at(i) <<" "<< arrDec.at(0) << endl;
 			qt.insertVariable(synonyms.at(i), arrDec.at(0));
 			//cout << varMap.find("a")->second;
 		}
@@ -126,7 +126,7 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 }
 
 bool QueryValidator::isValidQuery(string query) {
-	cout << "isValidQuery\n";
+	//cout << "isValidQuery\n";
 	vector<string> arrClauses = split(query, SYMBOL_SPACE, 2); //don't split into 3 as will have tuples(multiple var) later
 
 	if (stringToLower(arrClauses.at(0)).compare("select") != 0 || arrClauses.size() != 2) {
@@ -159,7 +159,7 @@ bool QueryValidator::isValidQuery(string query) {
 			//varType.push_back(getVarType(arrClauses.at(i)));
 		}
 		
-		cout << "Select: ";
+		/*cout << "Select: ";
 		for (int i = 0; i < var.size(); i++) {
 			cout << i<<" "<<var.at(i) <<" ";
 		}
@@ -170,7 +170,7 @@ bool QueryValidator::isValidQuery(string query) {
 			cout << i << " " <<varType.at(i) << " ";
 		}
 
-		cout << endl;
+		cout << endl;*/
 		qt.insertSelect(var, varType);
 	} else {
 		arrClauses = split(arrClauses.at(1), SYMBOL_SPACE, 2);
@@ -256,7 +256,7 @@ bool QueryValidator::isValidQuery(string query) {
 	}
 	
 	if (arrClauses.at(1).size() > 0 && arrClauses.at(1).at(0) != NULL) {
-		cout << "yes1\n";
+		//cout << "yes1\n";
 		return false;
 	}
 	
@@ -347,7 +347,7 @@ bool QueryValidator::isValidQuery(string query) {
 	return false;
 }*/
 
-bool QueryValidator::findAndClause(string &subquery, string prevQuery) {
+/*bool QueryValidator::findAndClause(string &subquery, string prevQuery) {
 	vector<string> arrWords = split(subquery, SYMBOL_SPACE, 2);
 
 	if (arrWords.at(0).compare(RELTYPE_AND) == 0 && arrWords.size() == 2) {
@@ -356,7 +356,7 @@ bool QueryValidator::findAndClause(string &subquery, string prevQuery) {
 	} 
 
 	return false;
-}
+}*/
 
 /*QueryValidator::RETURN_TYPE QueryValidator::findRel(string &subquery) {
 	//cout << "findRel" << endl;
@@ -378,9 +378,10 @@ bool QueryValidator::findAndClause(string &subquery, string prevQuery) {
 }*/
 
 bool QueryValidator::parseRel(string &subquery) {
-	cout << "parseRel" << endl;
+	//cout << "parseRel" << endl;
+	//cout << subquery << endl;
 	vector<string> arrClauses = split(subquery, SYMBOL_OPEN_BRACKET, 2);
-
+	
 	if (!r.hasRelationship(stringToLower(arrClauses.at(0))) || arrClauses.size() != 2) {
 		return false;
 	}
@@ -402,16 +403,16 @@ bool QueryValidator::parseRel(string &subquery) {
 	if (!r.isNumOfArgsEqual(relType, arrVar.size())) {
 		return false;
 	}
-	
+
 	vector<string> varTypes(arrVar.size());
 	//cout << "\nsuch that: parsing args"<<arrVar.at(1);
 	if (!parseRelArgs(relType, arrVar, varTypes)) {
 		return false;
 	}
-	
+
 	qt.insertSuchThat(relType, arrVar, varTypes);
 	
-	cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	subquery = trim(arrClauses.at(1));
 	return true;
@@ -458,7 +459,7 @@ bool QueryValidator::parseRelArgs(string relType,
 	return true;
 }
 
-bool QueryValidator::findSuchThatString(string &subquery) {
+/*bool QueryValidator::findSuchThatString(string &subquery) {
 	vector<string> arrWords = split(subquery, SYMBOL_SPACE, 3);
 	//cout << "findSuchThatString" << endl;
 
@@ -470,22 +471,24 @@ bool QueryValidator::findSuchThatString(string &subquery) {
 	}
 
 	return false;
-}
+}*/
 
 bool QueryValidator::findPatternClause(string &subquery) {
-	vector<string> arrWords = split(subquery, SYMBOL_SPACE, 2);
+	//vector<string> arrWords = split(subquery, SYMBOL_SPACE, 2);
 	//cout << "findPattern" << endl;
+	//cout << subquery << endl;
 	/*if (!(stringToLower(arrWords.at(0)).compare(RELTYPE_PATTERN) == 0) || arrWords.size() != 2) {
 		return NONE;
 	}*/
 	
-	arrWords = split(arrWords.at(1), SYMBOL_OPEN_BRACKET, 2);
+	vector<string> arrWords = split(subquery, SYMBOL_OPEN_BRACKET, 2);
 
 	if (arrWords.size() != 2) {
 		//cout << "yes1\n";
 		return false;
 	}
 	
+	//cout << arrWords.at(0)<<"\n";
 	if (isVarNameExists(arrWords.at(0))) {
 		if (getVarType(arrWords.at(0)).compare(VARTYPE_ASSIGN) == 0 ||
 			getVarType(arrWords.at(0)).compare(VARTYPE_WHILE) == 0 ||
@@ -494,9 +497,10 @@ bool QueryValidator::findPatternClause(string &subquery) {
 			string relType, syn, synType;
 
 			if (!parsePatternType(arrWords.at(0), relType, syn, synType)) {
+				//cout << "yes\n";
 				return false;
 			}
-			//cout << "syntype = " << synType<<endl;
+
 			//cout << "parsed patterns\n";
 			if (arrWords.at(1).find(")") == string::npos) {
 				//cout << "no "<< arrWords.at(1)<<"\n";
@@ -566,7 +570,7 @@ bool QueryValidator::findPatternClause(string &subquery) {
 
 			qt.insertPattern(syn, synType, arrVar, varType);
 
-			cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+			//cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 			//cout << "pattern type " << varType.at(0) << " " << varType.at(1) << endl;
 		}
 	} else {
@@ -672,7 +676,7 @@ bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varTy
 }
 
 bool QueryValidator::findWithClause(string &subquery) {
-	vector<string> arrWords = split(subquery, SYMBOL_SPACE, 2);
+	//vector<string> arrWords = split(subquery, SYMBOL_SPACE, 2);
 	//cout << "findWith" << endl;
 	/*if (!(stringToLower(arrWords.at(0)).compare(RELTYPE_WITH) == 0) || arrWords.size() != 2) {
 		//cout << "no with\n";
@@ -691,15 +695,15 @@ bool QueryValidator::findWithClause(string &subquery) {
 		return INVALID;
 	}*/
 
-	if (!parseWithNumber(arrWords.at(1), relType, arrVar, varTypes)) {
-		if (!parseWithName(arrWords.at(1), relType, arrVar, varTypes)) {
+	if (!parseWithNumber(subquery, relType, arrVar, varTypes)) {
+		if (!parseWithName(subquery, relType, arrVar, varTypes)) {
 			return false;
 		}
 	}
 
-	subquery = arrWords.at(1);
+	//subquery = arrWords.at(1);
 	
-	cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+	//cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 	qt.insertWith(relType, arrVar, varTypes);
 	return true;
@@ -856,7 +860,7 @@ bool QueryValidator::isValidVariableName(string varName) {
 	}
 
 	if (find(KEYWORDS.begin(), KEYWORDS.end(), stringToLower(varName)) != KEYWORDS.end()) {
-		cout << "here3";
+		//cout << "here3";
 		return false;
 	}
 

@@ -20,12 +20,12 @@ private:
 	bool isValidDeclaration(string declaration);
 	bool isValidQuery(string query);
 	//bool checkRetVal(RETURN_TYPE retVal, bool &isFinished, string &prevClause, string curClause);
-	bool findAndClause(string &subquery, string prevClause);
+	//bool findAndClause(string &subquery, string prevClause);
 	
 	//bool findRel(string &subquery);
 	bool parseRel(string &subquery);
 	bool parseRelArgs(string relType, vector<string> &arrVar, vector<string> &varTypes);
-	bool findSuchThatString(string &subquery);
+	//bool findSuchThatString(string &subquery);
 	
 	bool findPatternClause(string &subquery);
 	bool parsePatternType(string word, string &relType, string &syn, string &synType);
