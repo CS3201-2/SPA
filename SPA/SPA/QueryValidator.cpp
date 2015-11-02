@@ -201,7 +201,8 @@ bool QueryValidator::isValidQuery(string query) {
 	while (1) {
 		//cout << "in while\n";
 		//cout << arrClauses.at(1) << endl;
-		if (arrClauses.at(1).at(0) == NULL) {
+		//cout<<arrClauses.at(1).size() << endl;
+		if ((arrClauses.at(1).size() > 0 && arrClauses.at(1).at(0) == NULL) || arrClauses.at(1).size() == 0) {
 			break;
 		}
 		
