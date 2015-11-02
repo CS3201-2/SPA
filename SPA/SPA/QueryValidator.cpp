@@ -102,7 +102,7 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 
 	vector<string> synonyms = split(arrDec.at(1), SYMBOL_COMMA);
 
-	cout << synonyms.at(0) << endl;
+	//cout << synonyms.at(0) << endl;
 	if (synonyms.size() < 1) {
 		//cout << "here1\n";
 		return false;
