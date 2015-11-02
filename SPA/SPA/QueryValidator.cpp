@@ -1,4 +1,5 @@
 #include "QueryValidator.h"
+#include "SPALog.h"
 #include <iostream>
 #include <regex>
 
@@ -68,17 +69,20 @@ bool QueryValidator::isValidDecAndQuery(string query)
 	//declaration clauses
 	for (i = 0; i < size - 1; i++) {
 		if (!isValidDeclaration(splitStr.at(i))) {
-			cout << "Invalid Query Declaration" << endl;
+			//cout << "Invalid Query Declaration" << endl;
+			SPALog::log("Invalid Query Declaration");
 			return false;
 		}
 	}
 
 	if (!isValidQuery(splitStr.at(i))) {
-		cout << "Invalid Query" << endl;
+		//cout << "Invalid Query" << endl;
+		SPALog::log("Invalid Query");
 		return false;
 	}
 
-	cout << "valid query";
+	//cout << "Valid Query";
+	SPALog::log("Valid Query");
 	return true;
 }
 
@@ -415,6 +419,8 @@ bool QueryValidator::parseRel(string &subquery) {
 	
 	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
+	SPALog::log("such that: " + relType + " " + arrVar.at(0) + " " + arrVar.at(1));
+	SPALog::log("such that types: " + varTypes.at(0) + " " + varTypes.at(1));
 	subquery = trim(arrClauses.at(1));
 	return true;
 }
@@ -571,8 +577,10 @@ bool QueryValidator::findPatternClause(string &subquery) {
 
 			qt.insertPattern(syn, synType, arrVar, varType);
 
-			//cout << "pattern " << arrVar.at(0) << " " << arrVar.at(1) << endl;
+			//cout << "pattern: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 			//cout << "pattern type " << varType.at(0) << " " << varType.at(1) << endl;
+			SPALog::log("pattern: " + arrVar.at(0) + " " + arrVar.at(1));
+			SPALog::log("pattern types: " + varType.at(0) + " " + varType.at(1));
 		}
 	} else {
 		return false;
@@ -706,6 +714,8 @@ bool QueryValidator::findWithClause(string &subquery) {
 	
 	//cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
+	SPALog::log("with: " + arrVar.at(0) + " " + arrVar.at(1));
+	SPALog::log("with types: " + varTypes.at(0) + " " + varTypes.at(1));
 	qt.insertWith(relType, arrVar, varTypes);
 	return true;
 }
