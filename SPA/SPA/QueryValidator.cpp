@@ -53,9 +53,10 @@ const string RELTYPE_AND = "and";
 
 const regex variableNameRegex("(^[[:alpha:]])([[:alnum:]]+)*$");
 
-bool QueryValidator::isValidDecAndQuery(string query)
-{
-	vector<string> splitStr = split(trim(query), SYMBOL_SEMICOLON);
+bool QueryValidator::isValidDecAndQuery(string query) {
+	string q = trim(query);
+	vector<string> splitStr = split(q, SYMBOL_SEMICOLON);
+
 	//cout << "isValidDecAndQuery";
 	//if (splitStr.at(0).empty()) {
 	/*if (splitStr.size() < 2) {
@@ -70,19 +71,19 @@ bool QueryValidator::isValidDecAndQuery(string query)
 	for (i = 0; i < size - 1; i++) {
 		if (!isValidDeclaration(splitStr.at(i))) {
 			//cout << "Invalid Query Declaration" << endl;
-			SPALog::log("Invalid Query Declaration");
+			SPALog::log("Invalid Query Declaration: " + q);
 			return false;
 		}
 	}
 
 	if (!isValidQuery(splitStr.at(i))) {
 		//cout << "Invalid Query" << endl;
-		SPALog::log("Invalid Query");
+		SPALog::log("Invalid Query: " + q);
 		return false;
 	}
 
 	//cout << "Valid Query";
-	SPALog::log("Valid Query");
+	SPALog::log("Valid Query: " + q);
 	return true;
 }
 
@@ -317,9 +318,6 @@ bool QueryValidator::isValidQuery(string query) {
 		//cout << "isFinished = "<<isFinished<<endl;
 	}*/
 
-	
-
-	
 	return true;
 }
 
@@ -419,8 +417,8 @@ bool QueryValidator::parseRel(string &subquery) {
 	
 	//cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
-	SPALog::log("such that: " + relType + " " + arrVar.at(0) + " " + arrVar.at(1));
-	SPALog::log("such that types: " + varTypes.at(0) + " " + varTypes.at(1));
+	//SPALog::log("such that: " + relType + " " + arrVar.at(0) + " " + arrVar.at(1));
+	//SPALog::log("such that types: " + varTypes.at(0) + " " + varTypes.at(1));
 	subquery = trim(arrClauses.at(1));
 	return true;
 }
@@ -579,8 +577,8 @@ bool QueryValidator::findPatternClause(string &subquery) {
 
 			//cout << "pattern: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 			//cout << "pattern type " << varType.at(0) << " " << varType.at(1) << endl;
-			SPALog::log("pattern: " + arrVar.at(0) + " " + arrVar.at(1));
-			SPALog::log("pattern types: " + varType.at(0) + " " + varType.at(1));
+			//SPALog::log("pattern: " + arrVar.at(0) + " " + arrVar.at(1));
+			//SPALog::log("pattern types: " + varType.at(0) + " " + varType.at(1));
 		}
 	} else {
 		return false;
@@ -714,8 +712,8 @@ bool QueryValidator::findWithClause(string &subquery) {
 	
 	//cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
 	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
-	SPALog::log("with: " + arrVar.at(0) + " " + arrVar.at(1));
-	SPALog::log("with types: " + varTypes.at(0) + " " + varTypes.at(1));
+	//SPALog::log("with: " + arrVar.at(0) + " " + arrVar.at(1));
+	//SPALog::log("with types: " + varTypes.at(0) + " " + varTypes.at(1));
 	qt.insertWith(relType, arrVar, varTypes);
 	return true;
 }
