@@ -13,7 +13,7 @@ private:
 	vector<Clause> _allClauses;
 	vector<Clause> _variableTree;
 	Clause _selectClause;
-	vector<int> _parent;
+	vector<bool> _useful;
 	vector<Clause> _usefulNoVarTree;
 	vector<Clause> _usefulOneVarTree;
 	vector<Clause> _usefulTwoVarTree;
@@ -48,8 +48,6 @@ public:
 
 	//group method
 	void grouping();
-	int find(int);
-	void merge(int, int);
 	bool hasCommon(vector<string>, vector<string>);
 };
 #endif

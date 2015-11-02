@@ -24,18 +24,13 @@ private:
 	ResultTable _finalTable;
 	vector<int> _parent;
 
-	ResultTable mergeTables(vector<int>);
+	ResultTable mergeTables();
 	ResultTable mergeTwoTables(ResultTable, ResultTable);
 	map<int, vector<int>> getMergingOrderBoolean();
 	void countHeader();
 	vector<int> getSelectIDsInFinalTable(vector<string>);
 	vector<string> getCommonHeader(vector<string>, vector<string>);
 	list<string> extractResultFromMergedTable();
-	
-	//for constructing header groups
-	void groupTables();
-	int find(int);
-	void merge(int, int);
 
 	void logFinalResult(list<string>);
 
