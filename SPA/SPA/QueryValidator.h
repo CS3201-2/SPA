@@ -13,26 +13,26 @@ class QueryValidator {
 private:
 	unordered_map<string, string> varMap;
 	RelationshipTable r;
-	enum RETURN_TYPE { NONE, INVALID, VALID };
+	//enum RETURN_TYPE { NONE, INVALID, VALID };
 	QueryTree qt;
 
 	//bool parseString(string query);
 	bool isValidDeclaration(string declaration);
 	bool isValidQuery(string query);
-	bool checkRetVal(RETURN_TYPE retVal, bool &isFinished, string &prevClause, string curClause);
+	//bool checkRetVal(RETURN_TYPE retVal, bool &isFinished, string &prevClause, string curClause);
 	bool findAndClause(string &subquery, string prevClause);
 	
-	RETURN_TYPE findRel(string &subquery);
+	//bool findRel(string &subquery);
 	bool parseRel(string &subquery);
 	bool parseRelArgs(string relType, vector<string> &arrVar, vector<string> &varTypes);
 	bool findSuchThatString(string &subquery);
 	
-	RETURN_TYPE findPatternClause(string &subquery);
+	bool findPatternClause(string &subquery);
 	bool parsePatternType(string word, string &relType, string &syn, string &synType);
 	bool parsePatternArg1(string relType, string &arg, string &varType);
 	bool parsePatternArg2(string relType, string &arg, string &varType);
 	
-	RETURN_TYPE findWithClause(string &subquery);
+	bool findWithClause(string &subquery);
 	bool parseWithNumber(string &subquery, string &relType, vector<string> &arrVar, vector<string> &varTypes);
 	bool parseWithName(string &subquery, string &relType, vector<string> &arrVar, vector<string> &varTypes);
 
