@@ -24,75 +24,29 @@ QueryResultProjector::QueryResultProjector(vector<ResultTable> tempTables,
 
 list<string> QueryResultProjector::getResult() {
 	list<string> resultStringList;
-	groupTables();
 
 	if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
 		if (_tempTables.empty()) {
 			resultStringList.push_back(RESULT_TRUE);
 		}
 		else {
-			map<int, vector<int>> mergingOrder = getMergingOrderBoolean();
-			for (map<int, vector<int>>::iterator it = mergingOrder.begin();
-				it != mergingOrder.end(); ++it) {
-				ResultTable mergedTable = mergeTables((*it).second);
-				if (mergedTable.getTableSize() == 0) {
-					resultStringList.push_back(RESULT_FALSE);
-					return resultStringList;
-				}
+			_finalTable = mergeTables();
+			if (_finalTable.getTableSize() == EMPTY_TABLE) {
+				resultStringList.push_back(RESULT_FALSE);
 			}
-			resultStringList.push_back(RESULT_TRUE);
+			else {
+				resultStringList.push_back(RESULT_TRUE);
+			}
 		}
 	}
 	else {
-		vector<int> mergingOrder;
-		for (size_t i = 0; i < _tempTables.size(); ++i) {
-			mergingOrder.push_back(i);
-		}
-		_finalTable = mergeTables(mergingOrder);
+		_finalTable = mergeTables();
 		_finalTable.logTable(-1);
 		resultStringList = extractResultFromMergedTable();
 	}
 
 
 	return resultStringList;
-}
-
-//use idea of disjoint set to group tables
-void QueryResultProjector::groupTables() {
-	for (size_t i = 0; i < _tempTables.size(); ++i) {
-		_parent.push_back(i);
-	}
-
-	for (size_t i = 0; i < _tempTables.size(); ++i) {
-		for (size_t j = i + 1; j < _tempTables.size(); ++j) {
-			if (getCommonHeader(_tempTables[i].getHeader(),
-				_tempTables[j].getHeader()).size() != 0) {
-				merge(i, j);
-			}
-		}
-	}
-
-	//adjustment: to make sure all depth in disjoint set is 1
-	for (int i = _parent.size() - 1; i > -1; --i) {
-		if (_parent[_parent[i]] != _parent[i]) {
-			_parent[i] = _parent[_parent[i]];
-		}
-	}
-}
-
-int QueryResultProjector::find(int i) {
-	if (_parent[i] == i) {
-		return i;
-	}
-	else {
-		int result = find(_parent[i]);
-		_parent[i] = result;
-		return result;
-	}
-}
-void QueryResultProjector::merge(int i, int j) {
-	int u = find(i), v = find(j);
-	_parent[u] = v;
 }
 
 map<int, vector<int>> QueryResultProjector::getMergingOrderBoolean() {
@@ -114,7 +68,7 @@ map<int, vector<int>> QueryResultProjector::getMergingOrderBoolean() {
 }
 
 //assume there is at least one table in _tempTables
-ResultTable QueryResultProjector::mergeTables(vector<int> mergingOrder) {
+ResultTable QueryResultProjector::mergeTables() {
 	ResultTable finalTable, tempTable;
 	finalTable = _tempTables.at(0);
 

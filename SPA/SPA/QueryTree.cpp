@@ -12,6 +12,8 @@ const string BOOLEAN_TYPE = "boolean";
 const string STRING_TYPE = "string";
 const string NUMBER_TYPE = "number";
 const string ALL_TYPE = "all";
+const bool IS_NOT_USEFUL = false;
+const bool IS_USEFUL = true;
 
 QueryTree::QueryTree() {
 
@@ -124,11 +126,9 @@ void QueryTree::grouping() {
 		}
 	}
 	else {
-		_allClauses.push_back(_selectClause);
 		vector<vector<string>> queryVars;
-		
 		for (size_t i = 0; i < _allClauses.size(); ++i) {
-			_parent.push_back(i);
+			_useful.push_back(IS_NOT_USEFUL);
 			vector<string> var = _allClauses.at(i).getVar();
 			vector<string> varType = _allClauses.at(i).getVarType();
 			vector<string> temp;
@@ -140,26 +140,26 @@ void QueryTree::grouping() {
 			}
 			queryVars.push_back(temp);
 		}
-
-		for (size_t i = 0; i < queryVars.size(); ++i) {
-			for (size_t j = 0; j < queryVars.size(); ++j) {
-				if (hasCommon(queryVars.at(i), queryVars.at(j))) {
-					merge(i, j);
+		
+		vector<string> _usefulVars = _selectClause.getVar();
+		for (size_t i = 0; i < _allClauses.size(); ++i) {
+			vector<string> temp1 = _allClauses.at(i).getVar();
+			if (hasCommon(_usefulVars, temp1)) {
+				_useful[i] = IS_USEFUL;
+				_usefulVars.insert(_usefulVars.end(), temp1.begin(), temp1.end());
+			}
+			for (size_t j = 0; j < i; ++j) {
+				temp1 = _allClauses.at(j).getVar();
+				if (_useful.at(j) != IS_USEFUL &&
+					hasCommon(_usefulVars, temp1)) {
+					_useful[j] = IS_USEFUL;
+					_usefulVars.insert(_usefulVars.end(), temp1.begin(), temp1.end());
 				}
 			}
 		}
 
-		//adjustment: to make sure all depth in disjoint set is 1
-		for (int i = _parent.size() - 1; i > -1; --i) {
-			if (_parent[_parent[i]] != _parent[i]) {
-				_parent[i] = _parent[_parent[i]];
-			}
-		}
-
-		_parent.pop_back();
-		_allClauses.pop_back();
 		for (size_t i = 0; i < _allClauses.size(); ++i) {
-			if (_parent[i] == _allClauses.size()) {
+			if (_useful[i] == IS_USEFUL) {
 				if (_allClauses.at(i).getNumOfVar() == ONE_VARIABLE) {
 					_usefulOneVarTree.push_back(_allClauses.at(i));
 				}
@@ -177,22 +177,6 @@ void QueryTree::grouping() {
 			}
 		}
 	}
-}
-
-int QueryTree::find(int i) {
-	if (_parent[i] == i) {
-		return i;
-	}
-	else {
-		int result = find(_parent[i]);
-		_parent[i] = result;
-		return result;
-	}
-}
-
-void QueryTree::merge(int i, int j) {
-	int u = find(i), v = find(j);
-	_parent[u] = v;
 }
 
 bool QueryTree::hasCommon(vector<string> v1, vector<string> v2) {
