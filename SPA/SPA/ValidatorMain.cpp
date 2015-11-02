@@ -40,11 +40,13 @@ int main() {
 		str30 = "Select BOOLEAN such that Affects(3, 9)",
 		str31 = "while w; call calls; Select w such that Next(calls, w) and Parent(w, 9)",
 		str32 = "assign a1, a2; stmtLst s; Select s such that Modifies(a1, \"x\") and Modifies(a2, \"x\") and Follows(a1, a2)",
-		str33 = "assign a; while w; Select a pattern a(_, _\"haha\"_) such that Parent*(w,a)";
+		str33 = "assign a; while w; Select a pattern a(_, _\"haha\"_) such that Parent*(w,a)",
+		str34 = "assign a1, a2; variable v; stmt s1, s2; Select such that Follows(a1, a2) and Uses(a2, v) and Affects(a1, a2) with s1.stmt#  = 3 and s2.stmt# = 4",
+		str35 = "call c; procedure p; variable v; Select v such that Modifies(p, v) with c.procName = p.procName";
 
 	//cout << str29 << "\n";
 
-	q.isValidDecAndQuery(str33);
+	q.isValidDecAndQuery(str35);
 	//cout << q.isValidExpression("x23*123-7y")<<endl; //0
 	//cout << q.isValidExpression("123+-x23*123") << endl; //0
 	//cout << q.isValidExpression("(x+123+y)") << endl; //1
