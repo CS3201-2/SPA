@@ -661,6 +661,7 @@ list<int> PKB::getAffectsFirst(int end) {
 					if (contains(varModifiesIndex, tempUses))
 					{
 						buffer.push_back(temp);
+						visit[temp] = 1;
 					}
 				}
 				if (visit[temp] == 1)
