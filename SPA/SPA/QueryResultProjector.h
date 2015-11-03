@@ -12,7 +12,7 @@ using namespace std;
 class QueryResultProjector {
 
 public:
-	QueryResultProjector(vector<ResultTable>, vector<string>, vector<string>);
+	QueryResultProjector(vector<ResultTable>, vector<ResultTable>, vector<string>, vector<string>);
 	list<string> getResult();
 
 private:
@@ -20,6 +20,7 @@ private:
 	vector<string> _select;
 	vector<string> _selectType;
 	map<string, int> _headerCount;
+	vector<ResultTable> _selectTables;
 	vector<ResultTable> _tempTables;
 	ResultTable _finalTable;
 	vector<int> _parent;
