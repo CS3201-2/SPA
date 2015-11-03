@@ -526,6 +526,7 @@ void CFG::storeNextTableWithDummy()
 	_currentDummyNode = 0;
 	_nextTableWithDummy.resize(_codeLst.size() + 1, empty);
 	_dummyForNext.resize(_codeLst.size() + 1, empty);
+	_dummyMap.clear();
 	for (int i = 0; i < _next.size(); i++)
 	{
 		try {
@@ -543,41 +544,81 @@ void CFG::storeNextDummy(int index)
 	CFGNode* node = _nodeMap.at(index);
 	int begin = node->getStart();
 	int end = node->getEnd();
-	int i = 0;
 	list<int> temp;
 	list<int> buffer;
 	if (begin == -1)
 	{
-		return;
+		//this a dummy node
+		unordered_map<int, int>::iterator it;
+		it = _dummyMap.find(index);
+		if (it == _dummyMap.end())
+		{
+			//this dummy has not been recorded yet
+			_currentDummyNode++;
+			_dummyMap.insert(make_pair(index, -_currentDummyNode));
+		}
+		else
+		{
+			//this dummy has been recorded
+			//(probably some other node has it as next)
+			//do not do anything here yet
+		}
 	}
-	//store within the same node
-	for (i = begin; i < end; i++)
+	else
 	{
-		temp.push_back(i + 1);
-		_nextTableWithDummy[i] = temp;
-		_size++;
-		updateVector(i + 1, i, _beforeTableWithDummy);
-		temp.clear();
+		//this is not a dummy node
+		//store within the same node
+		for (int i = begin; i < end; i++)
+		{
+			temp.push_back(i + 1);
+			_nextTableWithDummy[i] = temp;
+			updateVector(i + 1, i, _beforeTableWithDummy);
+			temp.clear();
+		}
 	}
+	
 	//solve its next node
 	temp = _next[index];
 	for (auto& x : temp)
 	{
-		while (x != -1)
+		if (x != -1)
 		{
 			CFGNode* tempNode = _nodeMap.at(x);
-			if (tempNode->getStart() != -1)
+			if (tempNode->getStart() == -1)
 			{
 				//this is an dummy node
-				buffer.push_back(tempNode->getStart());
-				updateVector(tempNode->getStart(), end, _beforeTable);
-				break;
+				unordered_map<int, int>::iterator it;
+				it = _dummyMap.find(x);
+				if (it == _dummyMap.end())
+				{
+					//this dummy has not been recorded yet
+					_currentDummyNode++;
+					_dummyMap.insert(make_pair(x, -_currentDummyNode));
+				}
+				else
+				{
+					//this dummy has been recorded
+				}
+				buffer.push_back(_dummyMap.at(x));
 			}
 			else
 			{
-				x = _next[x].front();
+				buffer.push_back(tempNode->getStart());
 			}
 		}
+	}
+	if (begin == -1)
+	{
+		//this is a dummy node
+		//so store in table for dummy
+		int indexInDummyTable = -_dummyMap.at[index];
+		_dummyForNext[indexInDummyTable] = buffer;
+	}
+	else
+	{
+		//this a normal node
+		//so store in table for normal
+		_nextTable[end] = buffer;
 	}
 }
 

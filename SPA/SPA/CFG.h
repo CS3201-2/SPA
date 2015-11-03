@@ -33,6 +33,7 @@ class CFG
 	vector<StatementType> _typeTable;
 	unordered_map<int, int> _procMap;
 	vector<int> _procTable;
+	unordered_map<int, int> _dummyMap;
 	unordered_map<int, CFGNode*> _nodeMap;
 
 	list<Statement>::iterator _codeIterator;
