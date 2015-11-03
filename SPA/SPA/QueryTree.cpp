@@ -87,12 +87,8 @@ vector<Clause> QueryTree::getUsefulTwoVarTree() {
 	return _usefulTwoVarTree;
 }
 
-vector<Clause> QueryTree::getUselessOneVarTree() {
-	return _uselessOneVarTree;
-}
-
-vector<Clause> QueryTree::getUselessTwoVarTree() {
-	return _uselessTwoVarTree;
+vector<Clause> QueryTree::getUselessTree() {
+	return _uselessTree;
 }
 
 int QueryTree::getNumOfVar(vector<string> arrType) {
@@ -170,12 +166,7 @@ void QueryTree::grouping() {
 				}
 			}
 			else {
-				if (_allClauses.at(i).getNumOfVar() == ONE_VARIABLE) {
-					_uselessOneVarTree.push_back(_allClauses.at(i));
-				}
-				else {
-					_uselessOneVarTree.push_back(_allClauses.at(i));
-				}
+				_uselessTree.push_back(_allClauses.at(i));
 			}
 		}
 	}
