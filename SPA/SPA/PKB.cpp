@@ -523,7 +523,7 @@ void PKB::setCallsReverse() {
 
 
 //CallsStar
-void PKB::setCallsStar(int first, int second) {
+void PKB::setCallsStar(int first, list<int> second) {
 	getCallsStar().setCallsStar(first, second);
 }
 

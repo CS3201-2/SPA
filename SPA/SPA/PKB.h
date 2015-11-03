@@ -144,7 +144,7 @@ public:
 
 
 	//CallsStar
-	void setCallsStar(int, int);
+	void setCallsStar(int, list<int>);
 	list<int> getCallsStarFirst(int);
 	list<int> getCallsStarSecond(int);
 	bool isCallsStarValid(int, int);

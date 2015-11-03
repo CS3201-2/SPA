@@ -3,18 +3,8 @@
 CallsStar::CallsStar() {
 }
 
-void CallsStar::setCallsStar(int first, int second) {
-	list<int> secondList;
-
-	if (callsStarMap.find(first) == callsStarMap.end()) {
-		secondList.push_back(second);
-		callsStarMap[first] = secondList;
-	}
-	else {
-		secondList = callsStarMap.at(first);
-		secondList.push_back(second);
-		callsStarMap[first] = secondList;
-	}
+void CallsStar::setCallsStar(int first, list<int> second) {
+	callsStarMap[first] = second;
 }
 
 list<int> CallsStar::getCallsStarFirst(int second) {

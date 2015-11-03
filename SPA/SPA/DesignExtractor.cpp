@@ -29,39 +29,27 @@ void DesignExtractor::setCalls(list<pair<int, string>> calledProcList) {
 
 void DesignExtractor::setCallsStar() {
 	map<int, list<int>> callsMap = PKB::getPKBInstance()->getCallsMap();
-	bool isValid = true;
-
-	//loop through all the first in callsMap
-	for (map<int, list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
+	
+	for (map <int, list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
 		int first = (*it).first;
-		if (PKB::getPKBInstance()->getCallsStarSecond(first).size() == 0) {
-			list<int> firstList;
-			firstList.push_back(first);
-			processCallsStar(isValid, firstList);
+		list<int> second = (*it).second;
+		PKB::getPKBInstance()->setCallsStar(first, second);
+	}
+
+	for (size_t i = 0; i < callsMap.size(); ++i) {
+		for (map<int, list<int>>::iterator it = callsMap.begin(); it != callsMap.end(); ++it) {
+			int first = (*it).first;
+			list<int> second = (*it).second;
+			list<int> secondFinal = (*it).second;
+			for (auto & x : second) {
+				list<int> tempSecond = PKB::getPKBInstance()->getCallsStarSecond(x);
+				secondFinal.insert(secondFinal.end(), tempSecond.begin(), tempSecond.end());
+			}
+			PKB::getPKBInstance()->setCallsStar(first, secondFinal);
 		}
 	}
 
 	PKB::getPKBInstance()->sortAndUnifyCallsStarMap();
-}
-
-void DesignExtractor::processCallsStar(bool& isValid, list<int> firstList) {
-	int first = firstList.back();
-	list<int> secondList = PKB::getPKBInstance()->getCallsSecond(first);
-
-	for (list<int>::iterator it = secondList.begin(); it != secondList.end(); ++it) {
-		list<int> tempFirstList = firstList;
-		if (find(tempFirstList.begin(), tempFirstList.end(), *it) == tempFirstList.end()) {
-			for (list<int>::iterator it2 = tempFirstList.begin(); it2 != tempFirstList.end(); ++it2) {
-				PKB::getPKBInstance()->setCallsStar(*it2, *it);
-			}
-		}
-		else {
-			isValid = false;
-			return;
-		}
-		tempFirstList.push_back(*it);
-		processCallsStar(isValid, tempFirstList);
-	}
 }
 
 void DesignExtractor::setFollowsStar() {
