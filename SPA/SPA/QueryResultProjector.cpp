@@ -26,6 +26,8 @@ QueryResultProjector::QueryResultProjector(vector<ResultTable> selectTable, vect
 list<string> QueryResultProjector::getResult() {
 	list<string> resultStringList;
 
+	trimSelectTables();
+
 	if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
 		if (_tempTables.empty()) {
 			resultStringList.push_back(RESULT_TRUE);
@@ -48,6 +50,25 @@ list<string> QueryResultProjector::getResult() {
 
 
 	return resultStringList;
+}
+
+void QueryResultProjector::trimSelectTables() {
+	for (vector<ResultTable>::iterator it = _tempTables.begin(); it != _tempTables.end(); ++it) {
+		vector<string> header1 = (*it).getHeader();
+		for (vector<ResultTable>::iterator it2 = _selectTables.begin(); it2 != _selectTables.end();) {
+			vector<string> header2 = (*it2).getHeader();
+			if (getCommonHeader(header1, header2).empty()) {
+				++it2;
+			}
+			else {
+				it2 = _selectTables.erase(it2);
+			}
+		}
+	}
+
+	if (!_selectTables.empty()) {
+		_tempTables.insert(_tempTables.end(), _selectTables.begin(), _selectTables.end());
+	}
 }
 
 //assume there is at least one table in _tempTables

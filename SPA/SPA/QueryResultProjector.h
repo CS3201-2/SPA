@@ -31,6 +31,7 @@ private:
 	vector<int> getSelectIDsInFinalTable(vector<string>);
 	vector<string> getCommonHeader(vector<string>, vector<string>);
 	list<string> extractResultFromMergedTable();
+	void trimSelectTables();
 
 	void logFinalResult(list<string>);
 
