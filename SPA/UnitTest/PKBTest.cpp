@@ -974,6 +974,7 @@ namespace UnitTest {
 		{
 			Assert::IsTrue(PKB::getPKBInstance()->isAffectsValid(4, 7));
 			Assert::IsTrue(PKB::getPKBInstance()->isAffectsValid(5, 9));
+			Assert::IsTrue(PKB::getPKBInstance()->isAffectsValid(7, 7));
 			Assert::IsTrue(PKB::getPKBInstance()->isAffectsValid(12, 13));
 			Assert::IsFalse(PKB::getPKBInstance()->isAffectsValid(6, 7));
 			Assert::IsFalse(PKB::getPKBInstance()->isAffectsValid(5, 7));

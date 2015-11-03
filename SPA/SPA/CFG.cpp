@@ -154,7 +154,7 @@ void CFG::printGraph()
 	{
 		list<int> temp = _next.at(i);
 		CFGNode* node = _nodeMap.at(i);
-		cout << i << "(" << node->getStrat() << "," << node->getEnd() << "):";
+		cout << i << "(" << node->getStart() << "," << node->getEnd() << "):";
 		for (list<int>::iterator it = temp.begin(); it != temp.end(); it++)
 		{
 			cout << " " << *it;
@@ -481,7 +481,7 @@ void CFG::storeNextTable()
 void CFG::storeNext(int index)
 {
 	CFGNode* node = _nodeMap.at(index);
-	int begin = node->getStrat();
+	int begin = node->getStart();
 	int end = node->getEnd();
 	int i = 0;
 	list<int> temp;
@@ -504,10 +504,10 @@ void CFG::storeNext(int index)
 		while (x != -1)
 		{
 			CFGNode* tempNode = _nodeMap.at(x);
-			if (tempNode->getStrat() != -1)
+			if (tempNode->getStart() != -1)
 			{
-				buffer.push_back(tempNode->getStrat());
-				updateVector(tempNode->getStrat(), end, _beforeTable);
+				buffer.push_back(tempNode->getStart());
+				updateVector(tempNode->getStart(), end, _beforeTable);
 				break;
 			}
 			else
@@ -518,6 +518,67 @@ void CFG::storeNext(int index)
 	}
 	_nextTable[end] = buffer;
 	_size++;
+}
+
+void CFG::storeNextTableWithDummy()
+{
+	list<int> empty;
+	_currentDummyNode = 0;
+	_nextTableWithDummy.resize(_codeLst.size() + 1, empty);
+	_dummyForNext.resize(_codeLst.size() + 1, empty);
+	for (int i = 0; i < _next.size(); i++)
+	{
+		try {
+			storeNextDummy(i);
+		}
+		catch (exception e)
+		{
+			break;
+		}
+	}
+}
+
+void CFG::storeNextDummy(int index)
+{
+	CFGNode* node = _nodeMap.at(index);
+	int begin = node->getStart();
+	int end = node->getEnd();
+	int i = 0;
+	list<int> temp;
+	list<int> buffer;
+	if (begin == -1)
+	{
+		return;
+	}
+	//store within the same node
+	for (i = begin; i < end; i++)
+	{
+		temp.push_back(i + 1);
+		_nextTableWithDummy[i] = temp;
+		_size++;
+		updateVector(i + 1, i, _beforeTableWithDummy);
+		temp.clear();
+	}
+	//solve its next node
+	temp = _next[index];
+	for (auto& x : temp)
+	{
+		while (x != -1)
+		{
+			CFGNode* tempNode = _nodeMap.at(x);
+			if (tempNode->getStart() != -1)
+			{
+				//this is an dummy node
+				buffer.push_back(tempNode->getStart());
+				updateVector(tempNode->getStart(), end, _beforeTable);
+				break;
+			}
+			else
+			{
+				x = _next[x].front();
+			}
+		}
+	}
 }
 
 bool CFG::isContainer(Statement s)
