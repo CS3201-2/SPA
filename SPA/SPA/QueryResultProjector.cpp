@@ -49,24 +49,6 @@ list<string> QueryResultProjector::getResult() {
 	return resultStringList;
 }
 
-map<int, vector<int>> QueryResultProjector::getMergingOrderBoolean() {
-	map<int, vector<int>> mergingOrder;
-	for (size_t i = 0; i < _parent.size(); ++i) {
-		vector<int> temp;
-		if (mergingOrder.find(_parent[i]) == mergingOrder.end()) {
-			temp.push_back(i);
-			mergingOrder[_parent[i]] = temp;
-		}
-		else {
-			temp = mergingOrder.at(_parent[i]);
-			temp.push_back(i);
-			mergingOrder[_parent[i]] = temp;
-		}
-	}
-
-	return mergingOrder;
-}
-
 //assume there is at least one table in _tempTables
 ResultTable QueryResultProjector::mergeTables() {
 	ResultTable finalTable, tempTable;
@@ -74,7 +56,7 @@ ResultTable QueryResultProjector::mergeTables() {
 
 	for (size_t i = 1; i < _tempTables.size(); ++i) {
 		tempTable = _tempTables.at(i);
-		finalTable = mergeTwoTables(finalTable, tempTable);
+		finalTable = mergeTwoTables(tempTable, finalTable);
 
 		if (finalTable.getTableSize() == EMPTY_TABLE) {
 			return ResultTable();
@@ -101,7 +83,7 @@ void QueryResultProjector::countHeader() {
 
 ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2) {
 	//r1 is always the table to be hashed into the unordered map
-	//size of header of r2 can only be 1 or 2
+	//size of header of r1 can only be 1 or 2
 	unordered_map<int, list<vector<int>>> hashedMap;
 	vector<string> cHeaders, rHeader, header1 = r1.getHeader(), header2 = r2.getHeader();
 	vector<vector<int>> rContent, content1 = r1.getContent(), content2 = r2.getContent();
@@ -173,18 +155,17 @@ ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2)
 		else if(cHeaders.size() == HEADER_SIZE_TWO){
 			cHeader2 = cHeaders.at(SECOND_COMMON_HEADER);
 			for (int i = 0; i < HEADER_SIZE_TWO; ++i) {
+				if (header1[i] == cHeader2) {
+					cHeader2InH1ID = i;
+				}
+			}
+
+			for (int i = 0; i < header2.size(); ++i) {
 				if (header2[i] == cHeader1) {
 					cHeader1InH2ID = i;
 				}
 				if (header2[i] == cHeader2) {
 					cHeader2InH2ID = i;
-				}
-			}
-
-			for (int i = 0; i < header1.size(); ++i) {
-				if (header1[i] == cHeader2) {
-					cHeader2InH1ID = i;
-					break;
 				}
 			}
 
