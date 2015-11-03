@@ -14,10 +14,11 @@ const int SECOND_COMMON_HEADER = 1;
 const int EMPTY_TABLE = 0;
 
 //constructor
-QueryResultProjector::QueryResultProjector(vector<ResultTable> tempTables, 
+QueryResultProjector::QueryResultProjector(vector<ResultTable> selectTable, vector<ResultTable> tempTables, 
 	vector<string> select, vector<string> selectType) {
 	_tempTables = tempTables;
 	_isWholeTrue = -1;
+	_selectTables = selectTable;
 	_select = select;
 	_selectType = selectType;
 }

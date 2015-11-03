@@ -125,7 +125,7 @@ list<string> QueryEvaluator::evaluate() {
 		resultList[i].logTable(i);
 	}
 
-	QueryResultProjector qrp = QueryResultProjector(resultList, selectClause.getVar(), selectClause.getVarType());
+	QueryResultProjector qrp = QueryResultProjector(selectResultList, resultList, selectClause.getVar(), selectClause.getVarType());
 	return qrp.getResult();
 }
 
@@ -3245,7 +3245,7 @@ bool QueryEvaluator::processSelectClause(Clause tempString, bool useful) {
 			if (isResultEmpty(tempResult)) {
 				return false;
 			}
-			resultList.push_back(tempResult);
+			selectResultList.push_back(tempResult);
 		}
 		else if (synType == "procedure") {
 			ResultTable tempResult = ResultTable(syn);
@@ -3259,7 +3259,7 @@ bool QueryEvaluator::processSelectClause(Clause tempString, bool useful) {
 			if (isResultEmpty(tempResult)) {
 				return false;
 			}
-			resultList.push_back(tempResult);
+			selectResultList.push_back(tempResult);
 		}
 		else if (synType == "boolean") {
 			//ResultTable tempResult = ResultTable(syn);
@@ -3278,7 +3278,7 @@ bool QueryEvaluator::processSelectClause(Clause tempString, bool useful) {
 			if (isResultEmpty(tempResult)) {
 				return false;
 			}
-			resultList.push_back(tempResult);
+			selectResultList.push_back(tempResult);
 		}
 	}
 	return true;
