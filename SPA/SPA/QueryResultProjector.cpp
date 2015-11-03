@@ -48,7 +48,6 @@ list<string> QueryResultProjector::getResult() {
 		resultStringList = extractResultFromMergedTable();
 	}
 
-
 	return resultStringList;
 }
 
@@ -191,8 +190,7 @@ ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2)
 				}
 			}
 
-			rHeader.push_back(cHeader1);
-			rHeader.insert(rHeader.end(), header1.begin(), header1.end());
+			rHeader = header2;
 
 			for (vector<vector<int>>::iterator it = content2.begin(); it != content2.end(); ++it) {
 				int probingKey = (*it).at(cHeader1InH2ID);
@@ -200,10 +198,7 @@ ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2)
 					list<vector<int>> probingResult = hashedMap.at(probingKey);
 					for (list<vector<int>>::iterator it2 = probingResult.begin(); it2 != probingResult.end(); ++it2) {
 						if ((*it2)[cHeader2InH1ID] == (*it)[cHeader2InH2ID]) {
-							vector<int> resultTuple;
-							resultTuple.push_back(probingKey);
-							resultTuple.insert(resultTuple.end(), (*it2).begin(), (*it2).end());
-							rContent.push_back(resultTuple);
+							rContent.push_back(*it);
 						}
 					}
 				}
@@ -298,7 +293,7 @@ list<string> QueryResultProjector::extractResultFromMergedTable() {
 void QueryResultProjector::logFinalResult(list<string> resultStringList) {
 	string str;
 	for (auto &x : resultStringList) {
-		str += x + " ";
+		str += x + ", ";
 	}
 	SPALog::log(str);
 }
