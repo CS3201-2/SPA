@@ -26,19 +26,7 @@ namespace UnitTest
 
 			queries.push_back("assign a, a1, a2; while w; variable v, v1; if if1; "
 				"Select a such that Modifies(a, v) pattern w(v, _ ) such that Follows(1,2) " 
-				"pattern a1 (v1, _\"x+y\"_) such that Affects (a1, a2) with a2.stmt# = 20");
-			queryResults.push_back(true);
-			
-			queries.push_back("assign a1, a2, a3; stmt s1,s2,s3; variable v1, v2, v3; "
-				"Select <a1, s1, v2> such that Uses(5, \"y\") and Follows(3, 4) "
-				"pattern a1(v2, _\"x + y\"_) such that Affects(a1, a2) with a2.stmt#  = 20"
-				" such that Modifies(a3, v3) pattern a3(\"z\", _) such that Uses(s3, v1) "
-				"and Modifies(s3, \"x\") and Follows(s1, s2) and Parent(3, s1) and Uses(s2, v1)");
-			queryResults.push_back(true);
-
-			queries.push_back("assign a1, a2; variable v; stmt s1, s2; Select s1 such that "
-				"Follows(a1, a2) and Uses(a2, v) and Affects(a1, a2) with s1.stmt#  = 3 "
-				"and s2.stmt# = 4");
+				"pattern a1 (v1, _\"x+y\"_) such that Affects* (a1, a2) with a2.stmt# = 20");
 			queryResults.push_back(true);
 
 			queries.push_back("assign a; while w; variable v; Select a such that "
@@ -82,11 +70,41 @@ namespace UnitTest
 			queries.push_back("assign a1; assign a2; Select _ such that Follows(a1, a2)");
 			queryResults.push_back(false);
 
-			queries.push_back(" ");
+			queries.push_back("variable v; assign a; while w;Select <v, a, w> such that Modifies(1,v)");
+			queryResults.push_back(true);
+
+			queries.push_back("assign a; if ifs; prog_line n; variable v; Select a "
+				"such that Modifies(a, v) pattern ifs(v,_,_) with n = 01");
 			queryResults.push_back(false);
 
-			queries.push_back(" ");
+			queries.push_back("procedure a1, a2; stmtLst s; Select s such that Modifies(a1, \"x\") "
+				"and Modifies(a2, \"x\") and Follows(a1, a2)");
 			queryResults.push_back(false);
+
+			queries.push_back("assign a1, a2; procedure p; stmtLst s; Select s such that "
+				"Modifies(a1, \"x\") and Modifies(a2, p) and Follows*(a1, a2)");
+			queryResults.push_back(false);
+
+			queries.push_back("variable v; assign a; while w;Select <v, > such that Modifies(1,v)");
+			queryResults.push_back(false);
+
+			queries.push_back("variable v; Select <v> such that Modifies(1,v)");
+			queryResults.push_back(true);
+
+			queries.push_back("variable v; Select <,> such that Uses(1,v)");
+			queryResults.push_back(false);
+
+			queries.push_back("assign a1, a2; variable v; stmt s1, s2; Select s1 such that "
+				"Follows(a1, a2) and Uses(a2, v) and Affects(a1, a2) with s1.stmt#  = 3 "
+				"and s2.stmt# = 4");
+			queryResults.push_back(true);
+
+			queries.push_back("assign a1, a2, a3; stmt s1,s2,s3; variable v1, v2, v3; "
+				"Select <a1, s1, v2> such that Uses(5, \"y\") and Follows(3, 4) "
+				"pattern a1(v2, _\"x + y\"_) such that Affects(a1, a2) with a2.stmt#  = 20"
+				" such that Modifies(a3, v3) pattern a3(\"z\", _) such that Uses(s3, v1) "
+				"and Modifies(s3, \"x\") and Follows(s1, s2) and Parent(3, s1) and Uses(s2, v1)");
+			queryResults.push_back(true);
 
 			for (int i = 0; i < queries.size(); i++) {
 				QueryValidator q;
