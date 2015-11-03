@@ -222,7 +222,9 @@ namespace UnitTest
 
 				//call
 				PKB::getPKBInstance()->setCalls(-1, -2);
-				PKB::getPKBInstance()->setCallsStar(-1, -2);
+				list<int> callStarList;
+				callStarList.push_back(-2);
+				PKB::getPKBInstance()->setCallsStar(-1, callStarList);
 
 				DesignExtractor de = DesignExtractor();
 				de.setFollowsStar();
