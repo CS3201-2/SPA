@@ -60,14 +60,14 @@ list<string> QueryEvaluator::evaluate() {
 	vector<Clause> usefulNoVarTree = queryTree.getUsefulNoVarTree();
 	vector<Clause> usefulOneVarTree = queryTree.getUsefulOneVarTree();
 	vector<Clause> usefulTwoVarTree = queryTree.getUsefulTwoVarTree();
-	vector<Clause> uselessOneVarTree = queryTree.getUselessOneVarTree();
-	vector<Clause> uselessTwoVarTree = queryTree.getUselessTwoVarTree();
+	vector<Clause> uselessOneVarTree = queryTree.getUselessTree();
+	
 	string str;
 	str += "size of 0 var useful: " + to_string(usefulNoVarTree.size());
 	str += "\nsize of 1 var useful: " + to_string(usefulOneVarTree.size());
 	str += "\nsize of 2 var useful: " + to_string(usefulTwoVarTree.size());
 	str += "\nsize of 1 var useless: " + to_string(uselessOneVarTree.size());
-	str += "\nsize of 2 var useless: " + to_string(uselessTwoVarTree.size());
+	
 	SPALog::log(str);
 
 	//evaluate no var
@@ -83,16 +83,6 @@ list<string> QueryEvaluator::evaluate() {
 	
 	//evaluate useless clause
 	for (vector<Clause>::iterator i = uselessOneVarTree.begin(); i != uselessOneVarTree.end(); i++) {
-		if (!processClause(*i, false, false)) {
-			list<string> empty;
-			if (selectClause.getVarType().at(0) == "boolean") {
-				empty.push_back("false");
-			}
-			return empty;
-		}
-	}
-
-	for (vector<Clause>::iterator i = uselessTwoVarTree.begin(); i != uselessTwoVarTree.end(); i++) {
 		if (!processClause(*i, false, false)) {
 			list<string> empty;
 			if (selectClause.getVarType().at(0) == "boolean") {

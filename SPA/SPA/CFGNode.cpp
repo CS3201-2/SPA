@@ -10,7 +10,7 @@ CFGNode::CFGNode(int i, int s, int e)
 	_end = e;
 }
 
-int CFGNode::getStrat()
+int CFGNode::getStart()
 {
 	return _start;
 }

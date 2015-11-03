@@ -677,6 +677,7 @@ list<int> PKB::getAffectsFirst(int end) {
 					if (contains(varModifiesIndex, tempUses))
 					{
 						buffer.push_back(temp);
+						visit[temp] = 1;
 					}
 				}
 				if (visit[temp] == 1)
@@ -866,11 +867,7 @@ bool PKB::isAffectsValid(int first, int second) {
 			//go to both statLst
 			path.pop();
 			visit[temp] = 1;
-			list<int> tempNext = getNextSecond(temp);
-			for (auto& x : tempNext)
-			{
-				path.push(x);
-			}
+			transfer(temp, path, true);
 		}
 		else//assignStmt and callStmt
 		{
@@ -880,15 +877,8 @@ bool PKB::isAffectsValid(int first, int second) {
 			list<int> tempModifies = getModifiesSecond(temp);
 			if (visit[temp] == -1 || !contains(tempModifies, varModifiesIndex))
 			{
-				list<int> tempNext = getNextSecond(temp);
-				message = "Processing Affect: " + to_string(temp) +
-					" has next " + to_string(tempNext.front());
-				if (!tempNext.empty())
-				{
-					//_log.log(message);
-					assert(tempNext.size() == 1);
-					path.push(tempNext.front());
-				}
+				transfer(temp, path, true);
+				
 			}
 			visit[temp] = 1;
 		}
