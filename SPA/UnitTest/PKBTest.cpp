@@ -220,7 +220,6 @@ namespace UnitTest {
 
 			varList.push_back(1);
 			varList.push_back(2);
-			varList.push_back(3);
 			PKB::getPKBInstance()->setUses(13, varList);
 
 			varList.clear();

@@ -654,13 +654,16 @@ list<int> PKB::getAffectsFirst(int end) {
 	string message;
 	for (auto& tempUses : varUsesIndex)
 	{
+		_log.log("Processing AffectFirst: dealing with " + to_string(tempUses));
 		clearQueue(path);
 		visit.resize(getStmtSize() + 1, 0);
+		visit.assign(visit.size(), 0);
 		visit[end] = -1;
 		path.push(end);
 		while (!path.empty())
 		{
 			int temp = path.front();
+			_log.log("Processing AffectFirst: visiting " + to_string(temp));
 			path.pop();
 			if (visit[temp] == -1)
 			{
@@ -682,7 +685,9 @@ list<int> PKB::getAffectsFirst(int end) {
 				}
 				if (visit[temp] == 1)
 				{
-					//have visited 
+					//have visited
+					_log.log("Processing AffectFirst: have visited " +
+						to_string(temp));
 					true;
 				}
 				else
