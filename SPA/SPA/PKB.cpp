@@ -73,7 +73,6 @@ void PKB::houseKeeping() {
 	ifStmtList.unique();
 	constantList.sort();
 	constantList.unique();
-	stmtLstList.sort();
 }
 
 //general
@@ -88,7 +87,6 @@ void PKB::addStmtToList(int stmtNo, StatementType stmtType) {
 	case procCallStmt: callStmtList.push_back(stmtNo); break;
 	case whileStmt: whileStmtList.push_back(stmtNo); break;
 	case ifStmt: ifStmtList.push_back(stmtNo); break;
-	case stmtLstStmt: stmtLstList.push_back(stmtNo); break;
 	}
 }
 
@@ -134,10 +132,6 @@ list<int> PKB::getCallList() {
 
 list<int> PKB::getIfList() {
 	return ifStmtList;
-}
-
-list<int> PKB::getStmtLstList() {
-	return stmtLstList;
 }
 
 list<int> PKB::getStmtList() {
@@ -240,16 +234,6 @@ void PKB::logStmtList() {
 	string str = "stmt list\n";
 	list<int> stmtList = getStmtList();
 	for (list<int>::iterator it = stmtList.begin(); it != stmtList.end(); ++it) {
-		str += to_string(*it) + ", ";
-	}
-	str += "\n";
-	SPALog::log(str);
-}
-
-void PKB::logStmtLstList() {
-	string str = "stmtLst list\n";
-	list<int> stmtListList = getStmtLstList();
-	for (list<int>::iterator it = stmtListList.begin(); it != stmtListList.end(); ++it) {
 		str += to_string(*it) + ", ";
 	}
 	str += "\n";
@@ -523,7 +507,7 @@ void PKB::setCallsReverse() {
 
 
 //CallsStar
-void PKB::setCallsStar(int first, int second) {
+void PKB::setCallsStar(int first, list<int> second) {
 	getCallsStar().setCallsStar(first, second);
 }
 
@@ -654,13 +638,16 @@ list<int> PKB::getAffectsFirst(int end) {
 	string message;
 	for (auto& tempUses : varUsesIndex)
 	{
+		_log.log("Processing AffectFirst: dealing with " + to_string(tempUses));
 		clearQueue(path);
 		visit.resize(getStmtSize() + 1, 0);
+		visit.assign(visit.size(), 0);
 		visit[end] = -1;
 		path.push(end);
 		while (!path.empty())
 		{
 			int temp = path.front();
+			_log.log("Processing AffectFirst: visiting " + to_string(temp));
 			path.pop();
 			if (visit[temp] == -1)
 			{
@@ -677,11 +664,14 @@ list<int> PKB::getAffectsFirst(int end) {
 					if (contains(varModifiesIndex, tempUses))
 					{
 						buffer.push_back(temp);
+						visit[temp] = 1;
 					}
 				}
 				if (visit[temp] == 1)
 				{
-					//have visited 
+					//have visited
+					_log.log("Processing AffectFirst: have visited " +
+						to_string(temp));
 					true;
 				}
 				else
@@ -866,11 +856,7 @@ bool PKB::isAffectsValid(int first, int second) {
 			//go to both statLst
 			path.pop();
 			visit[temp] = 1;
-			list<int> tempNext = getNextSecond(temp);
-			for (auto& x : tempNext)
-			{
-				path.push(x);
-			}
+			transfer(temp, path, true);
 		}
 		else//assignStmt and callStmt
 		{
@@ -880,15 +866,8 @@ bool PKB::isAffectsValid(int first, int second) {
 			list<int> tempModifies = getModifiesSecond(temp);
 			if (visit[temp] == -1 || !contains(tempModifies, varModifiesIndex))
 			{
-				list<int> tempNext = getNextSecond(temp);
-				message = "Processing Affect: " + to_string(temp) +
-					" has next " + to_string(tempNext.front());
-				if (!tempNext.empty())
-				{
-					//_log.log(message);
-					assert(tempNext.size() == 1);
-					path.push(tempNext.front());
-				}
+				transfer(temp, path, true);
+				
 			}
 			visit[temp] = 1;
 		}

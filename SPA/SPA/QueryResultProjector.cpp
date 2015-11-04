@@ -14,16 +14,19 @@ const int SECOND_COMMON_HEADER = 1;
 const int EMPTY_TABLE = 0;
 
 //constructor
-QueryResultProjector::QueryResultProjector(vector<ResultTable> tempTables, 
+QueryResultProjector::QueryResultProjector(vector<ResultTable> selectTable, vector<ResultTable> tempTables, 
 	vector<string> select, vector<string> selectType) {
 	_tempTables = tempTables;
 	_isWholeTrue = -1;
+	_selectTables = selectTable;
 	_select = select;
 	_selectType = selectType;
 }
 
 list<string> QueryResultProjector::getResult() {
 	list<string> resultStringList;
+
+	trimSelectTables();
 
 	if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
 		if (_tempTables.empty()) {
@@ -45,26 +48,26 @@ list<string> QueryResultProjector::getResult() {
 		resultStringList = extractResultFromMergedTable();
 	}
 
-
 	return resultStringList;
 }
 
-map<int, vector<int>> QueryResultProjector::getMergingOrderBoolean() {
-	map<int, vector<int>> mergingOrder;
-	for (size_t i = 0; i < _parent.size(); ++i) {
-		vector<int> temp;
-		if (mergingOrder.find(_parent[i]) == mergingOrder.end()) {
-			temp.push_back(i);
-			mergingOrder[_parent[i]] = temp;
-		}
-		else {
-			temp = mergingOrder.at(_parent[i]);
-			temp.push_back(i);
-			mergingOrder[_parent[i]] = temp;
+void QueryResultProjector::trimSelectTables() {
+	for (vector<ResultTable>::iterator it = _tempTables.begin(); it != _tempTables.end(); ++it) {
+		vector<string> header1 = (*it).getHeader();
+		for (vector<ResultTable>::iterator it2 = _selectTables.begin(); it2 != _selectTables.end();) {
+			vector<string> header2 = (*it2).getHeader();
+			if (getCommonHeader(header1, header2).empty()) {
+				++it2;
+			}
+			else {
+				it2 = _selectTables.erase(it2);
+			}
 		}
 	}
 
-	return mergingOrder;
+	if (!_selectTables.empty()) {
+		_tempTables.insert(_tempTables.end(), _selectTables.begin(), _selectTables.end());
+	}
 }
 
 //assume there is at least one table in _tempTables
@@ -74,7 +77,7 @@ ResultTable QueryResultProjector::mergeTables() {
 
 	for (size_t i = 1; i < _tempTables.size(); ++i) {
 		tempTable = _tempTables.at(i);
-		finalTable = mergeTwoTables(finalTable, tempTable);
+		finalTable = mergeTwoTables(tempTable, finalTable);
 
 		if (finalTable.getTableSize() == EMPTY_TABLE) {
 			return ResultTable();
@@ -101,7 +104,7 @@ void QueryResultProjector::countHeader() {
 
 ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2) {
 	//r1 is always the table to be hashed into the unordered map
-	//size of header of r2 can only be 1 or 2
+	//size of header of r1 can only be 1 or 2
 	unordered_map<int, list<vector<int>>> hashedMap;
 	vector<string> cHeaders, rHeader, header1 = r1.getHeader(), header2 = r2.getHeader();
 	vector<vector<int>> rContent, content1 = r1.getContent(), content2 = r2.getContent();
@@ -173,6 +176,12 @@ ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2)
 		else if(cHeaders.size() == HEADER_SIZE_TWO){
 			cHeader2 = cHeaders.at(SECOND_COMMON_HEADER);
 			for (int i = 0; i < HEADER_SIZE_TWO; ++i) {
+				if (header1[i] == cHeader2) {
+					cHeader2InH1ID = i;
+				}
+			}
+
+			for (int i = 0; i < header2.size(); ++i) {
 				if (header2[i] == cHeader1) {
 					cHeader1InH2ID = i;
 				}
@@ -181,15 +190,7 @@ ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2)
 				}
 			}
 
-			for (int i = 0; i < header1.size(); ++i) {
-				if (header1[i] == cHeader2) {
-					cHeader2InH1ID = i;
-					break;
-				}
-			}
-
-			rHeader.push_back(cHeader1);
-			rHeader.insert(rHeader.end(), header1.begin(), header1.end());
+			rHeader = header2;
 
 			for (vector<vector<int>>::iterator it = content2.begin(); it != content2.end(); ++it) {
 				int probingKey = (*it).at(cHeader1InH2ID);
@@ -197,10 +198,7 @@ ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2)
 					list<vector<int>> probingResult = hashedMap.at(probingKey);
 					for (list<vector<int>>::iterator it2 = probingResult.begin(); it2 != probingResult.end(); ++it2) {
 						if ((*it2)[cHeader2InH1ID] == (*it)[cHeader2InH2ID]) {
-							vector<int> resultTuple;
-							resultTuple.push_back(probingKey);
-							resultTuple.insert(resultTuple.end(), (*it2).begin(), (*it2).end());
-							rContent.push_back(resultTuple);
+							rContent.push_back(*it);
 						}
 					}
 				}
@@ -295,7 +293,7 @@ list<string> QueryResultProjector::extractResultFromMergedTable() {
 void QueryResultProjector::logFinalResult(list<string> resultStringList) {
 	string str;
 	for (auto &x : resultStringList) {
-		str += x + " ";
+		str += x + ", ";
 	}
 	SPALog::log(str);
 }

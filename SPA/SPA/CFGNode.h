@@ -9,7 +9,7 @@ class CFGNode
 public:
 	CFGNode();
 	CFGNode(int, int, int);
-	int getStrat();
+	int getStart();
 	int getEnd();
 	bool contains(int);
 	bool isLargerThan(int);

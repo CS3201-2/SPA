@@ -220,7 +220,6 @@ namespace UnitTest {
 
 			varList.push_back(1);
 			varList.push_back(2);
-			varList.push_back(3);
 			PKB::getPKBInstance()->setUses(13, varList);
 
 			varList.clear();
@@ -593,9 +592,8 @@ namespace UnitTest {
 			expected.push_back(3);
 			expected.push_back(6);
 			expected.push_back(9);
-			expected.push_back(13);
 			Assert::IsTrue(actual == expected);
-
+			
 			actual = PKB::getPKBInstance()->getUsesFirst(4);
 			expected.clear();
 			expected.push_back(-2);
@@ -623,12 +621,12 @@ namespace UnitTest {
 			expected.push_back(4);
 			Assert::IsTrue(actual == expected);
 
-
+			
 			//test isUsesValid
 			Assert::IsTrue(PKB::getPKBInstance()->isUsesValid(-3, 2));
 			Assert::IsFalse(PKB::getPKBInstance()->isUsesValid(9, 4));
 			Assert::IsFalse(PKB::getPKBInstance()->isUsesValid(19, 4));
-			Assert::IsTrue(PKB::getPKBInstance()->isUsesValid(13, 3));
+			Assert::IsTrue(PKB::getPKBInstance()->isUsesValid(13, 2));
 		}
 
 		TEST_METHOD(testFollowsFunctions) {
@@ -990,6 +988,7 @@ namespace UnitTest {
 		{
 			Assert::IsTrue(PKB::getPKBInstance()->isAffectsValid(4, 7));
 			Assert::IsTrue(PKB::getPKBInstance()->isAffectsValid(5, 9));
+			Assert::IsTrue(PKB::getPKBInstance()->isAffectsValid(7, 7));
 			Assert::IsTrue(PKB::getPKBInstance()->isAffectsValid(12, 13));
 			Assert::IsFalse(PKB::getPKBInstance()->isAffectsValid(6, 7));
 			Assert::IsFalse(PKB::getPKBInstance()->isAffectsValid(5, 7));

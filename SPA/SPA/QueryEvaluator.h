@@ -22,6 +22,7 @@ private:
 	vector<ResultTable> midResult;
 	// final result pass to projector
 	vector<ResultTable> resultList;
+	vector<ResultTable> selectResultList;
 	bool isInList(list<int>, int);
 	bool isResultEmpty(ResultTable tempResult);
 	list<int> getList(string arr, string arrType);

@@ -40,7 +40,6 @@ public:
 	list<int> getCallList();
 	list<int> getIfList();
 	list<int> getStmtList(); //everything
-	list<int> getStmtLstList();
 	list<int> getParentList(); //while and if list
 	list<int> getConstantList();
 	int getCallStmtProc(int);
@@ -144,7 +143,7 @@ public:
 
 
 	//CallsStar
-	void setCallsStar(int, int);
+	void setCallsStar(int, list<int>);
 	list<int> getCallsStarFirst(int);
 	list<int> getCallsStarSecond(int);
 	bool isCallsStarValid(int, int);
@@ -214,7 +213,6 @@ private:
 	list<int> callStmtList;
 	list<int> ifStmtList;
 	list<int> constantList;
-	list<int> stmtLstList;
 	map<int, int> callStmtProcMap;
 	SPALog _log;
 

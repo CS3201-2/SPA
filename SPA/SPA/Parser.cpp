@@ -156,10 +156,6 @@ void Parser::processSourceCodeList(list<Statement> stmtList) {
 			&& prevStmtNo != stmtNo && prevStmtType != invalidStmt) {
 			PKB::getPKBInstance()->setFollows(prevStmtNo, stmtNo);
 		}
-
-		if (prevStmtType == procDeclarationStmt) {
-			PKB::getPKBInstance()->addStmtToList(stmtNo, stmtLstStmt);
-		}
 		prevStmtNo = stmtNo;
 		prevStmtType = stmtType;
 		
@@ -196,7 +192,6 @@ void Parser::processNestedStmt(list<Statement>::iterator& it, list<Statement> st
 	usesList.push_back(controlVarID);
 
 	++it;//to skip the starting of this while/if statement
-	PKB::getPKBInstance()->addStmtToList((*it).getNumber(), stmtLstStmt);
 	while (!braceList.back().empty()) {
 		int stmtNo = (*it).getNumber();
 		string stmtContent = (*it).getContent();

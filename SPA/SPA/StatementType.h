@@ -3,6 +3,6 @@
 
 enum StatementType {
 	assignmentStmt, procDeclarationStmt, procCallStmt, whileStmt, ifStmt,
-	elseStmt, invalidStmt, stmtLstStmt,
+	elseStmt, invalidStmt,
 };
 #endif
