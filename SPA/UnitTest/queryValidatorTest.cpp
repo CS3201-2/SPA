@@ -94,6 +94,9 @@ namespace UnitTest
 			queries.push_back("variable v; Select <,> such that Uses(1,v)");
 			queryResults.push_back(false);
 
+			queries.push_back("prog_line p, p1; Select 7 such that Next*(p,p1)");
+			queryResults.push_back(false);
+
 			queries.push_back("assign a1, a2; variable v; stmt s1, s2; Select s1 such that "
 				"Follows(a1, a2) and Uses(a2, v) and Affects(a1, a2) with s1.stmt#  = 3 "
 				"and s2.stmt# = 4");
