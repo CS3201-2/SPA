@@ -13,13 +13,13 @@ const char SYMBOL_CLOSE_BRACKET = ')';
 const char SYMBOL_EQUALS = '=';
 const char SYMBOL_FULL_STOP = '.';
 
-const vector<string> KEYWORDS = { "constant", "stmt", "stmtlst", "assign", "while", 
-	"if", "procedure", "call", "prog_line", "select", "modifies", "uses", "parent",
-	"parent*", "follows", "follows*", "pattern", "next", "next*", "calls", "calls*", 
-	"affects", "affects*", "with", "and", "such", "that" };
+const vector<string> KEYWORDS = { "constant", "stmt", "stmtLst", "assign", "while", 
+	"if", "procedure", "call", "prog_line", "Select", "Modifies", "Uses", "Parent",
+	"Parent*", "Follows", "Follows*", "Pattern", "Next", "Next*", "Calls", "Calls*", 
+	"Affects", "Affects*", "with", "and", "such", "that" };
 
 const vector<string> VARTYPES = { "variable", "constant", "stmt", 
-	"stmtlst", "assign", "while", "if", "procedure", "call", "prog_line" };
+	"stmtLst", "assign", "while", "if", "procedure", "call", "prog_line" };
 
 const string VARTYPE_VARIABLE = "variable";
 const string VARTYPE_STRING = "string";
@@ -28,12 +28,14 @@ const string VARTYPE_CONSTANT = "constant";
 const string VARTYPE_ASSIGN = "assign";
 const string VARTYPE_WHILE = "while";
 const string VARTYPE_IF = "if";
-const string VARTYPE_PROCNAME = "procname";
-const string VARTYPE_VARNAME = "varname";
+const string VARTYPE_PROCNAME = "procName";
+const string VARTYPE_VARNAME = "varName";
 const string VARTYPE_PROG_LINE = "prog_line";
 const string VARTYPE_NUMBER = "number";
 const string VARTYPE_ALL = "all";
-const string VARTYPE_BOOLEAN = "boolean";
+const string VARTYPE_BOOLEAN = "BOOLEAN";
+
+const string RELTYPE_SELECT = "Select";
 
 const string RELTYPE_SUCH_THAT = "such that";
 
@@ -82,7 +84,7 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 	//cout << "isValidDeclaration" << endl;
 	vector<string> arrDec = split(declaration, SYMBOL_SPACE, 2);
 
-	if (arrDec.size() < 2 || find(VARTYPES.begin(), VARTYPES.end(), stringToLower(arrDec.at(0))) == VARTYPES.end()) {
+	if (arrDec.size() < 2 || find(VARTYPES.begin(), VARTYPES.end(), arrDec.at(0)) == VARTYPES.end()) {
 		return false;
 	}
 
@@ -108,7 +110,7 @@ bool QueryValidator::isValidQuery(string query) {
 	//cout << "isValidQuery\n";
 	vector<string> arrClauses = split(query, SYMBOL_SPACE, 2); //don't split into 3 as will have tuples(multiple var) later
 
-	if (stringToLower(arrClauses.at(0)).compare("select") != 0 || arrClauses.size() != 2) {
+	if (arrClauses.at(0).compare(RELTYPE_SELECT) != 0 || arrClauses.size() != 2) {
 		return false;
 	}
 
@@ -129,7 +131,7 @@ bool QueryValidator::isValidQuery(string query) {
 			varType.at(i) = getVarType(arrWords.at(i));
 		}
 		
-		/*cout << "Select: ";
+		cout << "Select: ";
 		for (int i = 0; i < var.size(); i++) {
 			cout << i<<" "<<var.at(i) <<" ";
 		}
@@ -140,20 +142,19 @@ bool QueryValidator::isValidQuery(string query) {
 			cout << i << " " <<varType.at(i) << " ";
 		}
 
-		cout << endl;*/
+		cout << endl;
 		qt.insertSelect(var, varType);
 	} else {
 		arrClauses = split(arrClauses.at(1), SYMBOL_SPACE, 2);
 
-		if ((!isVarNameExists(arrClauses.at(0)) && stringToLower(arrClauses.at(0)).compare(VARTYPE_BOOLEAN) != 0)){
+		if ((!isVarNameExists(arrClauses.at(0)) && arrClauses.at(0).compare(VARTYPE_BOOLEAN) != 0)){
 			return false;
 		}
 
 		if (isVarNameExists(arrClauses.at(0))) {
 			qt.insertSelect(arrClauses.at(0), getVarType(arrClauses.at(0)));
-		}
-		else {
-			qt.insertSelect("", VARTYPE_BOOLEAN);
+		} else {
+			qt.insertSelect("", stringToLower(VARTYPE_BOOLEAN));
 		}
 	}
 
@@ -534,7 +535,7 @@ bool QueryValidator::parseWithNumber(string &subquery, string &relType,
 
 				if (r.isArgValid(relType, i + 1, variabType)) {
 					if (variabType.compare(VARTYPE_CONSTANT) == 0) {
-						if (stringToLower(variable.at(1)).compare("value") == 0) {
+						if (variable.at(1).compare("value") == 0) {
 							arrVar.at(i) = variable.at(0);
 							varTypes.at(i) = variabType;
 						} else {
@@ -542,7 +543,7 @@ bool QueryValidator::parseWithNumber(string &subquery, string &relType,
 						}
 
 					} else {
-						if (stringToLower(variable.at(1)).compare("stmt#") == 0) {
+						if (variable.at(1).compare("stmt#") == 0) {
 							arrVar.at(i) = variable.at(0);
 							varTypes.at(i) = variabType;
 						} else {
@@ -600,7 +601,7 @@ bool QueryValidator::parseWithName(string &subquery, string &relType,
 				
 				if (r.isArgValid(relType, i + 1, variabType)) {
 					if (variabType.compare(VARTYPE_VARIABLE) == 0) {
-						if (stringToLower(variable.at(1)).compare(VARTYPE_VARNAME) == 0) {
+						if (variable.at(1).compare(VARTYPE_VARNAME) == 0) {
 							arrVar.at(i) = variable.at(0);
 							varTypes.at(i) = variabType;
 						} else {
@@ -608,7 +609,7 @@ bool QueryValidator::parseWithName(string &subquery, string &relType,
 						}
 
 					} else {
-						if (stringToLower(variable.at(1)).compare(VARTYPE_PROCNAME) == 0) {
+						if (variable.at(1).compare(VARTYPE_PROCNAME) == 0) {
 							arrVar.at(i) = variable.at(0);
 							varTypes.at(i) = variabType;
 						} else {
@@ -640,7 +641,7 @@ bool QueryValidator::isValidVariableName(string varName) {
 		return false;
 	}
 
-	if (find(KEYWORDS.begin(), KEYWORDS.end(), stringToLower(varName)) != KEYWORDS.end()) {
+	if (find(KEYWORDS.begin(), KEYWORDS.end(), varName) != KEYWORDS.end()) {
 		return false;
 	}
 

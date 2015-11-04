@@ -80,7 +80,7 @@ RelationshipTable::RelationshipTable() {
 
 	//Next
 	arg1 = { "stmt", "assign", "while", "if", "call", "prog_line", "number", "all" };
-	arg2 = { "stmt", "stmtlst", "assign", "while", "if", "call", "prog_line", "number", "all" };
+	arg2 = { "stmt", "assign", "while", "if", "call", "prog_line", "number", "all" };
 	Relationship r10(2, arg1, arg2);
 	relTable["next"] = r10;
 	arg1.clear();
