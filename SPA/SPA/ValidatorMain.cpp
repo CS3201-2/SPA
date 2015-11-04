@@ -41,12 +41,18 @@ int main() {
 		str31 = "while w; call calls; Select w such that Next(calls, w) and Parent(w, 9)",
 		str32 = "assign a1, a2; stmtLst s; Select s such that Modifies(a1, \"x\") and Modifies(a2, \"x\") and Follows(a1, a2)",
 		str33 = "assign a; while w; Select a pattern a(_, _\"haha\"_) such that Parent*(w,a)",
-		str34 = "assign a1, a2; variable v; stmt s1, s2; Select such that Follows(a1, a2) and Uses(a2, v) and Affects(a1, a2) with s1.stmt#  = 3 and s2.stmt# = 4",
-		str35 = "call c; procedure p; variable v; Select v such that Modifies(p, v) with c.procName = p.procName";
+		str34 = "assign a1, a2; variable v; stmt s1, s2; Select s1 such that Follows(a1, a2) and Uses(a2, v) and Affects(a1, a2) with s1.stmt#  = 3 and s2.stmt# = 4",
+		str35 = "call c; procedure p; variable v; Select v such that Modifies(p, v) with c.procName = p.procName",
+		str36 = "assign a, a1, a2; while w; variable v, v1; if if1; "
+		"Select a such that Modifies(a, v) pattern w(v, _ ) such that Follows(1,2) "
+		"pattern a1 (v1, _\"x+y\"_) such that Affects (a1, a2) with a2.stmt# = 20",
+		str37 = "assign a; if ifs; prog_line n; variable v; Select a "
+		"such that Modifies(a, v) pattern ifs(v,_,_) with n = 01",
+		str38 = "assign a; Select BOOLEAN such that Modifies(a, \"x\")";
 
 	//cout << str29 << "\n";
 
-	q.isValidDecAndQuery(str35);
+	q.isValidDecAndQuery(str38);
 	//cout << q.isValidExpression("x23*123-7y")<<endl; //0
 	//cout << q.isValidExpression("123+-x23*123") << endl; //0
 	//cout << q.isValidExpression("(x+123+y)") << endl; //1

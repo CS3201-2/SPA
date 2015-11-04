@@ -17,7 +17,6 @@ private:
 	vector<Clause> _usefulNoVarTree;
 	vector<Clause> _usefulOneVarTree;
 	vector<Clause> _usefulTwoVarTree;
-	vector<Clause> _uselessTree;
 
 	int getNumOfVar(vector<string>);
 
@@ -42,7 +41,6 @@ public:
 	vector<Clause> getUsefulNoVarTree();
 	vector<Clause> getUsefulOneVarTree();
 	vector<Clause> getUsefulTwoVarTree();
-	vector<Clause> getUselessTree();
 
 	//group method
 	void grouping();

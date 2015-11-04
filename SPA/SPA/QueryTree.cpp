@@ -87,10 +87,6 @@ vector<Clause> QueryTree::getUsefulTwoVarTree() {
 	return _usefulTwoVarTree;
 }
 
-vector<Clause> QueryTree::getUselessTree() {
-	return _uselessTree;
-}
-
 int QueryTree::getNumOfVar(vector<string> arrType) {
 	int numOfVar = TWO_VARIABLE;
 	for (auto &i : arrType) {
@@ -103,71 +99,15 @@ int QueryTree::getNumOfVar(vector<string> arrType) {
 }
 
 void QueryTree::grouping() {
-	for (vector<Clause>::iterator it = _allClauses.begin(); it != _allClauses.end();) {
+	for (vector<Clause>::iterator it = _allClauses.begin(); it != _allClauses.end(); ++it) {
 		if ((*it).getNumOfVar() == NO_VARIABLE) {
 			_usefulNoVarTree.push_back(*it);
-			it = _allClauses.erase(it);
+		}
+		else if ((*it).getNumOfVar() == ONE_VARIABLE) {
+			_usefulOneVarTree.push_back(*it);
 		}
 		else {
-			++it;
-		}
-	}
-
-	if (_selectClause.getVarType().at(FIRST_TYPE) == BOOLEAN_TYPE) {
-		for (size_t i = 0; i < _allClauses.size(); ++i) {
-			if (_allClauses.at(i).getNumOfVar() == ONE_VARIABLE) {
-				_usefulOneVarTree.push_back(_allClauses.at(i));
-			}
-			else {
-				_usefulTwoVarTree.push_back(_allClauses.at(i));
-			}
-		}
-	}
-	else {
-		vector<vector<string>> queryVars;
-		for (size_t i = 0; i < _allClauses.size(); ++i) {
-			_useful.push_back(IS_NOT_USEFUL);
-			vector<string> var = _allClauses.at(i).getVar();
-			vector<string> varType = _allClauses.at(i).getVarType();
-			vector<string> temp;
-			for (size_t j = 0; j < var.size(); ++j) {
-				if (varType.at(j) != STRING_TYPE && varType.at(j) != NUMBER_TYPE
-					&& varType.at(j) != ALL_TYPE) {
-					temp.push_back(var.at(j));
-				}
-			}
-			queryVars.push_back(temp);
-		}
-		
-		vector<string> _usefulVars = _selectClause.getVar();
-		for (size_t i = 0; i < queryVars.size(); ++i) {
-			vector<string> temp1 = queryVars.at(i);
-			if (hasCommon(_usefulVars, temp1)) {
-				_useful[i] = IS_USEFUL;
-				_usefulVars.insert(_usefulVars.end(), temp1.begin(), temp1.end());
-			}
-			for (size_t j = 0; j < i; ++j) {
-				temp1 = queryVars.at(j);
-				if (_useful.at(j) != IS_USEFUL &&
-					hasCommon(_usefulVars, temp1)) {
-					_useful[j] = IS_USEFUL;
-					_usefulVars.insert(_usefulVars.end(), temp1.begin(), temp1.end());
-				}
-			}
-		}
-
-		for (size_t i = 0; i < _allClauses.size(); ++i) {
-			if (_useful[i] == IS_USEFUL) {
-				if (_allClauses.at(i).getNumOfVar() == ONE_VARIABLE) {
-					_usefulOneVarTree.push_back(_allClauses.at(i));
-				}
-				else {
-					_usefulTwoVarTree.push_back(_allClauses.at(i));
-				}
-			}
-			else {
-				_uselessTree.push_back(_allClauses.at(i));
-			}
+			_usefulTwoVarTree.push_back(*it);
 		}
 	}
 }
