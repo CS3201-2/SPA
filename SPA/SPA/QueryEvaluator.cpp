@@ -75,7 +75,7 @@ list<string> QueryEvaluator::evaluate() {
 		if (!processClause(*i, true, true)) {
 			list<string> empty;
 			if (selectClause.getVarType().at(0) == "boolean") {
-				empty.push_back("false");
+				empty.push_back("FALSE");
 			}
 			return empty;
 		}
@@ -106,7 +106,7 @@ list<string> QueryEvaluator::evaluate() {
 		if (!processClause(*i, true, false)) {
 			list<string> empty;
 			if (selectClause.getVarType().at(0) == "boolean") {
-				empty.push_back("false");
+				empty.push_back("FALSE");
 			}
 			return empty;
 		}
@@ -116,7 +116,7 @@ list<string> QueryEvaluator::evaluate() {
 	if (!processSelectClause(selectClause, true)) {
 		list<string> empty;
 		if (selectClause.getVarType().at(0) == "boolean") {
-			empty.push_back("false");
+			empty.push_back("FALSE");
 		}
 		return empty;
 	}
