@@ -73,7 +73,6 @@ void Controller::logPKB() {
 	PKB::getPKBInstance()->logConstantList();
 	PKB::getPKBInstance()->logParentList();
 	PKB::getPKBInstance()->logStmtList();
-	PKB::getPKBInstance()->logStmtLstList();
 	PKB::getPKBInstance()->logCallStmtProcMap();
 	PKB::getPKBInstance()->logVarTable();
 	PKB::getPKBInstance()->logProcTable();
