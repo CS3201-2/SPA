@@ -60,13 +60,13 @@ list<string> QueryEvaluator::evaluate() {
 	vector<Clause> usefulNoVarTree = queryTree.getUsefulNoVarTree();
 	vector<Clause> usefulOneVarTree = queryTree.getUsefulOneVarTree();
 	vector<Clause> usefulTwoVarTree = queryTree.getUsefulTwoVarTree();
-	vector<Clause> uselessOneVarTree = queryTree.getUselessTree();
+	//vector<Clause> uselessOneVarTree = queryTree.getUselessTree();
 	
 	string str;
 	str += "size of 0 var useful: " + to_string(usefulNoVarTree.size());
 	str += "\nsize of 1 var useful: " + to_string(usefulOneVarTree.size());
 	str += "\nsize of 2 var useful: " + to_string(usefulTwoVarTree.size());
-	str += "\nsize of 1 var useless: " + to_string(uselessOneVarTree.size());
+	//str += "\nsize of 1 var useless: " + to_string(uselessOneVarTree.size());
 	
 	SPALog::log(str);
 
@@ -82,15 +82,15 @@ list<string> QueryEvaluator::evaluate() {
 	}
 	
 	//evaluate useless clause
-	for (vector<Clause>::iterator i = uselessOneVarTree.begin(); i != uselessOneVarTree.end(); i++) {
-		if (!processClause(*i, false, false)) {
-			list<string> empty;
-			if (selectClause.getVarType().at(0) == "boolean") {
-				empty.push_back("false");
-			}
-			return empty;
-		}
-	}
+	//for (vector<Clause>::iterator i = uselessOneVarTree.begin(); i != uselessOneVarTree.end(); i++) {
+	//	if (!processClause(*i, false, false)) {
+	//		list<string> empty;
+	//		if (selectClause.getVarType().at(0) == "boolean") {
+	//			empty.push_back("false");
+	//		}
+	//		return empty;
+	//	}
+	//}
 
 	// evaluate useful clause
 	for (vector<Clause>::iterator i = usefulOneVarTree.begin(); i != usefulOneVarTree.end(); i++) {
@@ -301,9 +301,6 @@ list<int> QueryEvaluator::getList(string arr, string arrType) {
 	}
 	else if (arrType == "variable") {
 		return PKB::getPKBInstance()->getVarList();
-	}
-	else if (arrType == "stmtLst") {
-		return PKB::getPKBInstance()->getStmtLstList();
 	}
 	else {
 		list<int> emptyList;
