@@ -605,5 +605,21 @@ namespace UnitTest
 			expected.push_back("9");
 			Assert::IsTrue(expected == result);
 		}
+
+		TEST_METHOD(evaluateFalseBehind) {
+			string query = "assign a, a1; Select a1 such that Modifies(a, \"x\") and Modifies(a, \"v\")";
+			QueryValidator qv;
+			list<string> result;
+			if (qv.isValidDecAndQuery(query)) {
+				QueryTree qt = qv.getQueryTree();
+				QueryEvaluator qe(qt);
+				result = qe.evaluate();
+			}
+			else {
+				SPALog::log("Wrong query");
+			}
+			list<string> expected;
+			Assert::IsTrue(expected == result);
+		}
 	};
 }
