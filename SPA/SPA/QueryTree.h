@@ -41,7 +41,6 @@ public:
 	vector<Clause> getUsefulNoVarTree();
 	vector<Clause> getUsefulOneVarTree();
 	vector<Clause> getUsefulTwoVarTree();
-	vector<Clause> getUselessTree();
 
 	//group method
 	void grouping();
