@@ -410,7 +410,7 @@ StatementType Parser::getTypeOfStmt(string str) {
 
 	if (str.substr(0, 2) == "if") {
 		i = str.find("{");
-		if (str.substr(i - 4, 4) == "then" && isValidName(str.substr(2, i - 6))) {
+		if (i > 6 && str.substr(i - 4, 4) == "then" && isValidName(str.substr(2, i - 6))) {
 			return StatementType::ifStmt;
 		}
 		else {
