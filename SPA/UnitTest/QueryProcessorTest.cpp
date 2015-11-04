@@ -277,7 +277,7 @@ namespace UnitTest
 			}
 			
 			list<string> expected;
-			expected.push_back("true");
+			expected.push_back("TRUE");
 			Assert::IsTrue(expected == result);
 		}
 
@@ -575,7 +575,7 @@ namespace UnitTest
 				SPALog::log("Wrong query");
 			}
 			list<string> expected;
-			expected.push_back("true");
+			expected.push_back("TRUE");
 			Assert::IsTrue(expected == result);
 		}
 
