@@ -17,7 +17,6 @@ private:
 	vector<Clause> _usefulNoVarTree;
 	vector<Clause> _usefulOneVarTree;
 	vector<Clause> _usefulTwoVarTree;
-	vector<Clause> _uselessTree;
 
 	int getNumOfVar(vector<string>);
 
