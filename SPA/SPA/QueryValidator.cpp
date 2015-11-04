@@ -454,11 +454,13 @@ bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varTy
 		arg.at(1) == SYMBOL_QUOTE && arg.at(arg.size() - 2) == SYMBOL_QUOTE) {
 
 		arg = arg.substr(2, arg.size() - 4);
-
+		
 		if (isValidExpression(arg)) {
+			cout << "exp = " << arg << endl;
 			if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
 				return false;
 			} else {
+				
 				varType = VARTYPE_SUBSTRING;
 			}
 		}
@@ -760,28 +762,36 @@ bool QueryValidator::isPositiveInteger(string str) {
 }
 
 vector<string> QueryValidator::parseExpression(string expression) {
-	size_t found = expression.find_first_of("(+-*);");
+	size_t found = expression.find_first_of("(+-*)");
 	vector<string> result;
 	string temp;
 
 	while (found != string::npos) {
+		
 		temp = expression.substr(0, found);
 		
-		if (temp != "") {
+		if (temp != "" && temp != " ") {
+			//cout << "temp = " << temp << endl;
 			result.push_back(removeSpaces(temp));
 		}
 
 		temp = expression.at(found);
-
-		result.push_back(removeSpaces(temp));
-
+		if (temp != "" && temp != " ") {
+			//cout << "temp = " << temp << endl;
+			result.push_back(removeSpaces(temp));
+		}
 		expression = expression.substr(found + 1);
-		found = expression.find_first_of("+-*();");
+		found = expression.find_first_of("+-*()");
 	}
 
-	if (!expression.empty()) {
+	if (!expression.empty() && expression != " ") {
+		//cout << "expression = " << expression << endl;
 		result.push_back(removeSpaces(expression));
 	}
+
+	/*for (int i = 0; i < result.size(); i++) {
+		cout << result.at(i) << endl;
+	}*/
 
 	return result;
 }
@@ -795,18 +805,22 @@ bool QueryValidator::isValidExpression(string expression) {
 
 	string prevToken = "dummy";
 	for (int i = 0; i < tokens.size(); i++) {
+		//cout << "token = " << tokens.at(i) << endl;
 		if (!isOperator(tokens.at(i)) && !isValidVariableName(tokens.at(i)) &&
 			!isParenthesis(tokens.at(i)) && !isPositiveInteger(tokens.at(i)) ) {
+			//cout << "invalid = "<<tokens.at(i)<<endl;
 			return false;
 		}
 
 		if (isOperator(prevToken) && isOperator(tokens.at(i))) {
+			//cout << "isoperator\n";
 			return false;
 		}
 		prevToken = tokens.at(i);
 	}
 
 	if (countNumOfLeftParenthesis(expression) != countNumOfRightParenthesis(expression)) {
+		//cout << "parenthesis\n";
 		return false;
 	}
 
