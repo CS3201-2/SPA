@@ -3,8 +3,8 @@
 const string TYPE_VARIABLE = "variable";
 const string TYPE_PROCEDURE = "procedure";
 const string TYPE_BOOL = "boolean";
-const string RESULT_TRUE = "true";
-const string RESULT_FALSE = "false";
+const string RESULT_TRUE = "TRUE";
+const string RESULT_FALSE = "FALSE";
 const int FIRST_TYPE = 0;
 const size_t HEADER_SIZE_ONE = 1;
 const size_t HEADER_SIZE_TWO = 2;

@@ -54,7 +54,6 @@ public:
 	void logConstantList();
 	void logParentList();
 	void logStmtList();
-	void logStmtLstList();
 	void logCallStmtProcMap();
 	void buildCFG(list<Statement>);
 	//PKB housekeeping function
