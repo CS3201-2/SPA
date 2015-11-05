@@ -131,7 +131,7 @@ bool QueryValidator::isValidQuery(string query) {
 			varType.at(i) = getVarType(arrWords.at(i));
 		}
 		
-		cout << "Select: ";
+		/*cout << "Select: ";
 		for (int i = 0; i < var.size(); i++) {
 			cout << i<<" "<<var.at(i) <<" ";
 		}
@@ -142,7 +142,7 @@ bool QueryValidator::isValidQuery(string query) {
 			cout << i << " " <<varType.at(i) << " ";
 		}
 
-		cout << endl;
+		cout << endl;*/
 		qt.insertSelect(var, varType);
 	} else {
 		arrClauses = split(arrClauses.at(1), SYMBOL_SPACE, 2);
@@ -452,17 +452,17 @@ bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varTy
 
 	} else if (arg.at(0) == '_' && arg.at(arg.size() - 1) == '_'  &&
 		arg.at(1) == SYMBOL_QUOTE && arg.at(arg.size() - 2) == SYMBOL_QUOTE) {
-
-		arg = arg.substr(2, arg.size() - 4);
 		
+		arg = arg.substr(2, arg.size() - 4);
+
 		if (isValidExpression(arg)) {
-			cout << "exp = " << arg << endl;
 			if (!r.isArgValid(relType, 2, VARTYPE_SUBSTRING)) {
 				return false;
 			} else {
-				
 				varType = VARTYPE_SUBSTRING;
 			}
+		} else {
+			return false;
 		}
 	} else if (arg.at(0) == SYMBOL_QUOTE && arg.at(arg.size() - 1) == SYMBOL_QUOTE) {
 		arg = arg.substr(1, arg.size() - 2);
@@ -473,6 +473,8 @@ bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varTy
 			} else {
 				varType = VARTYPE_STRING;
 			}
+		} else {
+			return false;
 		}
 	} else {
 		return false;
@@ -823,7 +825,7 @@ bool QueryValidator::isValidExpression(string expression) {
 		//cout << "parenthesis\n";
 		return false;
 	}
-
+	cout << "returning true\n";
 	return true;
 }
 
