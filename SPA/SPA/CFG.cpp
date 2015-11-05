@@ -35,6 +35,7 @@ void CFG::buildGraph(list<Statement> codeLst)
 		_codeIterator++;
 	}
 	storeNextTable();
+	storeNextTableWithDummy();
 }
 
 list<int> CFG::getNextFirst(int i)
@@ -189,6 +190,48 @@ void CFG::printBeforeTable()
 	for (int j = 0; j <= _size; j++)
 	{
 		list<int> x = _beforeTable[j];
+		if (j != 0)
+		{
+			cout << j << ":";
+			for (auto& y : x)
+			{
+				cout << y << " ";
+			}
+			cout << endl;
+		}
+		else
+		{
+
+		}
+	}
+}
+
+void CFG::printNextTableWithDummy()
+{
+	for (int j = 0; j <= _size; j++)
+	{
+		list<int> x = _nextTableWithDummy[j];
+		if (j != 0)
+		{
+			cout << j << ":";
+			for (auto& y : x)
+			{
+				cout << y << " ";
+			}
+			cout << endl;
+		}
+		else
+		{
+
+		}
+	}
+}
+
+void CFG::printDummyForNext()
+{
+	for (int j = 0; j <= _size; j++)
+	{
+		list<int> x = _dummyForNext[j];
 		if (j != 0)
 		{
 			cout << j << ":";
@@ -611,7 +654,7 @@ void CFG::storeNextDummy(int index)
 	{
 		//this is a dummy node
 		//so store in table for dummy
-		int indexInDummyTable = -_dummyMap.at[index];
+		int indexInDummyTable = -_dummyMap.at(index);
 		_dummyForNext[indexInDummyTable] = buffer;
 	}
 	else

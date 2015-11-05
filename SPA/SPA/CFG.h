@@ -60,6 +60,8 @@ public:
 	void printGraph();
 	void printNextTable();
 	void printBeforeTable();
+	void printNextTableWithDummy();
+	void printDummyForNext();
 	void logNext();
 	~CFG();
 private:
