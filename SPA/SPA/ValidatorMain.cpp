@@ -29,7 +29,7 @@ int main() {
 		str22 = "assign a; while w; variable v; Select a such that Modifies(a, v) pattern w(v, _ , _",
 		str23 = "assign a; variable v; Select v such that Modifies(a, v) pattern a(_,\"z + x + i\")",
 		str24 = "variable v; assign a; while w;Select <v, a, w> such that Modifies(1,v)",
-		str25 = "assign a; Select a pattern a(_, _\"(f - d + b) - l\"_)",
+		str25 = "assign a; Select a pattern a(_, _\"(f - d + b) -- l\"_)",
 		str26 = "while w; assign a; Select w such that Follows(w, a)",
 		str27 = "assign a; if ifs; variable v; Select a such that Modifies(a, v) pattern ifs(v,_,_)",
 		str28 = "stmt s; Select s",
