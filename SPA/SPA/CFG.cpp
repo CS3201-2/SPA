@@ -142,6 +142,62 @@ bool CFG::isNextStarValid(int i, int j)
 	return false;
 }
 
+list<int> CFG::getNextDummySecond(int i)
+{
+	if (i > 0)
+	{
+		if (i <= _size)
+		{
+			return _nextTableWithDummy.at(i);
+		}
+		else
+		{
+			throw exception(
+				"NextTableWithDummy:out of bound");
+		}
+	}
+	else
+	{
+		if (i >= -_currentDummyNode)
+		{
+			return _dummyForNext.at(-i);
+		}
+		else
+		{
+			throw exception(
+				"dummyForNext:out of bound");
+		}
+	}
+}
+
+list<int> CFG::getNextDummyFirst(int i)
+{
+	if (i > 0)
+	{
+		if (i <= _size)
+		{
+			return _beforeTableWithDummy.at(i);
+		}
+		else
+		{
+			throw exception(
+				"BeforeTableWithDummy:out of bound");
+		}
+	}
+	else
+	{
+		if (i >= -_currentDummyNode)
+		{
+			return _dummyForBefore.at(-i);
+		}
+		else
+		{
+			throw exception(
+				"dummyForBefore:out of bound");
+		}
+	}
+}
+
 StatementType CFG::getType(int i)
 {
 	return _typeTable[i];
@@ -208,43 +264,77 @@ void CFG::printBeforeTable()
 
 void CFG::printNextTableWithDummy()
 {
-	for (int j = 0; j <= _size; j++)
+	_log.log("------------NextTableWithDummy------------");
+	stringstream ss;
+	for (int j = 1; j <= _size; j++)
 	{
 		list<int> x = _nextTableWithDummy[j];
-		if (j != 0)
+		ss << to_string(j) << ":";
+		for (auto& y : x)
 		{
-			cout << j << ":";
-			for (auto& y : x)
-			{
-				cout << y << " ";
-			}
-			cout << endl;
+			cout << y << " ";
+			ss << to_string(y) << " ";
 		}
-		else
-		{
-
-		}
+		_log.log(ss.str());
+		ss.str(std::string());
+		ss.clear();
 	}
 }
 
 void CFG::printDummyForNext()
 {
-	for (int j = 0; j <= _size; j++)
+	_log.log("------------DummyForNext------------");
+	stringstream ss;
+	for (int j = 1; j <= _currentDummyNode; j++)
 	{
 		list<int> x = _dummyForNext[j];
-		if (j != 0)
+		ss << to_string(-j) << ":";
+		for (auto& y : x)
 		{
-			cout << j << ":";
-			for (auto& y : x)
-			{
-				cout << y << " ";
-			}
-			cout << endl;
+			cout << y << " ";
+			ss << to_string(y) << " ";
 		}
-		else
-		{
+		_log.log(ss.str());
+		ss.str(std::string());
+		ss.clear();
+	}
+}
 
+void CFG::printBeforeTableWithDummy()
+{
+	_log.log("------------BeforeTableWithDummy------------");
+	stringstream ss;
+	for (int j = 1; j <= _size; j++)
+	{
+		list<int> x = _beforeTableWithDummy[j];
+		ss << to_string(j) << ":";
+		for (auto& y : x)
+		{
+			cout << y << " ";
+			ss << to_string(y) << " ";
 		}
+		_log.log(ss.str());
+		ss.str(std::string());
+		ss.clear();
+	}
+}
+
+void CFG::printDummyForBefore()
+{
+	_log.log("------------DummyForBefore------------");
+	stringstream ss;
+	for (int j = 1; j <= _currentDummyNode; j++)
+	{
+		list<int> x = _dummyForBefore[j];
+		ss << to_string(-j) << ":";
+		for (auto& y : x)
+		{
+			cout << y << " ";
+			ss << to_string(y) << " ";
+		}
+		_log.log(ss.str());
+		ss.str(std::string());
+		ss.clear();
 	}
 }
 
@@ -569,6 +659,8 @@ void CFG::storeNextTableWithDummy()
 	_currentDummyNode = 0;
 	_nextTableWithDummy.resize(_codeLst.size() + 1, empty);
 	_dummyForNext.resize(_codeLst.size() + 1, empty);
+	_beforeTableWithDummy.resize(_codeLst.size() + 1, empty);
+	_dummyForBefore.resize(_codeLst.size() + 1, empty);
 	_dummyMap.clear();
 	for (int i = 0; i < _next.size(); i++)
 	{
@@ -643,10 +735,26 @@ void CFG::storeNextDummy(int index)
 					//this dummy has been recorded
 				}
 				buffer.push_back(_dummyMap.at(x));
+				if (begin == -1)
+				{
+					updateVector(-_dummyMap.at(x), _dummyMap.at(index), _dummyForBefore);
+				}
+				else
+				{
+					updateVector(-_dummyMap.at(x), end, _dummyForBefore);
+				}
 			}
 			else
 			{
 				buffer.push_back(tempNode->getStart());
+				if (begin == -1)
+				{
+					updateVector(tempNode->getStart(), _dummyMap.at(index), _beforeTableWithDummy);
+				}
+				else
+				{
+					updateVector(tempNode->getStart(), end, _beforeTableWithDummy);
+				}
 			}
 		}
 	}
@@ -661,7 +769,7 @@ void CFG::storeNextDummy(int index)
 	{
 		//this a normal node
 		//so store in table for normal
-		_nextTable[end] = buffer;
+		_nextTableWithDummy[end] = buffer;
 	}
 }
 

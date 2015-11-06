@@ -7,6 +7,7 @@
 #include<algorithm>
 #include<iostream>
 #include<stdexcept>
+#include<sstream>
 #include"SPALog.h"
 #include"CFGNode.h"
 #include"Statement.h"
@@ -40,6 +41,7 @@ class CFG
 	list<Statement> _codeLst;
 	stack<pair<int,int>> _nodeInOperation;
 	list<int> _statBuffer;
+	SPALog _log;
 	int _nodeIndex;
 	int _size;
 	int _currentProc;
@@ -56,12 +58,16 @@ public:
 	list<int> getNextStarFirst(int);
 	list<int> getNextStarSecond(int);
 	bool isNextStarValid(int, int);
+	list<int> getNextDummyFirst(int);
+	list<int> getNextDummySecond(int);
 	StatementType getType(int);
 	void printGraph();
 	void printNextTable();
 	void printBeforeTable();
 	void printNextTableWithDummy();
 	void printDummyForNext();
+	void printBeforeTableWithDummy();
+	void printDummyForBefore();
 	void logNext();
 	~CFG();
 private:

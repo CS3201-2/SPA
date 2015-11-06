@@ -274,5 +274,13 @@ namespace UnitTest {
 
 			}
 		}
+		TEST_METHOD(testNextWithDummy)
+		{
+			CFG cfg = constructInputNoNested();
+			cfg.printNextTableWithDummy();
+			cfg.printDummyForNext();
+			cfg.printBeforeTableWithDummy();
+			cfg.printDummyForBefore();
+		}
 	};
 }
