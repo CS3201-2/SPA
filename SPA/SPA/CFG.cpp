@@ -35,6 +35,7 @@ void CFG::buildGraph(list<Statement> codeLst)
 		_codeIterator++;
 	}
 	storeNextTable();
+	storeNextTableWithDummy();
 }
 
 list<int> CFG::getNextFirst(int i)
@@ -141,6 +142,62 @@ bool CFG::isNextStarValid(int i, int j)
 	return false;
 }
 
+list<int> CFG::getNextDummySecond(int i)
+{
+	if (i > 0)
+	{
+		if (i <= _size)
+		{
+			return _nextTableWithDummy.at(i);
+		}
+		else
+		{
+			throw exception(
+				"NextTableWithDummy:out of bound");
+		}
+	}
+	else
+	{
+		if (i >= -_currentDummyNode)
+		{
+			return _dummyForNext.at(-i);
+		}
+		else
+		{
+			throw exception(
+				"dummyForNext:out of bound");
+		}
+	}
+}
+
+list<int> CFG::getNextDummyFirst(int i)
+{
+	if (i > 0)
+	{
+		if (i <= _size)
+		{
+			return _beforeTableWithDummy.at(i);
+		}
+		else
+		{
+			throw exception(
+				"BeforeTableWithDummy:out of bound");
+		}
+	}
+	else
+	{
+		if (i >= -_currentDummyNode)
+		{
+			return _dummyForBefore.at(-i);
+		}
+		else
+		{
+			throw exception(
+				"dummyForBefore:out of bound");
+		}
+	}
+}
+
 StatementType CFG::getType(int i)
 {
 	return _typeTable[i];
@@ -202,6 +259,82 @@ void CFG::printBeforeTable()
 		{
 
 		}
+	}
+}
+
+void CFG::printNextTableWithDummy()
+{
+	_log.log("------------NextTableWithDummy------------");
+	stringstream ss;
+	for (int j = 1; j <= _size; j++)
+	{
+		list<int> x = _nextTableWithDummy[j];
+		ss << to_string(j) << ":";
+		for (auto& y : x)
+		{
+			cout << y << " ";
+			ss << to_string(y) << " ";
+		}
+		_log.log(ss.str());
+		ss.str(std::string());
+		ss.clear();
+	}
+}
+
+void CFG::printDummyForNext()
+{
+	_log.log("------------DummyForNext------------");
+	stringstream ss;
+	for (int j = 1; j <= _currentDummyNode; j++)
+	{
+		list<int> x = _dummyForNext[j];
+		ss << to_string(-j) << ":";
+		for (auto& y : x)
+		{
+			cout << y << " ";
+			ss << to_string(y) << " ";
+		}
+		_log.log(ss.str());
+		ss.str(std::string());
+		ss.clear();
+	}
+}
+
+void CFG::printBeforeTableWithDummy()
+{
+	_log.log("------------BeforeTableWithDummy------------");
+	stringstream ss;
+	for (int j = 1; j <= _size; j++)
+	{
+		list<int> x = _beforeTableWithDummy[j];
+		ss << to_string(j) << ":";
+		for (auto& y : x)
+		{
+			cout << y << " ";
+			ss << to_string(y) << " ";
+		}
+		_log.log(ss.str());
+		ss.str(std::string());
+		ss.clear();
+	}
+}
+
+void CFG::printDummyForBefore()
+{
+	_log.log("------------DummyForBefore------------");
+	stringstream ss;
+	for (int j = 1; j <= _currentDummyNode; j++)
+	{
+		list<int> x = _dummyForBefore[j];
+		ss << to_string(-j) << ":";
+		for (auto& y : x)
+		{
+			cout << y << " ";
+			ss << to_string(y) << " ";
+		}
+		_log.log(ss.str());
+		ss.str(std::string());
+		ss.clear();
 	}
 }
 
@@ -526,6 +659,9 @@ void CFG::storeNextTableWithDummy()
 	_currentDummyNode = 0;
 	_nextTableWithDummy.resize(_codeLst.size() + 1, empty);
 	_dummyForNext.resize(_codeLst.size() + 1, empty);
+	_beforeTableWithDummy.resize(_codeLst.size() + 1, empty);
+	_dummyForBefore.resize(_codeLst.size() + 1, empty);
+	_dummyMap.clear();
 	for (int i = 0; i < _next.size(); i++)
 	{
 		try {
@@ -543,41 +679,97 @@ void CFG::storeNextDummy(int index)
 	CFGNode* node = _nodeMap.at(index);
 	int begin = node->getStart();
 	int end = node->getEnd();
-	int i = 0;
 	list<int> temp;
 	list<int> buffer;
 	if (begin == -1)
 	{
-		return;
+		//this a dummy node
+		unordered_map<int, int>::iterator it;
+		it = _dummyMap.find(index);
+		if (it == _dummyMap.end())
+		{
+			//this dummy has not been recorded yet
+			_currentDummyNode++;
+			_dummyMap.insert(make_pair(index, -_currentDummyNode));
+		}
+		else
+		{
+			//this dummy has been recorded
+			//(probably some other node has it as next)
+			//do not do anything here yet
+		}
 	}
-	//store within the same node
-	for (i = begin; i < end; i++)
+	else
 	{
-		temp.push_back(i + 1);
-		_nextTableWithDummy[i] = temp;
-		_size++;
-		updateVector(i + 1, i, _beforeTableWithDummy);
-		temp.clear();
+		//this is not a dummy node
+		//store within the same node
+		for (int i = begin; i < end; i++)
+		{
+			temp.push_back(i + 1);
+			_nextTableWithDummy[i] = temp;
+			updateVector(i + 1, i, _beforeTableWithDummy);
+			temp.clear();
+		}
 	}
+	
 	//solve its next node
 	temp = _next[index];
 	for (auto& x : temp)
 	{
-		while (x != -1)
+		if (x != -1)
 		{
 			CFGNode* tempNode = _nodeMap.at(x);
-			if (tempNode->getStart() != -1)
+			if (tempNode->getStart() == -1)
 			{
 				//this is an dummy node
-				buffer.push_back(tempNode->getStart());
-				updateVector(tempNode->getStart(), end, _beforeTable);
-				break;
+				unordered_map<int, int>::iterator it;
+				it = _dummyMap.find(x);
+				if (it == _dummyMap.end())
+				{
+					//this dummy has not been recorded yet
+					_currentDummyNode++;
+					_dummyMap.insert(make_pair(x, -_currentDummyNode));
+				}
+				else
+				{
+					//this dummy has been recorded
+				}
+				buffer.push_back(_dummyMap.at(x));
+				if (begin == -1)
+				{
+					updateVector(-_dummyMap.at(x), _dummyMap.at(index), _dummyForBefore);
+				}
+				else
+				{
+					updateVector(-_dummyMap.at(x), end, _dummyForBefore);
+				}
 			}
 			else
 			{
-				x = _next[x].front();
+				buffer.push_back(tempNode->getStart());
+				if (begin == -1)
+				{
+					updateVector(tempNode->getStart(), _dummyMap.at(index), _beforeTableWithDummy);
+				}
+				else
+				{
+					updateVector(tempNode->getStart(), end, _beforeTableWithDummy);
+				}
 			}
 		}
+	}
+	if (begin == -1)
+	{
+		//this is a dummy node
+		//so store in table for dummy
+		int indexInDummyTable = -_dummyMap.at(index);
+		_dummyForNext[indexInDummyTable] = buffer;
+	}
+	else
+	{
+		//this a normal node
+		//so store in table for normal
+		_nextTableWithDummy[end] = buffer;
 	}
 }
 
