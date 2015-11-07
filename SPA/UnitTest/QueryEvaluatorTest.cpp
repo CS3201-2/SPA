@@ -437,7 +437,7 @@ namespace UnitTest
 			QueryEvaluator qe_9 = (qt_9);
 			list<string> result_9 = qe_9.evaluate();
 			list<string> expected_9;
-			expected_9.push_back("TRUE");
+			expected_9.push_back("true");
 			Assert::IsTrue(expected_9 == result_9);
 
 			//Select BOOLEAN such that Modifies(2, "x") Expected: false
@@ -453,7 +453,7 @@ namespace UnitTest
 			QueryEvaluator qe_10 = (qt_10);
 			list<string> result_10 = qe_10.evaluate();
 			list<string> expected_10;
-			expected_10.push_back("FALSE");
+			expected_10.push_back("false");
 			Assert::IsTrue(expected_10 == result_10);
 		}
 
@@ -630,7 +630,7 @@ namespace UnitTest
 			QueryEvaluator qe_9 = (qt_9);
 			list<string> result_9 = qe_9.evaluate();
 			list<string> expected_9;
-			expected_9.push_back("TRUE");
+			expected_9.push_back("true");
 			Assert::IsTrue(expected_9 == result_9);
 
 			//Select BOOLEAN such that uses(2, "x") Expected: false
@@ -646,7 +646,7 @@ namespace UnitTest
 			QueryEvaluator qe_10 = (qt_10);
 			list<string> result_10 = qe_10.evaluate();
 			list<string> expected_10;
-			expected_10.push_back("FALSE");
+			expected_10.push_back("false");
 			Assert::IsTrue(expected_10 == result_10);
 		}
 		
@@ -761,7 +761,7 @@ namespace UnitTest
 			QueryEvaluator qe_5 = (qt_5);
 			list<string> result_5 = qe_5.evaluate();
 			list<string> expected_5;
-			expected_5.push_back("TRUE");
+			expected_5.push_back("true");
 			Assert::IsTrue(expected_5 == result_5);
 
 			//Select BOOLEAN such that Parent(3, 4) Expected: true
@@ -778,7 +778,7 @@ namespace UnitTest
 			QueryEvaluator qe_6 = (qt_6);
 			list<string> result_6 = qe_6.evaluate();
 			list<string> expected_6;
-			expected_6.push_back("FALSE");
+			expected_6.push_back("false");
 			Assert::IsTrue(expected_6 == result_6);
 		}
 
@@ -893,7 +893,7 @@ namespace UnitTest
 			QueryEvaluator qe_5 = (qt_5);
 			list<string> result_5 = qe_5.evaluate();
 			list<string> expected_5;
-			expected_5.push_back("TRUE");
+			expected_5.push_back("true");
 			Assert::IsTrue(expected_5 == result_5);
 
 			//Select BOOLEAN such that Parent*(3, 4) Expected: true
@@ -910,7 +910,7 @@ namespace UnitTest
 			QueryEvaluator qe_6 = (qt_6);
 			list<string> result_6 = qe_6.evaluate();
 			list<string> expected_6;
-			expected_6.push_back("FALSE");
+			expected_6.push_back("false");
 			Assert::IsTrue(expected_6 == result_6);
 		}
 
@@ -1023,7 +1023,7 @@ namespace UnitTest
 			QueryEvaluator qe_5 = (qt_5);
 			list<string> result_5 = qe_5.evaluate();
 			list<string> expected_5;
-			expected_5.push_back("TRUE");
+			expected_5.push_back("true");
 			Assert::IsTrue(expected_5 == result_5);
 
 			//Select BOOLEAN such that Follows(3, 4) Expected: true
@@ -1040,7 +1040,7 @@ namespace UnitTest
 			QueryEvaluator qe_6 = (qt_6);
 			list<string> result_6 = qe_6.evaluate();
 			list<string> expected_6;
-			expected_6.push_back("FALSE");
+			expected_6.push_back("false");
 			Assert::IsTrue(expected_6 == result_6);
 		}
 
@@ -1157,7 +1157,7 @@ namespace UnitTest
 			QueryEvaluator qe_5 = (qt_5);
 			list<string> result_5 = qe_5.evaluate();
 			list<string> expected_5;
-			expected_5.push_back("TRUE");
+			expected_5.push_back("true");
 			Assert::IsTrue(expected_5 == result_5);
 
 			//Select BOOLEAN such that Follows*(3, 4) Expected: true
@@ -1174,7 +1174,7 @@ namespace UnitTest
 			QueryEvaluator qe_6 = (qt_6);
 			list<string> result_6 = qe_6.evaluate();
 			list<string> expected_6;
-			expected_6.push_back("FALSE");
+			expected_6.push_back("false");
 			Assert::IsTrue(expected_6 == result_6);
 		}
 
@@ -1289,7 +1289,7 @@ namespace UnitTest
 			QueryEvaluator qe_5 = (qt_5);
 			list<string> result_5 = qe_5.evaluate();
 			list<string> expected_5;
-			expected_5.push_back("TRUE");
+			expected_5.push_back("true");
 			Assert::IsTrue(expected_5 == result_5);
 
 			//Select BOOLEAN such that next(3,5) Expected: false
@@ -1306,7 +1306,7 @@ namespace UnitTest
 			QueryEvaluator qe_6 = (qt_6);
 			list<string> result_6 = qe_6.evaluate();
 			list<string> expected_6;
-			expected_6.push_back("FALSE");
+			expected_6.push_back("false");
 			Assert::IsTrue(expected_6 == result_6);
 		
 			//Select c such that next(c, 6) Expected: 5
@@ -1444,7 +1444,7 @@ namespace UnitTest
 			QueryEvaluator qe_5 = (qt_5);
 			list<string> result_5 = qe_5.evaluate();
 			list<string> expected_5;
-			expected_5.push_back("TRUE");
+			expected_5.push_back("true");
 			Assert::IsTrue(expected_5 == result_5);
 
 			//Select BOOLEAN such that next*(8,9) Expected: false
@@ -1461,7 +1461,7 @@ namespace UnitTest
 			QueryEvaluator qe_6 = (qt_6);
 			list<string> result_6 = qe_6.evaluate();
 			list<string> expected_6;
-			expected_6.push_back("FALSE");
+			expected_6.push_back("false");
 			Assert::IsTrue(expected_6 == result_6);
 
 			//Select c such that next*(c, 6) Expected: 5
@@ -1607,7 +1607,7 @@ namespace UnitTest
 			QueryEvaluator qe_6 = (qt_6);
 			list<string> result_6 = qe_6.evaluate();
 			list<string> expected_6;
-			expected_6.push_back("TRUE");
+			expected_6.push_back("true");
 			Assert::IsTrue(expected_6 == result_6);
 		}
 
@@ -1736,7 +1736,7 @@ namespace UnitTest
 			QueryEvaluator qe_6 = (qt_6);
 			list<string> result_6 = qe_6.evaluate();
 			list<string> expected_6;
-			expected_6.push_back("TRUE");
+			expected_6.push_back("true");
 			Assert::IsTrue(expected_6 == result_6);
 		}
 
@@ -1801,7 +1801,7 @@ namespace UnitTest
 			QueryEvaluator qe_2 = (qt_2);
 			list<string> result_2 = qe_2.evaluate();
 			list<string> expected_2;
-			expected_2.push_back("FALSE");
+			expected_2.push_back("false");
 			Assert::IsTrue(expected_2 == result_2);
 			
 			//Select BOOLEAN pattern a("x",_) Expected: true
@@ -1818,7 +1818,7 @@ namespace UnitTest
 			QueryEvaluator qe_3 = (qt_3);
 			list<string> result_3 = qe_3.evaluate();
 			list<string> expected_3;
-			expected_3.push_back("TRUE");
+			expected_3.push_back("true");
 			Assert::IsTrue(expected_3 == result_3);
 
 			//Select BOOLEAN pattern a("x","x*y+z") Expected: true
@@ -1835,7 +1835,7 @@ namespace UnitTest
 			QueryEvaluator qe_4 = (qt_4);
 			list<string> result_4 = qe_4.evaluate();
 			list<string> expected_4;
-			expected_4.push_back("TRUE");
+			expected_4.push_back("true");
 			Assert::IsTrue(expected_4 == result_4);
 
 			//Select BOOLEAN pattern a("x","x*y") Expected: true
@@ -1852,7 +1852,7 @@ namespace UnitTest
 			QueryEvaluator qe_5 = (qt_5);
 			list<string> result_5 = qe_5.evaluate();
 			list<string> expected_5;
-			expected_5.push_back("TRUE");
+			expected_5.push_back("true");
 			Assert::IsTrue(expected_5 == result_5);
 		}
 
@@ -2161,7 +2161,7 @@ namespace UnitTest
 			QueryEvaluator qe_3 = (qt_3);
 			list<string> result_3 = qe_3.evaluate();
 			list<string> expected_3;
-			expected_3.push_back("TRUE");
+			expected_3.push_back("true");
 			Assert::IsTrue(expected_3 == result_3);
 		}
 
@@ -2276,7 +2276,7 @@ namespace UnitTest
 			QueryEvaluator qe_1 = (qt_1);
 			list<string> result_1 = qe_1.evaluate();
 			list<string> expected_1;
-			expected_1.push_back("FALSE");
+			expected_1.push_back("false");
 			Assert::IsTrue(expected_1 == result_1);
 
 			//Select c with 0=c.value
@@ -2337,7 +2337,7 @@ namespace UnitTest
 			QueryEvaluator qe_1 = (qt_1);
 			list<string> result_1 = qe_1.evaluate();
 			list<string> expected_1;
-			expected_1.push_back("TRUE");
+			expected_1.push_back("true");
 			Assert::IsTrue(expected_1 == result_1);
 
 			//Select c with c.value=call.stmt#
