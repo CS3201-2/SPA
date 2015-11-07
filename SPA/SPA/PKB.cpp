@@ -882,15 +882,62 @@ bool PKB::isAffectsValid(int first, int second) {
 
 //AffectStar
 list<int> PKB::getAffectsStarFirst(int second) {
-	return list<int>();
+	list<int> buffer;
+	list<int> temp;
+	list<int> todo;
+	temp = getAffectsFirst(second);
+	temp.sort();
+	while (temp.size() != buffer.size())
+	{
+		todo = merge(buffer, temp);
+		for (auto& x : todo)
+		{
+			list<int> y = getAffectsFirst(x);
+			y.sort();
+			merge(temp, y);
+		}
+	}
+	return buffer;
 }
 
 list<int> PKB::getAffectsStarSecond(int first) {
-	return list<int>();
+	list<int> buffer;
+	list<int> temp;
+	list<int> todo;
+	temp = getAffectsSecond(first);
+	temp.sort();
+	while (temp.size() != buffer.size())
+	{
+		todo = merge(buffer, temp);
+		for (auto& x : todo)
+		{
+			list<int> y = getAffectsSecond(x);
+			y.sort();
+			merge(temp, y);
+		}
+	}
+	return buffer;
 }
 
 bool PKB::isAffectsStarValid(int first, int second) {
-	return true;
+	list<int> buffer;
+	list<int> temp;
+	list<int> todo;
+	temp = getAffectsSecond(first);
+	temp.sort();
+	while (temp.size() != buffer.size())
+	{
+		todo = merge(buffer, temp);
+		for (auto& x : todo)
+		{
+			if (x == second)
+				return true;
+			list<int> y = getAffectsSecond(x);
+			y.sort();
+			merge(temp, y);
+		}
+	}
+	return false;
 }
 
 //Some useful functions
@@ -947,6 +994,7 @@ void PKB::transfer(int temp, queue<int>& q, bool mode)
 	}
 }
 
+
 void PKB::clearQueue(queue<int>& q)
 {
 	while (!q.empty())
@@ -954,3 +1002,43 @@ void PKB::clearQueue(queue<int>& q)
 		q.pop();
 	}
 }
+
+list<int> PKB::merge(list<int>& lst1, list<int>& lst2)
+{
+	//merge two sorted list and return different elements;
+	list<int>::iterator it1 = lst1.begin();
+	list<int>::iterator it2 = lst2.begin();
+	list<int> newElements;
+	while (it1 != lst1.end() && it2 != lst2.end())
+	{
+		int element1 = *it1;
+		int element2 = *it2;
+		if (element1 < element2)
+		{
+			it1++;
+		}
+		else if (element1 > element2)
+		{
+			lst1.insert(it1, element2);
+			newElements.push_back(element2);
+			it2++;
+		}
+		else
+		{
+			it1++;
+			it2++;
+		}
+	}
+	if (it2 != lst2.end())
+	{
+		while (it2 != lst2.end())
+		{
+			lst1.push_back(*it2);
+			newElements.push_back(*it2);
+			it2++;
+		}
+	}
+	lst2.clear();
+	return newElements;
+}
+

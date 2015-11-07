@@ -341,22 +341,27 @@ void CFG::printDummyForBefore()
 void CFG::logNext()
 {
 	string str = "next table\n";
-	for (int j = 0; j <= _size; j++)
+	for (int j = 1; j <= _size; j++)
 	{
 		list<int> x = _nextTable[j];
-		if (j != 0)
+		str += (to_string(j) + ":");
+		for (auto& y : x)
 		{
-			str += (to_string(j) + ":");
-			for (auto& y : x)
-			{
-				str += (to_string(y) + " ");
-			}
-			str += "\n";
+			str += (to_string(y) + " ");
 		}
-		else
+		str += "\n";
+	}
+	SPALog::log(str);
+	str = "before table\n";
+	for (int j = 1; j <= _size; j++)
+	{
+		list<int> x = _beforeTable[j];
+		str += (to_string(j) + ":");
+		for (auto& y : x)
 		{
-
+			str += (to_string(y) + " ");
 		}
+		str += "\n";
 	}
 	SPALog::log(str);
 }

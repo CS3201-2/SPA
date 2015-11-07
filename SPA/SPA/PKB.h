@@ -237,6 +237,7 @@ private:
 	bool contains(list<int>, int);
 	void transfer(int, queue<int>&, bool);
 	void clearQueue(queue<int>&);
+	list<int> merge(list<int>&, list<int>&);
 };
 
 #endif
