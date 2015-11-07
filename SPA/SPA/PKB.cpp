@@ -676,7 +676,12 @@ list<int> PKB::getAffectsFirst(int end) {
 				}
 				else
 				{
-					transfer(temp, path, false);
+					list<int> varModifiesIndex = getModifiesSecond(temp);
+					if (!contains(varModifiesIndex, tempUses))
+					{
+						transfer(temp, path, false);
+						
+					}
 					visit[temp] = 1;
 				}
 			}
