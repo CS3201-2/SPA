@@ -21,13 +21,15 @@ public:
 	void intializeCode(string);
 	void processSource();
 	list<string> processQuery(string);
- 
+	bool getIsSyntaxCorrect();
+
 private:
 	string source;
+	bool _isSyntaxCorrect;
 
 	void logPKB();
 	void logSourceCode(list<Statement>);
-	bool syntaxCheck(list<Statement>&);
+	bool isSyntaxCorrect(list<Statement>&);
 };
 
 #endif

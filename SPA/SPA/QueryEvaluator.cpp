@@ -247,11 +247,14 @@ bool QueryEvaluator::processSuchThatConstClause(Clause tempString, bool useful) 
 		SPALog::log("Wrong relationship!");
 		return false;
 	}
+	if (tempResult.getIsWholeTrue() == 1) {
+		return true;
+	}
 	if (tempResult.getIsWholeTrue()==0) {
 		return false;
 	}
-	else { 
-		return true;
+	if (isResultEmpty(tempResult)) {
+		return false;
 	}
 }
 
@@ -3396,14 +3399,16 @@ bool QueryEvaluator::processWithConstClause(Clause tempString, bool useful) {
 		SPALog::log("Wrong with type!");
 		return false;
 	}
-
+	
+	if (tempResult.getIsWholeTrue() == 1) {
+		return true;
+	}
 	if (tempResult.getIsWholeTrue() == 0) {
 		return false;
 	}
-	else {
-		return true;
+	if (isResultEmpty(tempResult)) {
+		return false;
 	}
-	
 }
 
 ResultTable QueryEvaluator::processNameWith(Clause tempString, bool useful) {

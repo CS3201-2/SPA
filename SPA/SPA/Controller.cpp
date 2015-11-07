@@ -1,5 +1,7 @@
 #include "Controller.h"
 
+bool SYNTAX_CORRECT = true;
+bool SYNTAX_WRONG = false;
 
 typedef list<string> StringList;
 Controller::Controller() {
@@ -9,6 +11,10 @@ void Controller::intializeCode(string code) {
 	source = code;
 }
 
+bool Controller::getIsSyntaxCorrect() {
+	return isSyntaxCorrect;
+}
+
 void Controller::processSource() {
 	Parser parser;
 
@@ -16,12 +22,14 @@ void Controller::processSource() {
 
 	logSourceCode(sourceList);
 
-	if (!syntaxCheck(sourceList)) {
+	if (!isSyntaxCorrect(sourceList)) {
+		_isSyntaxCorrect = SYNTAX_WRONG;
 		cout << endl << endl;
 		cout << "syntax wrong!!!" << endl << endl << endl;
 		SPALog::log("syntax wrong!!!");
 	}
 	else {
+		_isSyntaxCorrect = SYNTAX_CORRECT;
 		parser.parseSource(sourceList);
 		DesignExtractor de = DesignExtractor();
 		de.setFollowsStar();
@@ -33,7 +41,6 @@ void Controller::processSource() {
 		
 		logPKB();
 	}
-	cout << "end of checker and parsing" << endl;
 }
 
 void Controller::logSourceCode(list<Statement> sourceList) {
@@ -56,7 +63,7 @@ void Controller::logSourceCode(list<Statement> sourceList) {
 	SPALog::log(str);
 }
 
-bool Controller::syntaxCheck(list<Statement>& sourceList) {
+bool Controller::isSyntaxCorrect(list<Statement>& sourceList) {
 	Checker checker;
 	return checker.isSyntaxCorrect(sourceList);
 }
@@ -100,5 +107,4 @@ void Controller::logPKB() {
 list<string> Controller::processQuery(string query) {
 	QueryController queryController;
 	return queryController.processQueries(query);
-	return list<string>();
 }
