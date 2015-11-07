@@ -3,8 +3,8 @@
 const string TYPE_VARIABLE = "variable";
 const string TYPE_PROCEDURE = "procedure";
 const string TYPE_BOOL = "boolean";
-const string RESULT_TRUE = "true";
-const string RESULT_FALSE = "false";
+const string RESULT_TRUE = "TRUE";
+const string RESULT_FALSE = "FALSE";
 const int FIRST_TYPE = 0;
 const size_t HEADER_SIZE_ONE = 1;
 const size_t HEADER_SIZE_TWO = 2;
@@ -26,6 +26,8 @@ QueryResultProjector::QueryResultProjector(vector<ResultTable> selectTable, vect
 list<string> QueryResultProjector::getResult() {
 	list<string> resultStringList;
 
+	trimSelectTables();
+
 	if (_selectType[FIRST_TYPE] == TYPE_BOOL) {
 		if (_tempTables.empty()) {
 			resultStringList.push_back(RESULT_TRUE);
@@ -46,8 +48,26 @@ list<string> QueryResultProjector::getResult() {
 		resultStringList = extractResultFromMergedTable();
 	}
 
-
 	return resultStringList;
+}
+
+void QueryResultProjector::trimSelectTables() {
+	for (vector<ResultTable>::iterator it = _tempTables.begin(); it != _tempTables.end(); ++it) {
+		vector<string> header1 = (*it).getHeader();
+		for (vector<ResultTable>::iterator it2 = _selectTables.begin(); it2 != _selectTables.end();) {
+			vector<string> header2 = (*it2).getHeader();
+			if (getCommonHeader(header1, header2).empty()) {
+				++it2;
+			}
+			else {
+				it2 = _selectTables.erase(it2);
+			}
+		}
+	}
+
+	if (!_selectTables.empty()) {
+		_tempTables.insert(_tempTables.end(), _selectTables.begin(), _selectTables.end());
+	}
 }
 
 //assume there is at least one table in _tempTables
@@ -170,8 +190,7 @@ ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2)
 				}
 			}
 
-			rHeader.push_back(cHeader1);
-			rHeader.insert(rHeader.end(), header1.begin(), header1.end());
+			rHeader = header2;
 
 			for (vector<vector<int>>::iterator it = content2.begin(); it != content2.end(); ++it) {
 				int probingKey = (*it).at(cHeader1InH2ID);
@@ -179,10 +198,7 @@ ResultTable QueryResultProjector::mergeTwoTables(ResultTable r1, ResultTable r2)
 					list<vector<int>> probingResult = hashedMap.at(probingKey);
 					for (list<vector<int>>::iterator it2 = probingResult.begin(); it2 != probingResult.end(); ++it2) {
 						if ((*it2)[cHeader2InH1ID] == (*it)[cHeader2InH2ID]) {
-							vector<int> resultTuple;
-							resultTuple.push_back(probingKey);
-							resultTuple.insert(resultTuple.end(), (*it2).begin(), (*it2).end());
-							rContent.push_back(resultTuple);
+							rContent.push_back(*it);
 						}
 					}
 				}
@@ -277,7 +293,7 @@ list<string> QueryResultProjector::extractResultFromMergedTable() {
 void QueryResultProjector::logFinalResult(list<string> resultStringList) {
 	string str;
 	for (auto &x : resultStringList) {
-		str += x + " ";
+		str += x + ", ";
 	}
 	SPALog::log(str);
 }

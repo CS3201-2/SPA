@@ -9,7 +9,6 @@ using namespace std;
 class DesignExtractor {
 
 private:
-	void processCallsStar(bool&, list<int>);
 	void resetModifiesForProc();
 	void modifyProcModifiesMap(map<int, list<int>>&, int, list<int>);
 	void resetModifiesForStmt();

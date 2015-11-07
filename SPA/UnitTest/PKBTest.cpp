@@ -14,27 +14,21 @@ namespace UnitTest {
 
 			//set stmt list
 			PKB::getPKBInstance()->addStmtToList(1, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(1, stmtLstStmt);
 			PKB::getPKBInstance()->addStmtToList(2, assignmentStmt);
 			PKB::getPKBInstance()->addStmtToList(3, procCallStmt);
 			PKB::getPKBInstance()->addStmtToList(4, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(4, stmtLstStmt);
 			PKB::getPKBInstance()->addStmtToList(5, assignmentStmt);
 			PKB::getPKBInstance()->addStmtToList(6, whileStmt);
 			PKB::getPKBInstance()->addStmtToList(7, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(7, stmtLstStmt);
 			PKB::getPKBInstance()->addStmtToList(8, procCallStmt);
 			PKB::getPKBInstance()->addStmtToList(9, assignmentStmt);
 			PKB::getPKBInstance()->addStmtToList(10, ifStmt);
 			PKB::getPKBInstance()->addStmtToList(11, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(11, stmtLstStmt);
 			PKB::getPKBInstance()->addStmtToList(12, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(12, stmtLstStmt);
 			PKB::getPKBInstance()->addStmtToList(13, assignmentStmt);
 			PKB::getPKBInstance()->addStmtToList(14, assignmentStmt);
 			PKB::getPKBInstance()->addStmtToList(15, assignmentStmt);
 			PKB::getPKBInstance()->addStmtToList(16, assignmentStmt);
-			PKB::getPKBInstance()->addStmtToList(16, stmtLstStmt);
 			PKB::getPKBInstance()->addStmtToList(17, assignmentStmt);
 			
 			//set constant list
@@ -500,16 +494,6 @@ namespace UnitTest {
 
 			Assert::IsTrue(PKB::getPKBInstance()->getCallStmtProc(3) == -2);
 			Assert::IsTrue(PKB::getPKBInstance()->getCallStmtProc(4) == 0);
-
-			actual = PKB::getPKBInstance()->getStmtLstList();
-			expected.clear();
-			expected.push_back(1);
-			expected.push_back(4);
-			expected.push_back(7);
-			expected.push_back(11);
-			expected.push_back(12);
-			expected.push_back(16);
-			Assert::IsTrue(actual == expected);
 		}
 
 		TEST_METHOD(testVarTableFunctions) {
@@ -592,9 +576,8 @@ namespace UnitTest {
 			expected.push_back(3);
 			expected.push_back(6);
 			expected.push_back(9);
-			expected.push_back(13);
 			Assert::IsTrue(actual == expected);
-
+			
 			actual = PKB::getPKBInstance()->getUsesFirst(4);
 			expected.clear();
 			expected.push_back(-2);
@@ -622,12 +605,12 @@ namespace UnitTest {
 			expected.push_back(4);
 			Assert::IsTrue(actual == expected);
 
-
+			
 			//test isUsesValid
 			Assert::IsTrue(PKB::getPKBInstance()->isUsesValid(-3, 2));
 			Assert::IsFalse(PKB::getPKBInstance()->isUsesValid(9, 4));
 			Assert::IsFalse(PKB::getPKBInstance()->isUsesValid(19, 4));
-			Assert::IsTrue(PKB::getPKBInstance()->isUsesValid(13, 3));
+			Assert::IsTrue(PKB::getPKBInstance()->isUsesValid(13, 2));
 		}
 
 		TEST_METHOD(testFollowsFunctions) {
