@@ -887,15 +887,18 @@ list<int> PKB::getAffectsStarFirst(int second) {
 	list<int> todo;
 	temp = getAffectsFirst(second);
 	temp.sort();
-	while (temp.size() != buffer.size())
+	todo = merge(buffer, temp);
+	while (!todo.empty())
 	{
-		todo = merge(buffer, temp);
 		for (auto& x : todo)
 		{
+			_log.log("Processing AffectStarFirst: visiting "
+				+ to_string(x));
 			list<int> y = getAffectsFirst(x);
 			y.sort();
 			merge(temp, y);
 		}
+		todo = merge(buffer, temp);
 	}
 	return buffer;
 }
@@ -906,15 +909,18 @@ list<int> PKB::getAffectsStarSecond(int first) {
 	list<int> todo;
 	temp = getAffectsSecond(first);
 	temp.sort();
-	while (temp.size() != buffer.size())
+	todo = merge(buffer, temp);
+	while (!todo.empty())
 	{
-		todo = merge(buffer, temp);
 		for (auto& x : todo)
 		{
+			_log.log("Processing AffectStarSecond: visiting "
+				+ to_string(x));
 			list<int> y = getAffectsSecond(x);
 			y.sort();
 			merge(temp, y);
 		}
+		todo = merge(buffer, temp);
 	}
 	return buffer;
 }
@@ -925,17 +931,20 @@ bool PKB::isAffectsStarValid(int first, int second) {
 	list<int> todo;
 	temp = getAffectsSecond(first);
 	temp.sort();
-	while (temp.size() != buffer.size())
+	todo = merge(buffer, temp);
+	while (!todo.empty())
 	{
-		todo = merge(buffer, temp);
 		for (auto& x : todo)
 		{
+			_log.log("Processing AffectStarValid: visiting " 
+				+ to_string(x));
 			if (x == second)
 				return true;
 			list<int> y = getAffectsSecond(x);
 			y.sort();
 			merge(temp, y);
 		}
+		todo = merge(buffer, temp);
 	}
 	return false;
 }
