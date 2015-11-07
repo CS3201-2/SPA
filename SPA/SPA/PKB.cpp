@@ -664,25 +664,33 @@ list<int> PKB::getAffectsFirst(int end) {
 					if (contains(varModifiesIndex, tempUses))
 					{
 						buffer.push_back(temp);
+					}
+					else
+					{
+						transfer(temp, path, false);
+					}
+					visit[temp] = 1;
+				}
+				else if (getType(temp) == ifStmt ||
+					getType(temp)==whileStmt)
+				{
+					if (visit[temp] != 1)
+					{
+						transfer(temp, path, false);
 						visit[temp] = 1;
 					}
 				}
-				if (visit[temp] == 1)
-				{
-					//have visited
-					_log.log("Processing AffectFirst: have visited " +
-						to_string(temp));
-					true;
-				}
 				else
 				{
-					list<int> varModifiesIndex = getModifiesSecond(temp);
-					if (!contains(varModifiesIndex, tempUses))
+					if (visit[temp] != 1)
 					{
-						transfer(temp, path, false);
-						
+						list<int> varModifiesIndex = getModifiesSecond(temp);
+						if (!contains(varModifiesIndex, tempUses))
+						{
+							transfer(temp, path, false);
+						}
+						visit[temp] = 1;
 					}
-					visit[temp] = 1;
 				}
 			}
 		}
