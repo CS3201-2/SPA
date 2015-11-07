@@ -23,7 +23,7 @@ RelationshipTable::RelationshipTable() {
 	arg2.clear();
 
 	//Parent
-	arg1 = { "stmt", "prog_line", "while", "if", "call", "number", "all" };
+	arg1 = { "stmt", "prog_line", "while", "if", "number", "all" };
 	arg2 = { "stmt", "assign", "prog_line", "while", "if" , "call", "number", "all" };
 	Relationship r3(2, arg1, arg2);
 	relTable["parent"] = r3;
