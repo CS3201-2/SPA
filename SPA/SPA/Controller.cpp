@@ -12,7 +12,7 @@ void Controller::intializeCode(string code) {
 }
 
 bool Controller::getIsSyntaxCorrect() {
-	return isSyntaxCorrect;
+	return _isSyntaxCorrect;
 }
 
 void Controller::processSource() {
