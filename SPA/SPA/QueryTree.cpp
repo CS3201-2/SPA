@@ -15,6 +15,9 @@ const string NUMBER_TYPE = "number";
 const string ALL_TYPE = "all";
 const bool IS_NOT_USEFUL = false;
 const bool IS_USEFUL = true;
+const string AFFECTS_REL = "affects";
+const string AFFECTS_STAR_REL = "affects*";
+const string NEXT_STAR_REL = "next*";
 
 QueryTree::QueryTree() {
 
@@ -99,17 +102,34 @@ int QueryTree::getNumOfVar(vector<string> arrType) {
 }
 
 void QueryTree::grouping() {
+	vector<Clause> tempUsefulOneVarTree, tempUsefulTwoVarTree;
+
 	for (vector<Clause>::iterator it = _allClauses.begin(); it != _allClauses.end(); ++it) {
 		if ((*it).getNumOfVar() == NO_VARIABLE) {
 			_usefulNoVarTree.push_back(*it);
 		}
 		else if ((*it).getNumOfVar() == ONE_VARIABLE) {
-			_usefulOneVarTree.push_back(*it);
+			if ((*it).getRelationship() == NEXT_STAR_REL || (*it).getRelationship() == AFFECTS_REL
+				|| (*it).getRelationship() == AFFECTS_STAR_REL) {
+				tempUsefulOneVarTree.push_back(*it);
+			}
+			else {
+				_usefulOneVarTree.push_back(*it);
+			}
 		}
 		else {
-			_usefulTwoVarTree.push_back(*it);
+			if ((*it).getRelationship() == NEXT_STAR_REL || (*it).getRelationship() == AFFECTS_REL
+				|| (*it).getRelationship() == AFFECTS_STAR_REL) {
+				tempUsefulTwoVarTree.push_back(*it);
+			}
+			else {
+				_usefulTwoVarTree.push_back(*it);
+			}
 		}
 	}
+
+	_usefulOneVarTree.insert(_usefulOneVarTree.end(), tempUsefulOneVarTree.begin(), tempUsefulOneVarTree.end());
+	_usefulTwoVarTree.insert(_usefulTwoVarTree.end(), tempUsefulTwoVarTree.begin(), tempUsefulTwoVarTree.end());
 }
 
 bool QueryTree::hasCommon(vector<string> v1, vector<string> v2) {
