@@ -14,8 +14,6 @@
 
 using namespace::std;
 
-//QueryEvaluator assumes items in the QueryTree are valid
-//QueryEvaluator assumes invalid queries will in forwarded by QueryValidator so that error message can be printed in QueryResultProjector
 QueryEvaluator::QueryEvaluator() {
 	queryTree = QueryTree();
 }
@@ -50,27 +48,21 @@ bool QueryEvaluator::processClause(Clause tempString, bool isUseful, bool noVar)
 	}
 }
 
-// entry function for controller;
 list<string> QueryEvaluator::evaluate() {
 	queryTree.grouping();
-	// first evaluate useful no var query
 	int index;
 	Clause selectClause = queryTree.getSelectClause();
 
 	vector<Clause> usefulNoVarTree = queryTree.getUsefulNoVarTree();
 	vector<Clause> usefulOneVarTree = queryTree.getUsefulOneVarTree();
 	vector<Clause> usefulTwoVarTree = queryTree.getUsefulTwoVarTree();
-	//vector<Clause> uselessOneVarTree = queryTree.getUselessTree();
 	
 	string str;
 	str += "size of 0 var useful: " + to_string(usefulNoVarTree.size());
 	str += "\nsize of 1 var useful: " + to_string(usefulOneVarTree.size());
 	str += "\nsize of 2 var useful: " + to_string(usefulTwoVarTree.size());
-	//str += "\nsize of 1 var useless: " + to_string(uselessOneVarTree.size());
-	
 	SPALog::log(str);
 
-	//evaluate no var
 	for (vector<Clause>::iterator i = usefulNoVarTree.begin(); i != usefulNoVarTree.end(); i++) {
 		if (!processClause(*i, true, true)) {
 			list<string> empty;
@@ -81,18 +73,6 @@ list<string> QueryEvaluator::evaluate() {
 		}
 	}
 	
-	//evaluate useless clause
-	//for (vector<Clause>::iterator i = uselessOneVarTree.begin(); i != uselessOneVarTree.end(); i++) {
-	//	if (!processClause(*i, false, false)) {
-	//		list<string> empty;
-	//		if (selectClause.getVarType().at(0) == "boolean") {
-	//			empty.push_back("false");
-	//		}
-	//		return empty;
-	//	}
-	//}
-
-	// evaluate useful clause
 	for (vector<Clause>::iterator i = usefulOneVarTree.begin(); i != usefulOneVarTree.end(); i++) {
 		if (!processClause(*i, true, false)) {
 			list<string> empty;
@@ -112,7 +92,6 @@ list<string> QueryEvaluator::evaluate() {
 		}
 	}
 
-	// select clause
 	if (!processSelectClause(selectClause, true)) {
 		list<string> empty;
 		if (selectClause.getVarType().at(0) == "boolean") {
@@ -129,7 +108,6 @@ list<string> QueryEvaluator::evaluate() {
 	return qrp.getResult();
 }
 
-//Process Clause
 bool QueryEvaluator::processSuchThatClause(Clause tempString, bool useful) {
 	string relationship = tempString.getRelationship();
 	string arg1 = tempString.getVar().at(0);
@@ -270,7 +248,7 @@ bool QueryEvaluator::isResultEmpty(ResultTable tempResult) {
 }
 
 list<int> QueryEvaluator::getList(string arr, string arrType) {
-	//find in intermediate result first
+	
 	for (vector<ResultTable>::iterator it = midResult.begin(); it != midResult.end(); ++it) {
 		if ((*it).getHeader().at(0) == arr) {
 			list<int> temp;
@@ -280,7 +258,7 @@ list<int> QueryEvaluator::getList(string arr, string arrType) {
 			return temp;
 		}
 	}
-	//if not in the intermediate result
+	
 	if (arrType == "assign") {
 		return PKB::getPKBInstance()->getAssignList();
 	}
@@ -313,7 +291,6 @@ list<int> QueryEvaluator::getList(string arr, string arrType) {
 }
 
 void QueryEvaluator::_updateMidResult(ResultTable newResult) {
-	//firstly split them and unify them
 	if (newResult.getHeader().size() == 2) {
 		ResultTable r1 = ResultTable(newResult.getHeader().at(0));
 		ResultTable r2 = ResultTable(newResult.getHeader().at(1));
@@ -351,7 +328,6 @@ void QueryEvaluator::_updateMidResult(ResultTable newResult) {
 		updateMidResult(newResult);
 	}
 	else {
-		//noVariable
 		return;
 	}
 }
@@ -359,7 +335,6 @@ void QueryEvaluator::_updateMidResult(ResultTable newResult) {
 void QueryEvaluator::updateMidResult(ResultTable newResult) {
 	for (vector<ResultTable>::iterator it = midResult.begin(); it != midResult.end(); ++it) {
 		if ((*it).getHeader().at(0) == newResult.getHeader().at(0)) {
-			//merge these two 
 			bool findIt;
 			int count = 0;
 			vector<vector<int>> content = (*it).getContent();
@@ -368,7 +343,7 @@ void QueryEvaluator::updateMidResult(ResultTable newResult) {
 				findIt = false;
 				for (vector<vector<int>>::iterator t = newResult.getContent().begin(); t != newResult.getContent().end(); ++t) {
 					if ((*i).at(0) == (*t).at(0)) {
-						//find it 
+					
 						findIt = true;
 						count++;
 					}
@@ -381,7 +356,6 @@ void QueryEvaluator::updateMidResult(ResultTable newResult) {
 			return;
 		}
 	}
-	// it is not inside intermediate result;
 	midResult.push_back(newResult);
 	return;
 }
@@ -440,7 +414,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			// arg1 is procedure, stmt, while, assign, if, call, prog_line
+			
 			list<int> targetList = getList(arg1, arg1Type);
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
@@ -512,7 +486,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//procedue, while, assign, if, call, stmt, prog_line
+			
 			list<int> targetList = getList(arg1, arg1Type);
 			ResultTable tempResult = ResultTable(arg1, arg2);
 			vector<int> temp;
@@ -573,7 +547,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//procedue, while, assign, if, call, stmt, prog_line
+			
 			list<int> targetList = getList(arg1, arg1Type);
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
@@ -656,7 +630,7 @@ ResultTable QueryEvaluator::processUses(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			// arg2 is procedure, stmt, while, assign, if, call, prog_line
+			
 			list<int> targetList = getList(arg1,arg1Type);
 			ResultTable tempResult = ResultTable(arg1);
 			vector<int> temp;
@@ -862,7 +836,7 @@ ResultTable QueryEvaluator::processParent(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//stmt, assign, while, call, if, prog_line
+			
 			vector<int> temp;
 			list<int> targetList = getList(arg2, arg2Type);
 			ResultTable tempResult = ResultTable(arg2);
@@ -914,7 +888,7 @@ ResultTable QueryEvaluator::processParent(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//arg2Type can be assign, while, if, call, stmt, prog_line
+			
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -936,7 +910,7 @@ ResultTable QueryEvaluator::processParent(Clause tempString, bool useful) {
 		}
 	}
 	else {
-		// arg1Type can be while, if, stmt, prog_line
+		
 		list<int> arg1List = getList(arg1, arg1Type);
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
@@ -983,7 +957,7 @@ ResultTable QueryEvaluator::processParent(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//arg2Type can be assign, while, if, call, stmt, prog_line
+			
 			list<int> arg2List = getList(arg2,arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1,arg2);
@@ -1051,12 +1025,10 @@ ResultTable QueryEvaluator::processFollows(Clause tempString, bool useful) {
 		else if (arg2Type == "all") {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable();
-			//littlebro must exist
 			tempResult.setIsWholeTrue(1);
 			return tempResult;
 		}
 		else {
-			// arg2 can be assign, while, if, call, stmt, prog_line
 			list<int> targetList = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -1106,7 +1078,6 @@ ResultTable QueryEvaluator::processFollows(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//arg2 can be assign, while, if, call, stmt, prog_line
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -1128,7 +1099,6 @@ ResultTable QueryEvaluator::processFollows(Clause tempString, bool useful) {
 		}
 	}
 	else {
-		// arg1 can be while, assign, call, stmt, if, prog_line
 		list<int> arg1List = getList(arg1, arg1Type);
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
@@ -1175,7 +1145,7 @@ ResultTable QueryEvaluator::processFollows(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//arg2 can be assign, while, if, call, stmt, prog_line
+			
 			list<int> arg2List = getList(arg2,arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
@@ -1252,7 +1222,7 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString, bool useful) {
 		}
 
 		else {
-			//stmt, assign, while, call, if, prog_line
+			
 			vector<int> temp;
 			list<int> targetList = getList(arg2, arg2Type);
 			ResultTable tempResult = ResultTable(arg2);
@@ -1305,7 +1275,7 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//arg2Type can be assign, while, if, call, stmt, prog_line
+			
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -1328,7 +1298,7 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString, bool useful) {
 	}
 
 	else {
-		// arg1Type can be while, if, stmt, prog_line, all
+		
 		list<int> arg1List = getList(arg1, arg1Type);
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
@@ -1381,7 +1351,7 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString, bool useful) {
 		}
 
 		else {
-			//arg2Type can be assign, while, if, call, stmt, prog_line
+			
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
@@ -1451,12 +1421,12 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString, bool useful) {
 		else if (arg2Type == "all") {
 			vector<int> temp;
 			ResultTable tempResult = ResultTable();
-			//littlebro must exist
+			
 			tempResult.setIsWholeTrue(1);
 			return tempResult;
 		}
 		else {
-			// arg2 can be assign, while, if, call, stmt,prog_line
+			
 			list<int> targetList = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -1509,7 +1479,7 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//arg2 can be assign, while, if, call, stmt, prog_line
+			
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -1532,7 +1502,7 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString, bool useful) {
 	}
 
 	else {
-		// arg1 can be while, assign, call, stmt, if,prog_line, all
+		
 		list<int> arg1List = getList(arg1, arg1Type);
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
@@ -1585,7 +1555,7 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString, bool useful) {
 		}
 
 		else {
-			//arg2 can be assign, while, if, call, stmt, prog_line, all
+			
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
@@ -2097,7 +2067,7 @@ ResultTable QueryEvaluator::processNext(Clause tempString, bool useful){
 			return tempResult;
 		}
 		else {
-			// arg2 can be assign, while, if, call, stmt, prog_line
+			
 			list<int> targetList = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -2151,7 +2121,7 @@ ResultTable QueryEvaluator::processNext(Clause tempString, bool useful){
 			return tempResult;
 		}
 		else {
-			//arg2 can be assign, while, if, call, stmt, prog_line
+			
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -2174,7 +2144,7 @@ ResultTable QueryEvaluator::processNext(Clause tempString, bool useful){
 	}
 
 	else {
-		// arg1 can be while, assign, call, stmt, if, prog_line
+		
 		list<int> arg1List = getList(arg1, arg1Type);
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
@@ -2225,7 +2195,7 @@ ResultTable QueryEvaluator::processNext(Clause tempString, bool useful){
 			return tempResult;
 		}
 		else {
-			//arg2 can be assign, while, if, call, stmt, prog_line
+			
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg1, arg2);
@@ -2305,7 +2275,7 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString, bool useful) {
 		}
 
 		else {
-			// arg2 can be assign, while, if, call, stmt, prog_line
+			
 			list<int> targetList = getList(arg2,arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -2359,7 +2329,7 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//arg2 can be assign, while, if, call, stmt, prog_line
+			
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -2382,7 +2352,7 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString, bool useful) {
 	}
 
 	else {
-		// arg1 can be while, assign, call, stmt, if, prog_line
+		
 		list<int> arg1List = getList(arg1, arg1Type);
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
@@ -2435,7 +2405,7 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString, bool useful) {
 		}
 
 		else {
-			//arg2 can be assign, while, if, call, stmt, prog_line, all
+			
 			if (arg1 == arg2) {
 				ResultTable tempResult = ResultTable(arg1);
 				vector<int> temp;
@@ -2521,7 +2491,7 @@ ResultTable QueryEvaluator::processAffects(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			// arg2 can be assign, prog_line
+			
 			list<int> affected = PKB::getPKBInstance()->getAffectsSecond(stoi(arg1));
 			list<int> targetList = getList(arg2, arg2Type);
 			vector<int> temp;
@@ -2576,7 +2546,7 @@ ResultTable QueryEvaluator::processAffects(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//arg2 can be assign, prog_line
+			
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -2599,7 +2569,7 @@ ResultTable QueryEvaluator::processAffects(Clause tempString, bool useful) {
 	}
 
 	else {
-		// arg1 can be assign, prog_line
+		
 		list<int> arg1List = getList(arg1, arg1Type);
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
@@ -2650,7 +2620,7 @@ ResultTable QueryEvaluator::processAffects(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//arg2 can be assign, prog_line
+			
 			if (arg1 == arg2) {
 				ResultTable tempResult = ResultTable(arg1);
 				vector<int> temp;
@@ -2738,7 +2708,7 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString, bool useful) {
 		}
 
 		else {
-			// arg2 can be assign, prog_line
+			
 			list<int> targetList = getList(arg2, arg2Type);
 			list<int> affected = PKB::getPKBInstance()->getAffectsStarSecond(stoi(arg1));
 			vector<int> temp;
@@ -2793,7 +2763,7 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString, bool useful) {
 			return tempResult;
 		}
 		else {
-			//arg2 can be assign, prog_line
+			
 			list<int> arg2List = getList(arg2, arg2Type);
 			vector<int> temp;
 			ResultTable tempResult = ResultTable(arg2);
@@ -2816,7 +2786,7 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString, bool useful) {
 	}
 
 	else {
-		// arg1 can be assign, prog_line
+		
 		list<int> arg1List = getList(arg1, arg1Type);
 		if (arg2Type == "number") {
 			ResultTable tempResult = ResultTable(arg1);
@@ -2869,7 +2839,7 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString, bool useful) {
 		}
 
 		else {
-			//arg2 can be assign, prog_line
+			
 			if (arg1 == arg2) {
 				ResultTable tempResult = ResultTable(arg1);
 				vector<int> temp;
@@ -2971,7 +2941,7 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString, bool useful)
 	string synType = tempString.getVarType().at(2);
 
 	if (arg1Type == "string") {
-		// PatternOneVarTree
+		
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
 		if (arg2Type == "all") {
@@ -3179,7 +3149,7 @@ ResultTable QueryEvaluator::processWhilePattern(Clause tempString, bool useful) 
 		return tempResult;
 	}
 	else {
-	 //arg1Type == all
+	
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
 		
@@ -3257,7 +3227,7 @@ ResultTable QueryEvaluator::processIfPattern(Clause tempString, bool useful) {
 		return tempResult;
 	}
 	else {
-		//arg1Type == all
+		
 		ResultTable tempResult = ResultTable(syn);
 		vector<int> temp;
 
@@ -3316,9 +3286,6 @@ bool QueryEvaluator::processSelectClause(Clause tempString, bool useful) {
 			selectResultList.push_back(tempResult);
 		}
 		else if (synType == "boolean") {
-			//ResultTable tempResult = ResultTable(syn);
-			//tempResult.isWholeTrue = 1;
-			//resultList.push_back(tempResult);
 		}
 		else {
 			list<int> targetList = getList(syn, synType);
@@ -3447,7 +3414,7 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString, bool useful) {
 			vector<int> temp;
 			list<int> callList = getList(arg2, arg2Type);
 			for (list<int>::iterator i = callList.begin(); i != callList.end(); i++) {
-				//get call stmt's procedure id
+				
 				int procID = PKB::getPKBInstance()->getCallStmtProc(*i);
 				temp.push_back(procID);
 				temp.push_back(*i);
@@ -3519,7 +3486,7 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString, bool useful) {
 			vector<int> temp;
 			list<int> callList = getList(arg1, arg1Type);
 			for (list<int>::iterator i = callList.begin(); i != callList.end(); i++) {
-				//get call stmt's procedure id
+				
 				int procID = PKB::getPKBInstance()->getCallStmtProc(*i);
 				temp.push_back(*i);
 				temp.push_back(procID);
@@ -3805,7 +3772,7 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString, bool useful) {
 	string arg1Type = tempString.getVarType().at(0);
 	string arg2 = tempString.getVar().at(1);
 	string arg2Type = tempString.getVarType().at(1);
-	//arg1 and arg2 can be: prog_line, number, constant, (stmt, call, while, assign, call)
+	
 	if (arg1Type == "prog_line") {
 		if (arg2Type == "prog_line") {
 			ResultTable tempResult = ResultTable(arg1, arg2);
@@ -3921,7 +3888,7 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString, bool useful) {
 	}
 	else {
 		list<int> targetList = getList(arg1, arg1Type);
-		//arg1 == stmt, call, while, assign, constant
+		
 		if (arg2Type == "prog_line") {
 			list<int> arg2List = getList(arg2, arg2Type);
 			ResultTable tempResult = ResultTable(arg1, arg2);
