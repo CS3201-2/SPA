@@ -238,6 +238,9 @@ private:
 	void transfer(int, queue<int>&, bool);
 	void clearQueue(queue<int>&);
 	list<int> merge(list<int>&, list<int>&);
+	list<int>::iterator search(list<int>::iterator,
+		list<int>::iterator, int);
+	list<int> insertAll(list<int>&, list<int>&);
 };
 
 #endif
