@@ -53,7 +53,7 @@ void ProcTable::logProcTable() {
 	}
 	str += "\n";
 
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void ProcTable::setProcTableReverse() {

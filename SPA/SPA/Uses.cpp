@@ -82,7 +82,7 @@ void Uses::logUses(ProcTable procTable, VarTable varTable) {
 	}
 	str += "\n";
 
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void Uses::sortAndUnifyMap() {

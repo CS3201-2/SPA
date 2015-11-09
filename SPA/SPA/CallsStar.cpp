@@ -55,7 +55,7 @@ void CallsStar::logCallsStar(ProcTable procTable) {
 		str += "\n";
 	}
 	str += "\n";
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void CallsStar::sortAndUnifyMap() {

@@ -48,7 +48,7 @@ void Follows::logFollows() {
 	}
 	str += "\n";
 
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 map<int, int> Follows::getFollowsMap() {

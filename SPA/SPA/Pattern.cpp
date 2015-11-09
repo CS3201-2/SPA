@@ -321,7 +321,8 @@ void Pattern::logPattern() {
 	}
 	str += "\n";
 
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
+
 }
 
 string Pattern::removeAllSpace(string str) {

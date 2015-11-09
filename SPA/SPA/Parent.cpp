@@ -61,7 +61,7 @@ void Parent::logParent() {
 	}
 	str += "\n";
 
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 map<int, list<int>> Parent::getParentMap() {

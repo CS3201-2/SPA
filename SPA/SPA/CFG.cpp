@@ -351,7 +351,7 @@ void CFG::logNext()
 		}
 		str += "\n";
 	}
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 	str = "before table\n";
 	for (int j = 1; j <= _size; j++)
 	{
@@ -363,7 +363,7 @@ void CFG::logNext()
 		}
 		str += "\n";
 	}
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 CFG::~CFG()

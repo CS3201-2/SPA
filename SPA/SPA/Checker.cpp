@@ -21,11 +21,11 @@ bool Checker::isSyntaxCorrect(list<Statement>& sourceList) {
 		switch (stmtType) {
 		case assignmentStmt: 
 			if (!popBrackets(brackets, stmtContent)) {
-				SPALog::log("miss match of {}");
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "miss match of {}");
 				return false;
 			}
 			if (!isAssignmentValid(stmtContent)) {
-				SPALog::log("invalid assign: " + stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "invalid assign: " + stmtContent);
 				return false;
 			}
 			break;
@@ -39,17 +39,17 @@ bool Checker::isSyntaxCorrect(list<Statement>& sourceList) {
 					currProcID = PKB::getPKBInstance()->insertProc(procName);
 				}
 				else {
-					SPALog::log("there is already a procedure with this name" + procName); 
+					SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "there is already a procedure with this name" + procName);
 					return false;
 				}
 
 				if (!isValidName(procName)) {
-					SPALog::log("invalid procName: " + stmtContent);
+					SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "invalid procName: " + stmtContent);
 					return false;
 				}
 			}
 			else {
-				SPALog::log("extra {" + stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "extra {" + stmtContent);
 				return false;
 			}
 
@@ -59,12 +59,12 @@ bool Checker::isSyntaxCorrect(list<Statement>& sourceList) {
 
 		case procCallStmt:
 			if (!popBrackets(brackets, stmtContent)) {
-				SPALog::log("missing { before" + stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "missing { before" + stmtContent);
 				return false;
 			}
 			procName = getProcName(stmtType, stmtContent);
 			if (!isValidName(procName)) {
-				SPALog::log("invalid procName: " + stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "invalid procName: " + stmtContent);
 				return false;
 			}
 			calledPair = make_pair(currProcID, procName);
@@ -74,7 +74,7 @@ bool Checker::isSyntaxCorrect(list<Statement>& sourceList) {
 
 		case whileStmt: 
 			if (!isValidName(getControlVarName(stmtType, stmtContent))) {
-				SPALog::log("invalid control variable: "+ stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "invalid control variable: "+ stmtContent);
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
@@ -85,7 +85,7 @@ bool Checker::isSyntaxCorrect(list<Statement>& sourceList) {
 
 		case ifStmt:
 			if (!isValidName(getControlVarName(stmtType, stmtContent))) {
-				SPALog::log("invalid control variable: " + stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "invalid control variable: " + stmtContent);
 				return false;
 			}
 			// update if stack if it is empty, or it means if without else
@@ -93,7 +93,7 @@ bool Checker::isSyntaxCorrect(list<Statement>& sourceList) {
 				ifStack.push(*it);
 			}
 			else {
-				SPALog::log("an if without else before: " + stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "an if without else before: " + stmtContent);
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
@@ -111,18 +111,18 @@ bool Checker::isSyntaxCorrect(list<Statement>& sourceList) {
 				ifStack.pop();
 			}
 			else {
-				SPALog::log("no if before this else"); 
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "no if before this else");
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
-				SPALog::log(to_string(stmtNo)); 
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, to_string(stmtNo));
 				return false;
 			}
 			break;
 
 
 		default:
-			SPALog::log("invalid stmt: " + stmtContent);
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "invalid stmt: " + stmtContent);
 			return false; 
 			break;
 		}
@@ -130,13 +130,13 @@ bool Checker::isSyntaxCorrect(list<Statement>& sourceList) {
 
 	// check matching brackets
 	if (!brackets.empty()) {
-		SPALog::log("additional {");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "additional {");
 		return false;
 	}
 
 	// check matching if else statement
 	if (!ifStack.empty()) {
-		SPALog::log("extrax if stmt");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "extrax if stmt");
 		return false;
 	}
 
@@ -144,13 +144,13 @@ bool Checker::isSyntaxCorrect(list<Statement>& sourceList) {
 	DesignExtractor de = DesignExtractor();
 	de.setCalls(calledProcList);
 	if (!isCallValid()) {
-		SPALog::log("calls itself directly or call non-exist proc"); 
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "calls itself directly or call non-exist proc");
 		return false;
 	}
 	
 	de.setCallsStar();
 	if (!isCallsStarValid()) { 
-		SPALog::log("calls itself indirectly"); 
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "calls itself indirectly");
 		return false; 
 	}
 	return true;
@@ -245,11 +245,11 @@ bool Checker::processNestedStmt(list<Statement>::iterator& it, list<Statement>& 
 		switch (stmtType) {
 		case assignmentStmt:
 			if (!popBrackets(brackets, stmtContent)) {
-				SPALog::log("miss match of {}"); 
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "miss match of {}");
 				return false; 
 			}
 			if (!isAssignmentValid(stmtContent)) {
-				SPALog::log("invalid assign at" + stmtNo); 
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "invalid assign at" + stmtNo);
 				return false;
 			}
 			break;
@@ -257,12 +257,12 @@ bool Checker::processNestedStmt(list<Statement>::iterator& it, list<Statement>& 
 
 		case procCallStmt:
 			if (!popBrackets(brackets, stmtContent)) {
-				SPALog::log("missing { before" + stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "missing { before" + stmtContent);
 				return false;
 			}
 			procName = getProcName(stmtType, stmtContent);
 			if (!isValidName(procName)) {
-				SPALog::log("invalid procName: " + stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "invalid procName: " + stmtContent);
 				return false;
 			}
 			calledPair = make_pair(currProcID, procName);
@@ -272,7 +272,7 @@ bool Checker::processNestedStmt(list<Statement>::iterator& it, list<Statement>& 
 
 		case whileStmt:
 			if (!isValidName(getControlVarName(stmtType, stmtContent))) {
-				SPALog::log("invalid control variable: " + stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "invalid control variable: " + stmtContent);
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
@@ -283,7 +283,7 @@ bool Checker::processNestedStmt(list<Statement>::iterator& it, list<Statement>& 
 
 		case ifStmt:
 			if (!isValidName(getControlVarName(stmtType, stmtContent))) {
-				SPALog::log("invalid control variable: " + stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "invalid control variable: " + stmtContent);
 				return false;
 			}
 			// update if stack if it is empty, or it means if without else
@@ -291,7 +291,7 @@ bool Checker::processNestedStmt(list<Statement>::iterator& it, list<Statement>& 
 				ifStack.push(*it);
 			}
 			else {
-				SPALog::log("an if without else before " + stmtContent);
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "an if without else before " + stmtContent);
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
@@ -308,7 +308,7 @@ bool Checker::processNestedStmt(list<Statement>::iterator& it, list<Statement>& 
 				ifStack.pop();
 			}
 			else {
-				SPALog::log("no if before this else");
+				SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "no if before this else");
 				return false;
 			}
 			if (!processNestedStmt(it, sourceList, brackets, calledProcList, currProcID, bracketList)) {
@@ -317,7 +317,7 @@ bool Checker::processNestedStmt(list<Statement>::iterator& it, list<Statement>& 
 			break;
 
 		default:
-			SPALog::log("invalid stmt: " + stmtContent);
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "invalid stmt: " + stmtContent);
 			return false;
 			break;
 		}
@@ -330,7 +330,7 @@ bool Checker::processNestedStmt(list<Statement>::iterator& it, list<Statement>& 
 
 	// check matching if else statement
 	if (!ifStack.empty()) {
-		SPALog::log("extra if");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "extra if");
 		return false;
 	}
 
@@ -347,12 +347,12 @@ bool Checker::isAssignmentValid(string assignStmt) {
 	string LHS = tokens.at(0);
 	
 	if (!isValidName(LHS)) {
-		SPALog::log("LHS of expression is not a variable: "+ assignStmt);
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "LHS of expression is not a variable: "+ assignStmt);
 		return false;
 	}
 
 	if (isOperator(tokens.at(2)) || isOperator(tokens.back())) {
-		SPALog::log("expression starts or ends with an operator: " + assignStmt);
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "expression starts or ends with an operator: " + assignStmt);
 		return false;
 	}
 
@@ -360,20 +360,20 @@ bool Checker::isAssignmentValid(string assignStmt) {
 	for (int i = 2; i < tokens.size(); ++i) {
 		if (!isOperator(tokens.at(i)) && !isValidName(tokens.at(i)) && 
 			!isParenthesis(tokens.at(i)) && !isConstant(tokens.at(i))) {
-			SPALog::log("most probably, this case is invalid variable name at RHS of expression: "
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "most probably, this case is invalid variable name at RHS of expression: "
 				+ assignStmt + "\nvariable name is " + tokens.at(i));
 			return false;
 		}
 
 		if (isOperator(prevToken) && isOperator(tokens.at(i))) {
-			SPALog::log("two consecutive operators in an assignment: " + assignStmt);
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "two consecutive operators in an assignment: " + assignStmt);
 			return false;
 		}
 		prevToken = tokens.at(i);
 	}
 
 	if (countNumOfLeftParenthesis(assignStmt) != countNumOfRightParenthesis(assignStmt)) {
-		SPALog::log("unmatch of (): " + assignStmt);
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "unmatch of (): " + assignStmt);
 		return false;
 	}
 

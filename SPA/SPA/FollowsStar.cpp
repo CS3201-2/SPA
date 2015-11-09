@@ -58,7 +58,7 @@ void FollowsStar::logFollowsStar() {
 	}
 	str += "\n";
 
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void FollowsStar::sortAndUnifyMap() {

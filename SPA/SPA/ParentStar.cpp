@@ -58,7 +58,7 @@ void ParentStar::logParentStar() {
 	}
 	str += "\n";
 
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void ParentStar::sortAndUnifyMap() {
