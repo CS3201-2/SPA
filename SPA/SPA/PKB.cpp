@@ -895,7 +895,7 @@ list<int> PKB::getAffectsStarFirst(int second) {
 	list<int> todo;
 	temp = getAffectsFirst(second);
 	temp.sort();
-	todo = merge(buffer, temp);
+	todo = insertAll(buffer, temp);
 	while (!todo.empty())
 	{
 		for (auto& x : todo)
@@ -904,9 +904,9 @@ list<int> PKB::getAffectsStarFirst(int second) {
 				+ to_string(x));
 			list<int> y = getAffectsFirst(x);
 			y.sort();
-			merge(temp, y);
+			insertAll(temp, y);
 		}
-		todo = merge(buffer, temp);
+		todo = insertAll(buffer, temp);
 	}
 	return buffer;
 }
@@ -917,7 +917,7 @@ list<int> PKB::getAffectsStarSecond(int first) {
 	list<int> todo;
 	temp = getAffectsSecond(first);
 	temp.sort();
-	todo = merge(buffer, temp);
+	todo = insertAll(buffer, temp);
 	while (!todo.empty())
 	{
 		for (auto& x : todo)
@@ -926,9 +926,9 @@ list<int> PKB::getAffectsStarSecond(int first) {
 				+ to_string(x));
 			list<int> y = getAffectsSecond(x);
 			y.sort();
-			merge(temp, y);
+			insertAll(temp, y);
 		}
-		todo = merge(buffer, temp);
+		todo = insertAll(buffer, temp);
 	}
 	return buffer;
 }
@@ -939,7 +939,7 @@ bool PKB::isAffectsStarValid(int first, int second) {
 	list<int> todo;
 	temp = getAffectsSecond(first);
 	temp.sort();
-	todo = merge(buffer, temp);
+	todo = insertAll(buffer, temp);
 	while (!todo.empty())
 	{
 		for (auto& x : todo)
@@ -950,9 +950,9 @@ bool PKB::isAffectsStarValid(int first, int second) {
 				return true;
 			list<int> y = getAffectsSecond(x);
 			y.sort();
-			merge(temp, y);
+			insertAll(temp, y);
 		}
-		todo = merge(buffer, temp);
+		todo = insertAll(buffer, temp);
 	}
 	return false;
 }
@@ -1056,6 +1056,50 @@ list<int> PKB::merge(list<int>& lst1, list<int>& lst2)
 		}
 	}
 	lst2.clear();
+	return newElements;
+}
+
+list<int>::iterator PKB::search(list<int>::iterator first, 
+	list<int>::iterator last, int value)
+{
+	list<int>::difference_type len = distance(first, last);
+	while (len > 0)
+	{
+		list<int>::iterator i = first;
+		list<int>::difference_type len2 = len / 2;
+		advance(i, len2);
+		if (*i < value)
+		{
+			first = ++i;
+			len -= len2 + 1;
+		}
+		else
+		{
+			len = len2;
+		}
+	}
+	return first;
+}
+
+list<int> PKB::insertAll(list<int>& lst1, list<int>& lst2)
+{
+	list<int>::iterator begin = lst1.begin();
+	list<int>::iterator end = lst1.end();
+	list<int> newElements;
+	for (auto& x : lst2)
+	{
+		list<int>::iterator tempIt = search(begin, end, x);
+		if (tempIt == end || *tempIt != x)
+		{
+			lst1.insert(tempIt, x);
+			newElements.push_back(x);
+		}
+		else
+		{
+			//x is already in the lst
+		}
+		begin = tempIt;
+	}
 	return newElements;
 }
 
