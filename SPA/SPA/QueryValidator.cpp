@@ -534,6 +534,10 @@ bool QueryValidator::parseWithNumber(string &subquery, string &relType,
 		} else {
 			vector<string> variable = split(arrWords.at(i), SYMBOL_FULL_STOP);
 
+			if (variable.size() != 2) {
+				return false;
+			}
+
 			if (isVarNameExists(variable.at(0))) {
 				string variabType = getVarType(variable.at(0));
 
