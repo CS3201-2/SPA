@@ -18,6 +18,19 @@ bool Controller::getIsSyntaxCorrect() {
 void Controller::processSource() {
 	Parser parser;
 
+	ifstream inputFile;
+
+	inputFile.open("LogLevel.txt");
+
+	if (inputFile.fail()) {
+		SPALog::getSPALogInstance()->setLogLevel(0);
+	}
+	else {
+		std::string level((std::istreambuf_iterator<char>(inputFile)),
+			(std::istreambuf_iterator<char>()));
+		SPALog::getSPALogInstance()->setLogLevel(stoi(level));
+	}
+
 	list<Statement> sourceList = parser.prepareSourceList(source);
 
 	logSourceCode(sourceList);

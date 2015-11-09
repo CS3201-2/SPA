@@ -72,7 +72,7 @@ bool QueryValidator::isValidDecAndQuery(string query) {
 	}
 
 	cout << "Valid Query";
-	SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Valid Query: " + q);
+	SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Valid Query: " + q);
 	return true;
 }
 
