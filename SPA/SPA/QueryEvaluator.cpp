@@ -94,7 +94,7 @@ list<string> QueryEvaluator::evaluate() {
 	str += "size of 0 var useful: " + to_string(usefulNoVarTree.size());
 	str += "\nsize of 1 var useful: " + to_string(usefulOneVarTree.size());
 	str += "\nsize of 2 var useful: " + to_string(usefulTwoVarTree.size());
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(HIGH_LEVEL,str);
 
 	for (vector<Clause>::iterator i = usefulNoVarTree.begin(); i != usefulNoVarTree.end(); i++) {
 		if (!processClause(*i, true)) {
@@ -148,7 +148,7 @@ bool QueryEvaluator::processSuchThatClause(Clause tempString) {
 	string arg2 = tempString.getVar().at(1);
 	string arg2Type = tempString.getVarType().at(1);
 	string log = "Such that clause: " + relationship + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
-	SPALog::log(log);
+	SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, log);
 
 	ResultTable tempResult;
 
@@ -189,7 +189,7 @@ bool QueryEvaluator::processSuchThatClause(Clause tempString) {
 		tempResult = processAffectsStar(tempString);
 	}
 	else {
-		SPALog::log("Wrong relationship!");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Wrong Relationship!");
 		return false;
 	}
 
@@ -212,7 +212,7 @@ bool QueryEvaluator::processSuchThatConstClause(Clause tempString) {
 	string arg2 = tempString.getVar().at(1);
 	string arg2Type = tempString.getVarType().at(1);
 	string log = "Such that const clause: " + relationship + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
-	SPALog::log(log);
+	SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, log);
 
 	ResultTable tempResult;
 
@@ -253,7 +253,7 @@ bool QueryEvaluator::processSuchThatConstClause(Clause tempString) {
 		tempResult = processAffectsStar(tempString);
 	}
 	else {
-		SPALog::log("Wrong relationship!");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Wrong Relationship!");
 		return false;
 	}
 	if (tempResult.getIsWholeTrue() == 1) {
@@ -316,7 +316,7 @@ list<int> QueryEvaluator::getList(string arr, string arrType) {
 	}
 	else {
 		list<int> emptyList;
-		SPALog::log("Wrong list type!");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Wrong List Type!");
 		return emptyList;
 	}
 }
@@ -405,7 +405,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 		if (!arg2ID) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("arg2 is not a valid variable!\n");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg2 is not a valid variable!");
 			return tempResult;
 		}
 
@@ -416,7 +416,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is not a valid prog_line!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid prog_line!");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isModifiesValid(stoi(arg1), arg2ID)) {
@@ -432,7 +432,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is not a valid proc_name!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid proc_name!");
 				return tempResult;
 			}
 			
@@ -470,7 +470,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is not a valid prog_line!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid proc_line!");
 				return tempResult;
 			}
 			list<int> varList = PKB::getPKBInstance()->getModifiesSecond(stoi(arg1));
@@ -490,7 +490,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 			if (!arg1ID) {
 				ResultTable tempResult = ResultTable();
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is invalid prog_name!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid proc_name!");
 				return tempResult;
 			}
 			list<int> varList = PKB::getPKBInstance()->getModifiesSecond(arg1ID);
@@ -534,7 +534,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is not a valid prog_line!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid prog_line!");
 				return tempResult;
 			}
 			list<int> varList = PKB::getPKBInstance()->getModifiesSecond(stoi(arg1));
@@ -552,7 +552,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 			if (!arg1ID) {
 				ResultTable tempResult = ResultTable();
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is invalid prog_name!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid proc_name!");
 				return tempResult;
 			}
 			list<int> varList = PKB::getPKBInstance()->getModifiesSecond(arg1ID);
@@ -586,7 +586,7 @@ ResultTable QueryEvaluator::processModifies(Clause tempString) {
 	}
 
 	else {
-		SPALog::log("Error: Modifies arg2 wrong type");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Error: Modifies arg2 wrong type");
 		return ResultTable();
 	}
 	
@@ -606,7 +606,7 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 		if (!arg2ID) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("arg2 is not a valid variable!\n");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg2 is not a valid variable!");
 			return tempResult;
 		}
 
@@ -617,7 +617,7 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is not a valid prog_line!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid prog_line!");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isUsesValid(stoi(arg1), arg2ID)) {
@@ -633,7 +633,7 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 			int arg1ID = PKB::getPKBInstance()->getProcID(arg1);
 			if (!arg1ID) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is not a valid proc_name!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid proc_name!");
 				return tempResult;
 			}
 
@@ -670,7 +670,7 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is not a valid prog_line!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid prog_line");
 				return tempResult;
 			}
 			list<int> varList = PKB::getPKBInstance()->getUsesSecond(stoi(arg1));
@@ -692,7 +692,7 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 			if (!arg1ID) {
 				ResultTable tempResult = ResultTable();
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is invalid prog_name!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid proc_name");
 				return tempResult;
 			}
 			list<int> varList = PKB::getPKBInstance()->getUsesSecond(arg1ID);
@@ -736,7 +736,7 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				ResultTable tempResult = ResultTable();
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is not a valid prog_line!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid prog_line");
 				return tempResult;
 			}
 			list<int> varList = PKB::getPKBInstance()->getUsesSecond(stoi(arg1));
@@ -754,7 +754,7 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 			if (!arg1ID) {
 				ResultTable tempResult = ResultTable();
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg1 is invalid prog_name!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid proc_name");
 				return tempResult;
 			}
 			list<int> varList = PKB::getPKBInstance()->getUsesSecond(arg1ID);
@@ -789,7 +789,7 @@ ResultTable QueryEvaluator::processUses(Clause tempString) {
 	}
 
 	else {
-		SPALog::log("Error: Uses arg2 wrong type");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Error: Uses arg2 wrong type");
 		return ResultTable();
 	}
 
@@ -809,7 +809,7 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1)) || isNotParrent ) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("Parent arg1 is not a valid prog_line or is not a parent stmt");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent arg1 is not a valid prog_line or is not a parent stmt");
 			return tempResult;
 		}
 
@@ -819,7 +819,7 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Parent arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isParentValid(stoi(arg1), stoi(arg2))) {
@@ -863,7 +863,7 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Parent arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			int parent = PKB::getPKBInstance()->getParentFirst(stoi(arg2));
@@ -916,7 +916,7 @@ ResultTable QueryEvaluator::processParent(Clause tempString) {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Parent arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			int parent = PKB::getPKBInstance()->getParentFirst(stoi(arg2));
@@ -991,7 +991,7 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("Follows arg1 is not a valid prog_line");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent arg1 is not a valid prog_line");
 			return tempResult;
 		}
 
@@ -1005,7 +1005,7 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Follows arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			if ( PKB::getPKBInstance()->isFollowsValid(stoi(arg1), stoi(arg2))){
@@ -1044,7 +1044,7 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Follows arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			int brother = PKB::getPKBInstance()->getFollowsFirst(stoi(arg2));
@@ -1094,7 +1094,7 @@ ResultTable QueryEvaluator::processFollows(Clause tempString) {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Follows arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			int brother = PKB::getPKBInstance()->getFollowsFirst(stoi(arg2));
@@ -1172,7 +1172,7 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1)) || isNotParrent) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("Parent* arg1 is not a valid prog_line or is not a parent stmt");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent* arg1 is not a valid prog_line or is not a parent stmt");
 			return tempResult;
 		}
 
@@ -1182,7 +1182,7 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Parent* arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent* arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isParentStarValid(stoi(arg1), stoi(arg2))) {
@@ -1230,7 +1230,7 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Parent arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent* arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			list<int> parents = PKB::getPKBInstance()->getParentStarFirst(stoi(arg2));
@@ -1284,7 +1284,7 @@ ResultTable QueryEvaluator::processParentStar(Clause tempString) {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Parent* arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent* arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			list<int> parents = PKB::getPKBInstance()->getParentStarFirst(stoi(arg2));
@@ -1366,7 +1366,7 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("Follows* arg1 is not a valid prog_line");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent* arg1 is not a valid prog_line");
 			return tempResult;
 		}
 
@@ -1374,14 +1374,14 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 		if (littleBrothers.size() == 0) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("Follows* arg1 does not have little brothers");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent* arg1 no little brother!");
 			return tempResult;
 		}
 		if (arg2Type == NUMBER_TYPE) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Follows* arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent* arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isFollowsStarValid(stoi(arg1), stoi(arg2))) {
@@ -1425,7 +1425,7 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Follows arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent* arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			list<int> brother = PKB::getPKBInstance()->getFollowsStarFirst(stoi(arg2));
@@ -1478,7 +1478,7 @@ ResultTable QueryEvaluator::processFollowsStar(Clause tempString) {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Follows* arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent* arg2 is not a valid prog_line");
 				return tempResult;
 			}
 			list<int> brothers = PKB::getPKBInstance()->getFollowsStarFirst(stoi(arg2));
@@ -1561,7 +1561,7 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 		if (!arg1ID) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("arg1 is not a valid proc id!\n");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Parent* arg1 is not a valid proc_id");
 			return tempResult;
 		}
 
@@ -1573,7 +1573,7 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 
 			if (!arg2ID || (arg1 == arg2)) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg2 is not a valid proc id or arg1 == arg2!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg2 is not a valid proc id or arg1 == arg2!");
 				return tempResult;
 			}
 
@@ -1613,7 +1613,7 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 		}
 
 		else {
-			SPALog::log("arg2 is not valid!\n");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL,"arg2 is not valid!");
 			return ResultTable();
 		}
 	}
@@ -1625,7 +1625,7 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 
 			if (!arg2ID) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg2 is not a valid proc id!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg2 is not valid proc_id!");
 				return tempResult;
 			}
 
@@ -1665,7 +1665,7 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 			vector<int> temp;
 			if (arg1 == arg2) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Calls invalid arg1 == arg2!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Calls invalid arg1 == arg2!");
 				return tempResult;
 			}
 
@@ -1686,7 +1686,7 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 			return tempResult;
 		}
 		else {
-			SPALog::log("arg2 is not valid!\n");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Arg 2 is not valid!");
 			return ResultTable();
 		}
 	}
@@ -1698,7 +1698,7 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 
 			if (!arg2ID) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg2 is not a valid proc id!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg2 is not a valid proc_id!");
 				return tempResult;
 			}
 
@@ -1747,13 +1747,13 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 			return tempResult;
 		}
 		else {
-			SPALog::log("arg2 is not valid!\n");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "arg2 is not valid!");
 			return ResultTable();
 		}
 	}
 
 	else {
-		SPALog::log("arg1 is not valid!\n");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "arg1 is not valid!");
 		return ResultTable();
 	}
 
@@ -1770,7 +1770,7 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 		if (!arg1ID) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("arg1 is not a valid proc id!\n");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid proc id!");
 			return tempResult;
 		}
 
@@ -1782,7 +1782,7 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 
 			if (!arg2ID || arg1 == arg2) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg2 is not a valid proc id! or arg1 == arg2\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg2 is not a valid proc id! or arg1 == arg2!");
 				return tempResult;
 			}
 
@@ -1819,7 +1819,7 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 			return tempResult;
 		}
 		else {
-			SPALog::log("arg2 is not valid!\n");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "arg2 is not valid!");
 			return ResultTable();
 		}
 	}
@@ -1831,7 +1831,7 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 
 			if (!arg2ID) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg2 is not a valid proc id!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg2 is not a valid proc id!");
 				return tempResult;
 			}
 
@@ -1871,7 +1871,7 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 			vector<int> temp;
 			if (arg1 == arg2) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Calls* invalid arg1 == arg2!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Calls* invalid arg1 == arg2!");
 				return tempResult;
 			}
 
@@ -1892,7 +1892,7 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 			return tempResult;
 		}
 		else {
-			SPALog::log("arg2 is not valid!\n");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "arg2 is not valid!");
 			return ResultTable();
 		}
 	}
@@ -1904,7 +1904,7 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 
 			if (!arg2ID) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("arg2 is not a valid proc id!\n");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg2 is not a valid proc id!");
 				return tempResult;
 			}
 
@@ -1953,12 +1953,12 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 			return tempResult;
 		}
 		else {
-			SPALog::log("arg2 is not valid!\n");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "arg2 is not valid!");
 			return ResultTable();
 		}
 	}
 	else {
-		SPALog::log("arg1 is not valid!\n");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "arg1 is not valid!");
 		return ResultTable();
 	}
 
@@ -1974,7 +1974,7 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("Next arg1 is not a valid prog_line");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Next arg1 is not a valid prog_line!");
 			return tempResult;
 		}
 
@@ -1988,7 +1988,7 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Next arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Next arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isNextvalid(stoi(arg1), stoi(arg2))) {
@@ -2034,7 +2034,7 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Next arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Next arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			list<int> brothers = PKB::getPKBInstance()->getNextFirst(stoi(arg2));
@@ -2088,7 +2088,7 @@ ResultTable QueryEvaluator::processNext(Clause tempString){
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Next arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Next arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			list<int> brothers = PKB::getPKBInstance()->getNextFirst(stoi(arg2));
@@ -2167,7 +2167,7 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("Next* arg1 is not a valid prog_line");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Next* arg1 is not a valid prog_line!");
 			return tempResult;
 		}
 
@@ -2175,14 +2175,14 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 		if (littleBrothers.size() == 0) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("Next* arg1 does not have little brothers");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Next* arg1 does not have little brothers!");
 			return tempResult;
 		}
 		if (arg2Type == NUMBER_TYPE) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Next* arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Next* arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isNextStarValid(stoi(arg1), stoi(arg2))) {
@@ -2231,7 +2231,7 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Next* arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Next* arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			list<int> brothers = PKB::getPKBInstance()->getNextStarFirst(stoi(arg2));
@@ -2285,7 +2285,7 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Next* arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Next* arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			list<int> brothers = PKB::getPKBInstance()->getNextStarFirst(stoi(arg2));
@@ -2378,7 +2378,7 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("Affects arg1 is not a valid prog_line");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Affects arg1 is not a valid prog_line!");
 			return tempResult;
 		}
 
@@ -2386,7 +2386,7 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Affects arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Affects arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isAffectsValid(stoi(arg1), stoi(arg2))) {
@@ -2436,7 +2436,7 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Affects arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Affects arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			list<int> affects = PKB::getPKBInstance()->getAffectsFirst(stoi(arg2));
@@ -2490,7 +2490,7 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Affects arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Affects arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			list<int> affects = PKB::getPKBInstance()->getAffectsFirst(stoi(arg2));
@@ -2581,7 +2581,7 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 		if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 			ResultTable tempResult = ResultTable();
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("Affects* arg1 is not a valid prog_line");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Affects* arg1 is not a valid prog_line!");
 			return tempResult;
 		}
 
@@ -2589,7 +2589,7 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Affects* arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Affects* arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			if (PKB::getPKBInstance()->isAffectsStarValid(stoi(arg1), stoi(arg2))) {
@@ -2640,7 +2640,7 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 			ResultTable tempResult = ResultTable();
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Affects* arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Affects* arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			list<int> affects = PKB::getPKBInstance()->getAffectsStarFirst(stoi(arg2));
@@ -2694,7 +2694,7 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 			ResultTable tempResult = ResultTable(arg1);
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("Affects* arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Affects* arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			list<int> affects = PKB::getPKBInstance()->getAffectsStarFirst(stoi(arg2));
@@ -2796,7 +2796,7 @@ bool QueryEvaluator::processPatternClause(Clause tempString) {
 	
 	
 	string log = "Pattern clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
-	SPALog::log(log);
+	SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, log);
 
 	ResultTable tempResult;
 
@@ -2810,7 +2810,7 @@ bool QueryEvaluator::processPatternClause(Clause tempString) {
 		tempResult = processIfPattern(tempString);
 	}
 	else {
-		SPALog::log("Wrong pattern!");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Wrong Pattern!");
 		return false;
 	}
 
@@ -2863,7 +2863,7 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 			}
 		}
 		else {
-			SPALog::log("Pattern arg2 wrong type");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Pattern arg 2 wrong type!");
 		}
 
 		
@@ -2915,7 +2915,7 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 			}
 		}
 		else {
-			SPALog::log("Pattern arg2 wrong type");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Pattern arg 2 wrong type!");
 		}
 		
 		_updateMidResult(tempResult);
@@ -2953,7 +2953,7 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 			}
 		}
 		else {
-			SPALog::log("Pattern arg2 wrong type");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Pattern arg 2 wrong type!");
 		}
 		
 		_updateMidResult(tempResult);
@@ -2961,7 +2961,7 @@ ResultTable QueryEvaluator::processAssignPattern(Clause tempString) {
 		return tempResult;
 	}
 	else {
-		SPALog::log("pattern arg1 type wrong");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Pattern arg 1 wrong type!");
 		return ResultTable();
 	}
 }
@@ -2980,7 +2980,8 @@ ResultTable QueryEvaluator::processWhilePattern(Clause tempString) {
 		int arg1ID = PKB::getPKBInstance()->getVarID(arg1);
 		if (!arg1ID) {
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("arg1 is not a valid variable!\n");
+
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "arg1 is not a valid variable!");
 			return tempResult;
 		}
 
@@ -3112,7 +3113,7 @@ bool QueryEvaluator::processSelectClause(Clause tempString) {
 		string syn = tempString.getVar().at(i);
 		string synType = tempString.getVarType().at(i);
 		string log = "Select clause: select " + syn + ":" + synType + "\n";
-		SPALog::log(log);
+		SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, log);
 
 		if (synType == VARIABLE_TYPE) {
 			ResultTable tempResult = ResultTable(syn);
@@ -3170,7 +3171,7 @@ bool QueryEvaluator::processWithClause(Clause tempString) {
 	string arg2Type = tempString.getVarType().at(1);
 
 	string log = "With clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
-	SPALog::log(log);
+	SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, log);
 
 	ResultTable tempResult;
 
@@ -3181,7 +3182,7 @@ bool QueryEvaluator::processWithClause(Clause tempString) {
 		tempResult = processNameWith(tempString);
 	}
 	else {
-		SPALog::log("Wrong with type!");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Wrong with type!");
 		return false;
 	}
 
@@ -3206,7 +3207,7 @@ bool QueryEvaluator::processWithConstClause(Clause tempString) {
 	string arg2Type = tempString.getVarType().at(1);
 
 	string log = "With constant clause: " + synType + "( " + arg1 + ":" + arg1Type + ", " + arg2 + ":" + arg2Type + ")\n";
-	SPALog::log(log);
+	SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, log);
 
 	ResultTable tempResult;
 
@@ -3217,7 +3218,7 @@ bool QueryEvaluator::processWithConstClause(Clause tempString) {
 		tempResult = processNameWith(tempString);
 	}
 	else {
-		SPALog::log("Wrong with type!");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Wrong with type!");
 		return false;
 	}
 	
@@ -3319,7 +3320,7 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 			return tempResult;
 		}
 		else {
-			SPALog::log("Error: with arg2 wrong type");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Wrong arg2 with type!");
 			return ResultTable();
 		}
 	}
@@ -3414,7 +3415,7 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 			return tempResult;
 		}
 		else {
-			SPALog::log("Error: with arg2 wrong type");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "arg2 Wrong with type!");
 			return ResultTable();
 		}
 	}
@@ -3505,7 +3506,7 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 			return tempResult;
 		}
 		else {
-			SPALog::log("Error: with arg2 wrong type");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "arg 2 Wrong with type!");
 			return ResultTable();
 		}
 	}
@@ -3577,12 +3578,12 @@ ResultTable QueryEvaluator::processNameWith(Clause tempString) {
 			return tempResult;
 		}
 		else {
-			SPALog::log("Error: with arg2 wrong type");
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "arg 2 Wrong with type!");
 			return ResultTable();
 		}
 	}
 	else {
-		SPALog::log("Error: with arg1 wrong type");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "arg 1 Wrong with type!");
 		return ResultTable();
 	}
 
@@ -3620,7 +3621,7 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 			vector<int> temp;
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg2))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("with number clause arg2 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "with number clause arg2 is not a valid prog_line!");
 				return tempResult;
 			}
 			temp.push_back(stoi(arg2));
@@ -3659,7 +3660,7 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 			vector<int> temp;
 			if (!PKB::getPKBInstance()->isValidStmtNo(stoi(arg1))) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("with number clause arg1 is not a valid prog_line");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "with number clause arg1 is not a valid prog_line!");
 				return tempResult;
 			}
 			temp.push_back(stoi(arg1));
@@ -3675,7 +3676,8 @@ ResultTable QueryEvaluator::processNumberWith(Clause tempString) {
 			vector<int> temp;
 			if ( stoi(arg1) != stoi(arg2)) {
 				tempResult.setIsWholeTrue(0);
-				SPALog::log("with number clause arg1 != arg2");
+				SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "with number clause arg1 != arg2!");
+
 			}
 			else {
 				tempResult.setIsWholeTrue(1);
