@@ -21,6 +21,7 @@ public:
 	void buildCFG(list<Statement>);
 
 private:
+	string removeComment(string);
 	void trim(string&);
 	void addNewLineBeforeKeywords(string&, string);
 	void addNewLineString(string&);
