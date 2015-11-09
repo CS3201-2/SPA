@@ -60,19 +60,19 @@ bool QueryValidator::isValidDecAndQuery(string query) {
 	for (i = 0; i < size - 1; i++) {
 		if (!isValidDeclaration(splitStr.at(i))) {
 			cout << "Invalid Query Declaration" << endl;
-			SPALog::log("Invalid Query Declaration: " + q);
+			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Invalid Query Declaration: " + q);
 			return false;
 		}
 	}
 
 	if (!isValidQuery(splitStr.at(i))) {
 		cout << "Invalid Query" << endl;
-		SPALog::log("Invalid Query: " + q);
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Invalid Query: " + q);
 		return false;
 	}
 
 	cout << "Valid Query";
-	SPALog::log("Valid Query: " + q);
+	SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Valid Query: " + q);
 	return true;
 }
 

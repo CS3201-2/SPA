@@ -75,5 +75,5 @@ void ResultTable::logTable(int index) {
 	}
 	str += "--------------------------------\n";
 
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }

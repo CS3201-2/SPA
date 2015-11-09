@@ -26,7 +26,7 @@ void Controller::processSource() {
 		_isSyntaxCorrect = SYNTAX_WRONG;
 		cout << endl << endl;
 		cout << "syntax wrong!!!" << endl << endl << endl;
-		SPALog::log("syntax wrong!!!");
+		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "syntax wrong!!!");
 	}
 	else {
 		_isSyntaxCorrect = SYNTAX_CORRECT;
@@ -60,7 +60,7 @@ void Controller::logSourceCode(list<Statement> sourceList) {
 		}
 	}
 
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, str);
 }
 
 bool Controller::isSyntaxCorrect(list<Statement>& sourceList) {
