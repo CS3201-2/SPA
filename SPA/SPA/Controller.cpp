@@ -20,7 +20,7 @@ void Controller::processSource() {
 
 	ifstream inputFile;
 
-	inputFile.open("LogLevel.txt");
+	inputFile.open("config/LogLevel.txt");
 
 	if (inputFile.fail()) {
 		SPALog::getSPALogInstance()->setLogLevel(0);

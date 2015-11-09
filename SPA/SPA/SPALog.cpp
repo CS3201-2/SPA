@@ -18,7 +18,7 @@ void SPALog::setLogLevel(int level) {
 
 void SPALog::log(string line) {
 	ofstream myfile;
-	myfile.open("test.log", ios::out | ios::app);
+	myfile.open("log/test.log", ios::out | ios::app);
 	myfile << line << endl;
 	myfile << endl;
 	myfile.close();
@@ -27,7 +27,7 @@ void SPALog::log(string line) {
 void SPALog::logWithLevel(int level, string line) {
 	if (level <= logLevel) {
 		ofstream myfile;
-		myfile.open("test.log", ios::out | ios::app);
+		myfile.open("log/test.log", ios::out | ios::app);
 		myfile << line << endl;
 		myfile << endl;
 		myfile.close();
