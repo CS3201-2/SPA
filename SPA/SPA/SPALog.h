@@ -10,11 +10,15 @@ using namespace std;
 class SPALog
 {
 public:
-	SPALog();
 
+	static SPALog* getSPALogInstance();
 	static void log(string);
+	void logWithLevel(int,string);
+	void setLogLevel(int);
 
 private:
+	static SPALog* SPALogInstance;
+	int logLevel;
 };
 
 #endif
