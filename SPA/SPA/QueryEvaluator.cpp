@@ -1716,7 +1716,7 @@ ResultTable QueryEvaluator::processCalls(Clause tempString) {
 		else if (arg2Type == ALL_TYPE) {
 			ResultTable tempResult = ResultTable();
 			vector<int> temp;
-			list<int> procList = getList(arg1, arg1Type);
+			list<int> procList = getList(arg1, "procedure");
 			for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
 				list<int> procedureCalled = PKB::getPKBInstance()->getCallsSecond(*i);
 				if (!procedureCalled.empty()) {
@@ -1922,7 +1922,7 @@ ResultTable QueryEvaluator::processCallsStar(Clause tempString) {
 		else if (arg2Type == ALL_TYPE) {
 			ResultTable tempResult = ResultTable();
 			vector<int> temp;
-			list<int> procList = getList(arg1, arg1Type);
+			list<int> procList = getList(arg1, "procedure");
 			for (list<int>::iterator i = procList.begin(); i != procList.end(); i++) {
 				list<int> procedureCalled = PKB::getPKBInstance()->getCallsStarSecond(*i);
 				if (!procedureCalled.empty()) {
