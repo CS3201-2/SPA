@@ -830,7 +830,7 @@ bool PKB::isAffectsValid(int first, int second) {
 	{
 		int temp = path.front();
 		string message = "Processing Affect: reach " + to_string(temp);
-		//_log.log(message);
+		_log.logWithLevel(4, message);
 		if (temp == second && visit[temp] != -1)
 		{
 			return true;
