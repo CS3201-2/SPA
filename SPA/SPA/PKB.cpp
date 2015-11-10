@@ -647,7 +647,7 @@ list<int> PKB::getAffectsFirst(int end) {
 		while (!path.empty())
 		{
 			int temp = path.front();
-			_log.log("Processing AffectFirst: visiting " + to_string(temp));
+			_log.log("Processing AffectFirst: reach " + to_string(temp));
 			path.pop();
 			if (visit[temp] == -1)
 			{
@@ -723,6 +723,8 @@ list<int> PKB::getAffectsSecond(int start) {
 	{
 		int temp = path.front();
 		path.pop();
+		string message = "Processing AffectsSecond: reach " + to_string(temp);
+		_log.logWithLevel(4, message);
 		if (visit[temp] == -1)
 		{
 			//initial statement
@@ -829,7 +831,8 @@ bool PKB::isAffectsValid(int first, int second) {
 	while (!path.empty())
 	{
 		int temp = path.front();
-		string message = "Processing Affect: reach " + to_string(temp);
+		path.pop();
+		string message = "Processing AffectsValid: reach " + to_string(temp);
 		_log.logWithLevel(4, message);
 		if (temp == second && visit[temp] != -1)
 		{
@@ -842,7 +845,6 @@ bool PKB::isAffectsValid(int first, int second) {
 		}
 		else if (isWhile(temp))
 		{
-			path.pop();
 			visit[temp] = 1;
 			//the next line is not effective, try to optimize
 			list<int> tempLst = getParentStarSecond(temp);
@@ -867,7 +869,6 @@ bool PKB::isAffectsValid(int first, int second) {
 		else if (isIf(temp))
 		{
 			//go to both statLst
-			path.pop();
 			visit[temp] = 1;
 			transfer(temp, path, true);
 		}
@@ -875,7 +876,6 @@ bool PKB::isAffectsValid(int first, int second) {
 		{
 			message = "Processing Affect: is Assignment/Call " + to_string(temp);
 			//_log.log(message);
-			path.pop();
 			list<int> tempModifies = getModifiesSecond(temp);
 			if (visit[temp] == -1 || !contains(tempModifies, varModifiesIndex))
 			{
