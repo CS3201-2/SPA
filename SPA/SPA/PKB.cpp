@@ -264,15 +264,15 @@ int PKB::getStmtSize()
 }
 
 //varTable
-int PKB::insertVar(string varName) {
+int PKB::insertVar(VARNAME varName) {
 	return getVarTable().insertVar(varName);
 }
 
-int PKB::getVarID(string varName) {
+int PKB::getVarID(VARNAME varName) {
 	return getVarTable().getVarID(varName);
 }
 
-string PKB::getVarName(int varID) {
+string PKB::getVarName(VARIABID varID) {
 	return getVarTable().getVarName(varID);
 }
 
@@ -290,15 +290,15 @@ void PKB::setVarTableReverse() {
 
 
 //procTable
-int PKB::insertProc(string procName) {
+int PKB::insertProc(PROCNAME procName) {
 	return getProcTable().insertProc(procName);
 }
 
-int PKB::getProcID(string procName) {
+int PKB::getProcID(PROCNAME procName) {
 	return getProcTable().getProcID(procName);
 } 
 
-string PKB::getProcName(int procID) {
+string PKB::getProcName(PROCID procID) {
 	return getProcTable().getProcName(procID);
 }
 
@@ -316,23 +316,23 @@ void PKB::setProcTableReverse() {
 
 
 //Modifies
-void PKB::setModifies(int first, list<int> second) {
+void PKB::setModifies(INDEX first, list<VARIABID> second) {
 	getModifies().setModifies(first, second);
 } // input parameter to be decided later
 
-void PKB::resetModifies(int first, list<int> second) {
+void PKB::resetModifies(INDEX first, list<VARIABID> second) {
 	getModifies().resetModifies(first, second);
 }
 
-list<int> PKB::getModifiesFirst(int second) {
+list<INDEX> PKB::getModifiesFirst(VARIABID second) {
 	return getModifies().getModifiesFirst(second);
 }
 
-list<int> PKB::getModifiesSecond(int first) {
+list<VARIABID> PKB::getModifiesSecond(INDEX first) {
 	return getModifies().getModifiesSecond(first);
 }
 
-bool PKB::isModifiesValid(int first, int second) {
+bool PKB::isModifiesValid(INDEX first, VARIABID second) {
 	return getModifies().isModifiesValid(first, second);
 }
 
@@ -346,23 +346,23 @@ void PKB::setModifiesReverse() {
 
 
 //Uses
-void PKB::setUses(int first, list<int> second) {
+void PKB::setUses(INDEX first, list<int> second) {
 	getUses().setUses(first, second);
 } //input parameter to be decided later
 
-void PKB::resetUses(int first, list<int> second) {
+void PKB::resetUses(INDEX first, list<int> second) {
 	getUses().resetUses(first, second);
 }
 
-list<int> PKB::getUsesFirst(int second) {
+list<INDEX> PKB::getUsesFirst(VARIABID second) {
 	return getUses().getUsesFirst(second);
 }
 
-list<int> PKB::getUsesSecond(int first) {
+list<int> PKB::getUsesSecond(INDEX first) {
 	return getUses().getUsesSecond(first);
 }
 
-bool PKB::isUsesValid(int first, int second) {
+bool PKB::isUsesValid(INDEX first, VARIABID second) {
 	return getUses().isUsesValid(first, second);
 }
 
@@ -417,19 +417,19 @@ void PKB::logPattern() {
 
 
 //Follows
-void PKB::setFollows(int first, int second) {
+void PKB::setFollows(STMTLINE first, STMTLINE second) {
 	getFollows().setFollows(first, second);
 }
 
-int PKB::getFollowsFirst(int second) {
+STMTLINE PKB::getFollowsFirst(STMTLINE second) {
 	return getFollows().getFollowsFirst(second);
 }
 
-int PKB::getFollowsSecond(int first) {
+STMTLINE PKB::getFollowsSecond(STMTLINE first) {
 	return getFollows().getFollowsSecond(first);
 }
 
-bool PKB::isFollowsValid(int first, int second) {
+bool PKB::isFollowsValid(STMTLINE first, STMTLINE second) {
 	return getFollows().isFollowValid(first, second);
 }
 
@@ -437,7 +437,7 @@ void PKB::logFollows() {
 	getFollows().logFollows();
 }
 
-map<int, int> PKB::getFollowsMap() {
+map<STMTLINE, STMTLINE> PKB::getFollowsMap() {
 	return getFollows().getFollowsMap();
 }
 
@@ -447,19 +447,19 @@ void PKB::setFollowsReverse() {
 
 
 //FollowsStar
-void PKB::setFollowsStar(int first, list<int> second) {
+void PKB::setFollowsStar(STMTLINE first, list<STMTLINE> second) {
 	getFollowsStar().setFollowsStar(first, second);
 }
 
-list<int> PKB::getFollowsStarFirst(int second) {
+list<STMTLINE> PKB::getFollowsStarFirst(STMTLINE second) {
 	return getFollowsStar().getFollowsStarFirst(second);
 }
 
-list<int> PKB::getFollowsStarSecond(int first) {
+list<STMTLINE> PKB::getFollowsStarSecond(STMTLINE first) {
 	return getFollowsStar().getFollowsStarSecond(first);
 }
 
-bool PKB::isFollowsStarValid(int first, int second) {
+bool PKB::isFollowsStarValid(STMTLINE first, STMTLINE second) {
 	return getFollowsStar().isFollowsStarValid(first, second);
 }
 
@@ -473,19 +473,19 @@ void PKB::setFollowsStarReverse() {
 
 
 //Calls
-void PKB::setCalls(int first, int second) {
+void PKB::setCalls(PROCID first, PROCID second) {
 	getCalls().setCalls(first, second);
 }
 
-list<int> PKB::getCallsFirst(int second) {
+list<PROCID> PKB::getCallsFirst(PROCID second) {
 	return getCalls().getCallsFirst(second);
 }
 
-list<int> PKB::getCallsSecond(int first) {
+list<PROCID> PKB::getCallsSecond(PROCID first) {
 	return getCalls().getCallsSecond(first);
 }
 
-bool PKB::isCallsValid(int first, int second) {
+bool PKB::isCallsValid(PROCID first, PROCID second) {
 	return getCalls().isCallValid(first, second);
 }
 
@@ -507,19 +507,19 @@ void PKB::setCallsReverse() {
 
 
 //CallsStar
-void PKB::setCallsStar(int first, list<int> second) {
+void PKB::setCallsStar(PROCID first, list<PROCID> second) {
 	getCallsStar().setCallsStar(first, second);
 }
 
-list<int> PKB::getCallsStarFirst(int second) {
+list<PROCID> PKB::getCallsStarFirst(PROCID second) {
 	return getCallsStar().getCallsStarFirst(second);
 }
 
-list<int> PKB::getCallsStarSecond(int first) {
+list<PROCID> PKB::getCallsStarSecond(PROCID first) {
 	return getCallsStar().getCallsStarSecond(first);
 }
 
-bool PKB::isCallsStarValid(int first, int second) {
+bool PKB::isCallsStarValid(PROCID first, PROCID second) {
 	return getCallsStar().isCallsStarValid(first, second);
 }
 
@@ -531,7 +531,7 @@ void PKB::sortAndUnifyCallsStarMap() {
 	getCallsStar().sortAndUnifyMap();
 }
 
-map<int, list<int>> PKB::getCallsStarMap() {
+map<PROCID, list<PROCID>> PKB::getCallsStarMap() {
 	return getCallsStar().getCallsStarMap();
 }
 
@@ -541,19 +541,19 @@ void PKB::setCallsStarReverse() {
 
 
 //Parent
-void PKB::setParent(int first, list<int> second) {
+void PKB::setParent(STMTLINE first, list<STMTLINE> second) {
 	getParent().setParent(first, second);
 }
 
-int PKB::getParentFirst(int second) {
+STMTLINE PKB::getParentFirst(STMTLINE second) {
 	return getParent().getParentFirst(second);
 }
 
-list<int> PKB::getParentSecond(int first) {
+list<STMTLINE> PKB::getParentSecond(STMTLINE first) {
 	return getParent().getParentSecond(first);
 }
 
-bool PKB::isParentValid(int first, int second) {
+bool PKB::isParentValid(STMTLINE first, STMTLINE second) {
 	return getParent().isParentValid(first, second);
 }
 
@@ -561,7 +561,7 @@ void PKB::logParent() {
 	getParent().logParent();
 }
 
-map<int, list<int>> PKB::getParentMap() {
+map<STMTLINE, list<STMTLINE>> PKB::getParentMap() {
 	return getParent().getParentMap();
 }
 
@@ -571,19 +571,19 @@ void PKB::setParentReverse() {
 
 
 //ParentStar
-void PKB::setParentStar(int first, list<int> second) {
+void PKB::setParentStar(STMTLINE first, list<STMTLINE> second) {
 	getParentStar().setParentStar(first, second);
 }
 
-list<int> PKB::getParentStarFirst(int second) {
+list<STMTLINE> PKB::getParentStarFirst(STMTLINE second) {
 	return getParentStar().getParentStarFirst(second);
 }
 
-list<int> PKB::getParentStarSecond(int first) {
+list<STMTLINE> PKB::getParentStarSecond(STMTLINE first) {
 	return getParentStar().getParentStarSecond(first);
 }
 
-bool PKB::isParentStarValid(int first, int second) {
+bool PKB::isParentStarValid(STMTLINE first, STMTLINE second) {
 	return getParentStar().isParentStarValid(first, second);
 }
 
@@ -597,15 +597,15 @@ void PKB::setParentStarReverse() {
 
 
 //Next
-list<int> PKB::getNextFirst(int second) {
+list<STMTLINE> PKB::getNextFirst(STMTLINE second) {
 	return cfg.getNextFirst(second);
 }
 
-list<int> PKB::getNextSecond(int first) {
+list<STMTLINE> PKB::getNextSecond(STMTLINE first) {
 	return cfg.getNextSecond(first);
 }
 
-bool PKB::isNextvalid(int first, int second) {
+bool PKB::isNextvalid(STMTLINE first, STMTLINE second) {
 	return cfg.isNextValid(first, second);
 }
 
@@ -615,15 +615,15 @@ void PKB::logNext() {
 
 
 //NextStar
-list<int> PKB::getNextStarFirst(int second) {
+list<STMTLINE> PKB::getNextStarFirst(STMTLINE second) {
 	return cfg.getNextStarFirst(second);
 }
 
-list<int> PKB::getNextStarSecond(int first) {
+list<STMTLINE> PKB::getNextStarSecond(STMTLINE first) {
 	return cfg.getNextStarSecond(first);
 }
 
-bool PKB::isNextStarValid(int first, int second) {
+bool PKB::isNextStarValid(STMTLINE first, STMTLINE second) {
 	return cfg.isNextStarValid(first, second);
 }
 
