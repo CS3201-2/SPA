@@ -26,9 +26,6 @@ class CFG
 	vector<list<int>> _next;
 	vector<list<int>> _nextTable;
 	vector<list<int>> _beforeTable;
-	vector<list<int>> _nextTableBip;
-	vector<list<int>> _beforeTableBip;
-
 	vector<list<int>> _nextTableWithDummy;
 	vector<list<int>> _beforeTableWithDummy;
 	vector<list<int>> _dummyForNext;
@@ -52,12 +49,9 @@ class CFG
 	bool _procFirstStatementSet;
 public:
 	CFG();
-
 	int getFirstStatement(int);
 	int getProc(int);
 	void buildGraph(list<Statement>);
-	StatementType getType(int);
-
 	list<int> getNextFirst(int);
 	list<int> getNextSecond(int);
 	bool isNextValid(int, int);
@@ -66,7 +60,7 @@ public:
 	bool isNextStarValid(int, int);
 	list<int> getNextDummyFirst(int);
 	list<int> getNextDummySecond(int);
-
+	StatementType getType(int);
 	void printGraph();
 	void printNextTable();
 	void printBeforeTable();
@@ -90,7 +84,6 @@ private:
 	void updateVector(int, int, vector<list<int>>&);
 	void storeNextTable();
 	void storeNext(int);
-	void storeNextTableBip();
 	void storeNextTableWithDummy();
 	void storeNextDummy(int);
 	bool isContainer(Statement);
