@@ -265,6 +265,7 @@ bool QueryEvaluator::processSuchThatConstClause(Clause tempString) {
 	if (isResultEmpty(tempResult)) {
 		return false;
 	}
+	return true;
 }
 
 bool QueryEvaluator::isInList(list<int> list, int number) {
@@ -3051,7 +3052,7 @@ ResultTable QueryEvaluator::processIfPattern(Clause tempString) {
 		int arg1ID = PKB::getPKBInstance()->getVarID(arg1);
 		if (!arg1ID) {
 			tempResult.setIsWholeTrue(0);
-			SPALog::log("arg1 is not a valid variable!\n");
+			SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL,"arg1 is not a valid variable!\n");
 			return tempResult;
 		}
 
@@ -3231,6 +3232,7 @@ bool QueryEvaluator::processWithConstClause(Clause tempString) {
 	if (isResultEmpty(tempResult)) {
 		return false;
 	}
+	return true;
 }
 
 ResultTable QueryEvaluator::processNameWith(Clause tempString) {
