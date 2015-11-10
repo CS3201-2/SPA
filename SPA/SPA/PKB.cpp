@@ -1,5 +1,5 @@
 #include "PKB.h"
-
+//#include "AbstractWrapper.h"
 using namespace std;
 
 
@@ -897,7 +897,11 @@ list<int> PKB::getAffectsStarFirst(int second) {
 	temp.sort();
 	todo = insertAll(buffer, temp);
 	while (!todo.empty())
-	{
+	{/*
+		if (AbstractWrapper::GlobalStop)
+		{
+			return list<int>();
+		}*/
 		for (auto& x : todo)
 		{
 			message = "Processing AffectStarFirst: visiting "
@@ -921,7 +925,11 @@ list<int> PKB::getAffectsStarSecond(int first) {
 	temp.sort();
 	todo = insertAll(buffer, temp);
 	while (!todo.empty())
-	{
+	{/*
+		if (AbstractWrapper::GlobalStop)
+		{
+			return list<int>();
+		}*/
 		for (auto& x : todo)
 		{
 			message = "Processing AffectStarSecond: visiting "
@@ -947,7 +955,11 @@ bool PKB::isAffectsStarValid(int first, int second) {
 	while (!todo.empty())
 	{
 		for (auto& x : todo)
-		{
+		{/*
+			if (AbstractWrapper::GlobalStop)
+			{
+				return false;
+			}*/
 			message = "Processing AffectStarValid: visiting "
 				+ to_string(x);
 			_log.logWithLevel(4, message);
