@@ -22,6 +22,13 @@ using namespace std;
 #ifndef PKB_H
 #define PKB_H
 
+typedef int INDEX;
+typedef int VARIABID;
+typedef int PROCID;
+typedef int STMTLINE;
+typedef string VARNAME;
+typedef string PROCNAME;
+
 class PKB
 {
 public:
@@ -33,14 +40,14 @@ public:
 	void addStmtToList(int, StatementType);
 	void addConstantToList(int);
 	void addToCallStmtProcMap(int, int);
-	list<int> getProcList();
-	list<int> getVarList();
-	list<int> getWhileList();
-	list<int> getAssignList();
-	list<int> getCallList();
-	list<int> getIfList();
-	list<int> getStmtList(); //everything
-	list<int> getParentList(); //while and if list
+	list<PROCID> getProcList();
+	list<VARIABID> getVarList();
+	list<STMTLINE> getWhileList();
+	list<STMTLINE> getAssignList();
+	list<STMTLINE> getCallList();
+	list<STMTLINE> getIfList();
+	list<STMTLINE> getStmtList(); //everything
+	list<STMTLINE> getParentList(); //while and if list
 	list<int> getConstantList();
 	int getCallStmtProc(int);
 	int getProcIDSpecial(int);
@@ -63,37 +70,37 @@ public:
 
 
 	//varTable
-	int insertVar(string);
-	int getVarID(string); 	//return 0 for invalid varName input
-	string getVarName(int);
+	VARIABID insertVar(VARNAME);
+	VARIABID getVarID(VARNAME); 	//return 0 for invalid varName input
+	VARNAME getVarName(VARIABID);
 	void logVarTable();
 	void setVarTableReverse();
 
 
 	//procTable
-	int insertProc(string);
-	int getProcID(string); 	//return 0 for invalid procName input
-	string getProcName(int);
+	PROCID insertProc(PROCNAME);
+	PROCID getProcID(PROCNAME); 	//return 0 for invalid procName input
+	PROCNAME getProcName(PROCID);
 	void logProcTable();
 	void setProcTableReverse();
 	
 
 	//Modifies
-	void setModifies(int, list<int>);
-	void resetModifies(int, list<int>);
-	list<int> getModifiesFirst(int);
-	list<int> getModifiesSecond(int);
-	bool isModifiesValid(int, int);
+	void setModifies(INDEX, list<VARIABID>);
+	void resetModifies(INDEX, list<VARIABID>);
+	list<INDEX> getModifiesFirst(VARIABID);
+	list<VARIABID> getModifiesSecond(INDEX);
+	bool isModifiesValid(INDEX, VARIABID);
 	void logModifies();
 	void setModifiesReverse();
 
 
 	//Uses
-	void setUses(int, list<int>); 
-	void resetUses(int, list<int>);
-	list<int> getUsesFirst(int);
-	list<int> getUsesSecond(int);
-	bool isUsesValid(int, int);
+	void setUses(INDEX, list<VARIABID>);
+	void resetUses(INDEX, list<VARIABID>);
+	list<INDEX> getUsesFirst(VARIABID);
+	list<VARIABID> getUsesSecond(INDEX);
+	bool isUsesValid(INDEX, VARIABID);
 	void logUses();
 	void setUsesReverse();
 
@@ -112,75 +119,75 @@ public:
 
 
 	//Follows
-	void setFollows(int, int);
-	int getFollowsFirst(int);
-	int getFollowsSecond(int);
-	bool isFollowsValid(int, int);
+	void setFollows(STMTLINE, STMTLINE);
+	STMTLINE getFollowsFirst(STMTLINE);
+	STMTLINE getFollowsSecond(STMTLINE);
+	bool isFollowsValid(STMTLINE, STMTLINE);
 	void logFollows();
-	map<int, int> getFollowsMap();
+	map<STMTLINE, STMTLINE> getFollowsMap();
 	void setFollowsReverse();
 
 
 	//FollowsStar
-	void setFollowsStar(int, list<int>); 
-	list<int> getFollowsStarFirst(int);
-	list<int> getFollowsStarSecond(int);
-	bool isFollowsStarValid(int, int);
+	void setFollowsStar(STMTLINE, list<STMTLINE>);
+	list<STMTLINE> getFollowsStarFirst(STMTLINE);
+	list<STMTLINE> getFollowsStarSecond(STMTLINE);
+	bool isFollowsStarValid(STMTLINE, STMTLINE);
 	void logFollowsStar();
 	void setFollowsStarReverse();
 
 
 	//Calls
-	void setCalls(int, int);
-	list<int> getCallsFirst(int);
-	list<int> getCallsSecond(int);
-	bool isCallsValid(int, int);
+	void setCalls(PROCID, PROCID);
+	list<PROCID> getCallsFirst(PROCID);
+	list<PROCID> getCallsSecond(PROCID);
+	bool isCallsValid(PROCID, PROCID);
 	void logCalls();
 	void sortAndUnifyCallsMap();
-	map<int, list<int>> getCallsMap();
+	map<PROCID, list<PROCID>> getCallsMap();
 	void setCallsReverse();
 
 
 	//CallsStar
-	void setCallsStar(int, list<int>);
-	list<int> getCallsStarFirst(int);
-	list<int> getCallsStarSecond(int);
-	bool isCallsStarValid(int, int);
+	void setCallsStar(PROCID, list<PROCID>);
+	list<PROCID> getCallsStarFirst(PROCID);
+	list<PROCID> getCallsStarSecond(PROCID);
+	bool isCallsStarValid(PROCID, PROCID);
 	void logCallsStar();
 	void sortAndUnifyCallsStarMap();
-	map<int, list<int>> getCallsStarMap();
+	map<PROCID, list<PROCID>> getCallsStarMap();
 	void setCallsStarReverse();
 
 
 	//Parent
-	void setParent(int, list<int>); 
-	int getParentFirst(int);
-	list<int> getParentSecond(int);
-	bool isParentValid(int, int);
+	void setParent(STMTLINE, list<STMTLINE>);
+	STMTLINE getParentFirst(STMTLINE);
+	list<STMTLINE> getParentSecond(STMTLINE);
+	bool isParentValid(STMTLINE, STMTLINE);
 	void logParent();
-	map<int, list<int>> getParentMap();
+	map<STMTLINE, list<STMTLINE>> getParentMap();
 	void setParentReverse();
 
 
 	//ParentStar
-	void setParentStar(int, list<int>);
-	list<int> getParentStarFirst(int);
-	list<int> getParentStarSecond(int);
-	bool isParentStarValid(int, int);
+	void setParentStar(STMTLINE, list<STMTLINE>);
+	list<STMTLINE> getParentStarFirst(STMTLINE);
+	list<STMTLINE> getParentStarSecond(STMTLINE);
+	bool isParentStarValid(STMTLINE, STMTLINE);
 	void logParentStar();
 	void setParentStarReverse();
 
 
 	//Next
-	list<int> getNextFirst(int);
-	list<int> getNextSecond(int);
-	bool isNextvalid(int, int);
+	list<STMTLINE> getNextFirst(STMTLINE);
+	list<STMTLINE> getNextSecond(STMTLINE);
+	bool isNextvalid(STMTLINE, STMTLINE);
 	void logNext();
 
 	//NextStar
-	list<int> getNextStarFirst(int);
-	list<int> getNextStarSecond(int);
-	bool isNextStarValid(int, int);
+	list<STMTLINE> getNextStarFirst(STMTLINE);
+	list<STMTLINE> getNextStarSecond(STMTLINE);
+	bool isNextStarValid(STMTLINE, STMTLINE);
 
 	//Affect
 	list<int> getAffectsFirst(int);
