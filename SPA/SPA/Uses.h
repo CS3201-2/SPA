@@ -16,7 +16,7 @@ class Uses{
 public:
 	Uses();
 
-	void setUses(int, list<int>); //input parameter to be decided later
+	void setUses(int, list<int>);
 	void resetUses(int, list<int>);
 	list<int> getUsesFirst(int);
 	list<int> getUsesSecond(int);

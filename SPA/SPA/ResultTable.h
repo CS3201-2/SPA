@@ -15,7 +15,7 @@ public:
 	ResultTable();
 	ResultTable(int isWholeTrue, vector<string> header, vector<vector<int>> result);
 	
-	void addTuple(vector<int>);   //store a line in to table
+	void addTuple(vector<int>);
 	vector<string> getHeader();
 	vector<vector<int>> & getContent();
 	void eraseContent(int i);

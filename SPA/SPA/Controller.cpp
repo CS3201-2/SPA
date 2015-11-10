@@ -37,8 +37,6 @@ void Controller::processSource() {
 
 	if (!isSyntaxCorrect(sourceList)) {
 		_isSyntaxCorrect = SYNTAX_WRONG;
-		cout << endl << endl;
-		cout << "syntax wrong!!!" << endl << endl << endl;
 		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "syntax wrong!!!");
 	}
 	else {
@@ -82,10 +80,6 @@ bool Controller::isSyntaxCorrect(list<Statement>& sourceList) {
 }
 
 void Controller::logPKB() {
-	cout << endl;
-	cout << "logging" << endl;
-	cout << endl;
-
 	PKB::getPKBInstance()->logWhileList();
 	PKB::getPKBInstance()->logAssignList();
 	PKB::getPKBInstance()->logCallList();
@@ -106,15 +100,6 @@ void Controller::logPKB() {
 	PKB::getPKBInstance()->logCalls();
 	PKB::getPKBInstance()->logCallsStar();
 	PKB::getPKBInstance()->logNext();
-
-
-	//change below for testing purpose
-	/*list<int> followsFirst = ctrPKB.getWhileList();
-	for (list<int>::iterator it = followsFirst.begin(); it != followsFirst.end(); ++it) {
-		cout << *it << ", ";
-	}
-	cout << endl;*/
-	cout << "end of logging" << endl;
 }
 
 list<string> Controller::processQuery(string query) {

@@ -23,7 +23,6 @@ QueryTree::QueryTree() {
 
 }
 
-//Inserting the particular type of query into its respective tree
 void QueryTree::insertSuchThat(string rel, vector<string> arrVar, vector<string> arrType) {
 	int numOfVar = getNumOfVar(arrType);
 	Clause clause = Clause(rel, arrVar, arrType, numOfVar);

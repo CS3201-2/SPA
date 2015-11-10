@@ -66,8 +66,6 @@ void PKB::houseKeeping() {
 	getModifies().sortAndUnifyMap();
 	getUses().sortAndUnifyMap();
 	getParent().sortAndUnifyMap();
-	//getFollowsStar().sortAndUnifyMap();
-	//getParentStar().sortAndUnifyMap();
 	getPattern().sortAndUnifyMap();
 	ifStmtList.sort();
 	ifStmtList.unique();
@@ -318,7 +316,7 @@ void PKB::setProcTableReverse() {
 //Modifies
 void PKB::setModifies(INDEX first, list<VARIABID> second) {
 	getModifies().setModifies(first, second);
-} // input parameter to be decided later
+}
 
 void PKB::resetModifies(INDEX first, list<VARIABID> second) {
 	getModifies().resetModifies(first, second);
@@ -348,7 +346,7 @@ void PKB::setModifiesReverse() {
 //Uses
 void PKB::setUses(INDEX first, list<int> second) {
 	getUses().setUses(first, second);
-} //input parameter to be decided later
+}
 
 void PKB::resetUses(INDEX first, list<int> second) {
 	getUses().resetUses(first, second);

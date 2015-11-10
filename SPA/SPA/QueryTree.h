@@ -23,17 +23,11 @@ private:
 public:
 	QueryTree();
 
-	//eg. Parent, Follows, Next, Modifies, Uses
 	void insertSuchThat(string, vector<string>, vector<string>);
-	//For inserting relationships categorized under the pattern clause
-	//all pattern types eg. Pattern syn(ptrn1, ptrn2)
 	void insertPattern(string, string, vector<string>, vector<string>);
-	//For adding variables eg. assign a, => insertVariable(a, assign)
 	void insertVariable(string, string);
-	//For adding variables under the select category
 	void insertSelect(vector<string>, vector<string>);
 	void insertSelect(string, string);
-	//For adding variables under the with category
 	void insertWith(string, vector<string>, vector<string>);
 
 	vector<Clause> getVariableTree();

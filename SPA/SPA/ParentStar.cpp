@@ -4,7 +4,6 @@
 ParentStar::ParentStar() {
 }
 
-// need to see design extractor to see how to do this part, might be different from followsStar
 void ParentStar::setParentStar(int first, list<int> second) {
 	parentStarMap[first] = second;
 }
