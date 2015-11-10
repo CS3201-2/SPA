@@ -1,12 +1,10 @@
 #include "QueryValidator.h"
 #include "SPALog.h"
-#include <iostream>  //remove when submitting
 #include <regex>
 
 const char SYMBOL_SEMICOLON = ';';
 const char SYMBOL_SPACE = ' ';
 const char SYMBOL_COMMA = ',';
-//const char SYMBOL_UNDERSCORE = '_';
 const char SYMBOL_QUOTE = '\"';
 const char SYMBOL_OPEN_BRACKET = '(';
 const char SYMBOL_CLOSE_BRACKET = ')';
@@ -59,19 +57,16 @@ bool QueryValidator::isValidDecAndQuery(string query) {
 
 	for (i = 0; i < size - 1; i++) {
 		if (!isValidDeclaration(splitStr.at(i))) {
-			cout << "Invalid Query Declaration" << endl;
 			SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Invalid Query Declaration: " + q);
 			return false;
 		}
 	}
 
 	if (!isValidQuery(splitStr.at(i))) {
-		cout << "Invalid Query" << endl;
 		SPALog::getSPALogInstance()->logWithLevel(ZERO_LEVEL, "Invalid Query: " + q);
 		return false;
 	}
 
-	cout << "Valid Query";
 	SPALog::getSPALogInstance()->logWithLevel(LOW_LEVEL, "Valid Query: " + q);
 	return true;
 }
@@ -107,7 +102,6 @@ bool QueryValidator::isValidDeclaration(string declaration) {
 }
 
 bool QueryValidator::isValidQuery(string query) {
-	//cout << "isValidQuery\n";
 	vector<string> arrClauses = split(query, SYMBOL_SPACE, 2); //don't split into 3 as will have tuples(multiple var) later
 
 	if (arrClauses.at(0).compare(RELTYPE_SELECT) != 0 || arrClauses.size() != 2) {
@@ -130,19 +124,7 @@ bool QueryValidator::isValidQuery(string query) {
 			var.at(i) = arrWords.at(i);
 			varType.at(i) = getVarType(arrWords.at(i));
 		}
-		
-		/*cout << "Select: ";
-		for (int i = 0; i < var.size(); i++) {
-			cout << i<<" "<<var.at(i) <<" ";
-		}
 
-		cout << endl;
-
-		for (int i = 0; i < var.size(); i++) {
-			cout << i << " " <<varType.at(i) << " ";
-		}
-
-		cout << endl;*/
 		qt.insertSelect(var, varType);
 	} else {
 		arrClauses = split(arrClauses.at(1), SYMBOL_SPACE, 2);
@@ -228,7 +210,6 @@ bool QueryValidator::isValidQuery(string query) {
 }
 
 bool QueryValidator::parseRel(string &subquery) {
-	//cout << "parseRel" << endl;
 	vector<string> arrClauses = split(subquery, SYMBOL_OPEN_BRACKET, 2);
 	
 	if (!r.hasRelationship(stringToLower(arrClauses.at(0))) || arrClauses.size() != 2) {
@@ -260,16 +241,14 @@ bool QueryValidator::parseRel(string &subquery) {
 	}
 
 	qt.insertSuchThat(relType, arrVar, varTypes);
-	
-	cout << "such that: " << relType << " " << arrVar.at(0) << " " << arrVar.at(1) << endl;
-	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
+
 	subquery = trim(arrClauses.at(1));
 	return true;
 }
 
 bool QueryValidator::parseRelArgs(string relType,
 	vector<string>& arrVar, vector<string>& varTypes) {
-	//cout << "parseRelArgs";
+
 	for (int i = 0; i < arrVar.size(); i++) {
 		if (isVarNameExists(arrVar.at(i))) {
 			if (!r.isArgValid(relType, i + 1, getVarType(arrVar.at(i)))) {
@@ -309,7 +288,6 @@ bool QueryValidator::parseRelArgs(string relType,
 }
 
 bool QueryValidator::findPatternClause(string &subquery) {
-	//cout << "findPattern\n";
 	vector<string> arrWords = split(subquery, SYMBOL_OPEN_BRACKET, 2);
 
 	if (arrWords.size() != 2) {
@@ -327,7 +305,6 @@ bool QueryValidator::findPatternClause(string &subquery) {
 				return false;
 			}
 
-			//cout << "parsed patterns\n";
 			if (arrWords.at(1).find(")") == string::npos) {
 				return false;
 			}
@@ -337,21 +314,20 @@ bool QueryValidator::findPatternClause(string &subquery) {
 			if (closeBrac != string::npos && (openBrac > closeBrac || openBrac == string::npos)) {
 				arrWords = split(arrWords.at(1), SYMBOL_CLOSE_BRACKET, 2);
 			} else if (closeBrac != string::npos && openBrac < closeBrac) {
-				int countClose = 0, countOpen = 1;
-				closeBrac = openBrac;
+				int countClose = 1, countOpen = 1;
 
-				while (countClose <= countOpen && (openBrac != string::npos 
-						|| closeBrac != string::npos)) {
-					
+				while (countClose <= countOpen && (openBrac != string::npos
+					|| closeBrac != string::npos)) {
+
 					openBrac = arrWords.at(1).find("(", openBrac + 1);
 					closeBrac = arrWords.at(1).find(")", closeBrac + 1);
-					
-					if (openBrac < closeBrac && openBrac != string::npos) {
+
+					if (openBrac != string::npos) {
 						countOpen++;
-						closeBrac = openBrac;
-					} else if (openBrac > closeBrac && closeBrac != string::npos) {
+					}
+
+					if (closeBrac != string::npos) {
 						countClose++;
-						openBrac = closeBrac;
 					}
 				}
 				
@@ -373,27 +349,20 @@ bool QueryValidator::findPatternClause(string &subquery) {
 			}
 			
 			vector<string> varType(arrVar.size());
-			//arg1 and 2
-			//cout << "arg1\n";
 			if (!parsePatternArg1(relType, arrVar.at(0), varType.at(0))) {
 				//cout << "invalid 1st arg\n";
 				return false;
 			}
 			
-			//arg2
 			if (!parsePatternArg2(relType, arrVar.at(1), varType.at(1))) {
-				//cout << "invalid 2nd arg\n";
 				return false;
 			}
-			//cout << "parsed 2nd arg\n";
+
 			if (relType.compare(RELTYPE_PATTERN_IF) == 0 && arrVar.at(2).compare("_") != 0) {
 				return false;
 			}
 
 			qt.insertPattern(syn, synType, arrVar, varType);
-
-			cout << "pattern: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
-			//cout << "pattern type " << varType.at(0) << " " << varType.at(1) << endl;
 		}
 	} else {
 		return false;
@@ -448,7 +417,6 @@ bool QueryValidator::parsePatternArg1(string relType, string &arg, string &varTy
 }
 
 bool QueryValidator::parsePatternArg2(string relType, string &arg, string &varType) {
-	//cout << "parsePatternArg2 "<<arg<<"\n";
 	if (arg.compare("_") == 0) {
 		varType = VARTYPE_ALL;
 
@@ -494,9 +462,6 @@ bool QueryValidator::findWithClause(string &subquery) {
 			return false;
 		}
 	}
-	
-	cout << "with: " << arrVar.at(0) << " " << arrVar.at(1) << endl;
-	//cout << varTypes.at(0) << " " << varTypes.at(1) << endl;
 
 	qt.insertWith(relType, arrVar, varTypes);
 	return true;
@@ -504,7 +469,7 @@ bool QueryValidator::findWithClause(string &subquery) {
 
 bool QueryValidator::parseWithNumber(string &subquery, string &relType, 
 		vector<string> &arrVar, vector<string> &varTypes) {
-	//cout << "parseWithNumber\n";
+
 	vector<string> arrWords = split(subquery, SYMBOL_EQUALS, 2);
 	relType = RELTYPE_WITH_NUMBER;
 
@@ -581,7 +546,7 @@ bool QueryValidator::parseWithNumber(string &subquery, string &relType,
 
 bool QueryValidator::parseWithName(string &subquery, string &relType, 
 		vector<string> &arrVar, vector<string> &varTypes) {
-	//cout << "parseWithName\n";
+
 	vector<string> arrWords = split(subquery, SYMBOL_EQUALS, 2);
 	relType = RELTYPE_WITH_NAME;
 
@@ -783,13 +748,11 @@ vector<string> QueryValidator::parseExpression(string expression) {
 		temp = expression.substr(0, found);
 		
 		if (temp != "" && temp != " ") {
-			//cout << "temp = " << temp << endl;
 			result.push_back(removeSpaces(temp));
 		}
 
 		temp = expression.at(found);
 		if (temp != "" && temp != " ") {
-			//cout << "temp = " << temp << endl;
 			result.push_back(removeSpaces(temp));
 		}
 		expression = expression.substr(found + 1);
@@ -797,13 +760,8 @@ vector<string> QueryValidator::parseExpression(string expression) {
 	}
 
 	if (!expression.empty() && expression != " ") {
-		//cout << "expression = " << expression << endl;
 		result.push_back(removeSpaces(expression));
 	}
-
-	/*for (int i = 0; i < result.size(); i++) {
-		cout << result.at(i) << endl;
-	}*/
 
 	return result;
 }
@@ -817,25 +775,21 @@ bool QueryValidator::isValidExpression(string expression) {
 
 	string prevToken = "dummy";
 	for (int i = 0; i < tokens.size(); i++) {
-		//cout << "token = " << tokens.at(i) << endl;
 		if (!isOperator(tokens.at(i)) && !isValidVariableName(tokens.at(i)) &&
 			!isParenthesis(tokens.at(i)) && !isPositiveInteger(tokens.at(i)) ) {
-			//cout << "invalid = "<<tokens.at(i)<<endl;
 			return false;
 		}
 
 		if (isOperator(prevToken) && isOperator(tokens.at(i))) {
-			//cout << "isoperator\n";
 			return false;
 		}
 		prevToken = tokens.at(i);
 	}
 
 	if (countNumOfLeftParenthesis(expression) != countNumOfRightParenthesis(expression)) {
-		//cout << "parenthesis\n";
 		return false;
 	}
-	//cout << "returning true\n";
+
 	return true;
 }
 
