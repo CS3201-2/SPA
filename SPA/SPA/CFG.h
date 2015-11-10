@@ -26,15 +26,10 @@ class CFG
 	vector<list<int>> _next;
 	vector<list<int>> _nextTable;
 	vector<list<int>> _beforeTable;
-	vector<list<int>> _nextTableWithDummy;
-	vector<list<int>> _beforeTableWithDummy;
-	vector<list<int>> _dummyForNext;
-	vector<list<int>> _dummyForBefore;
 
 	vector<StatementType> _typeTable;
 	unordered_map<int, int> _procMap;
 	vector<int> _procTable;
-	unordered_map<int, int> _dummyMap;
 	unordered_map<int, CFGNode*> _nodeMap;
 
 	list<Statement>::iterator _codeIterator;
@@ -45,29 +40,23 @@ class CFG
 	int _nodeIndex;
 	int _size;
 	int _currentProc;
-	int _currentDummyNode;
 	bool _procFirstStatementSet;
 public:
 	CFG();
 	int getFirstStatement(int);
 	int getProc(int);
+	StatementType getType(int);
+
 	void buildGraph(list<Statement>);
+
 	list<int> getNextFirst(int);
 	list<int> getNextSecond(int);
 	bool isNextValid(int, int);
+
 	list<int> getNextStarFirst(int);
 	list<int> getNextStarSecond(int);
 	bool isNextStarValid(int, int);
-	list<int> getNextDummyFirst(int);
-	list<int> getNextDummySecond(int);
-	StatementType getType(int);
-	void printGraph();
-	void printNextTable();
-	void printBeforeTable();
-	void printNextTableWithDummy();
-	void printDummyForNext();
-	void printBeforeTableWithDummy();
-	void printDummyForBefore();
+	
 	void logNext();
 	~CFG();
 private:
@@ -84,8 +73,6 @@ private:
 	void updateVector(int, int, vector<list<int>>&);
 	void storeNextTable();
 	void storeNext(int);
-	void storeNextTableWithDummy();
-	void storeNextDummy(int);
 	bool isContainer(Statement);
 	bool isIfStmt(Statement);
 	bool isWhileStmt(Statement);

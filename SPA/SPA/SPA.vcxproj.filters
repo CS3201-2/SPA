@@ -86,9 +86,6 @@
     <ClCompile Include="DesignExtractor.cpp">
       <Filter>Source Files\Front-end Parser</Filter>
     </ClCompile>
-    <ClCompile Include="Affect.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
     <ClCompile Include="Statement.cpp">
       <Filter>Source Files\Front-end Parser</Filter>
     </ClCompile>
@@ -183,9 +180,6 @@
     </ClInclude>
     <ClInclude Include="Statement.h">
       <Filter>Header Files\Front-end Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="Affect.h">
-      <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="Clause.h">
       <Filter>Header Files\Query Processor</Filter>

@@ -119,7 +119,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Affect.cpp" />
     <ClCompile Include="Calls.cpp" />
     <ClCompile Include="CallsStar.cpp" />
     <ClCompile Include="CFG.cpp" />
@@ -153,7 +152,6 @@
     <ClCompile Include="VarTable.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Affect.h" />
     <ClInclude Include="Calls.h" />
     <ClInclude Include="CallsStar.h" />
     <ClInclude Include="CFG.h" />
