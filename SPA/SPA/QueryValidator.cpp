@@ -309,6 +309,7 @@ bool QueryValidator::parseRelArgs(string relType,
 }
 
 bool QueryValidator::findPatternClause(string &subquery) {
+	//cout << "findPattern\n";
 	vector<string> arrWords = split(subquery, SYMBOL_OPEN_BRACKET, 2);
 
 	if (arrWords.size() != 2) {
@@ -336,20 +337,21 @@ bool QueryValidator::findPatternClause(string &subquery) {
 			if (closeBrac != string::npos && (openBrac > closeBrac || openBrac == string::npos)) {
 				arrWords = split(arrWords.at(1), SYMBOL_CLOSE_BRACKET, 2);
 			} else if (closeBrac != string::npos && openBrac < closeBrac) {
-				int countClose = 1, countOpen = 1;
-				
+				int countClose = 0, countOpen = 1;
+				closeBrac = openBrac;
+
 				while (countClose <= countOpen && (openBrac != string::npos 
 						|| closeBrac != string::npos)) {
 					
 					openBrac = arrWords.at(1).find("(", openBrac + 1);
 					closeBrac = arrWords.at(1).find(")", closeBrac + 1);
 					
-					if (openBrac != string::npos) {
+					if (openBrac < closeBrac && openBrac != string::npos) {
 						countOpen++;
-					}
-
-					if (closeBrac != string::npos) {
+						closeBrac = openBrac;
+					} else if (openBrac > closeBrac && closeBrac != string::npos) {
 						countClose++;
+						openBrac = closeBrac;
 					}
 				}
 				
@@ -372,7 +374,7 @@ bool QueryValidator::findPatternClause(string &subquery) {
 			
 			vector<string> varType(arrVar.size());
 			//arg1 and 2
-			//cout << "arg1 and 2\n";
+			//cout << "arg1\n";
 			if (!parsePatternArg1(relType, arrVar.at(0), varType.at(0))) {
 				//cout << "invalid 1st arg\n";
 				return false;
