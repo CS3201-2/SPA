@@ -800,19 +800,19 @@ bool PKB::isAffectsValid(int first, int second) {
 		!isAssignment(second))
 	{
 		message = "Processing AffectValid:";
-		_log.log(message);
+		_log.logWithLevel(4, message);
 		message = "(" + to_string(first)+ ", " + to_string(second) + 
 			") statement type fault";
-		_log.log(message);
+		_log.logWithLevel(4, message);
 		return false;
 	}
 	if (!isSameProc(first, second))
 	{
 		message = "Processing AffectValid:";
-		_log.log(message);
+		_log.logWithLevel(4, message);
 		message = "(" + to_string(first) + ", " + to_string(second) +
 			") different procedures";
-		_log.log(message);
+		_log.logWithLevel(4, message);
 		return false;
 	}
 	int varModifiesIndex = getModifiesSecond(first).front();
@@ -820,10 +820,10 @@ bool PKB::isAffectsValid(int first, int second) {
 	if (!contains(varUsesIndex, varModifiesIndex))
 	{
 		message = "Processing AffectValid:";
-		_log.log(message);
+		_log.logWithLevel(4, message);
 		message = "(" + to_string(first) + ", " + to_string(second) +
 			") variable not used";
-		_log.log(message);
+		_log.logWithLevel(4, message);
 		return false;
 	}
 	queue<int> path;
@@ -877,8 +877,6 @@ bool PKB::isAffectsValid(int first, int second) {
 		}
 		else//assignStmt and callStmt
 		{
-			message = "Processing Affect: is Assignment/Call " + to_string(temp);
-			//_log.log(message);
 			list<int> tempModifies = getModifiesSecond(temp);
 			if (visit[temp] == -1 || !contains(tempModifies, varModifiesIndex))
 			{
