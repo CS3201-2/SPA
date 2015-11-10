@@ -181,7 +181,7 @@ void PKB::logWhileList() {
 		str += to_string(*it) + ", ";
 	}
 	str += "\n";
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL,str);
 }
 
 void PKB::logAssignList() {
@@ -190,7 +190,7 @@ void PKB::logAssignList() {
 		str += to_string(*it) + ", ";
 	}
 	str += "\n";
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void PKB::logCallList() {
@@ -199,7 +199,7 @@ void PKB::logCallList() {
 		str += to_string(*it) + ", ";
 	}
 	str += "\n";
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void PKB::logIfList() {
@@ -208,7 +208,7 @@ void PKB::logIfList() {
 		str += to_string(*it) + ", ";
 	}
 	str += "\n";
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void PKB::logConstantList() {
@@ -217,7 +217,7 @@ void PKB::logConstantList() {
 		str += to_string(*it) + ", ";
 	}
 	str += "\n";
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void PKB::logParentList() {
@@ -227,7 +227,7 @@ void PKB::logParentList() {
 		str += to_string(*it) + ", ";
 	}
 	str += "\n";
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void PKB::logStmtList() {
@@ -237,7 +237,7 @@ void PKB::logStmtList() {
 		str += to_string(*it) + ", ";
 	}
 	str += "\n";
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void PKB::logCallStmtProcMap() {
@@ -246,7 +246,7 @@ void PKB::logCallStmtProcMap() {
 	for (map<int, int>::iterator it = callStmtProcMap.begin(); it != callStmtProcMap.end(); ++it) {
 		str += to_string((*it).first) + ": " + pt.getProcName((*it).second) + "\n";
 	}
-	SPALog::log(str);
+	SPALog::getSPALogInstance()->logWithLevel(MEDIUM_LEVEL, str);
 }
 
 void PKB::buildCFG(list<Statement> sourceCodeList) {
