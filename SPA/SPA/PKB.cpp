@@ -638,7 +638,8 @@ list<int> PKB::getAffectsFirst(int end) {
 	string message;
 	for (auto& tempUses : varUsesIndex)
 	{
-		_log.log("Processing AffectFirst: dealing with " + to_string(tempUses));
+		message = "Processing AffectFirst: dealing with " + to_string(tempUses);
+		_log.logWithLevel(4, message);
 		clearQueue(path);
 		visit.resize(getStmtSize() + 1, 0);
 		visit.assign(visit.size(), 0);
@@ -647,7 +648,8 @@ list<int> PKB::getAffectsFirst(int end) {
 		while (!path.empty())
 		{
 			int temp = path.front();
-			_log.log("Processing AffectFirst: reach " + to_string(temp));
+			message = "Processing AffectFirst: reach " + to_string(temp);
+			_log.logWithLevel(4, message);
 			path.pop();
 			if (visit[temp] == -1)
 			{
@@ -697,14 +699,14 @@ list<int> PKB::getAffectsFirst(int end) {
 	}
 	message = "Processing AffectFirst: the result for " +
 		to_string(end) + " is:";
-	_log.log(message);
+	_log.logWithLevel(4, message);
 
 	stringstream ss;
 	for (auto& x : buffer)
 	{
 		ss << x << " ";
 	}
-	_log.log("  " + ss.str());
+	_log.logWithLevel(4, "  " + ss.str());
 	return buffer;
 }
 
@@ -781,14 +783,15 @@ list<int> PKB::getAffectsSecond(int start) {
 	}
 	message = "Processing AffectSecond: the result for " +
 		to_string(start) + " is:";
-	_log.log(message);
+	_log.logWithLevel(4, message);
 
 	stringstream ss;
 	for (auto& x : buffer)
 	{
 		ss << x << " ";
 	}
-	_log.log("  " + ss.str());	return buffer;
+	_log.logWithLevel(4, "  " + ss.str());	
+	return buffer;
 }
 
 bool PKB::isAffectsValid(int first, int second) {
@@ -893,6 +896,7 @@ list<int> PKB::getAffectsStarFirst(int second) {
 	list<int> buffer;
 	list<int> temp;
 	list<int> todo;
+	string message;
 	temp = getAffectsFirst(second);
 	temp.sort();
 	todo = insertAll(buffer, temp);
@@ -900,8 +904,9 @@ list<int> PKB::getAffectsStarFirst(int second) {
 	{
 		for (auto& x : todo)
 		{
-			_log.log("Processing AffectStarFirst: visiting "
-				+ to_string(x));
+			message = "Processing AffectStarFirst: visiting "
+				+ to_string(x);
+			_log.logWithLevel(4, message);
 			list<int> y = getAffectsFirst(x);
 			y.sort();
 			insertAll(temp, y);
@@ -915,6 +920,7 @@ list<int> PKB::getAffectsStarSecond(int first) {
 	list<int> buffer;
 	list<int> temp;
 	list<int> todo;
+	string message;
 	temp = getAffectsSecond(first);
 	temp.sort();
 	todo = insertAll(buffer, temp);
@@ -922,8 +928,9 @@ list<int> PKB::getAffectsStarSecond(int first) {
 	{
 		for (auto& x : todo)
 		{
-			_log.log("Processing AffectStarSecond: visiting "
-				+ to_string(x));
+			message = "Processing AffectStarSecond: visiting "
+				+ to_string(x);
+			_log.logWithLevel(4, message);
 			list<int> y = getAffectsSecond(x);
 			y.sort();
 			insertAll(temp, y);
@@ -937,6 +944,7 @@ bool PKB::isAffectsStarValid(int first, int second) {
 	list<int> buffer;
 	list<int> temp;
 	list<int> todo;
+	string message;
 	temp = getAffectsSecond(first);
 	temp.sort();
 	todo = insertAll(buffer, temp);
@@ -944,8 +952,9 @@ bool PKB::isAffectsStarValid(int first, int second) {
 	{
 		for (auto& x : todo)
 		{
-			_log.log("Processing AffectStarValid: visiting " 
-				+ to_string(x));
+			message = "Processing AffectStarValid: visiting "
+				+ to_string(x);
+			_log.logWithLevel(4, message);
 			if (x == second)
 				return true;
 			list<int> y = getAffectsSecond(x);

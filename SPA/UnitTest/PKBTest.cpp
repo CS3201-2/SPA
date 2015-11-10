@@ -1030,13 +1030,24 @@ namespace UnitTest {
 			Assert::IsTrue(expect == actual);
 		}
 
+		TEST_METHOD(testAffectStarFirst)
+		{
+			list<int> expect;
+			list<int> actual;
+
+			expect = { };
+			actual = PKB::getPKBInstance()->getAffectsStarFirst(4);
+			actual.sort();
+			Assert::IsTrue(expect == actual);
+		}
+
 		TEST_METHOD(testAffectStarSecond)
 		{
 			list<int> expect;
 			list<int> actual;
 
-			expect = {  };
-			actual = PKB::getPKBInstance()->getAffectsFirst(4);
+			expect = {7,11,13,14,15};
+			actual = PKB::getPKBInstance()->getAffectsStarSecond(4);
 			actual.sort();
 			Assert::IsTrue(expect == actual);
 		}
