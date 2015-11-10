@@ -658,6 +658,13 @@ void CFG::storeNext(int index)
 	_size++;
 }
 
+void CFG::storeNextTableBip()
+{
+	_nextTableBip = _nextTable;
+	_beforeTableBip = _beforeTable;
+	
+}
+
 void CFG::storeNextTableWithDummy()
 {
 	list<int> empty;
