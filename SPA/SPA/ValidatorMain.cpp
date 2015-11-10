@@ -49,11 +49,12 @@ int main() {
 		str37 = "assign a; if ifs; prog_line n; variable v; Select a "
 		"such that Modifies(a, v) pattern ifs(v,_,_) with n = 01",
 		str38 = "assign a; Select BOOLEAN such that Modifies(a, \"x\")",
-		str39 = "constant c; Select c with c = 20";
+		str39 = "constant c; Select c with c = 20",
+		str40 = "assign a1; Select a1 pattern a1(_, \"c-(a-b*(c*(a-idx-(y-x))))\")";
 
 	//cout << str29 << "\n";
 
-	q.isValidDecAndQuery(str39);
+	q.isValidDecAndQuery(str40);
 	//cout << q.isValidExpression("x23*123-7y")<<endl; //0
 	//cout << q.isValidExpression("123+-x23*123") << endl; //0
 	//cout << q.isValidExpression("(x+123+y)") << endl; //1

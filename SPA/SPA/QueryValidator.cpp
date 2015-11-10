@@ -604,6 +604,10 @@ bool QueryValidator::parseWithName(string &subquery, string &relType,
 		} else {
 			vector<string> variable = split(arrWords.at(i), SYMBOL_FULL_STOP);
 			
+			if (variable.size() != 2) {
+				return false;
+			}
+
 			if (isVarNameExists(variable.at(0))) {
 				string variabType = getVarType(variable.at(0));
 				
@@ -829,7 +833,7 @@ bool QueryValidator::isValidExpression(string expression) {
 		//cout << "parenthesis\n";
 		return false;
 	}
-	cout << "returning true\n";
+	//cout << "returning true\n";
 	return true;
 }
 
