@@ -11,6 +11,7 @@
 #include <string>
 #include <list>
 #include <algorithm>
+//#include "AbstractWrapper.h"
 
 using namespace::std;
 
@@ -2359,7 +2360,10 @@ ResultTable QueryEvaluator::processNextStar(Clause tempString) {
 						temp.clear();
 						
 					}
-				}
+				}/*
+				if (AbstractWrapper::GlobalStop) {
+					break;
+				}*/
 			}
 			
 			_updateMidResult(tempResult);
@@ -2562,7 +2566,10 @@ ResultTable QueryEvaluator::processAffects(Clause tempString) {
 						
 					}
 				}
-
+				/*
+				if (AbstractWrapper::GlobalStop) {
+				break;
+				}*/
 			}
 			
 			_updateMidResult(tempResult);
@@ -2769,6 +2776,10 @@ ResultTable QueryEvaluator::processAffectsStar(Clause tempString) {
 						
 					}
 				}
+				/*
+				if (AbstractWrapper::GlobalStop) {
+				break;
+				}*/
 			}
 			
 			_updateMidResult(tempResult);
