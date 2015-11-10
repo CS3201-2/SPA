@@ -50,11 +50,22 @@ int main() {
 		"such that Modifies(a, v) pattern ifs(v,_,_) with n = 01",
 		str38 = "assign a; Select BOOLEAN such that Modifies(a, \"x\")",
 		str39 = "constant c; Select c with c = 20",
-		str40 = "assign a1; Select a1 pattern a1(_, \"c-(a-b*(c*(a-idx-(y-x))))\")";
+		str40 = "assign a1; Select a1 pattern a1(_, \"c-(a-b*(c*(a-idx-(y-x))))\")",
+		str41 = "assign a1, a2; procedure p1, p2; if ifs1, ifs2, ifs3; while w1, w2, w3; variable v1, v2; "
+		"Select ifs1 such that Uses(ifs1, v1) and Parent(ifs1, a1) pattern a1(_,\"c - (a - b*(c*(a - idx - (y - x))))\") "
+		"such that Uses(a1, v1) with v1.varName = \"b\"",
+		str42 = "assign a; if ifs; Select a pattern a(_, _\"a - idx - (y - x)\"_) such that Parent(ifs, a) with ifs.stmt# = 101",
+		str43 = "assign a1, a2; procedure p1, p2; if ifs1, ifs2, ifs3; while w1, w2; variable v1, v2; stmt s1, s2; "
+		"Select a2 such that Follows*(a1, a2) and Parent*(w1, a1) with w1.stmt# = 99 pattern "
+		"a1(_,_\" c - (a - b*(c*(a - idx - (y - x))))\"_) such that Uses(a2, \"test\")",
+		str44 = "assign a1, a2,a3; procedure p1, p2; if ifs1, ifs2, ifs3; while w1, w2; "
+		"variable v1, v2; stmt s1, s2; Select v1 such that Follows(a1, a2) pattern "
+		"a1(_,\" c - (a - b*(c*(a - idx - (y - x))))\") such that Follows*(a2, a3) and Uses(a3, v1)";
+		
 
 	//cout << str29 << "\n";
 
-	q.isValidDecAndQuery(str40);
+	q.isValidDecAndQuery(str43);
 	//cout << q.isValidExpression("x23*123-7y")<<endl; //0
 	//cout << q.isValidExpression("123+-x23*123") << endl; //0
 	//cout << q.isValidExpression("(x+123+y)") << endl; //1
